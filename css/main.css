@@ -14,7 +14,7 @@
   --shadow: 0 12px 30px rgba(17, 24, 39, 0.08);
   --shadow-lg: 0 18px 44px rgba(17, 24, 39, 0.12);
 
-  --radius: 20px;
+  --radius: 22px;
   --radius-md: 18px;
   --radius-sm: 14px;
 
@@ -53,16 +53,16 @@ a {
 }
 
 .page {
-  padding: 34px 18px 72px;
+  padding: 40px 20px 84px;
 }
 
 .configurator {
-  max-width: 980px;
+  max-width: 1040px;
   margin: 0 auto;
 }
 
 .section + .section {
-  margin-top: 34px;
+  margin-top: 40px;
 }
 
 /* =========================
@@ -73,7 +73,7 @@ a {
 .tree-title,
 .config-title,
 .subsection-title {
-  margin: 0 0 16px;
+  margin: 0 0 18px;
   color: var(--text);
   letter-spacing: -0.02em;
 }
@@ -81,14 +81,14 @@ a {
 .section-title,
 .tree-title,
 .config-title {
-  font-size: 22px;
-  line-height: 1.15;
+  font-size: 24px;
+  line-height: 1.14;
   font-weight: 800;
 }
 
 .subsection-title {
   font-size: 17px;
-  line-height: 1.2;
+  line-height: 1.22;
   font-weight: 800;
   margin-bottom: 12px;
 }
@@ -100,7 +100,7 @@ a {
 .cards {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 16px;
 }
 
 .card {
@@ -132,7 +132,7 @@ a {
 
 .card-image {
   width: 100%;
-  height: 84px;
+  height: 92px;
   border-radius: 14px 14px 0 0;
   overflow: hidden;
   background: #e9edf1;
@@ -167,15 +167,15 @@ a {
 ========================= */
 
 .cards-type .type-card {
-  width: 190px;
+  width: 210px;
 }
 
 .cards-length {
-  gap: 12px;
+  gap: 14px;
 }
 
 .cards-length .length-card {
-  width: 148px;
+  width: 158px;
 }
 
 .length-card .card-body {
@@ -241,23 +241,25 @@ a {
 
 .config-panel {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 1px solid rgba(17, 24, 39, 0.06);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 16px;
+  box-shadow: 0 16px 40px rgba(17, 24, 39, 0.10);
+  padding: 20px;
 }
 
 .main-preview {
-  height: 188px;
-  border-radius: 18px;
+  height: 224px;
+  border-radius: 20px;
   background:
-    linear-gradient(180deg, rgba(255,255,255,.36), rgba(255,255,255,0) 22%),
-    linear-gradient(180deg, #d9dde2 0%, #cfd5dc 100%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+    linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,0) 22%),
+    linear-gradient(180deg, #d7dce2 0%, #cdd3db 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.65),
+    inset 0 -20px 40px rgba(17,24,39,.04);
 }
 
 .config-subsection + .config-subsection {
-  margin-top: 22px;
+  margin-top: 26px;
 }
 
 /* =========================
@@ -269,7 +271,7 @@ a {
 }
 
 .roof-card {
-  width: 132px;
+  width: 138px;
 }
 
 .roof-card .card-body {
@@ -282,7 +284,7 @@ a {
 }
 
 .roof-mini {
-  height: 52px;
+  height: 56px;
   border-radius: 10px;
 }
 
@@ -329,7 +331,7 @@ a {
 }
 
 .style-card {
-  width: 124px;
+  width: 132px;
   border: 0;
   padding: 8px 8px 10px;
   text-align: left;
@@ -407,10 +409,10 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 50px;
-  padding: 12px 14px;
-  background: var(--surface-soft);
-  border: 1px solid var(--line);
+  min-height: 54px;
+  padding: 13px 15px;
+  background: #fbfcfd;
+  border: 1px solid rgba(17, 24, 39, 0.07);
   border-radius: 14px;
 }
 
@@ -445,11 +447,11 @@ a {
 ========================= */
 
 .price-total {
-  margin-top: 6px;
-  font-size: 26px;
+  margin-top: 8px;
+  font-size: 34px;
   font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 .price-breakdown {
@@ -463,7 +465,7 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 10px 0;
+  padding: 12px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -490,10 +492,10 @@ a {
 
 .included-item {
   padding: 13px 14px;
-  background: var(--surface-soft);
-  border: 1px solid var(--line);
+  background: #fbfcfd;
+  border: 1px solid rgba(17, 24, 39, 0.06);
   border-radius: 12px;
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 6px 14px rgba(17, 24, 39, 0.04);
   font-size: 14px;
   font-weight: 700;
   line-height: 1.25;
@@ -504,13 +506,13 @@ a {
 ========================= */
 
 .trust-head-card {
-  max-width: 720px;
-  margin: 0 auto 22px auto;
-  padding: 16px 18px;
+  max-width: 760px;
+  margin: 0 auto 28px auto;
+  padding: 18px 22px;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(17, 24, 39, 0.07);
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.08);
   text-align: center;
 }
 
@@ -531,16 +533,16 @@ a {
 .trust-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(280px, 1fr));
-  gap: 14px;
-  margin-top: 16px;
+  gap: 16px;
+  margin-top: 18px;
 }
 
 .trust-card {
   background: #fff;
   border-radius: 18px;
-  box-shadow: var(--shadow-soft);
-  padding: 18px 18px 16px;
-  border: 1px solid var(--line);
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.06);
+  padding: 20px 20px 18px;
+  border: 1px solid rgba(17, 24, 39, 0.06);
 }
 
 .trust-title {
@@ -572,12 +574,12 @@ a {
 ========================= */
 
 .steps-panel {
-  margin-top: 22px;
+  margin-top: 28px;
   background: #fff;
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-  padding: 22px 22px 18px;
-  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 12px 30px rgba(17, 24, 39, 0.08);
+  padding: 24px 24px 18px;
+  border: 1px solid rgba(17, 24, 39, 0.06);
 }
 
 .steps-list {
@@ -589,9 +591,9 @@ a {
 .step-line {
   display: grid;
   grid-template-columns: 64px 1fr;
-  gap: 16px;
+  gap: 18px;
   align-items: start;
-  padding: 12px 0;
+  padding: 14px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -600,8 +602,8 @@ a {
 }
 
 .step-num {
-  width: 46px;
-  height: 58px;
+  width: 50px;
+  height: 62px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -656,9 +658,9 @@ a {
 
   background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
   color: #fff;
-  border-radius: 22px;
-  box-shadow: 0 20px 50px rgba(17, 24, 39, 0.22);
-  padding: 28px 24px;
+  border-radius: 24px;
+  box-shadow: 0 24px 54px rgba(17, 24, 39, 0.24);
+  padding: 32px 28px;
 }
 
 .action-panel::before {
@@ -682,7 +684,6 @@ a {
 .action-title {
   margin: 10px 0 0;
   max-width: 700px;
-
   font-size: 22px;
   line-height: 1.14;
   font-weight: 800;
@@ -692,7 +693,6 @@ a {
 .action-text {
   margin-top: 12px;
   max-width: 720px;
-
   font-size: 14px;
   line-height: 1.55;
   color: rgba(255,255,255,0.78);
@@ -709,16 +709,13 @@ a {
   min-height: 44px;
   padding: 0 16px;
   border-radius: 12px;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   text-decoration: none;
   font-weight: 800;
   font-size: 14px;
   letter-spacing: -0.01em;
-
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
@@ -744,7 +741,7 @@ a {
 
 @media (max-width: 900px) {
   .page {
-    padding: 28px 14px 60px;
+    padding: 30px 14px 60px;
   }
 
   .trust-grid {
@@ -752,11 +749,11 @@ a {
   }
 
   .main-preview {
-    height: 172px;
+    height: 196px;
   }
 
   .action-title {
-    font-size: 20px;
+    font-size: 21px;
   }
 
   .trust-main-title,
@@ -769,7 +766,7 @@ a {
   .section-title,
   .tree-title,
   .config-title {
-    font-size: 20px;
+    font-size: 21px;
   }
 
   .subsection-title {
@@ -780,11 +777,11 @@ a {
   .cards-length .length-card,
   .roof-card,
   .style-card {
-    width: calc(50% - 7px);
+    width: calc(50% - 8px);
   }
 
   .main-preview {
-    height: 150px;
+    height: 166px;
   }
 
   .options-grid,
@@ -793,7 +790,7 @@ a {
   }
 
   .price-total {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .steps-panel {
@@ -801,13 +798,13 @@ a {
   }
 
   .step-line {
-    grid-template-columns: 54px 1fr;
-    gap: 10px;
+    grid-template-columns: 56px 1fr;
+    gap: 12px;
   }
 
   .step-num {
-    width: 40px;
-    height: 50px;
+    width: 42px;
+    height: 54px;
     font-size: 14px;
   }
 
@@ -825,11 +822,11 @@ a {
   }
 
   .action-panel {
-    padding: 22px 16px;
+    padding: 24px 18px;
   }
 
   .action-title {
-    font-size: 19px;
+    font-size: 20px;
   }
 
   .action-text {
