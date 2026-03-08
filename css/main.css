@@ -541,10 +541,10 @@ img {
 
 .step-line {
   display: grid;
-  grid-template-columns: 52px 1fr;
-  gap: 16px;
+  grid-template-columns: 72px 1fr;
+  gap: 18px;
   align-items: start;
-  padding: 10px 0;
+  padding: 14px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -553,19 +553,28 @@ img {
 }
 
 .step-num {
-  width: 38px;
-  height: 38px;
-  border-radius: 999px;
-  background: rgba(34, 197, 94, 0.10);
-  border: 2px solid rgba(34, 197, 94, 0.7);
-  color: #17934a;
+  width: 56px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 16px;
+  font-weight: 900;
+  font-size: 18px;
   line-height: 1;
+  color: #ffffff;
+  background: linear-gradient(180deg, #22C55E, #16A34A);
+  clip-path: polygon(
+    50% 100%,
+    0 58%,
+    18% 58%,
+    18% 0,
+    82% 0,
+    82% 58%,
+    100% 58%
+  );
+  box-shadow: 0 14px 28px rgba(22, 163, 74, 0.24);
   margin-top: 2px;
+  flex: 0 0 auto;
 }
 
 .step-content {
@@ -684,15 +693,15 @@ img {
   }
 
   .step-line {
-    grid-template-columns: 42px 1fr;
-    gap: 12px;
-  }
+  grid-template-columns: 60px 1fr;
+  gap: 12px;
+}
 
-  .step-num {
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
-  }
+.step-num {
+  width: 46px;
+  height: 60px;
+  font-size: 15px;
+}
 
   .step-title {
     font-size: 16px;
