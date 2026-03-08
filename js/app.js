@@ -372,7 +372,7 @@ function renderTrustBlocks() {
 
       <div class="trust-grid">
         <div class="trust-card">
-          <div class="trust-title">Только качественные материалы и комплектующие</div>
+          <div class="trust-title">У нас только качественные материалы и комплектующие</div>
           <div class="trust-text">
             Используем проверенные панели, металл и крепёж.
             Контролируем толщину металла, качество окраски и надёжность узлов.
