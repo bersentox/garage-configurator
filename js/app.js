@@ -1,18 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
   const stepLength = document.getElementById("step-length");
-  const stepRoof = document.getElementById("step-roof");
-  const stepStyle = document.getElementById("step-style");
+  const stepConfig = document.getElementById("step-config");
   const stepRender = document.getElementById("step-render");
   const stepPrice = document.getElementById("step-price");
 
   const state = {
     width: null,
-    length: null
+    length: null,
+    roof: "back",
+    style: "graphite"
   };
 
   const lengthOptions = {
     6: [
-      { value: 6, title: "6 метров", subtitle: "только автомобиль" },
+      { value: 6, title: "6 метров", subtitle: "только авто" },
       { value: 8, title: "8 метров", subtitle: "авто + стеллаж" },
       { value: 10, title: "10 метров", subtitle: "авто + хозблок" },
       { value: 12, title: "12 метров", subtitle: "авто + мастерская" }
@@ -24,117 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
       { value: 12, title: "12 метров", subtitle: "авто + мастерская" },
       { value: 14, title: "14 метров", subtitle: "мастерская + хранение" }
     ]
-  };
-
-  function clearBelow(step) {
-    if (step === "type") {
-      stepLength.innerHTML = "";
-      stepRoof.innerHTML = "";
-      stepStyle.innerHTML = "";
-      stepRender.innerHTML = "";
-      stepPrice.innerHTML = "";
-      state.length = null;
-    }
-
-    if (step === "length") {
-      stepRoof.innerHTML = "";
-      stepStyle.innerHTML = "";
-      stepRender.innerHTML = "";
-      stepPrice.innerHTML = "";
-    }
-  }
-
-  function renderLengthStep() {
-    const options = lengthOptions[state.width] || [];
-
-    let html = `
-      <section class="tree-section">
-        <h2>Выберите длину гаража</h2>
-        <div class="cards cards-length">
-    `;
-
-    options.forEach(function (item) {
-      html += `
-        <div class="card length-card" data-length="${item.value}">
-          <div class="fake-garage garage-length-${item.value}"></div>
-          <p><strong>${item.title}</strong><br>${item.subtitle}</p>
-        </div>
-      `;
-    });
-
-    html += `
-        </div>
-      </section>
-    `;
-
-    stepLength.innerHTML = html;
-
-    const lengthCards = document.querySelectorAll(".length-card");
-    lengthCards.forEach(function (card) {
-      card.addEventListener("click", function () {
-        state.length = Number(card.dataset.length);
-        clearBelow("length");
-        renderPreviewStep();
-      });
-    });
-  }
-
-function renderPreviewStep() {
-
-  stepRoof.innerHTML = `
-    <section class="tree-section tree-result">
-      <h2>Ваш гараж: ${state.width} × ${state.length} м</h2>
-
-      <div class="result-card">
-
-        <div class="fake-garage big-preview garage-length-${state.length}"></div>
-
-        <h3 style="margin-top:30px">Выберите тип крыши</h3>
-
-        <div class="cards">
-
-          <div class="card roof-card" data-roof="back">
-            <div class="fake-garage"></div>
-            <p><strong>Скат назад</strong></p>
-          </div>
-
-          <div class="card roof-card" data-roof="gable">
-            <div class="fake-garage"></div>
-            <p><strong>Двускатная</strong></p>
-          </div>
-
-          <div class="card roof-card" data-roof="side">
-            <div class="fake-garage"></div>
-            <p><strong>Скат вбок</strong></p>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-  `;
-
-  const roofCards = document.querySelectorAll(".roof-card");
-
-  roofCards.forEach(function(card){
-
-    card.addEventListener("click", function(){
-
-      const roof = card.dataset.roof;
-
-      showRoofResult(roof);
-
-    });
-
-  });
-
-}
-function showRoofResult(roof) {
-  const roofLabels = {
-    back: "Скат назад",
-    gable: "Двускатная",
-    side: "Скат вбок"
   };
 
   const styles = [
@@ -165,65 +55,177 @@ function showRoofResult(roof) {
     }
   ];
 
-  stepStyle.innerHTML = `
-    <section class="tree-section">
-      <h2>Выбранная крыша: ${roofLabels[roof]}</h2>
+  function clearBelow(step) {
+    if (step === "type") {
+      stepLength.innerHTML = "";
+      stepConfig.innerHTML = "";
+      stepRender.innerHTML = "";
+      stepPrice.innerHTML = "";
+      state.length = null;
+      state.roof = "back";
+      state.style = "graphite";
+    }
 
-      <div class="result-card">
-        <div class="fake-garage big-preview garage-length-${state.length} roof-preview roof-${roof}"></div>
+    if (step === "length") {
+      stepConfig.innerHTML = "";
+      stepRender.innerHTML = "";
+      stepPrice.innerHTML = "";
+      state.roof = "back";
+      state.style = "graphite";
+    }
+  }
 
-        <h3 style="margin-top:30px">Выберите стиль</h3>
+  function renderLengthStep() {
+    const options = lengthOptions[state.width] || [];
 
-        <div class="style-grid">
-          ${styles.map(style => `
-            <div class="style-card" data-style="${style.key}">
-              <div class="style-palette">
-                ${style.colors.map(color => `<span style="background:${color}"></span>`).join("")}
-              </div>
-              <p><strong>${style.title}</strong></p>
-            </div>
-          `).join("")}
+    let html = `
+      <section class="tree-section">
+        <h2 class="tree-title">Выберите длину гаража</h2>
+        <div class="cards cards-length">
+    `;
+
+    options.forEach(function (item) {
+      html += `
+        <button class="card length-card" type="button" data-length="${item.value}">
+          <div class="fake-garage preview-small garage-length-${item.value}"></div>
+          <div class="card-body">
+            <div class="card-title">${item.title}</div>
+            <div class="card-subtitle">${item.subtitle}</div>
+          </div>
+        </button>
+      `;
+    });
+
+    html += `
         </div>
-      </div>
-    </section>
-  `;
+      </section>
+    `;
 
-  const styleCards = document.querySelectorAll(".style-card");
-  styleCards.forEach(function(card) {
-    card.addEventListener("click", function() {
-      showStyleResult(card.dataset.style, roof);
+    stepLength.innerHTML = html;
+
+    const lengthCards = document.querySelectorAll(".length-card");
+    lengthCards.forEach(function (card) {
+      card.addEventListener("click", function () {
+        state.length = Number(card.dataset.length);
+        clearBelow("length");
+        renderConfigStep();
+      });
     });
-  });
-}
-  function showStyleResult(style, roof) {
-  const styleLabels = {
-    graphite: "Графит",
-    sand: "Песочный",
-    contrast: "Контраст",
-    scandi: "Сканди",
-    industrial: "Индустриальный"
-  };
+  }
 
-  stepRender.innerHTML = `
-    <section class="tree-section">
-      <h2>Стиль выбран: ${styleLabels[style]}</h2>
+  function renderConfigStep() {
+    stepConfig.innerHTML = `
+      <section class="tree-section">
+        <h2 class="config-title">Ваш гараж: ${state.width} × ${state.length} м</h2>
 
-      <div class="result-card">
-        <div class="fake-garage big-preview garage-length-${state.length} roof-preview roof-${roof} style-${style}"></div>
+        <div class="config-panel">
+          <div class="fake-garage main-preview garage-length-${state.length} roof-${state.roof} style-${state.style}"></div>
 
-        <p style="margin-top:20px">
-          Следующим шагом здесь будет кнопка визуализации рендера и итоговая цена.
-        </p>
-      </div>
-    </section>
-  `;
-}
-  const widthCards = document.querySelectorAll(".card[data-width]");
-  widthCards.forEach(function (card) {
-    card.addEventListener("click", function () {
-      state.width = Number(card.dataset.width);
-      clearBelow("type");
-      renderLengthStep();
+          <div class="config-subsection">
+            <h3 class="subsection-title">Выберите тип крыши</h3>
+
+            <div class="cards roof-cards">
+              <button class="card roof-card ${state.roof === "back" ? "is-active" : ""}" type="button" data-roof="back">
+                <div class="fake-garage roof-mini roof-back"></div>
+                <div class="card-body">
+                  <div class="card-title">Скат назад</div>
+                </div>
+              </button>
+
+              <button class="card roof-card ${state.roof === "gable" ? "is-active" : ""}" type="button" data-roof="gable">
+                <div class="fake-garage roof-mini roof-gable"></div>
+                <div class="card-body">
+                  <div class="card-title">Двускатная</div>
+                </div>
+              </button>
+
+              <button class="card roof-card ${state.roof === "side" ? "is-active" : ""}" type="button" data-roof="side">
+                <div class="fake-garage roof-mini roof-side"></div>
+                <div class="card-body">
+                  <div class="card-title">Скат вбок</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div class="config-subsection">
+            <h3 class="subsection-title">Выберите стиль</h3>
+
+            <div class="style-grid">
+              ${styles.map(function (style) {
+                return `
+                  <button class="style-card ${state.style === style.key ? "is-active" : ""}" type="button" data-style="${style.key}">
+                    <div class="style-palette">
+                      ${style.colors.map(function (color) {
+                        return `<span style="background:${color}"></span>`;
+                      }).join("")}
+                    </div>
+                    <div class="style-title">${style.title}</div>
+                  </button>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+
+    bindConfigEvents();
+    renderResultBlocks();
+  }
+
+  function renderResultBlocks() {
+    stepRender.innerHTML = `
+      <section class="tree-section">
+        <div class="config-panel">
+          <h2 class="config-title">Следующий шаг</h2>
+          <p class="muted-note">
+            Здесь позже появятся кнопка визуализации рендера, итоговая цена,
+            состав комплектации и блок доверия.
+          </p>
+        </div>
+      </section>
+    `;
+
+    stepPrice.innerHTML = "";
+  }
+
+  function bindConfigEvents() {
+    const roofCards = document.querySelectorAll(".roof-card");
+    roofCards.forEach(function (card) {
+      card.addEventListener("click", function () {
+        state.roof = card.dataset.roof;
+        renderConfigStep();
+      });
     });
-  });
+
+    const styleCards = document.querySelectorAll(".style-card");
+    styleCards.forEach(function (card) {
+      card.addEventListener("click", function () {
+        state.style = card.dataset.style;
+        renderConfigStep();
+      });
+    });
+  }
+
+  function bindTypeEvents() {
+    const widthCards = document.querySelectorAll(".type-card");
+
+    widthCards.forEach(function (card) {
+      card.addEventListener("click", function () {
+        state.width = Number(card.dataset.width);
+
+        widthCards.forEach(function (item) {
+          item.classList.remove("is-active");
+        });
+
+        card.classList.add("is-active");
+
+        clearBelow("type");
+        renderLengthStep();
+      });
+    });
+  }
+
+  bindTypeEvents();
 });
