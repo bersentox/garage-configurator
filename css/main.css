@@ -785,3 +785,47 @@ img {
   }
 
 }
+/* ===== TRUST HEADER CARD ===== */
+
+.trust-head-card{
+  max-width: 880px;
+  margin: 0 auto 32px auto;
+  padding: 28px 30px;
+
+  background:#FFFFFF;
+  border:1px solid rgba(17,24,39,.06);
+  border-radius:18px;
+
+  box-shadow:0 12px 32px rgba(17,24,39,.08);
+
+  text-align:center;
+}
+
+.trust-head-title{
+  margin:0;
+
+  font-size:32px;
+  line-height:1.18;
+  font-weight:800;
+  letter-spacing:-.02em;
+
+  color:#111827;
+}
+
+/* адаптация */
+
+@media (max-width:900px){
+  .trust-head-title{
+    font-size:26px;
+  }
+}
+
+@media (max-width:640px){
+  .trust-head-card{
+    padding:22px 18px;
+  }
+
+  .trust-head-title{
+    font-size:22px;
+  }
+}
