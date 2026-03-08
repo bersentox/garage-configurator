@@ -366,10 +366,8 @@ const stepAction = document.getElementById("step-action");
 function renderTrustBlocks() {
   stepTrust.innerHTML = `
     <section class="tree-section">
-      <div class="trust-head">
-  <div class="trust-overline">После конфигурации начинается самое важное</div>
+    <div class="trust-head-card">
   <h2 class="trust-main-title">Ваш гараж уже выбран. Теперь покажем, почему за результат можно быть спокойным</h2>
-  <div class="trust-subtitle">Материалы, посадка, контроль монтажа и гарантия — ключевые вещи, которые определяют итоговый результат.</div>
 </div>
 
       <div class="trust-grid">
