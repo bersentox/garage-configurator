@@ -1,11 +1,95 @@
-document.querySelectorAll(".card").forEach(card=>{
+const stepType = document.getElementById("step-type");
+const stepLength = document.getElementById("step-length");
+const stepRoof = document.getElementById("step-roof");
+const stepStyle = document.getElementById("step-style");
+const stepRender = document.getElementById("step-render");
+const stepPrice = document.getElementById("step-price");
 
-card.addEventListener("click",()=>{
+const state = {
+  width: null,
+  length: null
+};
 
-let width = card.dataset.width;
+const lengthOptions = {
+  6: [
+    { value: 6, title: "6 метров", subtitle: "только автомобиль" },
+    { value: 8, title: "8 метров", subtitle: "авто + стеллаж" },
+    { value: 10, title: "10 метров", subtitle: "авто + хозблок" },
+    { value: 12, title: "12 метров", subtitle: "авто + мастерская" }
+  ],
+  8: [
+    { value: 6, title: "6 метров", subtitle: "только авто" },
+    { value: 8, title: "8 метров", subtitle: "авто + стеллаж" },
+    { value: 10, title: "10 метров", subtitle: "авто + хозблок" },
+    { value: 12, title: "12 метров", subtitle: "авто + мастерская" },
+    { value: 14, title: "14 метров", subtitle: "мастерская + хранение" }
+  ]
+};
 
-console.log("Выбран гараж:",width,"метров");
+function clearBelow(sectionName) {
+  if (sectionName === "type") {
+    stepLength.innerHTML = "";
+    stepRoof.innerHTML = "";
+    stepStyle.innerHTML = "";
+    stepRender.innerHTML = "";
+    stepPrice.innerHTML = "";
+    state.length = null;
+  }
 
-});
+  if (sectionName === "length") {
+    stepRoof.innerHTML = "";
+    stepStyle.innerHTML = "";
+    stepRender.innerHTML = "";
+    stepPrice.innerHTML = "";
+  }
+}
 
+function renderLengthStep() {
+  if (!state.width) return;
+
+  const options = lengthOptions[state.width] || [];
+
+  stepLength.innerHTML = `
+    <section class="tree-section">
+      <h2>Выберите длину гаража</h2>
+      <div class="cards cards-length">
+        ${options.map(item => `
+          <div class="card length-card" data-length="${item.value}">
+            <div class="fake-garage garage-length-${item.value}"></div>
+            <p><strong>${item.title}</strong><br>${item.subtitle}</p>
+          </div>
+        `).join("")}
+      </div>
+    </section>
+  `;
+
+  document.querySelectorAll(".length-card").forEach(card => {
+    card.addEventListener("click", () => {
+      state.length = Number(card.dataset.length);
+      clearBelow("length");
+      renderRoofPreviewStep();
+    });
+  });
+}
+
+function renderRoofPreviewStep() {
+  if (!state.width || !state.length) return;
+
+  stepRoof.innerHTML = `
+    <section class="tree-section tree-result">
+      <h2>Ваш гараж: ${state.width} × ${state.length} м</h2>
+      <div class="result-card">
+        <div class="fake-garage big-preview garage-width-${state.width} garage-length-${state.length}"></div>
+        <p>Следующим шагом здесь появится выбор типа кровли.</p>
+      </div>
+    </section>
+  `;
+}
+
+document.querySelectorAll(".card[data-width]").forEach(card => {
+  card.addEventListener("click", () => {
+    state.width = Number(card.dataset.width);
+    clearBelow("type");
+    renderLengthStep();
+  });
 });
