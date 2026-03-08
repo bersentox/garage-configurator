@@ -8,7 +8,12 @@ document.addEventListener("DOMContentLoaded", function () {
     width: null,
     length: null,
     roof: "back",
-    style: "graphite"
+    style: "graphite",
+    windows: 0,
+    electricity: false,
+    rack: false,
+    partition: false,
+    foundation: false
   };
 
   const lengthOptions = {
@@ -55,23 +60,60 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   ];
 
+  function fmtMoney(value) {
+    return new Intl.NumberFormat("ru-RU").format(Math.round(value)) + " ₽";
+  }
+
+  function getRoofOptions() {
+    if (state.width === 6) {
+      return [
+        { key: "back", title: "Скат назад", cls: "roof-back" },
+        { key: "gable", title: "Двускатная", cls: "roof-gable" }
+      ];
+    }
+
+    return [
+      { key: "back", title: "Скат назад", cls: "roof-back" },
+      { key: "gable", title: "Двускатная", cls: "roof-gable" },
+      { key: "side", title: "Скат вбок", cls: "roof-side" }
+    ];
+  }
+
+  function ensureValidRoof() {
+    if (state.width === 6 && state.roof === "side") {
+      state.roof = "back";
+    }
+  }
+
   function clearBelow(step) {
     if (step === "type") {
       stepLength.innerHTML = "";
       stepConfig.innerHTML = "";
       stepRender.innerHTML = "";
       stepPrice.innerHTML = "";
+
       state.length = null;
       state.roof = "back";
       state.style = "graphite";
+      state.windows = 0;
+      state.electricity = false;
+      state.rack = false;
+      state.partition = false;
+      state.foundation = false;
     }
 
     if (step === "length") {
       stepConfig.innerHTML = "";
       stepRender.innerHTML = "";
       stepPrice.innerHTML = "";
+
       state.roof = "back";
       state.style = "graphite";
+      state.windows = 0;
+      state.electricity = false;
+      state.rack = false;
+      state.partition = false;
+      state.foundation = false;
     }
   }
 
@@ -103,8 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     stepLength.innerHTML = html;
 
-    const lengthCards = document.querySelectorAll(".length-card");
-    lengthCards.forEach(function (card) {
+    document.querySelectorAll(".length-card").forEach(function (card) {
       card.addEventListener("click", function () {
         state.length = Number(card.dataset.length);
         clearBelow("length");
@@ -113,7 +154,47 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function calculatePrice() {
+    if (!state.width || !state.length) {
+      return null;
+    }
+
+    const base = PRICES.base[state.width][state.length];
+    const roofCoefficient = PRICES.roof[state.roof] || 1;
+    const roofAdjusted = base * roofCoefficient;
+
+    const windowsCost = state.windows * PRICES.options.window;
+    const electricityCost = state.electricity ? PRICES.options.electricity : 0;
+    const rackCost = state.rack ? PRICES.options.rack : 0;
+    const partitionCost = state.partition ? PRICES.options.partition : 0;
+    const foundationCost = state.foundation ? PRICES.options.foundation : 0;
+
+    const total =
+      roofAdjusted +
+      windowsCost +
+      electricityCost +
+      rackCost +
+      partitionCost +
+      foundationCost;
+
+    return {
+      base,
+      roofAdjusted,
+      roofExtra: roofAdjusted - base,
+      windowsCost,
+      electricityCost,
+      rackCost,
+      partitionCost,
+      foundationCost,
+      total
+    };
+  }
+
   function renderConfigStep() {
+    ensureValidRoof();
+
+    const roofOptions = getRoofOptions();
+
     stepConfig.innerHTML = `
       <section class="tree-section">
         <h2 class="config-title">Ваш гараж: ${state.width} × ${state.length} м</h2>
@@ -125,26 +206,16 @@ document.addEventListener("DOMContentLoaded", function () {
             <h3 class="subsection-title">Выберите тип крыши</h3>
 
             <div class="cards roof-cards">
-              <button class="card roof-card ${state.roof === "back" ? "is-active" : ""}" type="button" data-roof="back">
-                <div class="fake-garage roof-mini roof-back"></div>
-                <div class="card-body">
-                  <div class="card-title">Скат назад</div>
-                </div>
-              </button>
-
-              <button class="card roof-card ${state.roof === "gable" ? "is-active" : ""}" type="button" data-roof="gable">
-                <div class="fake-garage roof-mini roof-gable"></div>
-                <div class="card-body">
-                  <div class="card-title">Двускатная</div>
-                </div>
-              </button>
-
-              <button class="card roof-card ${state.roof === "side" ? "is-active" : ""}" type="button" data-roof="side">
-                <div class="fake-garage roof-mini roof-side"></div>
-                <div class="card-body">
-                  <div class="card-title">Скат вбок</div>
-                </div>
-              </button>
+              ${roofOptions.map(function (roof) {
+                return `
+                  <button class="card roof-card ${state.roof === roof.key ? "is-active" : ""}" type="button" data-roof="${roof.key}">
+                    <div class="fake-garage roof-mini ${roof.cls}"></div>
+                    <div class="card-body">
+                      <div class="card-title">${roof.title}</div>
+                    </div>
+                  </button>
+                `;
+              }).join("")}
             </div>
           </div>
 
@@ -166,6 +237,37 @@ document.addEventListener("DOMContentLoaded", function () {
               }).join("")}
             </div>
           </div>
+
+          <div class="config-subsection">
+            <h3 class="subsection-title">Дополнительные опции</h3>
+
+            <div class="options-grid">
+              <label class="option-box option-box--count">
+                <span class="option-title">Количество окон</span>
+                <input id="windowsInput" class="option-input" type="number" min="0" max="10" step="1" value="${state.windows}">
+              </label>
+
+              <label class="option-box">
+                <input id="electricityInput" type="checkbox" ${state.electricity ? "checked" : ""}>
+                <span class="option-title">Электрика и свет</span>
+              </label>
+
+              <label class="option-box">
+                <input id="rackInput" type="checkbox" ${state.rack ? "checked" : ""}>
+                <span class="option-title">Встроенный стеллаж</span>
+              </label>
+
+              <label class="option-box">
+                <input id="partitionInput" type="checkbox" ${state.partition ? "checked" : ""}>
+                <span class="option-title">Перегородка с дверью</span>
+              </label>
+
+              <label class="option-box">
+                <input id="foundationInput" type="checkbox" ${state.foundation ? "checked" : ""}>
+                <span class="option-title">Нужен фундамент</span>
+              </label>
+            </div>
+          </div>
         </div>
       </section>
     `;
@@ -175,37 +277,143 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function renderResultBlocks() {
+    const price = calculatePrice();
+
+    if (!price) {
+      stepRender.innerHTML = "";
+      stepPrice.innerHTML = "";
+      return;
+    }
+
+    const doorsCount = state.width === 6 ? 1 : 2;
+
     stepRender.innerHTML = `
       <section class="tree-section">
         <div class="config-panel">
-          <h2 class="config-title">Следующий шаг</h2>
-          <p class="muted-note">
-            Здесь позже появятся кнопка визуализации рендера, итоговая цена,
-            состав комплектации и блок доверия.
-          </p>
+          <h2 class="config-title">Стоимость вашего гаража</h2>
+
+          <div class="price-total">${fmtMoney(price.total)}</div>
+
+          <div class="price-breakdown">
+            <div class="price-row">
+              <span>Базовая стоимость</span>
+              <strong>${fmtMoney(price.base)}</strong>
+            </div>
+
+            <div class="price-row">
+              <span>Тип крыши</span>
+              <strong>${price.roofExtra > 0 ? "+ " + fmtMoney(price.roofExtra) : "в базе"}</strong>
+            </div>
+
+            <div class="price-row">
+              <span>Окна</span>
+              <strong>${price.windowsCost > 0 ? "+ " + fmtMoney(price.windowsCost) : "—"}</strong>
+            </div>
+
+            <div class="price-row">
+              <span>Электрика и свет</span>
+              <strong>${price.electricityCost > 0 ? "+ " + fmtMoney(price.electricityCost) : "—"}</strong>
+            </div>
+
+            <div class="price-row">
+              <span>Встроенный стеллаж</span>
+              <strong>${price.rackCost > 0 ? "+ " + fmtMoney(price.rackCost) : "—"}</strong>
+            </div>
+
+            <div class="price-row">
+              <span>Перегородка с дверью</span>
+              <strong>${price.partitionCost > 0 ? "+ " + fmtMoney(price.partitionCost) : "—"}</strong>
+            </div>
+
+            <div class="price-row">
+              <span>Фундамент</span>
+              <strong>${price.foundationCost > 0 ? "+ " + fmtMoney(price.foundationCost) : "—"}</strong>
+            </div>
+          </div>
         </div>
       </section>
     `;
 
-    stepPrice.innerHTML = "";
+    stepPrice.innerHTML = `
+      <section class="tree-section">
+        <div class="config-panel">
+          <h2 class="config-title">Что входит в стоимость</h2>
+
+          <div class="included-list">
+            <div class="included-item">Металлокаркас</div>
+            <div class="included-item">Сэндвич-панели</div>
+            <div class="included-item">${doorsCount} ворот${doorsCount === 1 ? "а" : ""}</div>
+            <div class="included-item">1 входная дверь</div>
+            <div class="included-item">Водосточная система</div>
+            <div class="included-item">Все основные материалы</div>
+            <div class="included-item">Крепёж и комплектующие</div>
+            <div class="included-item">Доставка материалов</div>
+            <div class="included-item">Монтаж под ключ</div>
+          </div>
+        </div>
+      </section>
+    `;
   }
 
   function bindConfigEvents() {
-    const roofCards = document.querySelectorAll(".roof-card");
-    roofCards.forEach(function (card) {
+    document.querySelectorAll(".roof-card").forEach(function (card) {
       card.addEventListener("click", function () {
         state.roof = card.dataset.roof;
         renderConfigStep();
       });
     });
 
-    const styleCards = document.querySelectorAll(".style-card");
-    styleCards.forEach(function (card) {
+    document.querySelectorAll(".style-card").forEach(function (card) {
       card.addEventListener("click", function () {
         state.style = card.dataset.style;
         renderConfigStep();
       });
     });
+
+    const windowsInput = document.getElementById("windowsInput");
+    if (windowsInput) {
+      windowsInput.addEventListener("input", function () {
+        let value = parseInt(windowsInput.value, 10);
+
+        if (isNaN(value) || value < 0) value = 0;
+        if (value > 10) value = 10;
+
+        state.windows = value;
+        renderResultBlocks();
+      });
+    }
+
+    const electricityInput = document.getElementById("electricityInput");
+    if (electricityInput) {
+      electricityInput.addEventListener("change", function () {
+        state.electricity = electricityInput.checked;
+        renderResultBlocks();
+      });
+    }
+
+    const rackInput = document.getElementById("rackInput");
+    if (rackInput) {
+      rackInput.addEventListener("change", function () {
+        state.rack = rackInput.checked;
+        renderResultBlocks();
+      });
+    }
+
+    const partitionInput = document.getElementById("partitionInput");
+    if (partitionInput) {
+      partitionInput.addEventListener("change", function () {
+        state.partition = partitionInput.checked;
+        renderResultBlocks();
+      });
+    }
+
+    const foundationInput = document.getElementById("foundationInput");
+    if (foundationInput) {
+      foundationInput.addEventListener("change", function () {
+        state.foundation = foundationInput.checked;
+        renderResultBlocks();
+      });
+    }
   }
 
   function bindTypeEvents() {
