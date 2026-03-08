@@ -555,14 +555,20 @@ img {
 .step-num {
   width: 56px;
   height: 72px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
+
+  font-weight: 800;
   font-size: 18px;
   line-height: 1;
-  color: #ffffff;
-  background: linear-gradient(180deg, #22C55E, #16A34A);
+
+  color: #374151;
+
+  background: #EEF1F4;
+  border: 1px solid #D7DCE2;
+
   clip-path: polygon(
     50% 100%,
     0 58%,
@@ -572,9 +578,9 @@ img {
     82% 58%,
     100% 58%
   );
-  box-shadow: 0 14px 28px rgba(22, 163, 74, 0.24);
+
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
   margin-top: 2px;
-  flex: 0 0 auto;
 }
 
 .step-content {
