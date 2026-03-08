@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const stepLength = document.getElementById("step-length");
-  const stepConfig = document.getElementById("step-config");
-  const stepRender = document.getElementById("step-render");
-  const stepPrice = document.getElementById("step-price");
+const stepLength = document.getElementById("step-length");
+const stepConfig = document.getElementById("step-config");
+const stepRender = document.getElementById("step-render");
+const stepPrice = document.getElementById("step-price");
+const stepTrust = document.getElementById("step-trust");
+const stepAction = document.getElementById("step-action");
 
   const state = {
     width: null,
@@ -91,6 +93,8 @@ document.addEventListener("DOMContentLoaded", function () {
       stepConfig.innerHTML = "";
       stepRender.innerHTML = "";
       stepPrice.innerHTML = "";
+      stepTrust.innerHTML = "";
+      stepAction.innerHTML = "";
 
       state.length = null;
       state.roof = "back";
@@ -106,6 +110,8 @@ document.addEventListener("DOMContentLoaded", function () {
       stepConfig.innerHTML = "";
       stepRender.innerHTML = "";
       stepPrice.innerHTML = "";
+      stepTrust.innerHTML = "";
+      stepAction.innerHTML = "";
 
       state.roof = "back";
       state.style = "graphite";
@@ -353,8 +359,144 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
       </section>
     `;
+    renderTrustBlocks();
+    renderActionBlock();
   }
+  
+function renderTrustBlocks() {
+  stepTrust.innerHTML = `
+    <section class="tree-section">
+      <h2 class="config-title">Почему вы можете быть спокойны за результат</h2>
 
+      <div class="trust-grid">
+        <div class="trust-card">
+          <div class="trust-title">Только качественные материалы и комплектующие</div>
+          <div class="trust-text">
+            Используем проверенные панели, металл и крепёж.
+            Контролируем толщину металла, качество окраски и надёжность узлов.
+          </div>
+          <div class="trust-result">
+            Результат: гараж служит годами без перекосов и коррозии.
+          </div>
+        </div>
+
+        <div class="trust-card">
+          <div class="trust-title">Гараж точно встанет на ваш участок</div>
+          <div class="trust-text">
+            Подбираем габариты и посадку под пятно застройки.
+            Учитываем подъезд, уклоны и отступы.
+          </div>
+          <div class="trust-result">
+            Результат: всё открывается, подъезд удобный, посадка продумана.
+          </div>
+        </div>
+
+        <div class="trust-card">
+          <div class="trust-title">Личный прораб контролирует каждый этап</div>
+          <div class="trust-text">
+            Один ответственный человек ведёт объект от замера до сдачи.
+            Контролирует материалы, узлы и качество монтажа.
+          </div>
+          <div class="trust-result">
+            Результат: меньше хаоса, предсказуемые сроки и аккуратная сборка.
+          </div>
+        </div>
+
+        <div class="trust-card">
+          <div class="trust-title">Гарантия и ответственность после сдачи</div>
+          <div class="trust-text">
+            Все условия фиксируются в договоре.
+            Если выявится недочёт — устраняем.
+          </div>
+          <div class="trust-result">
+            Результат: вы не остаётесь один на один с проблемой.
+          </div>
+        </div>
+      </div>
+
+      <div class="steps-panel">
+        <h2 class="config-title">Как проходит заказ — от первого звонка до сдачи</h2>
+
+        <div class="steps-list">
+          <div class="step-line">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-title">Звонок и уточнение задачи</div>
+              <div class="step-text">Размер, место установки, крыша, опции, пожелания по эксплуатации.</div>
+            </div>
+          </div>
+
+          <div class="step-line">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-title">Выезд и замер участка</div>
+              <div class="step-text">Смотрим пятно застройки, подъезд, уклоны, отступы и основание.</div>
+            </div>
+          </div>
+
+          <div class="step-line">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-title">Проект и согласование сметы</div>
+              <div class="step-text">Фиксируем решение, уточняем состав работ и подтверждаем цену.</div>
+            </div>
+          </div>
+
+          <div class="step-line">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <div class="step-title">Подготовка каркаса и комплекта материалов</div>
+              <div class="step-text">Изготавливаем каркас, комплектуем панели, крепёж, доборные элементы и ворота.</div>
+            </div>
+          </div>
+
+          <div class="step-line">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <div class="step-title">Монтаж на объекте</div>
+              <div class="step-text">Собираем конструкцию по чек-листу: каркас, панели, кровля, ворота, узлы и примыкания.</div>
+            </div>
+          </div>
+
+          <div class="step-line">
+            <div class="step-num">6</div>
+            <div class="step-content">
+              <div class="step-title">Проверка и сдача объекта</div>
+              <div class="step-text">Проверяем геометрию, работу ворот, герметичность и итоговое качество сборки.</div>
+            </div>
+          </div>
+
+          <div class="step-line">
+            <div class="step-num">7</div>
+            <div class="step-content">
+              <div class="step-title">Гарантия и поддержка</div>
+              <div class="step-text">Если после сдачи что-то проявится — закрываем вопрос и не уходим от ответственности.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderActionBlock() {
+  stepAction.innerHTML = `
+    <section class="tree-section">
+      <div class="action-panel">
+        <div class="action-overline">Следующий шаг</div>
+        <h2 class="action-title">Получите точный расчёт и проект под ваш участок</h2>
+        <div class="action-text">
+          Проверим конфигурацию, уточним детали по установке и подготовим окончательную смету без серых зон и сюрпризов.
+        </div>
+
+        <div class="action-buttons">
+          <a class="action-btn action-btn--primary" href="#popup:zayavka">Получить точный расчёт</a>
+          <a class="action-btn action-btn--ghost" href="tel:+79969500777">Позвонить: +7 (996) 950-07-77</a>
+        </div>
+      </div>
+    </section>
+  `;
+}
   function bindConfigEvents() {
     document.querySelectorAll(".roof-card").forEach(function (card) {
       card.addEventListener("click", function () {
