@@ -130,28 +130,93 @@ function renderPreviewStep() {
   });
 
 }
-function showRoofResult(roof){
+function showRoofResult(roof) {
+  const roofLabels = {
+    back: "Скат назад",
+    gable: "Двускатная",
+    side: "Скат вбок"
+  };
+
+  const styles = [
+    {
+      key: "graphite",
+      title: "Графит",
+      colors: ["#D9DDE2", "#2B2F36", "#1F232A", "#2B2F36"]
+    },
+    {
+      key: "sand",
+      title: "Песочный",
+      colors: ["#D8C7A6", "#6A4B3B", "#4A342B", "#8B7355"]
+    },
+    {
+      key: "contrast",
+      title: "Контраст",
+      colors: ["#F7F7F5", "#1F232A", "#1F232A", "#F7F7F5"]
+    },
+    {
+      key: "scandi",
+      title: "Сканди",
+      colors: ["#EEEDE8", "#9099A3", "#2B2F36", "#E8EAED"]
+    },
+    {
+      key: "industrial",
+      title: "Индустриальный",
+      colors: ["#BFC5CC", "#3B4046", "#14181F", "#5B6570"]
+    }
+  ];
 
   stepStyle.innerHTML = `
-  
     <section class="tree-section">
-
-      <h2>Крыша выбрана: ${roof}</h2>
+      <h2>Выбранная крыша: ${roofLabels[roof]}</h2>
 
       <div class="result-card">
+        <div class="fake-garage big-preview garage-length-${state.length} roof-preview roof-${roof}"></div>
 
-        <div class="fake-garage big-preview garage-length-${state.length}"></div>
+        <h3 style="margin-top:30px">Выберите стиль</h3>
 
-        <p style="margin-top:20px">
-        Следующим шагом будет выбор цветовой композиции.
-        </p>
-
+        <div class="style-grid">
+          ${styles.map(style => `
+            <div class="style-card" data-style="${style.key}">
+              <div class="style-palette">
+                ${style.colors.map(color => `<span style="background:${color}"></span>`).join("")}
+              </div>
+              <p><strong>${style.title}</strong></p>
+            </div>
+          `).join("")}
+        </div>
       </div>
-
     </section>
-
   `;
 
+  const styleCards = document.querySelectorAll(".style-card");
+  styleCards.forEach(function(card) {
+    card.addEventListener("click", function() {
+      showStyleResult(card.dataset.style, roof);
+    });
+  });
+}
+  function showStyleResult(style, roof) {
+  const styleLabels = {
+    graphite: "Графит",
+    sand: "Песочный",
+    contrast: "Контраст",
+    scandi: "Сканди",
+    industrial: "Индустриальный"
+  };
+
+  stepRender.innerHTML = `
+    <section class="tree-section">
+      <h2>Стиль выбран: ${styleLabels[style]}</h2>
+
+      <div class="result-card">
+        <div class="fake-garage big-preview garage-length-${state.length} roof-preview roof-${roof} style-${style}"></div>
+
+        <p style="margin-top:20px">
+          Следующим шагом здесь будет кнопка визуализации рендера и итоговая цена.
+        </p>
+      </div>
+    </section>
+  `;
 }
   const widthCards = document.querySelectorAll(".card[data-width]");
   widthCards.forEach(function (card) {
