@@ -788,9 +788,9 @@ img {
 /* ===== TRUST HEADER CARD ===== */
 
 .trust-head-card{
-  max-width: 880px;
-  margin: 0 auto 32px auto;
-  padding: 28px 30px;
+  max-width: 760px;
+  margin: 0 auto 26px auto;
+  padding: 20px 22px;
 
   background:#FFFFFF;
   border:1px solid rgba(17,24,39,.06);
@@ -816,16 +816,16 @@ img {
 
 @media (max-width:900px){
   .trust-head-title{
-    font-size:26px;
+    font-size:20px;
   }
 }
 
 @media (max-width:640px){
   .trust-head-card{
-    padding:22px 18px;
+    padding:16px 16px;
   }
 
   .trust-head-title{
-    font-size:22px;
+    font-size:18px;
   }
 }
