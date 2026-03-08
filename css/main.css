@@ -94,3 +94,121 @@ body {
 .big-preview {
   height: 180px;
 }
+/* roof cards */
+.result-card .cards {
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.roof-card {
+  width: 150px;
+  padding: 8px;
+}
+
+.roof-card .fake-garage {
+  height: 64px;
+  margin-bottom: 8px;
+}
+
+/* roof visual difference */
+.roof-card .fake-garage,
+.roof-preview {
+  position: relative;
+}
+
+.roof-card[data-roof="back"] .fake-garage::after,
+.roof-back::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 10px;
+  height: 10px;
+  background: linear-gradient(90deg, #7f8792, #a2aab5);
+}
+
+.roof-card[data-roof="gable"] .fake-garage::after,
+.roof-gable::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  width: 64%;
+  top: 8px;
+  height: 16px;
+  background: #8e96a1;
+  clip-path: polygon(0 100%, 50% 0, 100% 100%);
+}
+
+.roof-card[data-roof="side"] .fake-garage::after,
+.roof-side::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 8px;
+  height: 14px;
+  background: linear-gradient(90deg, #a2aab5, #7f8792);
+  clip-path: polygon(0 100%, 100% 0, 100% 100%, 0 100%);
+}
+
+/* style cards */
+.style-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.style-card {
+  width: 150px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  transition: 0.2s;
+}
+
+.style-card:hover {
+  transform: translateY(-3px);
+}
+
+.style-card p {
+  margin: 10px 0 0;
+  font-size: 14px;
+}
+
+.style-palette {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.style-palette span {
+  display: block;
+  width: 100%;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* big style colors */
+.style-graphite {
+  background: linear-gradient(180deg, #d9dde2 0%, #d9dde2 75%, #c7ccd3 100%);
+}
+
+.style-sand {
+  background: linear-gradient(180deg, #d8c7a6 0%, #d8c7a6 75%, #c7b089 100%);
+}
+
+.style-contrast {
+  background: linear-gradient(180deg, #f7f7f5 0%, #f7f7f5 75%, #e8e8e4 100%);
+}
+
+.style-scandi {
+  background: linear-gradient(180deg, #eeede8 0%, #eeede8 75%, #d9d8d2 100%);
+}
+
+.style-industrial {
+  background: linear-gradient(180deg, #bfc5cc 0%, #bfc5cc 75%, #aab1b8 100%);
+}
