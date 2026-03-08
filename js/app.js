@@ -1,12 +1,14 @@
+alert("JS загружен");
+
 document.addEventListener("DOMContentLoaded", function () {
-  alert("app.js подключен");
+  alert("DOM готов");
 
-  const cards = document.querySelectorAll(".card[data-width]");
-  console.log("cards found:", cards.length);
+  const cards = document.querySelectorAll(".card");
+  alert("Карточек найдено: " + cards.length);
 
-  cards.forEach(function (card) {
-    card.addEventListener("click", function () {
-      alert("клик работает: " + card.dataset.width);
+  cards.forEach(function(card) {
+    card.addEventListener("click", function() {
+      alert("Клик по карточке: " + card.dataset.width);
     });
   });
 });
