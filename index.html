@@ -1,49 +1,53 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Garage Configurator</title>
-
-<link rel="stylesheet" href="css/main.css?v=2">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Garage Configurator</title>
+  <link rel="stylesheet" href="css/main.css?v=10" />
 </head>
-
 <body>
 
-<div id="configurator">
+  <main class="page">
+    <div id="configurator" class="configurator">
 
-<section id="step-type">
-<h2>Выберите тип гаража</h2>
+      <section id="step-type" class="section">
+        <h2 class="section-title">Выберите тип гаража</h2>
 
-<div class="cards">
+        <div class="cards cards-type">
+          <button class="card type-card" type="button" data-width="6">
+            <div class="card-image">
+              <img src="assets/presets/garage-6.webp" alt="Гараж на 1 машину, 6 метров" />
+            </div>
+            <div class="card-body">
+              <div class="card-title">Гараж на 1 машину</div>
+              <div class="card-subtitle">6 метров</div>
+            </div>
+          </button>
 
-<div class="card" data-width="6">
-<img src="assets/presets/garage-6.webp">
-<p>Гараж на 1 машину<br>6 метров</p>
-</div>
+          <button class="card type-card" type="button" data-width="8">
+            <div class="card-image">
+              <img src="assets/presets/garage-8.webp" alt="Гараж на 2 машины, 8 метров" />
+            </div>
+            <div class="card-body">
+              <div class="card-title">Гараж на 2 машины</div>
+              <div class="card-subtitle">8 метров</div>
+            </div>
+          </button>
+        </div>
+      </section>
 
-<div class="card" data-width="8">
-<img src="assets/presets/garage-8.webp">
-<p>Гараж на 2 машины<br>8 метров</p>
-</div>
+      <section id="step-length" class="section"></section>
 
-</div>
+      <section id="step-config" class="section"></section>
 
-</section>
+      <section id="step-render" class="section"></section>
 
-<section id="step-length"></section>
+      <section id="step-price" class="section"></section>
 
-<section id="step-roof"></section>
+    </div>
+  </main>
 
-<section id="step-style"></section>
-
-<section id="step-render"></section>
-
-<section id="step-price"></section>
-
-</div>
-
-<script src="js/app.js?v=2"></script>
-
+  <script src="js/app.js?v=10"></script>
 </body>
 </html>
