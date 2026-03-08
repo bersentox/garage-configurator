@@ -79,18 +79,80 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  function renderPreviewStep() {
-    stepRoof.innerHTML = `
-      <section class="tree-section tree-result">
-        <h2>Ваш гараж: ${state.width} × ${state.length} м</h2>
-        <div class="result-card">
-          <div class="fake-garage big-preview garage-length-${state.length}"></div>
-          <p>Следующим шагом здесь будет выбор типа кровли.</p>
-        </div>
-      </section>
-    `;
-  }
+function renderPreviewStep() {
 
+  stepRoof.innerHTML = `
+    <section class="tree-section tree-result">
+      <h2>Ваш гараж: ${state.width} × ${state.length} м</h2>
+
+      <div class="result-card">
+
+        <div class="fake-garage big-preview garage-length-${state.length}"></div>
+
+        <h3 style="margin-top:30px">Выберите тип крыши</h3>
+
+        <div class="cards">
+
+          <div class="card roof-card" data-roof="back">
+            <div class="fake-garage"></div>
+            <p><strong>Скат назад</strong></p>
+          </div>
+
+          <div class="card roof-card" data-roof="gable">
+            <div class="fake-garage"></div>
+            <p><strong>Двускатная</strong></p>
+          </div>
+
+          <div class="card roof-card" data-roof="side">
+            <div class="fake-garage"></div>
+            <p><strong>Скат вбок</strong></p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+  `;
+
+  const roofCards = document.querySelectorAll(".roof-card");
+
+  roofCards.forEach(function(card){
+
+    card.addEventListener("click", function(){
+
+      const roof = card.dataset.roof;
+
+      showRoofResult(roof);
+
+    });
+
+  });
+
+}
+function showRoofResult(roof){
+
+  stepStyle.innerHTML = `
+  
+    <section class="tree-section">
+
+      <h2>Крыша выбрана: ${roof}</h2>
+
+      <div class="result-card">
+
+        <div class="fake-garage big-preview garage-length-${state.length}"></div>
+
+        <p style="margin-top:20px">
+        Следующим шагом будет выбор цветовой композиции.
+        </p>
+
+      </div>
+
+    </section>
+
+  `;
+
+}
   const widthCards = document.querySelectorAll(".card[data-width]");
   widthCards.forEach(function (card) {
     card.addEventListener("click", function () {
