@@ -172,6 +172,18 @@ a {
   width: 210px;
 }
 
+.cards-length .length-card {
+  width: calc(20% - 12px);
+  min-width: 110px;
+}
+
+.roof-card {
+  width: 100%;
+}
+
+.style-card {
+  width: 100%;
+}
 .cards-length {
   gap: 14px;
 }
@@ -764,10 +776,13 @@ a {
   }
 
   .cards-type .type-card,
-  .cards-length .length-card,
+  .cards-length .length-card {
+    width: calc(50% - 8px);
+  }
+
   .roof-card,
   .style-card {
-    width: calc(50% - 8px);
+    width: 100%;
   }
 
   .options-grid,
@@ -830,7 +845,10 @@ a {
 
 @media (max-width: 420px) {
   .cards-type .type-card,
-  .cards-length .length-card,
+  .cards-length .length-card {
+    width: calc(50% - 8px);
+  }
+
   .roof-card,
   .style-card {
     width: 100%;
@@ -862,14 +880,26 @@ a {
 
 .config-layout {
   display: grid;
-  grid-template-columns: 170px 1fr 220px;
-  gap: 18px;
+  grid-template-columns: 140px minmax(0, 1fr) 180px;
+  gap: 16px;
   align-items: start;
   margin-bottom: 18px;
 }
 
 .config-sidebar {
   display: contents;
+}
+
+.config-layout .config-subsection:first-child {
+  grid-column: 1;
+}
+
+.config-layout .config-main {
+  grid-column: 2;
+}
+
+.config-layout .config-subsection:last-child {
+  grid-column: 3;
 }
 
 .config-main {
@@ -953,6 +983,7 @@ a {
   .config-layout .config-subsection:last-child {
     grid-column: auto;
   }
+}
 
   .roof-cards {
     flex-direction: row;
