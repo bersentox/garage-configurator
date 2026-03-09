@@ -94,13 +94,6 @@ function getRoofOptions() {
   ];
 }
 
-    return [
-      { key: "back", title: "Скат назад", cls: "roof-back" },
-      { key: "gable", title: "Двускатная", cls: "roof-gable" },
-      { key: "side", title: "Скат вбок", cls: "roof-side" }
-    ];
-  }
-
 function ensureValidRoof() {
   if (state.roof !== "back" && state.roof !== "gable") {
     state.roof = "back";
