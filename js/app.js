@@ -47,14 +47,14 @@ function getGarageImageUrl() {
 }
 
 function getLengthCardImageUrl(width, length) {
+  const series = width === 8 ? 8 : 6;
+
   const map = {
-    6: "garage_6_short_back_graphite.webp",
-    8: "garage_6_long_back_graphite.webp",
-    10: "garage_6_long_gable_graphite.webp",
-    12: width === 6
-      ? "garage_6_long_gable_industrial.webp"
-      : "garage_8_long_back_graphite.webp",
-    14: "garage_8_long_gable_graphite.webp"
+    6: `garage_${series}_short_back_graphite.webp`,
+    8: `garage_${series}_long_back_graphite.webp`,
+    10: `garage_${series}_long_gable_graphite.webp`,
+    12: `garage_${series}_long_back_industrial.webp`,
+    14: `garage_${series}_long_gable_industrial.webp`
   };
 
   return IMAGE_BASE + "/" + map[length];
