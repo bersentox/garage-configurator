@@ -39,6 +39,33 @@ function getGarageImageUrl() {
 
   return IMAGE_BASE + "/" + fileName;
 }
+  function getTypeCardImageUrl(width) {
+  if (width === 6) {
+    return IMAGE_BASE + "/garage_6_long_gable_graphite.webp";
+  }
+  return IMAGE_BASE + "/garage_8_long_gable_industrial.webp";
+}
+
+function getLengthCardImageUrl(width, length) {
+  const map = {
+    6: "garage_6_short_back_graphite.webp",
+    8: "garage_6_long_back_graphite.webp",
+    10: "garage_6_long_gable_graphite.webp",
+    12: width === 6
+      ? "garage_6_long_gable_industrial.webp"
+      : "garage_8_long_back_graphite.webp",
+    14: "garage_8_long_gable_graphite.webp"
+  };
+
+  return IMAGE_BASE + "/" + map[length];
+}
+
+function getRoofCardImageUrl(roofKey) {
+  if (roofKey === "gable") {
+    return IMAGE_BASE + "/garage_6_short_gable_graphite.webp";
+  }
+  return IMAGE_BASE + "/garage_6_short_back_graphite.webp";
+}
   const lengthOptions = {
     6: [
       { value: 6, title: "6 метров", subtitle: "только авто" },
