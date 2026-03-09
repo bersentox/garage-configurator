@@ -132,27 +132,18 @@ a {
 
 .card-image {
   width: 100%;
-  height: 92px;
-  border-radius: 14px 14px 0 0;
+  aspect-ratio: 3 / 2;
+  border-radius: 12px;
   overflow: hidden;
-  background: #e9edf1;
-}
-.length-card .card-image,
-.roof-card .card-image {
-  height: 88px;
+  background: #eef1f4;
 }
 
-.length-card .card-image img,
-.roof-card .card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-}
 .card-image img {
   width: 100%;
   height: 100%;
+  display: block;
   object-fit: cover;
+  object-position: center center;
 }
 
 .card-body {
@@ -866,5 +857,22 @@ a {
   .roof-card,
   .style-card {
     width: 100%;
+  }
+}
+.config-row-top {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 18px;
+  align-items: start;
+  margin-bottom: 18px;
+}
+
+.config-subsection--roof,
+.config-subsection--style {
+  margin-bottom: 0;
+}
+@media (max-width: 768px) {
+  .config-row-top {
+    grid-template-columns: 1fr;
   }
 }
