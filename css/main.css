@@ -904,17 +904,11 @@ a {
 
 .config-main {
   min-width: 0;
+  align-self: start;
 }
 
 .config-main .main-preview {
-  width: 100%;
-  aspect-ratio: 3 / 2;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #eef1f4;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.65),
-    inset 0 -20px 40px rgba(17,24,39,.04);
+  margin-top: 0;
 }
 
 .config-main .main-preview-image {
