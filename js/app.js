@@ -247,91 +247,92 @@ function ensureValidRoof() {
     <section class="tree-section">
       <h2 class="config-title">Ваш гараж: ${state.width} × ${state.length} м</h2>
 
-      <div class="config-shell">
-        <div class="config-layout">
-          
-          <div class="config-sidebar">
-            <div class="config-subsection">
-              <h3 class="subsection-title">Выберите тип крыши</h3>
+     <div class="config-shell">
+  <div class="config-layout config-layout--left-controls">
+    
+    <div class="config-left">
+      <div class="config-subsection">
+        <h3 class="subsection-title">Выберите тип крыши</h3>
 
-              <div class="cards roof-cards">
-                ${roofOptions.map(function (roof) {
-                  return `
-                    <button class="card roof-card ${state.roof === roof.key ? "is-active" : ""}" type="button" data-roof="${roof.key}">
-                      <div class="card-image">
-                        <img src="${getRoofCardImageUrl(roof.key)}" alt="${roof.title}">
-                      </div>
-                      <div class="card-body">
-                        <div class="card-title">${roof.title}</div>
-                      </div>
-                    </button>
-                  `;
-                }).join("")}
-              </div>
-            </div>
-
-            <div class="config-subsection">
-              <h3 class="subsection-title">Выберите стиль</h3>
-
-              <div class="style-grid style-grid--sidebar">
-                ${styles.map(function (style) {
-                  return `
-                    <button class="style-card ${state.style === style.key ? "is-active" : ""}" type="button" data-style="${style.key}">
-                      <div class="style-palette">
-                        ${style.colors.map(function (color) {
-                          return `<span style="background:${color}"></span>`;
-                        }).join("")}
-                      </div>
-                      <div class="style-title">${style.title}</div>
-                    </button>
-                  `;
-                }).join("")}
-              </div>
-            </div>
-          </div>
-
-          <div class="config-main">
-            <div class="main-preview">
-              <img
-                class="main-preview-image"
-                src="${getGarageImageUrl()}"
-                alt="Гараж ${state.width} × ${state.length}"
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="config-subsection">
-          <h3 class="subsection-title">Дополнительные опции</h3>
-
-          <div class="options-grid">
-            <label class="option-box option-box--count">
-              <span class="option-title">Количество окон</span>
-              <input id="windowsInput" class="option-input" type="number" min="0" max="10" step="1" value="${state.windows}">
-            </label>
-
-            <label class="option-box">
-              <input id="electricityInput" type="checkbox" ${state.electricity ? "checked" : ""}>
-              <span class="option-title">Электрика и свет</span>
-            </label>
-
-            <label class="option-box">
-              <input id="rackInput" type="checkbox" ${state.rack ? "checked" : ""}>
-              <span class="option-title">Встроенный стеллаж</span>
-            </label>
-
-            <label class="option-box">
-              <input id="partitionInput" type="checkbox" ${state.partition ? "checked" : ""}>
-              <span class="option-title">Перегородка с дверью</span>
-            </label>
-
-            <label class="option-box">
-              <input id="foundationInput" type="checkbox" ${state.foundation ? "checked" : ""}>
-              <span class="option-title">Нужен фундамент</span>
-            </label>
-          </div>
+        <div class="cards roof-cards">
+          ${roofOptions.map(function (roof) {
+            return `
+              <button class="card roof-card ${state.roof === roof.key ? "is-active" : ""}" type="button" data-roof="${roof.key}">
+                <div class="card-image">
+                  <img src="${getRoofCardImageUrl(roof.key)}" alt="${roof.title}">
+                </div>
+                <div class="card-body">
+                  <div class="card-title">${roof.title}</div>
+                </div>
+              </button>
+            `;
+          }).join("")}
         </div>
       </div>
+
+      <div class="config-subsection">
+        <h3 class="subsection-title">Выберите стиль</h3>
+
+        <div class="style-grid style-grid--left">
+          ${styles.map(function (style) {
+            return `
+              <button class="style-card ${state.style === style.key ? "is-active" : ""}" type="button" data-style="${style.key}">
+                <div class="style-palette">
+                  ${style.colors.map(function (color) {
+                    return `<span style="background:${color}"></span>`;
+                  }).join("")}
+                </div>
+                <div class="style-title">${style.title}</div>
+              </button>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    </div>
+
+    <div class="config-right">
+      <div class="main-preview">
+        <img
+          class="main-preview-image"
+          src="${getGarageImageUrl()}"
+          alt="Гараж ${state.width} × ${state.length}"
+        >
+      </div>
+    </div>
+
+  </div>
+
+  <div class="config-subsection">
+    <h3 class="subsection-title">Дополнительные опции</h3>
+
+    <div class="options-grid">
+      <label class="option-box option-box--count">
+        <span class="option-title">Количество окон</span>
+        <input id="windowsInput" class="option-input" type="number" min="0" max="10" step="1" value="${state.windows}">
+      </label>
+
+      <label class="option-box">
+        <input id="electricityInput" type="checkbox" ${state.electricity ? "checked" : ""}>
+        <span class="option-title">Электрика и свет</span>
+      </label>
+
+      <label class="option-box">
+        <input id="rackInput" type="checkbox" ${state.rack ? "checked" : ""}>
+        <span class="option-title">Встроенный стеллаж</span>
+      </label>
+
+      <label class="option-box">
+        <input id="partitionInput" type="checkbox" ${state.partition ? "checked" : ""}>
+        <span class="option-title">Перегородка с дверью</span>
+      </label>
+
+      <label class="option-box">
+        <input id="foundationInput" type="checkbox" ${state.foundation ? "checked" : ""}>
+        <span class="option-title">Нужен фундамент</span>
+      </label>
+    </div>
+  </div>
+</div>
     </section>
   `;
 
