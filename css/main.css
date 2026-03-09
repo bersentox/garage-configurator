@@ -272,14 +272,6 @@ a {
    ROOF CARDS
 ========================= */
 
-.roof-cards {
-  gap: 10px;
-}
-
-.roof-card {
-  width: 138px;
-}
-
 .roof-card .card-body {
   padding: 8px 8px 10px;
 }
@@ -1021,11 +1013,6 @@ a {
   object-position: center center;
 }
 
-.style-grid--left {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
 
 .style-grid--left .style-card {
   width: 100%;
@@ -1214,5 +1201,130 @@ a {
 
   .style-grid--left {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.config-layout--left-controls {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 24px;
+}
+
+.config-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 6px;
+}
+
+.config-right {
+  min-width: 0;
+}
+
+.config-left .subsection-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.roof-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.roof-card {
+  width: 100%;
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.roof-card .card-image {
+  margin-bottom: 6px;
+}
+
+.roof-card .card-title {
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.style-grid--left {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.style-grid--left .style-card {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 12px;
+  min-height: 52px;
+}
+
+.style-grid--left .style-title {
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.style-grid--left .style-palette {
+  margin-bottom: 5px;
+}
+
+.card-image {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eef1f4;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.config-right .main-preview {
+  width: 100%;
+  max-width: 760px;
+  aspect-ratio: 3 / 2;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #eef1f4;
+  margin: 0 0 0 auto;
+}
+
+.config-right .main-preview-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
+}
+
+@media (max-width: 900px) {
+  .config-layout--left-controls {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .roof-cards,
+  .style-grid--left {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .config-right .main-preview {
+    max-width: none;
+    margin: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .roof-cards,
+  .style-grid--left {
+    grid-template-columns: 1fr;
   }
 }
