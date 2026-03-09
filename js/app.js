@@ -175,7 +175,9 @@ function ensureValidRoof() {
     options.forEach(function (item) {
       html += `
         <button class="card length-card" type="button" data-length="${item.value}">
-          <div class="fake-garage preview-small garage-length-${item.value}"></div>
+          <div class="card-image">
+  <img src="${getLengthCardImageUrl(state.width, item.value)}" alt="${item.title}">
+</div>
           <div class="card-body">
             <div class="card-title">${item.title}</div>
             <div class="card-subtitle">${item.subtitle}</div>
