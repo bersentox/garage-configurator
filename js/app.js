@@ -256,43 +256,45 @@ function ensureValidRoof() {
   >
 </div>
 
-          <div class="config-subsection">
-            <h3 class="subsection-title">Выберите тип крыши</h3>
+          <div class="config-row-top">
+  <div class="config-subsection config-subsection--roof">
+    <h3 class="subsection-title">Выберите тип крыши</h3>
 
-            <div class="cards roof-cards">
-              ${roofOptions.map(function (roof) {
-                return `
-                  <button class="card roof-card ${state.roof === roof.key ? "is-active" : ""}" type="button" data-roof="${roof.key}">
-                    <div class="card-image">
-  <img src="${getRoofCardImageUrl(roof.key)}" alt="${roof.title}">
+    <div class="cards roof-cards">
+      ${roofOptions.map(function (roof) {
+        return `
+          <button class="card roof-card ${state.roof === roof.key ? "is-active" : ""}" type="button" data-roof="${roof.key}">
+            <div class="card-image">
+              <img src="${getRoofCardImageUrl(roof.key)}" alt="${roof.title}">
+            </div>
+            <div class="card-body">
+              <div class="card-title">${roof.title}</div>
+            </div>
+          </button>
+        `;
+      }).join("")}
+    </div>
+  </div>
+
+  <div class="config-subsection config-subsection--style">
+    <h3 class="subsection-title">Выберите стиль</h3>
+
+    <div class="style-grid">
+      ${styles.map(function (style) {
+        return `
+          <button class="style-card ${state.style === style.key ? "is-active" : ""}" type="button" data-style="${style.key}">
+            <div class="style-palette">
+              ${style.colors.map(function (color) {
+                return `<span style="background:${color}"></span>`;
+              }).join("")}
+            </div>
+            <div class="style-title">${style.title}</div>
+          </button>
+        `;
+      }).join("")}
+    </div>
+  </div>
 </div>
-                    <div class="card-body">
-                      <div class="card-title">${roof.title}</div>
-                    </div>
-                  </button>
-                `;
-              }).join("")}
-            </div>
-          </div>
-
-          <div class="config-subsection">
-            <h3 class="subsection-title">Выберите стиль</h3>
-
-            <div class="style-grid">
-              ${styles.map(function (style) {
-                return `
-                  <button class="style-card ${state.style === style.key ? "is-active" : ""}" type="button" data-style="${style.key}">
-                    <div class="style-palette">
-                      ${style.colors.map(function (color) {
-                        return `<span style="background:${color}"></span>`;
-                      }).join("")}
-                    </div>
-                    <div class="style-title">${style.title}</div>
-                  </button>
-                `;
-              }).join("")}
-            </div>
-          </div>
 
           <div class="config-subsection">
             <h3 class="subsection-title">Дополнительные опции</h3>
