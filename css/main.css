@@ -177,9 +177,6 @@ a {
   min-width: 110px;
 }
 
-.roof-card {
-  width: 100%;
-}
 
 .style-card {
   width: 100%;
@@ -272,14 +269,9 @@ a {
    ROOF CARDS
 ========================= */
 
-.roof-card .card-body {
-  padding: 8px 8px 10px;
-}
 
-.roof-card .card-title {
-  font-size: 13px;
-  font-weight: 800;
-}
+
+
 
 .roof-mini {
   height: 56px;
@@ -772,10 +764,6 @@ a {
     width: calc(50% - 8px);
   }
 
-  .roof-card,
-  .style-card {
-    width: 100%;
-  }
 
   .options-grid,
   .included-list {
@@ -841,11 +829,9 @@ a {
     width: calc(50% - 8px);
   }
 
-  .roof-card,
-  .style-card {
-    width: 100%;
-  }
+
 }
+
 .config-row-top {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -909,15 +895,7 @@ a {
   grid-column: 3;
 }
 
-.roof-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
 
-.roof-card {
-  width: 100%;
-}
 
 .style-grid.style-grid--sidebar {
   display: grid;
@@ -957,16 +935,6 @@ a {
   }
 }
 
-  .roof-cards {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .roof-card {
-    width: calc(50% - 5px);
-  }
-
-}
 .config-layout .config-subsection {
   margin-top: 0;
   margin-bottom: 0;
@@ -1015,16 +983,6 @@ a {
 
 
 .style-grid--left .style-card {
-  width: 100%;
-}
-
-.roof-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.roof-card {
   width: 100%;
 }
 
