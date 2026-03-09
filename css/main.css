@@ -176,22 +176,7 @@ a {
   gap: 14px;
 }
 
-.cards-length .length-card {
-  width: 158px;
-}
 
-.length-card .card-body {
-  padding: 10px 10px 12px;
-}
-
-.length-card .card-title {
-  font-size: 14px;
-}
-
-.length-card .card-subtitle {
-  font-size: 12px;
-  margin-top: 2px;
-}
 
 /* =========================
    FAKE GARAGE PREVIEWS
