@@ -5,7 +5,7 @@ const stepRender = document.getElementById("step-render");
 const stepPrice = document.getElementById("step-price");
 const stepTrust = document.getElementById("step-trust");
 const stepAction = document.getElementById("step-action");
-
+const IMAGE_BASE = "https://raw.githubusercontent.com/bersentox/garage-configurator/main/images/garages";
   const state = {
     width: null,
     length: null,
@@ -17,7 +17,28 @@ const stepAction = document.getElementById("step-action");
     partition: false,
     foundation: false
   };
+function getLengthType(length) {
+  return length === 6 ? "short" : "long";
+}
 
+function getGarageImageUrl() {
+  if (!state.width || !state.length) return "";
+
+  const lengthType = getLengthType(state.length);
+
+  const fileName =
+    "garage_" +
+    state.width +
+    "_" +
+    lengthType +
+    "_" +
+    state.roof +
+    "_" +
+    state.style +
+    ".webp";
+
+  return IMAGE_BASE + "/" + fileName;
+}
   const lengthOptions = {
     6: [
       { value: 6, title: "6 метров", subtitle: "только авто" },
@@ -206,7 +227,13 @@ const stepAction = document.getElementById("step-action");
         <h2 class="config-title">Ваш гараж: ${state.width} × ${state.length} м</h2>
 
         <div class="config-panel">
-          <div class="fake-garage main-preview garage-length-${state.length} roof-${state.roof} style-${state.style}"></div>
+          <div class="main-preview">
+  <img
+    class="main-preview-image"
+    src="${getGarageImageUrl()}"
+    alt="Гараж ${state.width} × ${state.length}"
+  >
+</div>
 
           <div class="config-subsection">
             <h3 class="subsection-title">Выберите тип крыши</h3>
