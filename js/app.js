@@ -55,45 +55,44 @@ function getGarageImageUrl() {
     ]
   };
 
-  const styles = [
-    {
-      key: "graphite",
-      title: "Графит",
-      colors: ["#D9DDE2", "#2B2F36", "#1F232A", "#2B2F36"]
-    },
-    {
-      key: "sand",
-      title: "Песочный",
-      colors: ["#D8C7A6", "#6A4B3B", "#4A342B", "#8B7355"]
-    },
-    {
-      key: "contrast",
-      title: "Контраст",
-      colors: ["#F7F7F5", "#1F232A", "#1F232A", "#F7F7F5"]
-    },
-    {
-      key: "scandi",
-      title: "Сканди",
-      colors: ["#EEEDE8", "#9099A3", "#2B2F36", "#E8EAED"]
-    },
-    {
-      key: "industrial",
-      title: "Индустриальный",
-      colors: ["#BFC5CC", "#3B4046", "#14181F", "#5B6570"]
-    }
-  ];
+const styles = [
+  {
+    key: "graphite",
+    title: "Графит",
+    colors: ["#D9DDE2", "#2B2F36", "#1F232A", "#2B2F36"]
+  },
+  {
+    key: "sand",
+    title: "Песочный",
+    colors: ["#D8C7A6", "#6A4B3B", "#4A342B", "#8B7355"]
+  },
+  {
+    key: "wood",
+    title: "Под дерево",
+    colors: ["#B78B57", "#8E623C", "#6E4B2F", "#C79A63"]
+  },
+  {
+    key: "chocolate",
+    title: "Шоколад",
+    colors: ["#6B4A3A", "#4A3128", "#2F201A", "#8A5B46"]
+  },
+  {
+    key: "industrial",
+    title: "Индустриальный",
+    colors: ["#BFC5CC", "#3B4046", "#14181F", "#5B6570"]
+  }
+];
 
   function fmtMoney(value) {
     return new Intl.NumberFormat("ru-RU").format(Math.round(value)) + " ₽";
   }
 
-  function getRoofOptions() {
-    if (state.width === 6) {
-      return [
-        { key: "back", title: "Скат назад", cls: "roof-back" },
-        { key: "gable", title: "Двускатная", cls: "roof-gable" }
-      ];
-    }
+function getRoofOptions() {
+  return [
+    { key: "back", title: "Скат назад", cls: "roof-back" },
+    { key: "gable", title: "Двускатная", cls: "roof-gable" }
+  ];
+}
 
     return [
       { key: "back", title: "Скат назад", cls: "roof-back" },
@@ -102,11 +101,11 @@ function getGarageImageUrl() {
     ];
   }
 
-  function ensureValidRoof() {
-    if (state.width === 6 && state.roof === "side") {
-      state.roof = "back";
-    }
+function ensureValidRoof() {
+  if (state.roof !== "back" && state.roof !== "gable") {
+    state.roof = "back";
   }
+}
 
   function clearBelow(step) {
     if (step === "type") {
