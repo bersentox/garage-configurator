@@ -263,7 +263,9 @@ function ensureValidRoof() {
               ${roofOptions.map(function (roof) {
                 return `
                   <button class="card roof-card ${state.roof === roof.key ? "is-active" : ""}" type="button" data-roof="${roof.key}">
-                    <div class="fake-garage roof-mini ${roof.cls}"></div>
+                    <div class="card-image">
+  <img src="${getRoofCardImageUrl(roof.key)}" alt="${roof.title}">
+</div>
                     <div class="card-body">
                       <div class="card-title">${roof.title}</div>
                     </div>
