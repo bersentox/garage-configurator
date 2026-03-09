@@ -137,7 +137,18 @@ a {
   overflow: hidden;
   background: #e9edf1;
 }
+.length-card .card-image,
+.roof-card .card-image {
+  height: 88px;
+}
 
+.length-card .card-image img,
+.roof-card .card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
 .card-image img {
   width: 100%;
   height: 100%;
