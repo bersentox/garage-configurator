@@ -742,10 +742,6 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .main-preview {
-    height: 196px;
-  }
-
   .action-title {
     font-size: 21px;
   }
@@ -772,10 +768,6 @@ a {
   .roof-card,
   .style-card {
     width: calc(50% - 8px);
-  }
-
-  .main-preview {
-    height: 166px;
   }
 
   .options-grid,
@@ -870,25 +862,49 @@ a {
 
 .config-layout {
   display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 20px;
+  grid-template-columns: 170px 1fr 220px;
+  gap: 18px;
   align-items: start;
   margin-bottom: 18px;
 }
 
 .config-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  display: contents;
 }
 
 .config-main {
   min-width: 0;
 }
 
-.style-grid--sidebar {
-  grid-template-columns: 1fr;
-  gap: 10px;
+.config-main .main-preview {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #eef1f4;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.65),
+    inset 0 -20px 40px rgba(17,24,39,.04);
+}
+
+.config-main .main-preview-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.config-layout .config-subsection:first-child {
+  grid-column: 1;
+}
+
+.config-layout .config-main {
+  grid-column: 2;
+}
+
+.config-layout .config-subsection:last-child {
+  grid-column: 3;
 }
 
 .roof-cards {
@@ -897,20 +913,18 @@ a {
   gap: 10px;
 }
 
-.main-preview {
+.roof-card {
   width: 100%;
-  aspect-ratio: 3 / 2;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #eef1f4;
 }
 
-.main-preview-image {
+.style-grid.style-grid--sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.style-grid--sidebar .style-card {
   width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  object-position: center center;
 }
 
 .card-image {
@@ -934,11 +948,22 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .style-grid--sidebar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .config-layout .config-subsection:first-child,
+  .config-layout .config-main,
+  .config-layout .config-subsection:last-child {
+    grid-column: auto;
   }
 
   .roof-cards {
     flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .roof-card {
+    width: calc(50% - 5px);
+  }
+
+  .style-grid.style-grid--sidebar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
