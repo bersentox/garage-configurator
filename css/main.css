@@ -992,3 +992,11 @@ a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+.config-layout .config-subsection {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.config-layout .subsection-title {
+  margin-top: 0;
+}
