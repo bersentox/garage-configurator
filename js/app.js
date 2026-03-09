@@ -59,27 +59,27 @@ const styles = [
   {
     key: "graphite",
     title: "Графит",
-    colors: ["#D9DDE2", "#2B2F36", "#1F232A", "#2B2F36"]
+    colors: ["#d7dce2","#2b2f36","#1e2228","#2b2f36"]
   },
   {
     key: "sand",
     title: "Песочный",
-    colors: ["#D8C7A6", "#6A4B3B", "#4A342B", "#8B7355"]
+    colors: ["#d8c7a6","#6a4b3b","#4a342b","#8b7355"]
   },
   {
     key: "wood",
     title: "Под дерево",
-    colors: ["#B78B57", "#8E623C", "#6E4B2F", "#C79A63"]
+    colors: ["#b98a5a","#8e623c","#6f4a2d","#c79a63"]
   },
   {
     key: "chocolate",
     title: "Шоколад",
-    colors: ["#6B4A3A", "#4A3128", "#2F201A", "#8A5B46"]
+    colors: ["#6b4a3a","#4a3128","#2f201a","#8a5b46"]
   },
   {
     key: "industrial",
     title: "Индустриальный",
-    colors: ["#BFC5CC", "#3B4046", "#14181F", "#5B6570"]
+    colors: ["#bfc5cc","#3b4046","#14181f","#5b6570"]
   }
 ];
 
