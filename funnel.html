@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Garage Configurator — Новый лендинг</title>
+  <link rel="stylesheet" href="css/funnel.css" />
+</head>
+<body>
+  <header class="hero" id="hero">
+    <div class="container hero__content">
+      <p class="hero__eyebrow">Новый лендинг</p>
+      <h1 class="hero__title">Соберите гараж под ваш участок за несколько шагов</h1>
+      <p class="hero__description">Структура новой воронки: быстрый выбор конфигурации, прозрачная цена и понятный следующий шаг.</p>
+      <a class="btn btn--primary" href="#funnel-configurator">Начать конфигурацию</a>
+    </div>
+    <div class="hero__visual" aria-hidden="true">
+      <img src="images/garages/garage_8_long_gable_graphite.webp" alt="" />
+    </div>
+  </header>
+
+  <main>
+    <section class="section funnel-configurator" id="funnel-configurator" aria-labelledby="configurator-title">
+      <div class="container">
+        <h2 id="configurator-title">Пошаговый конфигуратор</h2>
+
+        <div class="funnel-wizard" data-funnel-configurator>
+          <p class="funnel-progress" id="funnelProgress">Шаг 1 из 4</p>
+
+          <article class="funnel-step-card" id="funnelStepCard" aria-live="polite">
+            <h3 id="funnelStepTitle">Шаг 1 — Тип гаража</h3>
+            <p id="funnelStepDescription">Выберите формат гаража под ваш сценарий.</p>
+            <div class="funnel-options" id="funnelOptions"></div>
+          </article>
+
+          <article class="funnel-summary" id="funnelSummary" hidden>
+            <h3>Ваша конфигурация</h3>
+            <ul id="funnelSummaryList"></ul>
+            <p class="funnel-summary__price">Примерная стоимость: <strong id="funnelSummaryPrice">—</strong></p>
+            <button type="button" class="btn btn--secondary" id="funnelRestartBtn">Изменить выбор</button>
+          </article>
+        </div>
+      </div>
+      <script type="module" src="js/funnel-configurator.js"></script>
+    </section>
+
+    <section class="section result" id="result" aria-labelledby="result-title">
+      <div class="container result__content">
+        <h2 id="result-title">Примерный расчёт стоимости</h2>
+        <p class="result__price">от 900 000 ₽</p>
+        <p class="result__note">Итоговая стоимость уточняется после финальной конфигурации и замера участка.</p>
+        <a class="btn btn--primary" href="#final-cta">Получить точный расчёт</a>
+      </div>
+    </section>
+
+    <section class="section trust" id="trust" aria-labelledby="trust-title">
+      <div class="container">
+        <h2 id="trust-title">Почему вы можете быть спокойны</h2>
+        <div class="trust-grid">
+          <article class="trust-card">
+            <h3>Проверенные материалы</h3>
+            <p>Используем качественные комплектующие и фиксируем спецификацию в договоре.</p>
+          </article>
+          <article class="trust-card">
+            <h3>Понятный процесс</h3>
+            <p>Каждый этап работ согласовывается заранее. Вы понимаете, что и когда происходит.</p>
+          </article>
+          <article class="trust-card">
+            <h3>Контроль качества</h3>
+            <p>Проводим проверку узлов и выдаём рекомендации по эксплуатации.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section education" id="education" aria-labelledby="education-title">
+      <div class="container">
+        <h2 id="education-title">Мини-статьи перед выбором</h2>
+        <div class="education-grid">
+          <article class="education-card">
+            <h3>Как выбрать длину гаража</h3>
+            <p>Короткий материал-заглушка: здесь будет практическая статья с примерами сценариев.</p>
+            <a href="#" aria-label="Читать статью о выборе длины">Читать →</a>
+          </article>
+          <article class="education-card">
+            <h3>Какой тип крыши выбрать</h3>
+            <p>Короткий материал-заглушка: сравнение типов крыш и их влияния на эксплуатацию.</p>
+            <a href="#" aria-label="Читать статью о типах крыши">Читать →</a>
+          </article>
+          <article class="education-card">
+            <h3>Что влияет на итоговую цену</h3>
+            <p>Короткий материал-заглушка: базовые факторы формирования сметы.</p>
+            <a href="#" aria-label="Читать статью о цене">Читать →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section final-cta" id="final-cta" aria-labelledby="final-cta-title">
+      <div class="container final-cta__content">
+        <h2 id="final-cta-title">Готовы перейти к точному проекту?</h2>
+        <p>Оставьте заявку, и мы подготовим финальную конфигурацию под ваш участок.</p>
+        <a class="btn btn--secondary" href="#">Оставить заявку</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="footer">
+    <div class="container footer__content">
+      <p class="footer__brand">garage-configurator</p>
+      <nav aria-label="Ссылки в подвале">
+        <ul class="footer__links">
+          <li><a href="#">О компании</a></li>
+          <li><a href="#">Контакты</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
