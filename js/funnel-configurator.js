@@ -37,11 +37,29 @@ const STEPS = [
   },
   {
     key: "usage",
-    title: "Шаг 2 — Назначение",
-    description: "Укажите, как планируете использовать пространство.",
+    title: "Как вы планируете использовать гараж?",
+    description: "Выберите планировку, которая лучше подходит под ваш сценарий.",
     options: [
-      { value: "car-storage", label: "Car + storage", priceDelta: 80000 },
-      { value: "car-storage-utility", label: "Car + storage + utility block", priceDelta: 220000 }
+      {
+        value: "car-storage",
+        label: "Авто + хранение",
+        descriptionLines: [
+          "гараж 8 м в длину",
+          "место под автомобиль",
+          "стеллажи вдоль стены"
+        ],
+        priceDelta: 80000
+      },
+      {
+        value: "car-utility",
+        label: "Авто + хозблок",
+        descriptionLines: [
+          "гараж 8 м",
+          "перегородка с дверью",
+          "отдельное помещение от 2 м"
+        ],
+        priceDelta: 220000
+      }
     ]
   },
   {
@@ -194,6 +212,29 @@ if (wizardRoot) {
     return button;
   }
 
+  function createUsageOptionCard(option) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "funnel-option funnel-option--usage";
+
+    const title = document.createElement("span");
+    title.className = "funnel-option__title";
+    title.textContent = option.label;
+
+    const description = document.createElement("span");
+    description.className = "funnel-option__description";
+    description.textContent = option.descriptionLines.join("\n");
+
+    button.appendChild(title);
+    button.appendChild(description);
+
+    button.addEventListener("click", function () {
+      selectOption(option.value);
+    });
+
+    return button;
+  }
+
   function renderStyleCategoryOptions() {
     stepTitleEl.textContent = "Какой характер гаража вам ближе?";
     stepDescriptionEl.textContent = "Сначала выберите категорию оттенков, затем конкретный стиль.";
@@ -241,6 +282,7 @@ if (wizardRoot) {
     stepDescriptionEl.textContent = "Категория: " + selectedCategory.title + ".";
 
     optionsEl.classList.remove("funnel-options--style-categories");
+    optionsEl.classList.remove("funnel-options--usage");
     optionsEl.innerHTML = "";
 
     selectedCategory.styles.forEach(function (styleOption) {
@@ -279,6 +321,7 @@ if (wizardRoot) {
     progressEl.textContent = "Шаг " + (state.currentStepIndex + 1) + " из " + STEPS.length;
 
     optionsEl.classList.remove("funnel-options--style-categories");
+    optionsEl.classList.remove("funnel-options--usage");
 
     if (step.key === "style") {
       if (state.styleSubstep === "category") {
@@ -293,6 +336,14 @@ if (wizardRoot) {
     stepDescriptionEl.textContent = step.description;
 
     optionsEl.innerHTML = "";
+
+    if (step.key === "usage") {
+      optionsEl.classList.add("funnel-options--usage");
+      step.options.forEach(function (option) {
+        optionsEl.appendChild(createUsageOptionCard(option));
+      });
+      return;
+    }
 
     step.options.forEach(function (option) {
       optionsEl.appendChild(createRegularOptionButton(option));
