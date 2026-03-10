@@ -23,25 +23,25 @@
     <section class="section funnel-configurator" id="funnel-configurator" aria-labelledby="configurator-title">
       <div class="container">
         <h2 id="configurator-title">Пошаговый конфигуратор</h2>
-        <ol class="funnel-steps" aria-label="Шаги конфигурации">
-          <li class="funnel-step">
-            <h3>Шаг 1. Тип гаража</h3>
-            <p>Выберите формат: на 1 или 2 машины.</p>
-          </li>
-          <li class="funnel-step">
-            <h3>Шаг 2. Размеры</h3>
-            <p>Укажите ширину и длину, подходящие под участок.</p>
-          </li>
-          <li class="funnel-step">
-            <h3>Шаг 3. Крыша и стиль</h3>
-            <p>Подберите тип крыши и внешний вид.</p>
-          </li>
-          <li class="funnel-step">
-            <h3>Шаг 4. Дополнительные опции</h3>
-            <p>Добавьте окна, электрику и другие элементы.</p>
-          </li>
-        </ol>
+
+        <div class="funnel-wizard" data-funnel-configurator>
+          <p class="funnel-progress" id="funnelProgress">Шаг 1 из 4</p>
+
+          <article class="funnel-step-card" id="funnelStepCard" aria-live="polite">
+            <h3 id="funnelStepTitle">Шаг 1 — Тип гаража</h3>
+            <p id="funnelStepDescription">Выберите формат гаража под ваш сценарий.</p>
+            <div class="funnel-options" id="funnelOptions"></div>
+          </article>
+
+          <article class="funnel-summary" id="funnelSummary" hidden>
+            <h3>Ваша конфигурация</h3>
+            <ul id="funnelSummaryList"></ul>
+            <p class="funnel-summary__price">Примерная стоимость: <strong id="funnelSummaryPrice">—</strong></p>
+            <button type="button" class="btn btn--secondary" id="funnelRestartBtn">Изменить выбор</button>
+          </article>
+        </div>
       </div>
+      <script type="module" src="js/funnel-configurator.js"></script>
     </section>
 
     <section class="section result" id="result" aria-labelledby="result-title">

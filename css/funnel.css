@@ -224,3 +224,66 @@ h2 {
     font-size: 1.6rem;
   }
 }
+
+.funnel-wizard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+
+.funnel-progress {
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.funnel-step-card h3,
+.funnel-summary h3 {
+  margin-bottom: 8px;
+}
+
+.funnel-step-card p {
+  color: var(--muted);
+}
+
+.funnel-options {
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.funnel-option {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text);
+  min-height: 48px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 10px 14px;
+  text-align: left;
+}
+
+.funnel-option:hover {
+  border-color: #93c5fd;
+}
+
+.funnel-summary ul {
+  margin: 12px 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 6px;
+}
+
+.funnel-summary__price {
+  margin-bottom: 16px;
+}
+
+@media (max-width: 900px) {
+  .funnel-options {
+    grid-template-columns: 1fr;
+  }
+}
