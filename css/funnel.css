@@ -282,8 +282,75 @@ h2 {
   margin-bottom: 16px;
 }
 
+.funnel-options--style-categories {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.funnel-style-category {
+  display: grid;
+  grid-template-rows: 190px auto;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.funnel-style-category:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.12);
+  border-color: #93c5fd;
+}
+
+.funnel-style-category:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.funnel-style-category__image-wrap {
+  display: block;
+  background: #dbe4ee;
+}
+
+.funnel-style-category__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.funnel-style-category__body {
+  display: grid;
+  gap: 8px;
+  padding: 14px 14px 16px;
+}
+
+.funnel-style-category__title {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.funnel-style-category__list {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 @media (max-width: 900px) {
   .funnel-options {
     grid-template-columns: 1fr;
+  }
+
+  .funnel-options--style-categories {
+    grid-template-columns: 1fr;
+  }
+
+  .funnel-style-category {
+    grid-template-rows: 170px auto;
   }
 }
