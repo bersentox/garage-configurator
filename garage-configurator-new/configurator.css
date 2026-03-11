@@ -1,0 +1,41 @@
+.configurator-step {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.configurator-layout {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.configurator-layout label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.configurator-layout select {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.state-output {
+  margin: 14px 0 0;
+  background: #0f172a;
+  color: #dbeafe;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+@media (max-width: 700px) {
+  .configurator-layout {
+    grid-template-columns: 1fr;
+  }
+}
