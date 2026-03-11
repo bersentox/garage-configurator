@@ -1027,7 +1027,7 @@ a {
   height: 100%;
   object-fit: cover;
   transform: translateY(0);
-  transition: transform 4s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 5s cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
   pointer-events: none;
 }
@@ -1035,7 +1035,7 @@ a {
 .garage-front { z-index: 4; }
 
 .garage-scene.open .garage-gate {
-  transform: translateY(-78%);
+  transform: translateY(-65%);
 }
 
 .garage-remote {
