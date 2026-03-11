@@ -641,21 +641,21 @@ function renderActionBlock() {
   const garageScene = document.getElementById("garageScene");
   const garageRemoteButton = document.getElementById("garageRemoteButton");
   const garageGateSound = document.getElementById("garageGateSound");
+  
+if (garageScene && garageRemoteButton) {
+  garageRemoteButton.addEventListener("click", function () {
 
-  if (garageScene && garageRemoteButton) {
-    garageRemoteButton.addEventListener("click", function () {
-      const isOpen = garageScene.classList.contains("open");
+    const isOpen = garageScene.classList.contains("open");
 
-      if (!isOpen && garageGateSound) {
-        garageGateSound.currentTime = 0;
-        garageGateSound.volume = 0.6;
-        garageGateSound.play();
-      }
+    if (!isOpen && garageGateSound) {
+      garageGateSound.currentTime = 0;
+      garageGateSound.volume = 0.6;
+      garageGateSound.play();
+    }
 
-      garageScene.classList.add("open");
-      garageRemoteButton.setAttribute("aria-pressed", "true");
-    });
-  }
-
+    garageScene.classList.toggle("open");
+    garageRemoteButton.setAttribute("aria-pressed", !isOpen);
+  });
+}
   bindTypeEvents();
 });
