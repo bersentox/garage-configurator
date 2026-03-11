@@ -200,10 +200,10 @@
   appearance: none;
   -webkit-appearance: none;
   position: absolute;
-  bottom: 80px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 8;
+  z-index: 50;
   width: 58px;
   min-height: 88px;
   margin: 0;
