@@ -1063,7 +1063,7 @@ a {
   gap: 6px;
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity .6s ease, transform .6s ease;
+  transition: opacity .6s ease 5s, transform .6s ease 5s;
   pointer-events: none;
 }
 
