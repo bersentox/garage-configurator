@@ -53,6 +53,12 @@
   z-index: 2;
 }
 
+.hero-scene {
+  width: 95%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
 .garage-scene {
   position: relative;
   z-index: 1;
