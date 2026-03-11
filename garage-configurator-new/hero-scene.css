@@ -33,11 +33,25 @@
   font-size: clamp(16px, 1.2vw, 20px);
 }
 
+.hero-benefit {
+  margin: 2px 0 0;
+  color: #d8e6ff;
+  font-size: clamp(14px, 1vw, 17px);
+  opacity: 0.94;
+}
+
 .hero-scene {
   position: relative;
   width: 96%;
   max-width: 1600px;
   margin: 0 auto;
+}
+
+.hero-scene img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
 }
 
 .hero-scene::after {
@@ -176,11 +190,33 @@
 }
 
 .garage-scene.open .garage-gate {
-  transform: translateY(-27%);
+  border: 1px solid rgba(215, 255, 230, 0.68);
+  background: radial-gradient(circle at 35% 30%, #e7ffef 0%, #76e6a2 45%, #2a9655 100%);
+  box-shadow: 0 0 8px rgba(94, 218, 143, 0.5), 0 0 16px rgba(60, 175, 104, 0.3);
+  animation: remoteLedPulse 2s ease-in-out infinite;
+  background: radial-gradient(circle at 35% 30%, #eefff3 0%, #86f0ae 45%, #35b164 100%);
+  box-shadow: 0 0 10px rgba(63, 184, 109, 0.78), 0 0 18px rgba(63, 184, 109, 0.45);
+@keyframes remoteLedPulse {
+  0%,
+  100% {
+    opacity: 0.78;
+    filter: brightness(0.95);
+    box-shadow: 0 0 7px rgba(94, 218, 143, 0.46), 0 0 14px rgba(60, 175, 104, 0.28);
+  }
+
+  50% {
+    opacity: 1;
+    filter: brightness(1.08);
+    box-shadow: 0 0 11px rgba(108, 236, 160, 0.68), 0 0 22px rgba(74, 198, 121, 0.42);
+  }
 }
 
-.garage-remote {
-  position: absolute;
+@media (prefers-reduced-motion: reduce) {
+  .garage-remote-dot {
+    animation: none;
+  }
+}
+
   bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
@@ -199,10 +235,52 @@
   cursor: pointer;
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.45), 0 0 14px rgba(126, 169, 255, 0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: remotePulse 2.6s ease-in-out infinite;
 }
 
 .garage-remote:hover {
   transform: translateX(-50%) translateY(-2px);
+
+.garage-remote-hint {
+  position: absolute;
+  bottom: 176px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 219, 255, 0.4);
+  background: rgba(12, 20, 34, 0.68);
+  color: #deebff;
+  font-size: clamp(11px, 0.8vw, 13px);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(4, 10, 22, 0.35);
+}
+
+.hero-configurator-line {
+  margin: 4px 0 0;
+  color: rgba(222, 235, 255, 0.76);
+  font-size: clamp(12px, 0.9vw, 15px);
+  letter-spacing: 0.04em;
+}
+
+
+  .garage-remote-hint {
+    bottom: 144px;
+  }
+
+  .garage-remote-hint {
+    bottom: 114px;
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .hero-configurator-line {
+    letter-spacing: 0.02em;
+  }
   box-shadow: 0 16px 26px rgba(15, 23, 42, 0.5), 0 0 18px rgba(126, 169, 255, 0.52);
 }
 
