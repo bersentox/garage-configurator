@@ -1051,10 +1051,8 @@ a {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity .6s ease 5s, transform .6s ease 5s;
-  pointer-events: none;
+  pointer-events: auto;
+  z-index: 2;
 }
 
 .garage-choice {
@@ -1084,11 +1082,6 @@ a {
 .garage-choice:focus-visible {
   outline: 2px solid #9bbcff;
   outline-offset: 2px;
-}
-.garage-scene.open .garage-interior-buttons {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: none;
 }
 
 .garage-scene.open .garage-gate {
