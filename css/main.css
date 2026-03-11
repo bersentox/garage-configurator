@@ -1035,14 +1035,14 @@ a {
 .garage-front { z-index: 4; }
 
 
-.garage-interior-ui {
-  position: absolute;
-  left: 31%;
-  top: 54%;
-  width: 38%;
-  height: 14%;
-  z-index: 6;
-  pointer-events: none;
+.garage-choice {
+  min-width: 130px;
+  max-width: 150px;
+
+  padding: 8px 10px;
+
+  font-size: 11px;
+  line-height: 1.2;
 }
 
 .garage-interior-buttons {
@@ -1051,7 +1051,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 6px;
   opacity: 0;
   transform: translateY(12px);
   transition: opacity .6s ease, transform .6s ease;
@@ -1086,11 +1086,10 @@ a {
   outline: 2px solid #9bbcff;
   outline-offset: 2px;
 }
-
 .garage-scene.open .garage-interior-buttons {
   opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .garage-scene.open .garage-gate {
