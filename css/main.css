@@ -1010,16 +1010,29 @@ a {
 
 .garage-background { z-index: 1; }
 .garage-interior { z-index: 2; }
+
+.garage-gate-mask {
+  position: absolute;
+  top: 41%;
+  left: 25.1%;
+  width: 49.8%;
+  height: 38%;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .garage-gate {
   z-index: 3;
   transform: translateY(0);
-  transition: transform 1.35s ease-in-out;
+  transition: transform 3s cubic-bezier(0.25, 0.8, 0.25, 1);
   will-change: transform;
 }
+
 .garage-front { z-index: 4; }
 
 .garage-scene.open .garage-gate {
-  transform: translateY(-100%);
+  transform: translateY(-90%);
 }
 
 .garage-remote {
