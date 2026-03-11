@@ -22,11 +22,26 @@
           </div>
           <img class="garage-layer garage-front" src="images/garages/scene/front.webp" alt="Передний план гаража" />
 
-          <button id="garageRemoteButton" class="garage-remote" type="button" aria-label="Открыть или закрыть ворота" aria-pressed="false">
+
+          <button id="garageRemoteButton" class="garage-remote garage-start-button start-button" type="button" aria-label="Открыть ворота" aria-pressed="false">
             <span class="garage-remote-dot" aria-hidden="true"></span>
             <span class="garage-remote-line" aria-hidden="true"></span>
-            <span class="garage-remote-label">OPEN</span>
+            <span class="garage-remote-label">🏠</span>
           </button>
+
+          <div class="garage-interior-ui" aria-hidden="true">
+            <div class="garage-interior-buttons">
+              <button class="garage-choice one" type="button">
+                ГАРАЖ НА 1 МАШИНУ<br>
+                6 М ШИРИНА
+              </button>
+
+              <button class="garage-choice two" type="button">
+                ГАРАЖ НА 2 МАШИНЫ<br>
+                8 М ШИРИНА
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 

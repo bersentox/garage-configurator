@@ -644,19 +644,16 @@ function renderActionBlock() {
 
   if (garageScene && garageRemoteButton) {
     garageRemoteButton.addEventListener("click", function () {
-      if (garageGateSound) {
+      const isOpen = garageScene.classList.contains("open");
+
+      if (!isOpen && garageGateSound) {
         garageGateSound.currentTime = 0;
         garageGateSound.volume = 0.6;
         garageGateSound.play();
       }
 
-      const isOpen = garageScene.classList.toggle("open");
-      garageRemoteButton.setAttribute("aria-pressed", String(isOpen));
-      const buttonLabel = isOpen ? "CLOSE" : "OPEN";
-      const labelNode = garageRemoteButton.querySelector(".garage-remote-label");
-      if (labelNode) {
-        labelNode.textContent = buttonLabel;
-      }
+      garageScene.classList.add("open");
+      garageRemoteButton.setAttribute("aria-pressed", "true");
     });
   }
 
