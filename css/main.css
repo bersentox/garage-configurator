@@ -1010,16 +1010,34 @@ a {
 
 .garage-background { z-index: 1; }
 .garage-interior { z-index: 2; }
-.garage-gate {
+
+.garage-gate-mask {
+  position: absolute;
+  top: 41%;
+  left: 25.1%;
+  width: 49.8%;
+  height: 38%;
   z-index: 3;
-  transform: translateY(0);
-  transition: transform 1.35s ease-in-out;
-  will-change: transform;
+  overflow: hidden;
+  pointer-events: none;
 }
+
+.garage-gate {
+  position: absolute;
+  top: -107.895%;
+  left: -50.402%;
+  width: 200.803%;
+  height: 263.158%;
+  transform: translateY(0);
+  transition: transform 3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  will-change: transform;
+  pointer-events: none;
+}
+
 .garage-front { z-index: 4; }
 
 .garage-scene.open .garage-gate {
-  transform: translateY(-100%);
+  transform: translateY(-90%);
 }
 
 .garage-remote {
