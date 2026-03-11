@@ -1016,7 +1016,7 @@ a {
   inset: 0;
   z-index: 3;
   overflow: hidden;
-  clip-path: inset(36.585% 21.601% 18.244% 21.145%);
+  clip-path: inset(36.585% 21.601% 28.244% 21.145%);
   pointer-events: none;
 }
 
