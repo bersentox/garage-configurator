@@ -1035,7 +1035,7 @@ a {
 .garage-front { z-index: 4; }
 
 .garage-scene.open .garage-gate {
-  transform: translateY(-24%);
+  transform: translateY(-30%);
 }
 
 .garage-remote {
