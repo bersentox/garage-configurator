@@ -190,11 +190,33 @@
 }
 
 .garage-scene.open .garage-gate {
-  transform: translateY(-27%);
+  border: 1px solid rgba(215, 255, 230, 0.68);
+  background: radial-gradient(circle at 35% 30%, #e7ffef 0%, #76e6a2 45%, #2a9655 100%);
+  box-shadow: 0 0 8px rgba(94, 218, 143, 0.5), 0 0 16px rgba(60, 175, 104, 0.3);
+  animation: remoteLedPulse 2s ease-in-out infinite;
+  background: radial-gradient(circle at 35% 30%, #eefff3 0%, #86f0ae 45%, #35b164 100%);
+  box-shadow: 0 0 10px rgba(63, 184, 109, 0.78), 0 0 18px rgba(63, 184, 109, 0.45);
+@keyframes remoteLedPulse {
+  0%,
+  100% {
+    opacity: 0.78;
+    filter: brightness(0.95);
+    box-shadow: 0 0 7px rgba(94, 218, 143, 0.46), 0 0 14px rgba(60, 175, 104, 0.28);
+  }
+
+  50% {
+    opacity: 1;
+    filter: brightness(1.08);
+    box-shadow: 0 0 11px rgba(108, 236, 160, 0.68), 0 0 22px rgba(74, 198, 121, 0.42);
+  }
 }
 
-.garage-remote {
-  position: absolute;
+@media (prefers-reduced-motion: reduce) {
+  .garage-remote-dot {
+    animation: none;
+  }
+}
+
   bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
