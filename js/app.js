@@ -647,11 +647,17 @@ if (garageScene && garageRemoteButton) {
 
     const isOpen = garageScene.classList.contains("open");
 
-    if (!isOpen && garageGateSound) {
+    if (garageGateSound) {
       garageGateSound.currentTime = 0;
       garageGateSound.volume = 0.6;
       garageGateSound.play();
     }
+
+    garageScene.classList.toggle("open");
+    garageRemoteButton.setAttribute("aria-pressed", !isOpen);
+
+  });
+}
 
     garageScene.classList.toggle("open");
     garageRemoteButton.setAttribute("aria-pressed", !isOpen);
