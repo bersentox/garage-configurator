@@ -1010,14 +1010,11 @@ a {
 
 .garage-background { z-index: 1; }
 .garage-interior { z-index: 2; }
-.garage-interior-buttons { z-index: 3; }
-.garage-gate-mask { z-index: 4; }
-.garage-front { z-index: 5; }
 
 .garage-gate-mask {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 4;
   overflow: hidden;
   clip-path: inset(36.585% 21.601% 28.244% 21.145%);
   pointer-events: none;
@@ -1035,15 +1032,13 @@ a {
   pointer-events: none;
 }
 
-.garage-front { z-index: 4; }
-
 .garage-interior-ui {
   position: absolute;
   left: 34%;
   top: 46%;
   width: 32%;
   height: 14%;
-  z-index: 5;
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -1055,7 +1050,6 @@ a {
   justify-content: center;
   gap: 6px;
   pointer-events: auto;
-  z-index: 2;
 }
 
 .garage-choice {
