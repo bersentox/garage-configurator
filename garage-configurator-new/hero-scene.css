@@ -47,6 +47,13 @@
   margin: 0 auto;
 }
 
+.hero-scene img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+
 .hero-scene::after {
   content: "";
   position: absolute;
