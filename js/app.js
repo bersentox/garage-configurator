@@ -652,7 +652,7 @@ if (garageScene && garageRemoteButton) {
       garageGateSound.volume = 0.6;
       garageGateSound.play();
     }
-
+    
     garageScene.classList.toggle("open");
     garageRemoteButton.setAttribute("aria-pressed", !isOpen);
 
