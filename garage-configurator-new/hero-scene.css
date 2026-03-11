@@ -1,0 +1,181 @@
+.hero-step {
+  margin-bottom: 28px;
+}
+
+.hero-title {
+  margin: 0 0 8px;
+  font-size: 30px;
+}
+
+.hero-subtitle {
+  margin: 0 0 18px;
+  color: #4b5563;
+}
+
+.garage-scene {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  aspect-ratio: 3 / 2;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #dbe2ea;
+  box-shadow: 0 16px 40px rgba(17, 24, 39, 0.12);
+}
+
+.garage-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.garage-background { z-index: 1; }
+.garage-interior { z-index: 2; }
+
+.garage-interior-ui {
+  position: absolute;
+  left: 34%;
+  top: 46%;
+  width: 32%;
+  height: 14%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.garage-interior-buttons {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.garage-gate-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  clip-path: inset(36.585% 21.601% 28.244% 21.145%);
+  pointer-events: none;
+}
+
+.garage-gate {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translateY(-2px);
+  transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
+  will-change: transform;
+  pointer-events: none;
+}
+
+.garage-front {
+  z-index: 5;
+  pointer-events: none;
+}
+
+.garage-choice {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.78);
+  color: #f8fafc;
+  max-width: 135px;
+  min-width: 120px;
+  padding: 7px 10px;
+  font-size: 9px;
+  line-height: 1.2;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.garage-choice:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.38);
+  background: rgba(30, 41, 59, 0.86);
+}
+
+.garage-choice:focus-visible {
+  outline: 2px solid #9bbcff;
+  outline-offset: 2px;
+}
+
+.garage-scene.open .garage-gate {
+  transform: translateY(-27%);
+}
+
+.garage-remote {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  width: 58px;
+  min-height: 88px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(18, 24, 38, 0.86), rgba(10, 14, 24, 0.88));
+  color: #ecf1ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.45), 0 0 14px rgba(126, 169, 255, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.garage-remote:hover {
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 16px 26px rgba(15, 23, 42, 0.5), 0 0 18px rgba(126, 169, 255, 0.52);
+}
+
+.garage-remote:focus-visible {
+  outline: 2px solid #9bbcff;
+  outline-offset: 2px;
+}
+
+.garage-remote-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: radial-gradient(circle at 35% 30%, #d9e6ff 0%, #7ea9ff 45%, #4269b8 100%);
+  box-shadow: 0 0 10px rgba(126, 169, 255, 0.65);
+}
+
+.garage-remote-line {
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(216, 226, 255, 0.72);
+}
+
+.garage-remote-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.92;
+}
+
+.garage-scene.open .garage-remote-dot {
+  background: radial-gradient(circle at 35% 30%, #e3ffe8 0%, #72e296 45%, #2ea75c 100%);
+  box-shadow: 0 0 10px rgba(46, 167, 92, 0.72);
+}
+
+.garage-scene.open .garage-remote-label {
+  color: #b8ffd0;
+}
