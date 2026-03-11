@@ -1010,6 +1010,9 @@ a {
 
 .garage-background { z-index: 1; }
 .garage-interior { z-index: 2; }
+.garage-interior-buttons { z-index: 3; }
+.garage-gate-mask { z-index: 4; }
+.garage-front { z-index: 5; }
 
 .garage-gate-mask {
   position: absolute;
