@@ -11,6 +11,23 @@
   <main class="page">
     <div id="configurator" class="configurator">
 
+      <section id="step-start-scene" class="section">
+        <h2 class="section-title">Стартовая сцена гаража</h2>
+
+        <div id="garageScene" class="garage-scene" aria-live="polite">
+          <img class="garage-layer garage-background" src="images/garages/scene/background.webp" alt="Фон сцены гаража" />
+          <img class="garage-layer garage-interior" src="images/garages/scene/interior.webp" alt="Интерьер гаража" />
+          <img class="garage-layer garage-gate" src="images/garages/scene/gate.webp" alt="Ворота гаража" />
+          <img class="garage-layer garage-front" src="images/garages/scene/front.webp" alt="Передний план гаража" />
+
+          <button id="garageRemoteButton" class="garage-remote" type="button" aria-label="Открыть или закрыть ворота" aria-pressed="false">
+            <span class="garage-remote-dot" aria-hidden="true"></span>
+            <span class="garage-remote-line" aria-hidden="true"></span>
+            <span class="garage-remote-label">OPEN</span>
+          </button>
+        </div>
+      </section>
+
       <section id="step-type" class="section">
         <h2 class="section-title">Выберите тип гаража</h2>
 
