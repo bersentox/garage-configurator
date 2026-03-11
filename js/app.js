@@ -640,9 +640,16 @@ function renderActionBlock() {
 
   const garageScene = document.getElementById("garageScene");
   const garageRemoteButton = document.getElementById("garageRemoteButton");
+  const garageGateSound = document.getElementById("garageGateSound");
 
   if (garageScene && garageRemoteButton) {
     garageRemoteButton.addEventListener("click", function () {
+      if (garageGateSound) {
+        garageGateSound.currentTime = 0;
+        garageGateSound.volume = 0.6;
+        garageGateSound.play();
+      }
+
       const isOpen = garageScene.classList.toggle("open");
       garageRemoteButton.setAttribute("aria-pressed", String(isOpen));
       const buttonLabel = isOpen ? "CLOSE" : "OPEN";
