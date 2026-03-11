@@ -659,9 +659,5 @@ if (garageScene && garageRemoteButton) {
   });
 }
 
-    garageScene.classList.toggle("open");
-    garageRemoteButton.setAttribute("aria-pressed", !isOpen);
-  });
-}
   bindTypeEvents();
 });
