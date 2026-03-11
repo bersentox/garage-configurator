@@ -1013,10 +1013,10 @@ a {
 
 .garage-gate-mask {
   position: absolute;
-  top: 41%;
-  left: 25.1%;
-  width: 49.8%;
-  height: 38%;
+  top: 36.585%;
+  left: 21.145%;
+  width: 57.254%;
+  height: 45.171%;
   z-index: 3;
   overflow: hidden;
   pointer-events: none;
@@ -1024,12 +1024,12 @@ a {
 
 .garage-gate {
   position: absolute;
-  top: -107.895%;
-  left: -50.402%;
-  width: 200.803%;
-  height: 263.158%;
+  top: -80.994%;
+  left: -36.932%;
+  width: 174.659%;
+  height: 221.382%;
   transform: translateY(0);
-  transition: transform 3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: transform 4s cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
   pointer-events: none;
 }
@@ -1037,7 +1037,7 @@ a {
 .garage-front { z-index: 4; }
 
 .garage-scene.open .garage-gate {
-  transform: translateY(-90%);
+  transform: translateY(-78%);
 }
 
 .garage-remote {
