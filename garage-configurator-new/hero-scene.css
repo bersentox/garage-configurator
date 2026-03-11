@@ -1,5 +1,16 @@
-.hero-step {
-  margin-bottom: 28px;
+.hero {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.hero-inner {
+  width: 100%;
+  text-align: center;
 }
 
 .hero-title {
@@ -12,10 +23,16 @@
   color: #4b5563;
 }
 
+.hero-scene {
+  width: 95%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
 .garage-scene {
   position: relative;
   width: 100%;
-  max-width: 760px;
+  max-width: 1600px;
   aspect-ratio: 3 / 2;
   margin: 0 auto;
   overflow: hidden;
