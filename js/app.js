@@ -637,5 +637,21 @@ function renderActionBlock() {
     });
   }
 
+
+  const garageScene = document.getElementById("garageScene");
+  const garageRemoteButton = document.getElementById("garageRemoteButton");
+
+  if (garageScene && garageRemoteButton) {
+    garageRemoteButton.addEventListener("click", function () {
+      const isOpen = garageScene.classList.toggle("open");
+      garageRemoteButton.setAttribute("aria-pressed", String(isOpen));
+      const buttonLabel = isOpen ? "CLOSE" : "OPEN";
+      const labelNode = garageRemoteButton.querySelector(".garage-remote-label");
+      if (labelNode) {
+        labelNode.textContent = buttonLabel;
+      }
+    });
+  }
+
   bindTypeEvents();
 });
