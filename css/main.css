@@ -1034,6 +1034,15 @@ a {
 
 .garage-front { z-index: 4; }
 
+.garage-interior-ui {
+  position: absolute;
+  left: 34%;
+  top: 46%;
+  width: 32%;
+  height: 14%;
+  z-index: 5;
+  pointer-events: none;
+}
 
 .garage-choice {
   min-width: 130px;
