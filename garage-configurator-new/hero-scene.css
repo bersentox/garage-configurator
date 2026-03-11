@@ -218,6 +218,47 @@
 
 .garage-remote:hover {
   transform: translateX(-50%) translateY(-2px);
+
+.garage-remote-hint {
+  position: absolute;
+  bottom: 176px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 219, 255, 0.4);
+  background: rgba(12, 20, 34, 0.68);
+  color: #deebff;
+  font-size: clamp(11px, 0.8vw, 13px);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(4, 10, 22, 0.35);
+}
+
+.hero-configurator-line {
+  margin: 4px 0 0;
+  color: rgba(222, 235, 255, 0.76);
+  font-size: clamp(12px, 0.9vw, 15px);
+  letter-spacing: 0.04em;
+}
+
+
+  .garage-remote-hint {
+    bottom: 144px;
+  }
+
+  .garage-remote-hint {
+    bottom: 114px;
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .hero-configurator-line {
+    letter-spacing: 0.02em;
+  }
   box-shadow: 0 16px 26px rgba(15, 23, 42, 0.5), 0 0 18px rgba(126, 169, 255, 0.52);
 }
 
