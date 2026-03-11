@@ -12,7 +12,7 @@ async function bootstrap() {
   const heroMarkup = await loadFragment("./hero-scene.html");
   const configuratorMarkup = await loadFragment("./configurator.html");
 
-  appRoot.innerHTML = `${heroMarkup}\n${configuratorMarkup}`;
+  appRoot.innerHTML = `${heroMarkup}\n<div class="page-container">${configuratorMarkup}</div>`;
 
   const state = createGarageState();
   const configuratorStep = document.getElementById("configuratorStep");
