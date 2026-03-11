@@ -1,34 +1,38 @@
-<section class="hero-step" id="heroStep">
-  <h1 class="hero-title">Новый конфигуратор гаража</h1>
-  <p class="hero-subtitle">Нажмите на пульт, откройте ворота и выберите размер гаража.</p>
+<section class="hero" id="heroStep">
+  <div class="hero-inner">
+    <h1 class="hero-title">Новый конфигуратор гаража</h1>
+    <p class="hero-subtitle">Нажмите на пульт, откройте ворота и выберите размер гаража.</p>
 
-  <div id="garageScene" class="garage-scene" aria-live="polite">
-    <img class="garage-layer garage-background" src="../images/garages/scene/background.webp" alt="Фон сцены гаража" />
-    <img class="garage-layer garage-interior" src="../images/garages/scene/interior.webp" alt="Интерьер гаража" />
+    <div class="hero-scene">
+      <div id="garageScene" class="garage-scene" aria-live="polite">
+        <img class="garage-layer garage-background" src="../images/garages/scene/background.webp" alt="Фон сцены гаража" />
+        <img class="garage-layer garage-interior" src="../images/garages/scene/interior.webp" alt="Интерьер гаража" />
 
-    <div class="garage-gate-mask" aria-hidden="true">
-      <img class="garage-gate" src="../images/garages/scene/gate.webp" alt="Ворота гаража" />
-    </div>
+        <div class="garage-gate-mask" aria-hidden="true">
+          <img class="garage-gate" src="../images/garages/scene/gate.webp" alt="Ворота гаража" />
+        </div>
 
-    <img class="garage-layer garage-front" src="../images/garages/scene/front.webp" alt="Передний план гаража" />
+        <img class="garage-layer garage-front" src="../images/garages/scene/front.webp" alt="Передний план гаража" />
 
-    <button id="garageRemoteButton" class="garage-remote" type="button" aria-label="Открыть ворота" aria-pressed="false">
-      <span class="garage-remote-dot" aria-hidden="true"></span>
-      <span class="garage-remote-line" aria-hidden="true"></span>
-      <span class="garage-remote-label">🏠</span>
-    </button>
-
-    <div class="garage-interior-ui" aria-hidden="true">
-      <div class="garage-interior-buttons">
-        <button class="garage-choice" type="button" data-width="6">
-          ГАРАЖ НА 1 МАШИНУ<br />
-          6 М ШИРИНА
+        <button id="garageRemoteButton" class="garage-remote" type="button" aria-label="Открыть ворота" aria-pressed="false">
+          <span class="garage-remote-dot" aria-hidden="true"></span>
+          <span class="garage-remote-line" aria-hidden="true"></span>
+          <span class="garage-remote-label">🏠</span>
         </button>
 
-        <button class="garage-choice" type="button" data-width="8">
-          ГАРАЖ НА 2 МАШИНЫ<br />
-          8 М ШИРИНА
-        </button>
+        <div class="garage-interior-ui" aria-hidden="true">
+          <div class="garage-interior-buttons">
+            <button class="garage-choice" type="button" data-width="6">
+              <span class="garage-choice-main">ГАРАЖ НА 1 МАШИНУ</span>
+              <span class="garage-choice-sub">6 М ШИРИНА</span>
+            </button>
+
+            <button class="garage-choice" type="button" data-width="8">
+              <span class="garage-choice-main">ГАРАЖ НА 2 МАШИНЫ</span>
+              <span class="garage-choice-sub">8 М ШИРИНА</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
