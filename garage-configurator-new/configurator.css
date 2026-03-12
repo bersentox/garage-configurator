@@ -280,7 +280,7 @@
 .final-cta {
   background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
   color: #fff;
-  padding: 24px 22px;
+  padding: 24px 22px 36px 22px;
   border-radius: 14px;
   display: grid;
   gap: 18px;
@@ -293,7 +293,6 @@
 .final-cta .primary { margin-top: 4px; }
 .final-cta .secondary { 
   margin-top: 6px;
-  margin-bottom: 20px;
 }
 
 .primary, .secondary, .cta-button {
