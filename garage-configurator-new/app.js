@@ -1,4 +1,4 @@
-import { createGarageState } from "./state.js";
+import { createGarageState, getPresetByWidth } from "./state.js";
 import { mountHeroScene } from "./hero-scene.js";
 import { mountConfigurator } from "./configurator.js";
 
@@ -19,23 +19,27 @@ async function bootstrap() {
     return;
   }
 
-  const heroMarkup = await loadFragment("./hero-scene.html");
-  const configuratorMarkup = await loadFragment("./configurator.html");
+  const [heroMarkup, configuratorMarkup] = await Promise.all([
+    loadFragment("./hero-scene.html"),
+    loadFragment("./configurator.html")
+  ]);
 
-  appRoot.innerHTML = `${heroMarkup}\n<div class="page-container">${configuratorMarkup}</div>`;
+  appRoot.innerHTML = `${heroMarkup}\n${configuratorMarkup}`;
 
   const state = createGarageState();
   const configuratorStep = document.getElementById("configuratorStep");
+  const configuratorApi = mountConfigurator({ state, root: configuratorStep });
 
   mountHeroScene({
     state,
-    onSelectWidth: () => {
+    onSelectWidth: (width) => {
+      const preset = getPresetByWidth(width);
+      Object.assign(state, preset);
+      configuratorApi.render();
       configuratorStep.hidden = false;
       configuratorStep.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   });
-
-  mountConfigurator({ state, root: configuratorStep });
 }
 
 bootstrap().catch((error) => {
