@@ -291,7 +291,10 @@
 .final-cta .summary-price { margin-top: 0; }
 .final-cta .summary-time { color: #cbd5e1; margin-top: 2px; }
 .final-cta .primary { margin-top: 4px; }
-.final-cta .secondary { margin-top: 6px; }
+.final-cta .secondary { 
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
 
 .primary, .secondary, .cta-button {
   border: 0;
