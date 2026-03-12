@@ -25,7 +25,17 @@ function formatPrice(value) {
 }
 
 function getBuildTimeDays(config) {
-  return 4 + (config.length >= 8 ? 1 : 0) + (config.length >= 10 ? 1 : 0) + (config.partition ? 1 : 0);
+  let days = 7;
+
+  if (config.length >= 8) days += 1;
+  if (config.length >= 10) days += 1;
+  if (config.layout === "storage") days += 1;
+  if (config.layout === "utility") days += 2;
+  if (config.partition) days += 1;
+  if (config.windows >= 1) days += 0.5;
+  if (config.doors >= 1) days += 0.5;
+
+  return Math.round(days);
 }
 
 function calculatePrice(config) {
