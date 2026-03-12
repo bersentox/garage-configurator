@@ -1,9 +1,8 @@
 import { applyColorPreset } from "./state.js";
 
-const LENGTH_BASE_PRICE = {
-  6: 1950000,
-  8: 2290000,
-  10: 2650000
+const RATE_PER_M2 = {
+  6: 54000,
+  8: 57000
 };
 
 const OPTIONS_PRICE = {
@@ -14,10 +13,23 @@ const OPTIONS_PRICE = {
   gutters: 50000
 };
 
-const LAYOUT_MULTIPLIER = {
-  classic: 1,
-  storage: 1.06,
-  utility: 1.11
+const LAYOUT_SURCHARGE = {
+  classic: 0,
+  storage: 135000,
+  utility: 240000
+};
+
+const ROOF_SURCHARGE = {
+  flat: 0,
+  gable: 130000,
+  shed: 85000
+};
+
+const ELEMENT_PRICE = {
+  shelves: 45000,
+  partition: 90000,
+  door: 32000,
+  window: 18000
 };
 
 function formatPrice(value) {
@@ -39,14 +51,17 @@ function getBuildTimeDays(config) {
 }
 
 function calculatePrice(config) {
-  const knownBase = LENGTH_BASE_PRICE[config.length] || LENGTH_BASE_PRICE[10] + Math.max(0, config.length - 10) * 160000;
-  const widthFactor = config.width === 8 ? 1.18 : 1;
-  let price = knownBase * widthFactor * LAYOUT_MULTIPLIER[config.layout];
+  const ratePerM2 = RATE_PER_M2[config.width] || RATE_PER_M2[6];
+  const basePrice = config.width * config.length * ratePerM2;
+  const layoutSurcharge = LAYOUT_SURCHARGE[config.layout] || 0;
+  const roofKey = config.roofType || config.roof;
+  const roofSurcharge = ROOF_SURCHARGE[roofKey] || 0;
+  let price = basePrice + layoutSurcharge + roofSurcharge;
 
-  if (config.shelves) price += 45000;
-  if (config.partition) price += 90000;
-  price += config.doors * 32000;
-  price += config.windows * 18000;
+  if (config.shelves) price += ELEMENT_PRICE.shelves;
+  if (config.partition) price += ELEMENT_PRICE.partition;
+  price += config.doors * ELEMENT_PRICE.door;
+  price += config.windows * ELEMENT_PRICE.window;
 
   Object.entries(config.options).forEach(([key, enabled]) => {
     if (enabled) {
