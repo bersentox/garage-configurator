@@ -350,3 +350,22 @@
   font-size: 13px;
   white-space: nowrap;
 }
+.final-cta .primary,
+.final-cta .secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.final-cta .secondary {
+  margin-top: 6px;
+}
+
+.final-cta::after {
+  content: "";
+  display: block;
+  height: 16px;
+}
