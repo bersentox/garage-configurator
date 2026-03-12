@@ -87,41 +87,79 @@
   letter-spacing: 0.04em;
 }
 
-.length-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.length-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .length-card {
-  border: 1px solid #cbd5e1;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-  border-radius: 16px;
-  min-height: 214px;
-  padding: 22px 18px;
-  display: grid;
-  align-content: start;
-  gap: 11px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 20px;
+  min-height: 260px;
+  padding: 28px 24px 24px;
+  display: flex;
+  flex-direction: column;
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s ease;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 10px 24px rgba(15, 23, 42, 0.08);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
 }
 .length-card .length-value {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 1;
-  gap: 2px;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin-bottom: 18px;
 }
-.length-card strong { font-size: 52px; line-height: 0.92; letter-spacing: -0.02em; }
-.length-card .length-value span { font-size: 15px; font-weight: 700; color: #475569; text-transform: uppercase; }
-.length-card .length-area { font-weight: 600; color: #334155; line-height: 1.35; }
-.length-card .length-usage { color: #475569; min-height: 46px; line-height: 1.38; }
-.length-card .length-price { font-weight: 700; margin-top: auto; padding-top: 8px; line-height: 1.3; }
+.length-card strong {
+  font-size: 64px;
+  line-height: 0.9;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+}
+.length-card .length-value span {
+  font-size: 18px;
+  font-weight: 600;
+  color: #5b677a;
+  margin-bottom: 6px;
+}
+.length-card .length-area {
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 10px;
+}
+.length-card .length-usage {
+  font-size: 15px;
+  line-height: 1.45;
+  color: #6b7280;
+  min-height: 52px;
+  max-width: 120px;
+}
+.length-card .length-price {
+  margin-top: auto;
+  padding-top: 20px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+}
 .length-card:hover {
-  border-color: #475569;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+  transform: translateY(-4px);
+  box-shadow:
+    0 4px 10px rgba(15, 23, 42, 0.06),
+    0 18px 38px rgba(15, 23, 42, 0.12);
+  border-color: rgba(15, 23, 42, 0.12);
 }
-.length-card.active {
-  border-color: #0f172a;
-  background: #f1f5f9;
-  box-shadow: inset 0 0 0 2px #0f172a, 0 12px 26px rgba(15, 23, 42, 0.16);
+.length-card.active,
+.length-card.selected,
+.length-card[aria-pressed="true"] {
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  box-shadow:
+    0 4px 10px rgba(15, 23, 42, 0.08),
+    0 20px 42px rgba(15, 23, 42, 0.14);
 }
 
 .length-custom {
