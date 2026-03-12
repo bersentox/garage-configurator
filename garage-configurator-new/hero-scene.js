@@ -15,7 +15,7 @@ export function mountHeroScene({ state, onSelectWidth }) {
     if (garageGateSound) {
       garageGateSound.currentTime = 0;
       garageGateSound.volume = 0.6;
-      garageGateSound.play();
+      garageGateSound.play().catch(() => {});
     }
 
     if (revealTimerId) {
@@ -39,6 +39,7 @@ export function mountHeroScene({ state, onSelectWidth }) {
     button.addEventListener("click", () => {
       const width = Number(button.dataset.width);
       state.width = width;
+      widthButtons.forEach((node) => node.classList.toggle("selected", node === button));
       onSelectWidth(width);
     });
   });
