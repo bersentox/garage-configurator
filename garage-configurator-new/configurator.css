@@ -135,6 +135,7 @@
   line-height: 1.2;
   font-weight: 600;
   color: #475569;
+  white-space: nowrap;
 }
 .length-card .length-usage {
   font-size: 13px;
@@ -329,4 +330,13 @@
   .scene { position: static; }
   .scene-preview { height: 340px; }
   .length-cards { grid-template-columns: 1fr; }
+}
+/* уменьшение текста только для карточки 10 м */
+.length-card[data-length="10"] strong {
+  font-size: 30px;
+}
+
+.length-card[data-length="10"] .length-area {
+  font-size: 13px;
+  white-space: nowrap;
 }
