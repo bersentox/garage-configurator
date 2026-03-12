@@ -280,7 +280,7 @@
 .final-cta {
   background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
   color: #fff;
-  padding: 24px 22px 36px 22px;
+  padding: 24px 22px 32px 22px;
   border-radius: 14px;
   display: grid;
   gap: 18px;
@@ -291,18 +291,26 @@
 .final-cta .summary-price { margin-top: 0; }
 .final-cta .summary-time { color: #cbd5e1; margin-top: 2px; }
 .final-cta .primary { margin-top: 4px; }
-.final-cta .secondary { 
+.final-cta .secondary {
   margin-top: 6px;
 }
 
 .primary, .secondary, .cta-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
   border: 0;
   border-radius: 10px;
-  padding: 14px;
+  padding: 14px 18px;
   min-height: 50px;
   font-weight: 700;
   cursor: pointer;
   letter-spacing: 0.03em;
+  text-decoration: none;
+  appearance: none;
+  -webkit-appearance: none;
 }
 .primary, .cta-button { background: #f97316; color: #fff; }
 .secondary { background: #e2e8f0; color: #0f172a; }
