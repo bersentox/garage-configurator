@@ -12,35 +12,36 @@
 
     <div class="configurator">
       <section class="config-base">
-        <h2 class="config-title">Базовая конфигурация</h2>
+        <h2 class="config-title" id="productTitle"></h2>
         <p class="config-meta" id="baseInfo"></p>
       </section>
 
       <section class="config-length">
-        <h3>Длина</h3>
+        <h3>ДЛИНА ГАРАЖА</h3>
         <div class="length-cards" id="lengthCards">
           <button class="length-card" type="button" data-length="6" data-price="1950000">
             <strong>6 м</strong>
-            <span>48 м²</span>
-            <span>только машины</span>
-            <span>от 1 950 000 ₽</span>
+            <span class="length-area">48 м²</span>
+            <span class="length-usage">только для машин</span>
+            <span class="length-price">от 1 950 000 ₽</span>
           </button>
           <button class="length-card" type="button" data-length="8" data-price="2290000">
             <strong>8 м</strong>
-            <span>64 м²</span>
-            <span>машина + хранение</span>
-            <span>от 2 290 000 ₽</span>
+            <span class="length-area">64 м²</span>
+            <span class="length-usage">машина + хранение</span>
+            <span class="length-price">от 2 290 000 ₽</span>
           </button>
           <button class="length-card" type="button" data-length="10" data-price="2650000">
             <strong>10 м</strong>
-            <span>80 м²</span>
-            <span>машина + хранение + хозблок</span>
-            <span>от 2 650 000 ₽</span>
+            <span class="length-area">80 м²</span>
+            <span class="length-usage">машина + хранение + хозблок</span>
+            <span class="length-price">от 2 650 000 ₽</span>
           </button>
         </div>
 
         <div class="length-custom">
-          <label>Индивидуальная длина (м)
+          <h4>НАСТРОИТЬ СВОЙ ВАРИАНТ</h4>
+          <label>длина (м)
             <input id="lengthInput" type="number" min="6" step="1" value="6" />
           </label>
           <label class="switch-row">стеллажи
@@ -67,66 +68,68 @@
       </section>
 
       <section class="config-layout">
-        <h3>Layout</h3>
+        <h3>ПЛАНИРОВКА</h3>
         <label>Схема планировки
           <select id="layoutSelect">
-            <option value="classic">Классическая</option>
-            <option value="storage">С выделенной зоной хранения</option>
-            <option value="utility">С хозблоком</option>
+            <option value="classic">классическая</option>
+            <option value="utility">с хозблоком</option>
+            <option value="storage">с зоной хранения</option>
           </select>
         </label>
       </section>
 
       <section class="config-colors">
-        <h3>Facade colors</h3>
+        <h3>ЦВЕТА ГАРАЖА</h3>
+        <h4>ГОТОВЫЕ СТИЛИ</h4>
         <div class="color-presets" id="colorPresets">
-          <button type="button" data-preset="graphite">graphite</button>
-          <button type="button" data-preset="grey">grey</button>
-          <button type="button" data-preset="sand">sand</button>
-          <button type="button" data-preset="chocolate">chocolate</button>
-          <button type="button" data-preset="wood">wood</button>
-          <button type="button" data-preset="industrial">industrial</button>
+          <button type="button" data-preset="graphite">графит</button>
+          <button type="button" data-preset="grey">серый</button>
+          <button type="button" data-preset="sand">песочный</button>
+          <button type="button" data-preset="chocolate">шоколад</button>
+          <button type="button" data-preset="wood">под дерево</button>
+          <button type="button" data-preset="industrial">индустриальный</button>
         </div>
+        <h4>НАСТРОИТЬ СВОЮ КОМПОЗИЦИЮ</h4>
         <div class="color-custom">
-          <label>wall color <input type="color" id="wallColor" /></label>
-          <label>roof color <input type="color" id="roofColor" /></label>
-          <label>trim color <input type="color" id="trimColor" /></label>
-          <label>gate color <input type="color" id="gateColor" /></label>
-          <label>interior wall color <input type="color" id="interiorColor" /></label>
+          <label>цвет стен <input type="color" id="wallColor" /></label>
+          <label>цвет крыши <input type="color" id="roofColor" /></label>
+          <label>цвет фасонных элементов <input type="color" id="trimColor" /></label>
+          <label>цвет ворот <input type="color" id="gateColor" /></label>
+          <label>цвет внутренних стен <input type="color" id="interiorColor" /></label>
         </div>
       </section>
 
       <section class="config-options">
-        <h3>Options</h3>
-        <label class="switch-row">автоматика ворот <input type="checkbox" data-option="gateAutomation" /></label>
-        <label class="switch-row">внутренняя электрика <input type="checkbox" data-option="interiorElectricity" /></label>
-        <label class="switch-row">внешнее освещение <input type="checkbox" data-option="exteriorLighting" /></label>
-        <label class="switch-row">вентиляция <input type="checkbox" data-option="ventilation" /></label>
-        <label class="switch-row">водостоки <input type="checkbox" data-option="gutters" /></label>
+        <h3>ДОПОЛНИТЕЛЬНЫЕ ОПЦИИ</h3>
+        <label class="switch-row option-row">автоматика ворот <input type="checkbox" data-option="gateAutomation" /></label>
+        <label class="switch-row option-row">внутренняя электрика <input type="checkbox" data-option="interiorElectricity" /></label>
+        <label class="switch-row option-row">внешнее освещение <input type="checkbox" data-option="exteriorLighting" /></label>
+        <label class="switch-row option-row">вентиляция <input type="checkbox" data-option="ventilation" /></label>
+        <label class="switch-row option-row">водостоки <input type="checkbox" data-option="gutters" /></label>
       </section>
 
       <section class="config-summary">
-        <h3>Summary</h3>
+        <h3>ВАШ ГАРАЖ</h3>
         <ul id="summaryList"></ul>
         <p class="summary-price" id="summaryPrice"></p>
         <p class="summary-time" id="summaryTime"></p>
       </section>
 
       <section class="final-cta" id="finalCta">
+        <h3>ФИНАЛЬНАЯ СТОИМОСТЬ ПРОЕКТА</h3>
         <p id="ctaSummary"></p>
         <p class="summary-price" id="ctaPrice"></p>
         <p class="summary-time" id="ctaTime"></p>
-        <button class="primary" type="button">Получить проект</button>
-        <button class="secondary" type="button">Консультация</button>
+        <button class="primary" type="button">ПОЛУЧИТЬ ПРОЕКТ</button>
+        <button class="secondary" type="button">КОНСУЛЬТАЦИЯ</button>
       </section>
+      <div class="sticky-bar" id="stickyBar">
+        <div>
+          <p class="price" id="stickyPrice"></p>
+          <p class="price-meta" id="stickyMeta"></p>
+        </div>
+        <button class="cta-button" type="button">ПОЛУЧИТЬ ПРОЕКТ</button>
+      </div>
     </div>
-  </div>
-
-  <div class="sticky-bar" id="stickyBar">
-    <div>
-      <p class="price" id="stickyPrice"></p>
-      <p class="price-meta" id="stickyMeta"></p>
-    </div>
-    <button class="cta-button" type="button">Получить проект</button>
   </div>
 </section>
