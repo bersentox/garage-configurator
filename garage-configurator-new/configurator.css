@@ -92,10 +92,11 @@
   background: #ffffff;
   border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 20px;
-  min-height: 260px;
-  padding: 28px 24px 24px;
+  aspect-ratio: 1 / 1.15;
+  padding: 22px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   text-align: left;
   cursor: pointer;
   box-shadow:
@@ -108,41 +109,44 @@
 }
 .length-card .length-value {
   display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  margin-bottom: 18px;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-bottom: 14px;
 }
 .length-card strong {
-  font-size: 64px;
-  line-height: 0.9;
+  font-size: 42px;
+  line-height: 0.92;
   font-weight: 700;
   letter-spacing: -0.03em;
   color: #0f172a;
 }
 .length-card .length-value span {
-  font-size: 18px;
+  font-size: 16px;
+  line-height: 1;
   font-weight: 600;
   color: #5b677a;
-  margin-bottom: 6px;
+}
+.length-card .length-separator {
+  color: rgba(91, 103, 122, 0.72);
 }
 .length-card .length-area {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.2;
   font-weight: 600;
   color: #475569;
-  margin-bottom: 10px;
 }
 .length-card .length-usage {
   font-size: 15px;
-  line-height: 1.45;
+  line-height: 1.35;
   color: #6b7280;
-  min-height: 52px;
-  max-width: 120px;
+  margin-bottom: 14px;
+  max-width: 130px;
 }
 .length-card .length-price {
   margin-top: auto;
-  padding-top: 20px;
   font-size: 16px;
+  line-height: 1.2;
   font-weight: 700;
   color: #111827;
 }
