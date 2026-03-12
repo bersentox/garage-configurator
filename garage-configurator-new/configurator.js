@@ -1,36 +1,12 @@
 import { applyColorPreset } from "./state.js";
 
-const RATE_PER_M2 = {
-  6: 54000,
-  8: 57000
-};
+const PRICES = window.CONFIG_PRICES || {};
 
-const OPTIONS_PRICE = {
-  gateAutomation: 110000,
-  interiorElectricity: 150000,
-  exteriorLighting: 70000,
-  ventilation: 60000,
-  gutters: 50000
-};
-
-const LAYOUT_SURCHARGE = {
-  classic: 0,
-  storage: 135000,
-  utility: 240000
-};
-
-const ROOF_SURCHARGE = {
-  flat: 0,
-  gable: 130000,
-  shed: 85000
-};
-
-const ELEMENT_PRICE = {
-  shelves: 45000,
-  partition: 90000,
-  door: 32000,
-  window: 18000
-};
+const RATE_PER_M2 = PRICES.RATE_PER_M2 || {};
+const OPTIONS_PRICE = PRICES.OPTIONS_PRICE || {};
+const LAYOUT_SURCHARGE = PRICES.LAYOUT_SURCHARGE || {};
+const ROOF_SURCHARGE = PRICES.ROOF_SURCHARGE || {};
+const ELEMENT_PRICE = PRICES.ELEMENT_PRICE || {};
 
 function formatPrice(value) {
   return new Intl.NumberFormat("ru-RU").format(Math.round(value)) + " ₽";
@@ -51,21 +27,21 @@ function getBuildTimeDays(config) {
 }
 
 function calculatePrice(config) {
-  const ratePerM2 = RATE_PER_M2[config.width] || RATE_PER_M2[6];
+  const ratePerM2 = RATE_PER_M2[config.width] || RATE_PER_M2[6] || 0;
   const basePrice = config.width * config.length * ratePerM2;
   const layoutSurcharge = LAYOUT_SURCHARGE[config.layout] || 0;
   const roofKey = config.roofType || config.roof;
   const roofSurcharge = ROOF_SURCHARGE[roofKey] || 0;
   let price = basePrice + layoutSurcharge + roofSurcharge;
 
-  if (config.shelves) price += ELEMENT_PRICE.shelves;
-  if (config.partition) price += ELEMENT_PRICE.partition;
-  price += config.doors * ELEMENT_PRICE.door;
-  price += config.windows * ELEMENT_PRICE.window;
+  if (config.shelves) price += ELEMENT_PRICE.shelves || 0;
+  if (config.partition) price += ELEMENT_PRICE.partition || 0;
+  price += config.doors * (ELEMENT_PRICE.door || 0);
+  price += config.windows * (ELEMENT_PRICE.window || 0);
 
   Object.entries(config.options).forEach(([key, enabled]) => {
     if (enabled) {
-      price += OPTIONS_PRICE[key];
+      price += OPTIONS_PRICE[key] || 0;
     }
   });
 
