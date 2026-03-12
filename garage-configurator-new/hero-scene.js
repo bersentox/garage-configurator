@@ -3,6 +3,7 @@ export function mountHeroScene({ state, onSelectWidth }) {
   const garageRemoteButton = document.getElementById("garageRemoteButton");
   const garageGateSound = document.getElementById("garageGateSound");
   const widthButtons = document.querySelectorAll(".garage-choice[data-width]");
+  let revealTimerId = null;
 
   if (!garageScene || !garageRemoteButton) {
     return;
@@ -17,8 +18,21 @@ export function mountHeroScene({ state, onSelectWidth }) {
       garageGateSound.play();
     }
 
+    if (revealTimerId) {
+      clearTimeout(revealTimerId);
+      revealTimerId = null;
+    }
+
     garageScene.classList.toggle("open");
     garageRemoteButton.setAttribute("aria-pressed", String(!isOpen));
+
+    if (!isOpen) {
+      revealTimerId = setTimeout(() => {
+        garageScene.classList.add("choices-visible");
+      }, 320);
+    } else {
+      garageScene.classList.remove("choices-visible");
+    }
   });
 
   widthButtons.forEach((button) => {
