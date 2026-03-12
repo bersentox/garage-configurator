@@ -87,31 +87,41 @@
   letter-spacing: 0.04em;
 }
 
-.length-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.length-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .length-card {
   border: 1px solid #cbd5e1;
-  background: #fff;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border-radius: 14px;
-  padding: 14px 12px;
+  min-height: 196px;
+  padding: 18px 14px;
   display: grid;
-  gap: 5px;
+  align-content: start;
+  gap: 8px;
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.length-card strong { font-size: 22px; line-height: 1.1; }
+.length-card .length-value {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+  gap: 2px;
+}
+.length-card strong { font-size: 44px; line-height: 0.95; letter-spacing: -0.02em; }
+.length-card .length-value span { font-size: 14px; font-weight: 700; color: #475569; text-transform: uppercase; }
 .length-card .length-area { font-weight: 600; color: #334155; }
-.length-card .length-usage { color: #475569; min-height: 34px; }
-.length-card .length-price { font-weight: 700; margin-top: 4px; }
+.length-card .length-usage { color: #475569; min-height: 40px; }
+.length-card .length-price { font-weight: 700; margin-top: auto; padding-top: 4px; }
 .length-card:hover {
-  border-color: #64748b;
+  border-color: #475569;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
 }
 .length-card.active {
   border-color: #0f172a;
-  background: #f8fafc;
-  box-shadow: inset 0 0 0 1px #0f172a, 0 10px 22px rgba(15, 23, 42, 0.1);
+  background: #f1f5f9;
+  box-shadow: inset 0 0 0 2px #0f172a, 0 12px 26px rgba(15, 23, 42, 0.16);
 }
 
 .length-custom {
@@ -125,7 +135,6 @@
 }
 
 .length-custom label,
-.config-layout label,
 .color-custom label {
   display: flex;
   justify-content: space-between;
@@ -133,8 +142,7 @@
   gap: 8px;
 }
 
-.length-custom input[type="number"],
-.config-layout select {
+.length-custom input[type="number"] {
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   padding: 8px 10px;
@@ -161,10 +169,22 @@
   background: #fff;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+.color-presets button[data-preset="graphite"] { color: #1f2937; border-color: #9ca3af; }
+.color-presets button[data-preset="grey"] { color: #4b5563; border-color: #cbd5e1; }
+.color-presets button[data-preset="sand"] { color: #9a7b4f; border-color: #e4d2b4; }
+.color-presets button[data-preset="chocolate"] { color: #6b4226; border-color: #c8a48f; }
+.color-presets button[data-preset="wood"] { color: #8b5e34; border-color: #d3b28b; }
+.color-presets button[data-preset="industrial"] { color: #334155; border-color: #94a3b8; }
+.color-presets button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(15, 23, 42, 0.08);
 }
 .color-presets button.active {
   border-color: #0f172a;
-  box-shadow: inset 0 0 0 1px #0f172a;
+  box-shadow: inset 0 0 0 2px #0f172a;
+  background: #f8fafc;
 }
 .color-custom { margin-top: 4px; display: grid; gap: 8px; }
 
@@ -209,26 +229,29 @@
 }
 
 .summary-price { font-size: 32px; font-weight: 800; margin: 10px 0 0; line-height: 1.1; }
-.summary-time { color: #475569; margin: 4px 0 0; font-size: 15px; }
+.summary-time { color: #475569; margin: 8px 0 0; font-size: 15px; }
 
 .final-cta {
   background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
   color: #fff;
-  padding: 16px;
+  padding: 20px 18px;
   border-radius: 14px;
   display: grid;
-  gap: 10px;
+  gap: 14px;
 }
 
 .final-cta h3 { margin: 0; color: #cbd5e1; font-size: 13px; }
 .final-cta #ctaSummary { margin: 0; font-weight: 600; color: #e2e8f0; }
 .final-cta .summary-price { margin-top: 0; }
 .final-cta .summary-time { color: #cbd5e1; }
+.final-cta .primary { margin-top: 2px; }
+.final-cta .secondary { margin-top: 2px; }
 
 .primary, .secondary, .cta-button {
   border: 0;
   border-radius: 10px;
-  padding: 12px;
+  padding: 14px;
+  min-height: 50px;
   font-weight: 700;
   cursor: pointer;
   letter-spacing: 0.03em;
@@ -245,6 +268,8 @@
   border-radius: 14px;
   padding: 12px 14px;
   display: flex;
+  width: 100%;
+  box-sizing: border-box;
   justify-content: space-between;
   align-items: center;
   gap: 12px;

@@ -24,7 +24,7 @@ function formatPrice(value) {
   return new Intl.NumberFormat("ru-RU").format(Math.round(value)) + " ₽";
 }
 
-function getBuildTimeWeeks(config) {
+function getBuildTimeDays(config) {
   return 4 + (config.length >= 8 ? 1 : 0) + (config.length >= 10 ? 1 : 0) + (config.partition ? 1 : 0);
 }
 
@@ -64,7 +64,6 @@ export function mountConfigurator({ state, root }) {
   const partitionToggle = root.querySelector("#partitionToggle");
   const doorsCount = root.querySelector("#doorsCount");
   const windowsCount = root.querySelector("#windowsCount");
-  const layoutSelect = root.querySelector("#layoutSelect");
   const presetButtons = [...root.querySelectorAll(".color-presets button")];
   const wallColor = root.querySelector("#wallColor");
   const roofColor = root.querySelector("#roofColor");
@@ -72,7 +71,6 @@ export function mountConfigurator({ state, root }) {
   const gateColor = root.querySelector("#gateColor");
   const interiorColor = root.querySelector("#interiorColor");
   const summaryList = root.querySelector("#summaryList");
-  const summaryPrice = root.querySelector("#summaryPrice");
   const summaryTime = root.querySelector("#summaryTime");
   const ctaSummary = root.querySelector("#ctaSummary");
   const ctaPrice = root.querySelector("#ctaPrice");
@@ -117,7 +115,7 @@ export function mountConfigurator({ state, root }) {
 
   const render = () => {
     state.price = calculatePrice(state);
-    state.buildTimeWeeks = getBuildTimeWeeks(state);
+    state.buildTimeWeeks = getBuildTimeDays(state);
 
     productTitle.textContent = state.type.toUpperCase();
     baseInfo.textContent = `ширина ${state.width} м • ${state.gates} ${state.gates === 1 ? "ворота" : "ворот"}`;
@@ -126,8 +124,6 @@ export function mountConfigurator({ state, root }) {
     lengthInput.value = String(state.length);
     shelvesToggle.checked = state.shelves;
     partitionToggle.checked = state.partition;
-    layoutSelect.value = state.layout;
-
     lengthCards.forEach((card) => {
       card.classList.toggle("active", Number(card.dataset.length) === state.length);
     });
@@ -164,8 +160,7 @@ export function mountConfigurator({ state, root }) {
     `;
 
     const priceText = formatPrice(state.price);
-    const timeText = `Срок строительства: ${state.buildTimeWeeks}–${state.buildTimeWeeks + 1} недель`;
-    summaryPrice.textContent = priceText;
+    const timeText = `Срок строительства: ${state.buildTimeWeeks}–${state.buildTimeWeeks + 1} дней`;
     summaryTime.textContent = timeText;
     ctaSummary.textContent = `${state.type.toLowerCase()} · ${state.width} × ${state.length} м · ${LAYOUT_LABELS[state.layout]}`;
     ctaPrice.textContent = priceText;
@@ -203,11 +198,6 @@ export function mountConfigurator({ state, root }) {
       state[key] = Math.max(0, state[key] + direction);
       render();
     });
-  });
-
-  layoutSelect.addEventListener("change", () => {
-    state.layout = layoutSelect.value;
-    render();
   });
 
   presetButtons.forEach((button) => {
