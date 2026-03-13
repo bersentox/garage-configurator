@@ -7,6 +7,7 @@ const OPTIONS_PRICE = PRICES.OPTIONS_PRICE || {};
 const LAYOUT_SURCHARGE = PRICES.LAYOUT_SURCHARGE || {};
 const ROOF_SURCHARGE = PRICES.ROOF_SURCHARGE || {};
 const ELEMENT_PRICE = PRICES.ELEMENT_PRICE || {};
+const FOUNDATION_RATE_PER_M2 = PRICES.FOUNDATION_RATE_PER_M2 || {};
 
 function formatPrice(value) {
   return new Intl.NumberFormat("ru-RU").format(Math.round(value)) + " ₽";
@@ -32,7 +33,10 @@ function calculatePrice(config) {
   const layoutSurcharge = LAYOUT_SURCHARGE[config.layout] || 0;
   const roofKey = config.roofType || config.roof;
   const roofSurcharge = ROOF_SURCHARGE[roofKey] || 0;
-  let price = basePrice + layoutSurcharge + roofSurcharge;
+  const foundationKey = FOUNDATION_RATE_PER_M2[config.foundation] != null ? config.foundation : "none";
+  const foundationRatePerM2 = FOUNDATION_RATE_PER_M2[foundationKey] || 0;
+  const foundationPrice = config.width * config.length * foundationRatePerM2;
+  let price = basePrice + layoutSurcharge + roofSurcharge + foundationPrice;
 
   if (config.shelves) price += ELEMENT_PRICE.shelves || 0;
   if (config.partition) price += ELEMENT_PRICE.partition || 0;
