@@ -27,6 +27,14 @@ window.CONFIG_PRICES = {
     window: 18000
   },
 
+  // Ставка за квадратный метр по фундаменту
+  FOUNDATION_RATE_PER_M2: {
+    none: 0,
+    pile: 0,
+    strip: 0,
+    slab: 0
+  },
+
   // Цены дополнительных опций
   OPTIONS_PRICE: {
     gateAutomation: 110000,
