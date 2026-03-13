@@ -181,11 +181,23 @@
 }
 
 .length-custom label,
-.color-custom label {
+.color-custom .color-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
+}
+
+.color-custom .color-row {
+  width: 100%;
+}
+
+.color-custom .color-row span {
+  flex: 1 1 auto;
+}
+
+.color-custom .color-row input[type="color"] {
+  flex: 0 0 auto;
 }
 
 .length-custom input[type="number"] {
