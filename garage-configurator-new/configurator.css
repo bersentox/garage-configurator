@@ -181,7 +181,7 @@
 }
 
 .length-custom label,
-.color-custom label {
+.color-custom .color-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
