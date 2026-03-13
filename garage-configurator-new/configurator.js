@@ -106,6 +106,19 @@ export function mountConfigurator({ state, root }) {
     custom: "индивидуальная композиция"
   };
 
+  const LENGTH_USAGE_BY_WIDTH = {
+    6: {
+      6: "для машины",
+      8: "машина + хранение",
+      10: "машина + хозблок"
+    },
+    8: {
+      6: "только для машин",
+      8: "машина + хранение",
+      10: "машина + хозблок"
+    }
+  };
+
   const syncColorInputs = () => {
     wallColor.value = state.colors.wall;
     roofColor.value = state.colors.roof;
@@ -126,7 +139,18 @@ export function mountConfigurator({ state, root }) {
     shelvesToggle.checked = state.shelves;
     partitionToggle.checked = state.partition;
     lengthCards.forEach((card) => {
-      card.classList.toggle("active", Number(card.dataset.length) === state.length);
+      const cardLength = Number(card.dataset.length);
+      const area = state.width * cardLength;
+      const previewConfig = { ...state, length: cardLength };
+      const areaElement = card.querySelector(".length-area");
+      const priceElement = card.querySelector(".length-price");
+      const usageElement = card.querySelector(".length-usage");
+      const presetUsage = LENGTH_USAGE_BY_WIDTH[state.width]?.[cardLength];
+
+      card.classList.toggle("active", cardLength === state.length);
+      if (areaElement) areaElement.textContent = `${area} м²`;
+      if (priceElement) priceElement.textContent = `от ${formatPrice(calculatePrice(previewConfig))}`;
+      if (usageElement && presetUsage) usageElement.textContent = presetUsage;
     });
 
     presetButtons.forEach((button) => {
