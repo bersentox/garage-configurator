@@ -254,6 +254,15 @@
   padding: 10px 12px;
 }
 
+
+.config-foundation select {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fff;
+}
+
 .config-summary ul {
   margin: 0;
   padding: 0;

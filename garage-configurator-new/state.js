@@ -61,6 +61,7 @@ const DEFAULT_STATE = {
   partition: false,
   doors: 0,
   windows: 0,
+  foundation: "none",
   colorPreset: "graphite",
   colors: { ...COLOR_PRESETS.graphite },
   options: { ...DEFAULT_OPTIONS },
