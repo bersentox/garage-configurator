@@ -64,7 +64,7 @@ export function mountConfigurator({ state, root }) {
   const lengthInput = root.querySelector("#lengthInput");
   const shelvesToggle = root.querySelector("#shelvesToggle");
   const partitionToggle = root.querySelector("#partitionToggle");
-  const foundationSelect = root.querySelector("#foundationSelect");
+  const foundationOptions = [...root.querySelectorAll(".foundation-option")];
   const doorsCount = root.querySelector("#doorsCount");
   const windowsCount = root.querySelector("#windowsCount");
   const presetButtons = [...root.querySelectorAll(".color-presets button")];
@@ -147,7 +147,9 @@ export function mountConfigurator({ state, root }) {
     lengthInput.value = String(state.length);
     shelvesToggle.checked = state.shelves;
     partitionToggle.checked = state.partition;
-    if (foundationSelect) foundationSelect.value = state.foundation;
+    foundationOptions.forEach((option) => {
+      option.classList.toggle("active", option.dataset.foundation === state.foundation);
+    });
     lengthCards.forEach((card) => {
       const cardLength = Number(card.dataset.length);
       const area = state.width * cardLength;
@@ -258,12 +260,12 @@ export function mountConfigurator({ state, root }) {
     });
   });
 
-  if (foundationSelect) {
-    foundationSelect.addEventListener("change", () => {
-      state.foundation = foundationSelect.value || "none";
+  foundationOptions.forEach((option) => {
+    option.addEventListener("click", () => {
+      state.foundation = option.dataset.foundation || "none";
       render();
     });
-  }
+  });
 
   root.querySelectorAll("[data-option]").forEach((checkbox) => {
     checkbox.addEventListener("change", () => {
