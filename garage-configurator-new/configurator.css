@@ -188,6 +188,18 @@
   gap: 8px;
 }
 
+.color-custom .color-row {
+  width: 100%;
+}
+
+.color-custom .color-row span {
+  flex: 1 1 auto;
+}
+
+.color-custom .color-row input[type="color"] {
+  flex: 0 0 auto;
+}
+
 .length-custom input[type="number"] {
   border: 1px solid #cbd5e1;
   border-radius: 8px;
