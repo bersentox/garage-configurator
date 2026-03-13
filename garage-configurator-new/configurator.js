@@ -108,7 +108,7 @@ export function mountConfigurator({ state, root }) {
 
   const LENGTH_USAGE_BY_WIDTH = {
     6: {
-      6: "для машины",
+      6: "только для машины",
       8: "машина + хранение",
       10: "машина + хозблок"
     },
