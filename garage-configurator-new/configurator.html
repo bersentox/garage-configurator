@@ -66,14 +66,12 @@
 
       <section class="config-foundation">
         <h3>ВЫБЕРИТЕ ФУНДАМЕНТ</h3>
-        <label class="option-row">
-          <select id="foundationSelect">
-            <option value="none">без фундамента</option>
-            <option value="pile">свайный</option>
-            <option value="strip">ленточный</option>
-            <option value="slab">плита</option>
-          </select>
-        </label>
+        <div class="foundation-options" id="foundationOptions">
+          <button type="button" class="foundation-option" data-foundation="none">без фундамента</button>
+          <button type="button" class="foundation-option" data-foundation="pile">свайный</button>
+          <button type="button" class="foundation-option" data-foundation="strip">ленточный</button>
+          <button type="button" class="foundation-option" data-foundation="slab">плита</button>
+        </div>
       </section>
 
       <section class="config-colors">
