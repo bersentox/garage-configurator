@@ -57,12 +57,14 @@ function renderSceneColors(root, colors) {
 }
 
 export function mountConfigurator({ state, root }) {
+  if (!state.foundation) state.foundation = "none";
   const productTitle = root.querySelector("#productTitle");
   const baseInfo = root.querySelector("#baseInfo");
   const lengthCards = [...root.querySelectorAll(".length-card")];
   const lengthInput = root.querySelector("#lengthInput");
   const shelvesToggle = root.querySelector("#shelvesToggle");
   const partitionToggle = root.querySelector("#partitionToggle");
+  const foundationInputs = [...root.querySelectorAll("[data-foundation]")];
   const doorsCount = root.querySelector("#doorsCount");
   const windowsCount = root.querySelector("#windowsCount");
   const presetButtons = [...root.querySelectorAll(".color-presets button")];
@@ -94,6 +96,13 @@ export function mountConfigurator({ state, root }) {
     exteriorLighting: "внешнее освещение",
     ventilation: "вентиляция",
     gutters: "водостоки"
+  };
+
+  const FOUNDATION_LABELS = {
+    none: "без фундамента",
+    pile: "свайный",
+    strip: "ленточный",
+    slab: "плита"
   };
 
   const PRESET_LABELS = {
@@ -138,6 +147,9 @@ export function mountConfigurator({ state, root }) {
     lengthInput.value = String(state.length);
     shelvesToggle.checked = state.shelves;
     partitionToggle.checked = state.partition;
+    foundationInputs.forEach((input) => {
+      input.checked = input.dataset.foundation === state.foundation;
+    });
     lengthCards.forEach((card) => {
       const cardLength = Number(card.dataset.length);
       const area = state.width * cardLength;
@@ -180,6 +192,7 @@ export function mountConfigurator({ state, root }) {
       <li><span class="summary-label">Размер</span><span class="summary-value">${state.width} × ${state.length} м</span></li>
       <li><span class="summary-label">Планировка</span><span class="summary-value">${LAYOUT_LABELS[state.layout]}</span></li>
       <li><span class="summary-label">Дополнительно</span><span class="summary-value">${additionalItems.join(", ") || "без дополнительных элементов"}</span></li>
+      <li><span class="summary-label">Фундамент</span><span class="summary-value">${FOUNDATION_LABELS[state.foundation] || FOUNDATION_LABELS.none}</span></li>
       <li><span class="summary-label">Цвет</span><span class="summary-value">${colorDescription}</span></li>
       <li><span class="summary-label">Опции</span><span class="summary-value">${selectedOptions}</span></li>
     `;
@@ -243,6 +256,14 @@ export function mountConfigurator({ state, root }) {
       state.colorPreset = "custom";
       state.colors[key] = input.value;
       renderSceneColors(scenePreview, state.colors);
+      render();
+    });
+  });
+
+  foundationInputs.forEach((input) => {
+    input.addEventListener("change", () => {
+      if (!input.checked) return;
+      state.foundation = input.dataset.foundation || "none";
       render();
     });
   });
