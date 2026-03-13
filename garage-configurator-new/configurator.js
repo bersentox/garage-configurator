@@ -64,7 +64,7 @@ export function mountConfigurator({ state, root }) {
   const lengthInput = root.querySelector("#lengthInput");
   const shelvesToggle = root.querySelector("#shelvesToggle");
   const partitionToggle = root.querySelector("#partitionToggle");
-  const foundationInputs = [...root.querySelectorAll("[data-foundation]")];
+  const foundationSelect = root.querySelector("#foundationSelect");
   const doorsCount = root.querySelector("#doorsCount");
   const windowsCount = root.querySelector("#windowsCount");
   const presetButtons = [...root.querySelectorAll(".color-presets button")];
@@ -147,9 +147,7 @@ export function mountConfigurator({ state, root }) {
     lengthInput.value = String(state.length);
     shelvesToggle.checked = state.shelves;
     partitionToggle.checked = state.partition;
-    foundationInputs.forEach((input) => {
-      input.checked = input.dataset.foundation === state.foundation;
-    });
+    if (foundationSelect) foundationSelect.value = state.foundation;
     lengthCards.forEach((card) => {
       const cardLength = Number(card.dataset.length);
       const area = state.width * cardLength;
@@ -260,13 +258,12 @@ export function mountConfigurator({ state, root }) {
     });
   });
 
-  foundationInputs.forEach((input) => {
-    input.addEventListener("change", () => {
-      if (!input.checked) return;
-      state.foundation = input.dataset.foundation || "none";
+  if (foundationSelect) {
+    foundationSelect.addEventListener("change", () => {
+      state.foundation = foundationSelect.value || "none";
       render();
     });
-  });
+  }
 
   root.querySelectorAll("[data-option]").forEach((checkbox) => {
     checkbox.addEventListener("change", () => {

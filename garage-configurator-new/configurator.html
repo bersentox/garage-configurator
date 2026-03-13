@@ -65,11 +65,15 @@
       </section>
 
       <section class="config-foundation">
-        <h3>ФУНДАМЕНТ</h3>
-        <label class="switch-row option-row">без фундамента <input type="radio" name="foundation" data-foundation="none" /></label>
-        <label class="switch-row option-row">свайный <input type="radio" name="foundation" data-foundation="pile" /></label>
-        <label class="switch-row option-row">ленточный <input type="radio" name="foundation" data-foundation="strip" /></label>
-        <label class="switch-row option-row">плита <input type="radio" name="foundation" data-foundation="slab" /></label>
+        <h3>ВЫБЕРИТЕ ФУНДАМЕНТ</h3>
+        <label class="option-row">
+          <select id="foundationSelect">
+            <option value="none">без фундамента</option>
+            <option value="pile">свайный</option>
+            <option value="strip">ленточный</option>
+            <option value="slab">плита</option>
+          </select>
+        </label>
       </section>
 
       <section class="config-colors">
