@@ -30,9 +30,9 @@ window.CONFIG_PRICES = {
   // Ставка за квадратный метр по фундаменту
   FOUNDATION_RATE_PER_M2: {
     none: 0,
-    pile: 0,
-    strip: 0,
-    slab: 0
+    pile: 6500,
+    strip: 5500,
+    slab: 4500
   },
 
   // Цены дополнительных опций
