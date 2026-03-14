@@ -97,13 +97,16 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   scene.add(directionalLight);
 
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.enablePan = false;
-  controls.enableZoom = true;
-  controls.maxPolarAngle = Math.PI / 2.1;
-  controls.minDistance = 6;
-  controls.maxDistance = 20;
-  controls.target.set(0, 1.5, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.enablePan = false;
+controls.enableZoom = true;
+controls.zoomSpeed = 0.7;
+controls.rotateSpeed = 0.85;
+controls.minDistance = 7;
+controls.maxDistance = 18;
+controls.minPolarAngle = 0.75;
+controls.maxPolarAngle = 1.42;
 
   const loader = new GLTFLoader();
   let animationFrameId = 0;
