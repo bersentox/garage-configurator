@@ -1,4 +1,5 @@
 import { applyColorPreset } from "./state.js";
+import { createGarage3DViewer } from "./garage3d.js";
 
 const PRICES = window.CONFIG_PRICES || {};
 
@@ -8,8 +9,6 @@ const LAYOUT_SURCHARGE = PRICES.LAYOUT_SURCHARGE || {};
 const ROOF_SURCHARGE = PRICES.ROOF_SURCHARGE || {};
 const ELEMENT_PRICE = PRICES.ELEMENT_PRICE || {};
 const FOUNDATION_RATE_PER_M2 = PRICES.FOUNDATION_RATE_PER_M2 || {};
-
-const SUPPORTED_PREVIEW_LENGTHS = [6, 8, 10];
 
 function formatPrice(value) {
   return new Intl.NumberFormat("ru-RU").format(Math.round(value)) + " ₽";
@@ -54,36 +53,6 @@ function calculatePrice(config) {
   return price;
 }
 
-function renderSceneColors(root, colors) {
-  root.querySelector(".scene-wall").style.background = colors.wall;
-  root.querySelector(".scene-roof").style.background = colors.roof;
-  root.querySelector(".scene-trim").style.background = colors.trim;
-  root.querySelector(".scene-gate").style.background = colors.gate;
-  root.querySelector(".scene-interior").style.background = colors.interiorWall;
-}
-
-function isSingleCarWidth6Branch(state) {
-  return state.gates === 1 && Number(state.width) === 6;
-}
-
-function normalizePreviewLength(value) {
-  const numericLength = Number(value);
-  if (!Number.isFinite(numericLength)) return SUPPORTED_PREVIEW_LENGTHS[0];
-
-  return SUPPORTED_PREVIEW_LENGTHS.reduce((closest, current) => {
-    const currentDistance = Math.abs(current - numericLength);
-    const closestDistance = Math.abs(closest - numericLength);
-    return currentDistance < closestDistance ? current : closest;
-  }, SUPPORTED_PREVIEW_LENGTHS[0]);
-}
-
-function getPreviewSvgPath(state) {
-  if (!isSingleCarWidth6Branch(state)) return null;
-
-  const normalizedLength = normalizePreviewLength(state.length);
-  return `./assets/garage-${normalizedLength}.svg`;
-}
-
 export function mountConfigurator({ state, root }) {
   if (!state.foundation) state.foundation = "none";
   const productTitle = root.querySelector("#productTitle");
@@ -109,15 +78,9 @@ export function mountConfigurator({ state, root }) {
   const stickyBar = root.querySelector("#stickyBar");
   const stickyPrice = root.querySelector("#stickyPrice");
   const stickyMeta = root.querySelector("#stickyMeta");
-  const scenePreview = root.querySelector("#scenePreview");
-  const sceneLegacyPreview = root.querySelector("#sceneLegacyPreview");
-  const sceneSvgStage = root.querySelector("#sceneSvgStage");
-  const scenePreviewFallback = root.querySelector("#scenePreviewFallback");
   const finalCta = root.querySelector("#finalCta");
 
-  const svgCache = new Map();
-  let currentSvgPath = null;
-  let previewRequestId = 0;
+  const garageViewer = createGarage3DViewer({ containerId: "garage-3d-viewer" });
 
   const LAYOUT_LABELS = {
     classic: "классическая",
@@ -171,77 +134,6 @@ export function mountConfigurator({ state, root }) {
     interiorColor.value = state.colors.interiorWall;
   };
 
-  const recolorPreviewGroup = (id, color) => {
-    if (!color) return;
-    const group = sceneSvgStage.querySelector(`#${id}`);
-    if (!group) return;
-
-    group.querySelectorAll("path, polygon, polyline, rect, circle, ellipse").forEach((node) => {
-      node.style.fill = color;
-      node.style.stroke = color;
-    });
-  };
-
-  const applyGaragePreviewColors = () => {
-    recolorPreviewGroup("walls", state.colors.wall);
-    recolorPreviewGroup("roof", state.colors.roof);
-    recolorPreviewGroup("trim", state.colors.trim);
-    recolorPreviewGroup("gate", state.colors.gate);
-  };
-
-  const setPreviewMode = (mode) => {
-    sceneLegacyPreview.hidden = mode !== "legacy";
-    sceneSvgStage.hidden = mode !== "svg";
-    scenePreviewFallback.hidden = mode !== "fallback";
-  };
-
-  const loadGaragePreview = async (path) => {
-    const requestId = ++previewRequestId;
-
-    try {
-      let svgMarkup = svgCache.get(path);
-
-      if (!svgMarkup) {
-        const response = await fetch(path, { cache: "force-cache" });
-        if (!response.ok) {
-          throw new Error(`Preview request failed: ${path}`);
-        }
-
-        svgMarkup = await response.text();
-        svgCache.set(path, svgMarkup);
-      }
-
-      if (requestId !== previewRequestId) return;
-
-      if (currentSvgPath !== path) {
-        sceneSvgStage.innerHTML = svgMarkup;
-        currentSvgPath = path;
-      }
-
-      applyGaragePreviewColors();
-      setPreviewMode("svg");
-    } catch (error) {
-      console.error(error);
-      setPreviewMode("fallback");
-    }
-  };
-
-  const syncGaragePreview = () => {
-    if (!isSingleCarWidth6Branch(state)) {
-      previewRequestId += 1;
-      setPreviewMode("legacy");
-      return;
-    }
-
-    const svgPath = getPreviewSvgPath(state);
-    if (!svgPath) {
-      setPreviewMode("fallback");
-      return;
-    }
-
-    loadGaragePreview(svgPath);
-  };
-
   const render = () => {
     state.price = calculatePrice(state);
     state.buildTimeWeeks = getBuildTimeDays(state);
@@ -276,8 +168,7 @@ export function mountConfigurator({ state, root }) {
     });
 
     syncColorInputs();
-    renderSceneColors(scenePreview, state.colors);
-    syncGaragePreview();
+    garageViewer.applyColors(state.colors);
 
     const selectedOptions = Object.entries(state.options)
       .filter(([, value]) => value)
@@ -362,8 +253,7 @@ export function mountConfigurator({ state, root }) {
     input.addEventListener("input", () => {
       state.colorPreset = "custom";
       state.colors[key] = input.value;
-      renderSceneColors(scenePreview, state.colors);
-      applyGaragePreviewColors();
+      garageViewer.applyColors(state.colors);
       render();
     });
   });
@@ -396,6 +286,7 @@ export function mountConfigurator({ state, root }) {
     render,
     destroy() {
       observer.disconnect();
+      garageViewer.destroy();
     }
   };
 }
