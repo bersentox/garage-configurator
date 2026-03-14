@@ -101,7 +101,7 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   controls.enablePan = false;
   controls.enableZoom = true;
   controls.maxPolarAngle = Math.PI / 2.1;
-  controls.minDistance = 4;
+  controls.minDistance = 6;
   controls.maxDistance = 20;
   controls.target.set(0, 1.5, 0);
 
@@ -132,7 +132,7 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
     camera.near = 0.1;
     camera.far = Math.max(100, distance * 12);
     camera.updateProjectionMatrix();
-    controls.target.set(0, Math.max(size.y * 0.32, 1.6), 0);
+    controls.target.set(0, Math.max(size.y * 0.35, 1.8), 0);
     controls.update();
   }
 
