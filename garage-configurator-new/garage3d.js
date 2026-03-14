@@ -100,6 +100,8 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.enablePan = false;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.4;
 controls.enableZoom = true;
 controls.zoomSpeed = 0.7;
 controls.rotateSpeed = 0.85;
@@ -131,7 +133,7 @@ controls.maxPolarAngle = 1.42;
 
     const maxSize = Math.max(size.x, size.y, size.z);
     const distance = Math.max(6, maxSize * 1.7);
-    camera.position.set(distance * 0.8, distance * 0.68, distance);
+    camera.position.set(distance * 0.95, distance * 0.35, distance * 1.15);
     camera.near = 0.1;
     camera.far = Math.max(100, distance * 12);
     camera.updateProjectionMatrix();
