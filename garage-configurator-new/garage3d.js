@@ -128,11 +128,11 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
 
     const maxSize = Math.max(size.x, size.y, size.z);
     const distance = Math.max(6, maxSize * 1.7);
-    camera.position.set(distance * 0.8, distance * 0.55, distance);
+    camera.position.set(distance * 0.8, distance * 0.68, distance);
     camera.near = 0.1;
     camera.far = Math.max(100, distance * 12);
     camera.updateProjectionMatrix();
-    controls.target.set(0, Math.max(size.y * 0.2, 1.2), 0);
+    controls.target.set(0, Math.max(size.y * 0.32, 1.6), 0);
     controls.update();
   }
 
