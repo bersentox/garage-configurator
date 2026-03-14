@@ -80,7 +80,16 @@ export function mountConfigurator({ state, root }) {
   const stickyMeta = root.querySelector("#stickyMeta");
   const finalCta = root.querySelector("#finalCta");
 
-  const garageViewer = createGarage3DViewer({ containerId: "garage-3d-viewer" });
+  let garageViewer = {
+    applyColors() {},
+    destroy() {}
+  };
+
+  try {
+    garageViewer = createGarage3DViewer({ containerId: "garage-3d-viewer" });
+  } catch (error) {
+    console.error("[Configurator] Failed to initialize 3D viewer", error);
+  }
 
   const LAYOUT_LABELS = {
     classic: "классическая",
