@@ -1,7 +1,6 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/+esm";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js/+esm";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js/+esm";
-import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js/+esm";
 
 const GARAGE_MODEL_PATHS = {
   "6x6": "../models/garage_6x6.glb",
@@ -89,6 +88,8 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
     };
   }
 
+  container.style.position = "relative";
+
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#f3f4f6");
   const modelGroup = new THREE.Group();
@@ -104,6 +105,35 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(container.clientWidth, container.clientHeight, false);
   container.appendChild(renderer.domElement);
+
+  const statusMessage = document.createElement("div");
+  statusMessage.setAttribute("role", "status");
+  statusMessage.style.position = "absolute";
+  statusMessage.style.left = "50%";
+  statusMessage.style.top = "50%";
+  statusMessage.style.transform = "translate(-50%, -50%)";
+  statusMessage.style.padding = "12px 14px";
+  statusMessage.style.maxWidth = "88%";
+  statusMessage.style.borderRadius = "10px";
+  statusMessage.style.background = "rgba(15, 23, 42, 0.82)";
+  statusMessage.style.color = "#f8fafc";
+  statusMessage.style.fontSize = "14px";
+  statusMessage.style.lineHeight = "1.35";
+  statusMessage.style.textAlign = "center";
+  statusMessage.style.zIndex = "3";
+  statusMessage.style.pointerEvents = "none";
+  statusMessage.style.display = "none";
+  container.appendChild(statusMessage);
+
+  function showStatus(message) {
+    statusMessage.textContent = message;
+    statusMessage.style.display = "block";
+  }
+
+  function hideStatus() {
+    statusMessage.textContent = "";
+    statusMessage.style.display = "none";
+  }
 
   const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5e1, 0.8);
   scene.add(hemisphereLight);
@@ -214,6 +244,7 @@ controls.maxPolarAngle = 1.42;
 
     if (!nextModelPath) {
       console.error("[Garage3D] Unsupported model size", { width, length });
+      showStatus("Не удалось подобрать модель для выбранного размера гаража.");
       return;
     }
 
@@ -223,6 +254,7 @@ controls.maxPolarAngle = 1.42;
     }
 
     const loadId = ++pendingLoadId;
+    showStatus("Загрузка 3D-модели…");
 
     if (mountedModel) {
       modelGroup.remove(mountedModel);
@@ -249,11 +281,13 @@ controls.maxPolarAngle = 1.42;
         const meshIndex = buildMeshIndex(mountedModel);
         Object.assign(garageParts, detectGarageParts(meshIndex));
         applyColors(activeColors);
+        hideStatus();
       },
       undefined,
       (error) => {
         if (loadId !== pendingLoadId) return;
         console.error("[Garage3D] Failed to load model", { path: nextModelPath, error });
+        showStatus("Не удалось загрузить 3D-модель. Проверьте подключение и обновите страницу.");
       }
     );
   }
@@ -298,8 +332,7 @@ controls.maxPolarAngle = 1.42;
       if (mountedModel) disposeModel(mountedModel);
 
       renderer.dispose();
-      environmentMap?.dispose?.();
-      pmremGenerator?.dispose?.();
+      statusMessage.remove();
       renderer.domElement.remove();
     }
   };
