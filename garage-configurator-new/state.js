@@ -7,10 +7,10 @@ const COLOR_PRESETS = {
   interiorWall: "#d5dbe4"
 },
   grey: {
-    wall: "#8b95a1",
-    roof: "#4b5563",
-    trim: "#334155",
-    gate: "#9ca3af",
+    wall: "#a3a3a3",
+    roof: "#6b6b6b",
+    trim: "#8a8a8a",
+    gate: "#8f8f8f",
     interiorWall: "#e5e7eb"
   },
   sand: {
