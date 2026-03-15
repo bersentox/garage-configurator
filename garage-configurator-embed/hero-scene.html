@@ -1,0 +1,39 @@
+<section class="hero" id="heroStep">
+  <div class="hero-inner">
+    <h1 class="hero-title">Соберите свой гараж<br />и узнайте цену за 30 секунд</h1>
+    <p class="hero-subtitle">Откройте гараж и выберите свой вариант</p>
+
+    <div class="hero-scene">
+      <div id="garageScene" class="garage-scene" aria-live="polite">
+        <img class="garage-layer garage-background" src="../images/garages/scene/background.webp" alt="Фон сцены гаража" />
+        <img class="garage-layer garage-interior" src="../images/garages/scene/interior.webp" alt="Интерьер гаража" />
+
+        <div class="garage-gate-mask" aria-hidden="true">
+          <img class="garage-gate" src="../images/garages/scene/gate.webp" alt="Ворота гаража" />
+        </div>
+
+        <img class="garage-layer garage-front" src="../images/garages/scene/front.webp" alt="Передний план гаража" />
+
+        <button id="garageRemoteButton" class="garage-remote" type="button" aria-label="Открыть ворота" aria-pressed="false">
+          <span class="garage-remote-dot" aria-hidden="true"></span>
+          <span class="garage-remote-line" aria-hidden="true"></span>
+          <span class="garage-remote-label">🏠</span>
+        </button>
+
+        <div class="garage-interior-ui" aria-hidden="true">
+          <div class="garage-interior-buttons">
+            <button class="garage-choice" type="button" data-width="6">
+              <span class="garage-choice-main">1 МАШИНА</span>
+              <span class="garage-choice-sub">/ 6 м</span>
+            </button>
+
+            <button class="garage-choice" type="button" data-width="8">
+              <span class="garage-choice-main">2 МАШИНЫ</span>
+              <span class="garage-choice-sub">/ 8 м</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

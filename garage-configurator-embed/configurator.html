@@ -1,0 +1,126 @@
+<section id="configuratorStep" class="configurator-page" hidden>
+  <div class="container">
+    <aside class="scene" aria-label="Превью гаража">
+      <div id="scenePreview" class="scene-preview">
+        <div id="garage-3d-viewer"></div>
+      </div>
+    </aside>
+
+    <div class="configurator">
+      <section class="config-base">
+        <h2 class="config-title" id="productTitle"></h2>
+        <p class="config-meta" id="baseInfo"></p>
+      </section>
+
+      <section class="config-length">
+        <h3>ВЫБЕРИТЕ ДЛИНУ ГАРАЖА</h3>
+        <div class="length-cards" id="lengthCards">
+          <button class="length-card" type="button" data-length="6" data-price="1950000">
+            <span class="length-value"><strong>6</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">48 м²</span></span>
+            <span class="length-usage">только для машин</span>
+            <span class="length-price">от 1 950 000 ₽</span>
+          </button>
+          <button class="length-card" type="button" data-length="8" data-price="2290000">
+            <span class="length-value"><strong>8</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">64 м²</span></span>
+            <span class="length-usage">машина + хранение</span>
+            <span class="length-price">от 2 290 000 ₽</span>
+          </button>
+          <button class="length-card" type="button" data-length="10" data-price="2650000">
+            <span class="length-value"><strong>10</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">80 м²</span></span>
+            <span class="length-usage">машина + хозблок</span>
+            <span class="length-price">от 2 650 000 ₽</span>
+          </button>
+        </div>
+
+        <div class="length-custom">
+          <h4>НАСТРОИТЬ СВОЙ ВАРИАНТ</h4>
+          <label>длина (м)
+            <input id="lengthInput" type="number" min="6" step="1" value="6" />
+          </label>
+          <label class="switch-row">стеллажи
+            <input id="shelvesToggle" type="checkbox" />
+          </label>
+          <label class="switch-row">перегородка
+            <input id="partitionToggle" type="checkbox" />
+          </label>
+          <label>доп дверь
+            <div class="stepper">
+              <button type="button" data-stepper="doors" data-dir="-1">−</button>
+              <output id="doorsCount">0</output>
+              <button type="button" data-stepper="doors" data-dir="1">+</button>
+            </div>
+          </label>
+          <label>доп окна
+            <div class="stepper">
+              <button type="button" data-stepper="windows" data-dir="-1">−</button>
+              <output id="windowsCount">0</output>
+              <button type="button" data-stepper="windows" data-dir="1">+</button>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <section class="config-foundation">
+        <h3>ВЫБЕРИТЕ ФУНДАМЕНТ</h3>
+        <div class="foundation-options" id="foundationOptions">
+          <button type="button" class="foundation-option" data-foundation="none">без фундамента</button>
+          <button type="button" class="foundation-option" data-foundation="pile">свайный</button>
+          <button type="button" class="foundation-option" data-foundation="strip">ленточный</button>
+          <button type="button" class="foundation-option" data-foundation="slab">плита</button>
+        </div>
+      </section>
+
+      <section class="config-colors">
+        <h3>ЦВЕТА ГАРАЖА</h3>
+        <h4>ГОТОВЫЕ СТИЛИ</h4>
+        <div class="color-presets" id="colorPresets">
+          <button type="button" data-preset="graphite">графит</button>
+          <button type="button" data-preset="grey">серый</button>
+          <button type="button" data-preset="sand">песочный</button>
+          <button type="button" data-preset="chocolate">шоколад</button>
+          <button type="button" data-preset="wood">под дерево</button>
+          <button type="button" data-preset="industrial">индустриальный</button>
+        </div>
+        <h4>НАСТРОИТЬ СВОЮ КОМПОЗИЦИЮ</h4>
+        <div class="color-custom">
+          <div class="color-row"><span>цвет стен</span> <input type="color" id="wallColor" /></div>
+          <div class="color-row"><span>цвет крыши</span> <input type="color" id="roofColor" /></div>
+          <div class="color-row"><span>цвет фасонных элементов</span> <input type="color" id="trimColor" /></div>
+          <div class="color-row"><span>цвет ворот</span> <input type="color" id="gateColor" /></div>
+          <div class="color-row"><span>цвет внутренних стен</span> <input type="color" id="interiorColor" /></div>
+        </div>
+      </section>
+
+      <section class="config-options">
+        <h3>ДОПОЛНИТЕЛЬНЫЕ ОПЦИИ</h3>
+        <label class="switch-row option-row">автоматика ворот <input type="checkbox" data-option="gateAutomation" /></label>
+        <label class="switch-row option-row">внутренняя электрика <input type="checkbox" data-option="interiorElectricity" /></label>
+        <label class="switch-row option-row">внешнее освещение <input type="checkbox" data-option="exteriorLighting" /></label>
+        <label class="switch-row option-row">вентиляция <input type="checkbox" data-option="ventilation" /></label>
+        <label class="switch-row option-row">водостоки <input type="checkbox" data-option="gutters" /></label>
+      </section>
+
+      <section class="config-summary">
+        <h3>ВАШ ГАРАЖ</h3>
+        <ul id="summaryList"></ul>
+        <p class="summary-time" id="summaryTime"></p>
+      </section>
+
+      <section class="final-cta" id="finalCta">
+        <h3>Ориентировочная стоимость проекта</h3>
+        <p id="ctaSummary"></p>
+        <p class="summary-price" id="ctaPrice"></p>
+        <p class="summary-time" id="ctaTime"></p>
+        <a href="#popup:kalkul" class="primary">Узнать точную цену</a>
+        <a href="#popup:kalkul" class="secondary">Бесплатная консультация</a>
+      </section>
+      <div class="sticky-bar" id="stickyBar">
+        <div>
+          <p class="price" id="stickyPrice"></p>
+          <p class="price-meta" id="stickyMeta"></p>
+        </div>
+        <a href="#popup:kalkul" class="cta-button">Уточнить цену</a>
+      </div>
+    </div>
+  </div>
+</section>
