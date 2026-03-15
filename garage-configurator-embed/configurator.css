@@ -1,31 +1,26 @@
 .configurator-page {
-  padding: 0 0 clamp(24px, 3vw, 36px);
-  background: transparent;
-  overflow: visible;
+  padding: 28px 20px 140px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
 }
 
 .container {
-  width: 100%;
-  max-width: none;
-  margin: 0;
+  max-width: 1240px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(360px, 1fr) minmax(340px, 430px);
-  gap: clamp(16px, 2vw, 24px);
+  grid-template-columns: minmax(0, 1fr) 460px;
+  gap: 28px;
   align-items: start;
-  overflow: visible;
 }
 
 .scene {
   position: sticky;
-  top: 16px;
-  align-self: start;
-  height: fit-content;
+  top: 20px;
 }
 
 .scene-preview {
   background: radial-gradient(circle at 50% 22%, #ffffff 0%, #edf2f9 58%, #e2e8f0 100%);
   border: 1px solid #d5dee9;
-  border-radius: 20px;
+  border-radius: 24px;
   height: 500px;
   position: relative;
   overflow: hidden;
@@ -88,13 +83,11 @@
 .configurator {
   background: #fff;
   border-radius: 20px;
-  padding: 22px;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.1);
-  border: 1px solid #e2e8f0;
+  padding: 24px;
+  box-shadow: 0 14px 38px rgba(15, 23, 42, 0.11);
   display: grid;
   gap: 18px;
   position: relative;
-  overflow: visible;
 }
 
 .configurator section { border-bottom: 1px solid #e2e8f0; padding-bottom: 18px; }
@@ -416,7 +409,7 @@
 
 .sticky-bar {
   position: sticky;
-  bottom: 8px;
+  bottom: 12px;
   margin-top: 8px;
   background: rgba(15, 23, 42, 0.96);
   color: #fff;
@@ -439,10 +432,6 @@
   .scene { position: static; }
   .scene-preview { height: 340px; }
   .length-cards { grid-template-columns: 1fr; }
-  .sticky-bar {
-    position: static;
-    margin-top: 12px;
-  }
 }
 /* уменьшение текста только для карточки 10 м */
 .length-card[data-length="10"] strong {

@@ -12,28 +12,6 @@ async function loadFragment(path) {
   return response.text();
 }
 
-function setupEmbedAutoHeight() {
-  const sendHeight = () => {
-    const height = Math.ceil(document.documentElement.scrollHeight);
-
-    window.parent?.postMessage(
-      {
-        type: "garage-configurator:height",
-        height
-      },
-      "*"
-    );
-  };
-
-  const observer = new ResizeObserver(sendHeight);
-  observer.observe(document.body);
-  observer.observe(document.documentElement);
-
-  window.addEventListener("load", sendHeight);
-  window.addEventListener("resize", sendHeight);
-  sendHeight();
-}
-
 async function bootstrap() {
   const appRoot = document.getElementById("app");
 
@@ -59,21 +37,11 @@ async function bootstrap() {
       Object.assign(state, preset);
       configuratorApi.render();
       configuratorStep.hidden = false;
+      configuratorStep.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   });
-
-  setupEmbedAutoHeight();
 }
 
 bootstrap().catch((error) => {
   console.error(error);
-
-  const appRoot = document.getElementById("app");
-  if (appRoot) {
-    appRoot.innerHTML = `
-      <section style="margin:24px auto;max-width:760px;padding:16px 18px;border:1px solid #fecaca;border-radius:12px;background:#fef2f2;color:#991b1b;font:500 16px/1.4 Arial,sans-serif;">
-        Не удалось запустить конфигуратор. Обновите страницу или попробуйте позже.
-      </section>
-    `;
-  }
 });

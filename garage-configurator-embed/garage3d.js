@@ -1,3 +1,8 @@
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/+esm";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js/+esm";
+import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js/+esm";
+import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js/+esm";
+
 const GARAGE_MODEL_PATHS = {
   "6x6": "../models/garage_6x6.glb",
   "6x8": "../models/garage_6x8.glb",
@@ -7,63 +12,8 @@ const GARAGE_MODEL_PATHS = {
   "8x10": "../models/garage_8x10.glb"
 };
 
-const THREE_MODULE_CANDIDATES = [
-  {
-    name: "jsdelivr",
-    three: "https://cdn.jsdelivr.net/npm/three@0.160.0/+esm",
-    controls: "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js/+esm",
-    loader: "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js/+esm"
-  },
-  {
-    name: "esm.sh",
-    three: "https://esm.sh/three@0.160.0",
-    controls: "https://esm.sh/three@0.160.0/examples/jsm/controls/OrbitControls.js",
-    loader: "https://esm.sh/three@0.160.0/examples/jsm/loaders/GLTFLoader.js"
-  }
-];
-
-let threeModulesPromise = null;
-
 function getGarageModelPath(width, length) {
   return GARAGE_MODEL_PATHS[`${width}x${length}`] || null;
-}
-
-async function loadThreeModules() {
-  if (threeModulesPromise) return threeModulesPromise;
-
-  threeModulesPromise = (async () => {
-    const failures = [];
-
-    for (const candidate of THREE_MODULE_CANDIDATES) {
-      try {
-        const [threeModule, controlsModule, loaderModule] = await Promise.all([
-          import(candidate.three),
-          import(candidate.controls),
-          import(candidate.loader)
-        ]);
-
-        const THREE = threeModule;
-        const OrbitControls = controlsModule.OrbitControls;
-        const GLTFLoader = loaderModule.GLTFLoader;
-
-        if (!THREE || !OrbitControls || !GLTFLoader) {
-          throw new Error("Three.js module exports are incomplete");
-        }
-
-        return { THREE, OrbitControls, GLTFLoader, source: candidate.name };
-      } catch (error) {
-        failures.push({ source: candidate.name, error });
-      }
-    }
-
-    const details = failures
-      .map(({ source, error }) => `${source}: ${error?.message || String(error)}`)
-      .join("; ");
-
-    throw new Error(`Не удалось загрузить модули Three.js (${details})`);
-  })();
-
-  return threeModulesPromise;
 }
 
 function buildMeshIndex(root) {
@@ -130,47 +80,14 @@ function cloneAndSetColor(mesh, color) {
   }
 }
 
-function createViewerStatus(container) {
-  container.style.position = "relative";
-
-  const statusMessage = document.createElement("div");
-  statusMessage.setAttribute("role", "status");
-  statusMessage.style.position = "absolute";
-  statusMessage.style.left = "50%";
-  statusMessage.style.top = "50%";
-  statusMessage.style.transform = "translate(-50%, -50%)";
-  statusMessage.style.padding = "12px 14px";
-  statusMessage.style.maxWidth = "88%";
-  statusMessage.style.borderRadius = "10px";
-  statusMessage.style.background = "rgba(15, 23, 42, 0.82)";
-  statusMessage.style.color = "#f8fafc";
-  statusMessage.style.fontSize = "14px";
-  statusMessage.style.lineHeight = "1.35";
-  statusMessage.style.textAlign = "center";
-  statusMessage.style.zIndex = "3";
-  statusMessage.style.pointerEvents = "none";
-  statusMessage.style.display = "none";
-  container.appendChild(statusMessage);
-
-  return {
-    show(message) {
-      statusMessage.textContent = message;
-      statusMessage.style.display = "block";
-    },
-    hide() {
-      statusMessage.textContent = "";
-      statusMessage.style.display = "none";
-    },
-    remove() {
-      statusMessage.remove();
-    }
-  };
-}
-
-function createViewerImpl({ container, status, modules }) {
-  const { THREE, OrbitControls, GLTFLoader } = modules;
-
-  container.style.position = "relative";
+export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) {
+  const container = document.getElementById(containerId);
+  if (!container) {
+    return {
+      applyColors() {},
+      destroy() {}
+    };
+  }
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#f3f4f6");
@@ -188,8 +105,11 @@ function createViewerImpl({ container, status, modules }) {
   renderer.setSize(container.clientWidth, container.clientHeight, false);
   container.appendChild(renderer.domElement);
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xdbe5e1, 0.8));
-  scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5e1, 0.8);
+  scene.add(hemisphereLight);
+
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
+  scene.add(ambientLight);
 
   const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
   keyLight.position.set(8, 9, 7);
@@ -199,19 +119,20 @@ function createViewerImpl({ container, status, modules }) {
   fillLight.position.set(-8, 8, -7);
   scene.add(fillLight);
 
+
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.08;
-  controls.enablePan = false;
-  controls.autoRotate = false;
-  controls.autoRotateSpeed = 0.1;
-  controls.enableZoom = true;
-  controls.zoomSpeed = 0.7;
-  controls.rotateSpeed = 0.85;
-  controls.minDistance = 7;
-  controls.maxDistance = 18;
-  controls.minPolarAngle = 0.75;
-  controls.maxPolarAngle = 1.42;
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.enablePan = false;
+controls.autoRotate = false;
+controls.autoRotateSpeed = 0.1;
+controls.enableZoom = true;
+controls.zoomSpeed = 0.7;
+controls.rotateSpeed = 0.85;
+controls.minDistance = 7;
+controls.maxDistance = 18;
+controls.minPolarAngle = 0.75;
+controls.maxPolarAngle = 1.42;
 
   const loader = new GLTFLoader();
   let animationFrameId = 0;
@@ -253,6 +174,7 @@ function createViewerImpl({ container, status, modules }) {
   function setGarageColor(partName, color) {
     const mesh = garageParts[partName];
     if (!mesh || !color) return;
+
     cloneAndSetColor(mesh, color);
   }
 
@@ -267,9 +189,11 @@ function createViewerImpl({ container, status, modules }) {
 
   function disposeModel(model) {
     if (!model) return;
+
     model.traverse((node) => {
       if (!node.isMesh) return;
       node.geometry?.dispose?.();
+
       if (Array.isArray(node.material)) {
         node.material.forEach((material) => material?.dispose?.());
       } else {
@@ -290,7 +214,6 @@ function createViewerImpl({ container, status, modules }) {
 
     if (!nextModelPath) {
       console.error("[Garage3D] Unsupported model size", { width, length });
-      status.show("Не удалось подобрать модель для выбранного размера гаража.");
       return;
     }
 
@@ -300,7 +223,6 @@ function createViewerImpl({ container, status, modules }) {
     }
 
     const loadId = ++pendingLoadId;
-    status.show("Загрузка 3D-модели…");
 
     if (mountedModel) {
       modelGroup.remove(mountedModel);
@@ -327,13 +249,11 @@ function createViewerImpl({ container, status, modules }) {
         const meshIndex = buildMeshIndex(mountedModel);
         Object.assign(garageParts, detectGarageParts(meshIndex));
         applyColors(activeColors);
-        status.hide();
       },
       undefined,
       (error) => {
         if (loadId !== pendingLoadId) return;
         console.error("[Garage3D] Failed to load model", { path: nextModelPath, error });
-        status.show("Не удалось загрузить 3D-модель. Проверьте подключение и обновите страницу.");
       }
     );
   }
@@ -374,67 +294,13 @@ function createViewerImpl({ container, status, modules }) {
       window.removeEventListener("resize", resize);
       resizeObserver?.disconnect();
       controls.dispose();
+
       if (mountedModel) disposeModel(mountedModel);
+
       renderer.dispose();
+      environmentMap?.dispose?.();
+      pmremGenerator?.dispose?.();
       renderer.domElement.remove();
     }
   };
-}
-
-export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) {
-  const container = document.getElementById(containerId);
-
-  if (!container) {
-    return {
-      applyColors() {},
-      loadModelBySize() {},
-      destroy() {}
-    };
-  }
-
-  const status = createViewerStatus(container);
-  status.show("Подготовка 3D-просмотра…");
-
-  let destroyed = false;
-  let viewerImpl = null;
-  let pendingSize = null;
-  let pendingColors = {};
-
-  const api = {
-    applyColors(colors = {}) {
-      pendingColors = { ...pendingColors, ...colors };
-      viewerImpl?.applyColors(colors);
-    },
-    loadModelBySize(width, length) {
-      pendingSize = { width, length };
-      viewerImpl?.loadModelBySize(width, length);
-    },
-    destroy() {
-      destroyed = true;
-      viewerImpl?.destroy();
-      status.remove();
-    }
-  };
-
-  loadThreeModules()
-    .then((modules) => {
-      if (destroyed) return;
-      console.info("[Garage3D] Three.js modules loaded from", modules.source);
-      viewerImpl = createViewerImpl({ container, status, modules });
-      if (Object.keys(pendingColors).length) {
-        viewerImpl.applyColors(pendingColors);
-      }
-      if (pendingSize) {
-        viewerImpl.loadModelBySize(pendingSize.width, pendingSize.length);
-      } else {
-        status.hide();
-      }
-    })
-    .catch((error) => {
-      if (destroyed) return;
-      console.error("[Garage3D] Failed to initialize Three.js", error);
-      status.show("Не удалось запустить 3D-просмотр. Проверьте сеть и блокировщики контента.");
-    });
-
-  return api;
 }
