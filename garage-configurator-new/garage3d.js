@@ -103,9 +103,19 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   renderer.setSize(container.clientWidth, container.clientHeight, false);
   container.appendChild(renderer.domElement);
 
-  const pmremGenerator = new THREE.PMREMGenerator(renderer);
-  const environmentMap = pmremGenerator.fromScene(new RoomEnvironment(), 0.06).texture;
-  scene.environment = environmentMap;
+  let pmremGenerator = null;
+  let environmentMap = null;
+
+  import("https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js/+esm")
+    .then(({ RoomEnvironment }) => {
+      if (destroyed) return;
+      pmremGenerator = new THREE.PMREMGenerator(renderer);
+      environmentMap = pmremGenerator.fromScene(new RoomEnvironment(), 0.06).texture;
+      scene.environment = environmentMap;
+    })
+    .catch(() => {
+      // Optional environment lighting failed to load; keep base lighting only.
+    });
 
   const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5f1, 1.2);
   scene.add(hemisphereLight);
@@ -124,10 +134,6 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   const rimLight = new THREE.DirectionalLight(0xf5f7ff, 0.26);
   rimLight.position.set(0, 7, -10);
   scene.add(rimLight);
-
-  const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.45);
-  fillLight.position.set(-7, 5, -6);
-  scene.add(fillLight);
 
   const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -301,8 +307,8 @@ controls.maxPolarAngle = 1.42;
       if (mountedModel) disposeModel(mountedModel);
 
       renderer.dispose();
-      environmentMap.dispose();
-      pmremGenerator.dispose();
+      environmentMap?.dispose?.();
+      pmremGenerator?.dispose?.();
       renderer.domElement.remove();
     }
   };
