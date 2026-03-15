@@ -125,6 +125,10 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   rimLight.position.set(0, 7, -10);
   scene.add(rimLight);
 
+  const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.45);
+  fillLight.position.set(-7, 5, -6);
+  scene.add(fillLight);
+
   const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
