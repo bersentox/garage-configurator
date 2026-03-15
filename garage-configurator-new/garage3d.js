@@ -1,6 +1,7 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/+esm";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js/+esm";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js/+esm";
+import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js/+esm";
 
 const GARAGE_MODEL_PATHS = {
   "6x6": "../models/garage_6x6.glb",
@@ -96,9 +97,15 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.12;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(container.clientWidth, container.clientHeight, false);
   container.appendChild(renderer.domElement);
+
+  const pmremGenerator = new THREE.PMREMGenerator(renderer);
+  const environmentMap = pmremGenerator.fromScene(new RoomEnvironment(), 0.03).texture;
+  scene.environment = environmentMap;
 
   const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xcbd5e1, 1.05);
   scene.add(hemisphereLight);
@@ -106,6 +113,10 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1.15);
   directionalLight.position.set(8, 10, 7);
   scene.add(directionalLight);
+
+  const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.45);
+  fillLight.position.set(-7, 5, -6);
+  scene.add(fillLight);
 
   const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -279,6 +290,8 @@ controls.maxPolarAngle = 1.42;
       if (mountedModel) disposeModel(mountedModel);
 
       renderer.dispose();
+      environmentMap.dispose();
+      pmremGenerator.dispose();
       renderer.domElement.remove();
     }
   };
