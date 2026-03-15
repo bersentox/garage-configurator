@@ -98,21 +98,32 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.12;
+  renderer.toneMappingExposure = 1.08;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(container.clientWidth, container.clientHeight, false);
   container.appendChild(renderer.domElement);
 
   const pmremGenerator = new THREE.PMREMGenerator(renderer);
-  const environmentMap = pmremGenerator.fromScene(new RoomEnvironment(), 0.03).texture;
+  const environmentMap = pmremGenerator.fromScene(new RoomEnvironment(), 0.06).texture;
   scene.environment = environmentMap;
 
-  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xcbd5e1, 1.05);
+  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5f1, 1.2);
   scene.add(hemisphereLight);
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.15);
-  directionalLight.position.set(8, 10, 7);
-  scene.add(directionalLight);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.34);
+  scene.add(ambientLight);
+
+  const keyLight = new THREE.DirectionalLight(0xffffff, 0.58);
+  keyLight.position.set(8, 9, 7);
+  scene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0xe7efff, 0.52);
+  fillLight.position.set(-8, 8, -7);
+  scene.add(fillLight);
+
+  const rimLight = new THREE.DirectionalLight(0xf5f7ff, 0.26);
+  rimLight.position.set(0, 7, -10);
+  scene.add(rimLight);
 
   const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.45);
   fillLight.position.set(-7, 5, -6);
