@@ -1,20 +1,25 @@
 .configurator-page {
-  padding: clamp(16px, 2.4vw, 28px);
+  padding: 0 0 clamp(24px, 3vw, 36px);
   background: transparent;
+  overflow: visible;
 }
 
 .container {
-  max-width: 1180px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 430px);
+  grid-template-columns: minmax(360px, 1fr) minmax(340px, 430px);
   gap: clamp(16px, 2vw, 24px);
   align-items: start;
+  overflow: visible;
 }
 
 .scene {
   position: sticky;
   top: 16px;
+  align-self: start;
+  height: fit-content;
 }
 
 .scene-preview {
@@ -89,6 +94,7 @@
   display: grid;
   gap: 18px;
   position: relative;
+  overflow: visible;
 }
 
 .configurator section { border-bottom: 1px solid #e2e8f0; padding-bottom: 18px; }
