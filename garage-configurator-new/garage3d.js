@@ -2,7 +2,18 @@ import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/+esm";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js/+esm";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js/+esm";
 
-const MODEL_PATH = "../models/garage_6x8.glb";
+const GARAGE_MODEL_PATHS = {
+  "6x6": "../models/garage_6x6.glb",
+  "6x8": "../models/garage_6x8.glb",
+  "6x10": "../models/garage_6x10.glb",
+  "8x6": "../models/garage_8x6.glb",
+  "8x8": "../models/garage_8x8.glb",
+  "8x10": "../models/garage_8x10.glb"
+};
+
+function getGarageModelPath(width, length) {
+  return GARAGE_MODEL_PATHS[`${width}x${length}`] || null;
+}
 
 function buildMeshIndex(root) {
   const index = [];
@@ -115,6 +126,9 @@ controls.maxPolarAngle = 1.42;
   let mountedModel = null;
   let destroyed = false;
   let resizeObserver = null;
+  let activeModelKey = "";
+  let pendingLoadId = 0;
+  let activeColors = {};
 
   const garageParts = {
     walls: null,
@@ -149,11 +163,81 @@ controls.maxPolarAngle = 1.42;
   }
 
   function applyColors(colors = {}) {
+    activeColors = { ...activeColors, ...colors };
     setGarageColor("walls", colors.wall);
     setGarageColor("roof", colors.roof);
     setGarageColor("trim", colors.trim);
     setGarageColor("gate", colors.gate);
     setGarageColor("innerWalls", colors.interiorWall);
+  }
+
+  function disposeModel(model) {
+    if (!model) return;
+
+    model.traverse((node) => {
+      if (!node.isMesh) return;
+      node.geometry?.dispose?.();
+
+      if (Array.isArray(node.material)) {
+        node.material.forEach((material) => material?.dispose?.());
+      } else {
+        node.material?.dispose?.();
+      }
+    });
+  }
+
+  function clearGarageParts() {
+    Object.keys(garageParts).forEach((key) => {
+      garageParts[key] = null;
+    });
+  }
+
+  function loadModelBySize(width, length) {
+    const nextModelPath = getGarageModelPath(width, length);
+    const nextModelKey = `${width}x${length}`;
+
+    if (!nextModelPath) {
+      console.error("[Garage3D] Unsupported model size", { width, length });
+      return;
+    }
+
+    if (activeModelKey === nextModelKey && mountedModel) {
+      applyColors(activeColors);
+      return;
+    }
+
+    const loadId = ++pendingLoadId;
+
+    if (mountedModel) {
+      scene.remove(mountedModel);
+      disposeModel(mountedModel);
+      mountedModel = null;
+      clearGarageParts();
+    }
+
+    loader.load(
+      nextModelPath,
+      (gltf) => {
+        if (destroyed || loadId !== pendingLoadId) {
+          disposeModel(gltf.scene);
+          return;
+        }
+
+        mountedModel = gltf.scene;
+        activeModelKey = nextModelKey;
+        scene.add(mountedModel);
+        frameModel(mountedModel);
+
+        const meshIndex = buildMeshIndex(mountedModel);
+        Object.assign(garageParts, detectGarageParts(meshIndex));
+        applyColors(activeColors);
+      },
+      undefined,
+      (error) => {
+        if (loadId !== pendingLoadId) return;
+        console.error("[Garage3D] Failed to load model", { path: nextModelPath, error });
+      }
+    );
   }
 
   function resize() {
@@ -173,24 +257,6 @@ controls.maxPolarAngle = 1.42;
     renderer.render(scene, camera);
   }
 
-  loader.load(
-    MODEL_PATH,
-    (gltf) => {
-      if (destroyed) return;
-
-      mountedModel = gltf.scene;
-      scene.add(mountedModel);
-      frameModel(mountedModel);
-
-      const meshIndex = buildMeshIndex(mountedModel);
-      Object.assign(garageParts, detectGarageParts(meshIndex));
-    },
-    undefined,
-    (error) => {
-      console.error("[Garage3D] Failed to load model", error);
-    }
-  );
-
   if (typeof ResizeObserver !== "undefined") {
     resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(container);
@@ -202,6 +268,7 @@ controls.maxPolarAngle = 1.42;
 
   return {
     applyColors,
+    loadModelBySize,
     destroy() {
       destroyed = true;
       window.cancelAnimationFrame(animationFrameId);
@@ -209,18 +276,7 @@ controls.maxPolarAngle = 1.42;
       resizeObserver?.disconnect();
       controls.dispose();
 
-      if (mountedModel) {
-        mountedModel.traverse((node) => {
-          if (!node.isMesh) return;
-          node.geometry?.dispose?.();
-
-          if (Array.isArray(node.material)) {
-            node.material.forEach((material) => material?.dispose?.());
-          } else {
-            node.material?.dispose?.();
-          }
-        });
-      }
+      if (mountedModel) disposeModel(mountedModel);
 
       renderer.dispose();
       renderer.domElement.remove();
