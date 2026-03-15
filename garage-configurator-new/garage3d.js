@@ -142,7 +142,7 @@ controls.maxPolarAngle = 1.42;
   let activeModelKey = "";
   let pendingLoadId = 0;
   let activeColors = {};
-  const modelRotationSpeed = 0.003;
+  const modelRotationSpeed = 0.0007;
 
   const garageParts = {
     walls: null,
