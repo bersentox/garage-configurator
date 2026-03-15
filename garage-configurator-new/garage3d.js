@@ -159,7 +159,7 @@ controls.maxPolarAngle = 1.42;
   let activeModelKey = "";
   let pendingLoadId = 0;
   let activeColors = {};
-  const modelRotationSpeed = 0.0008;
+  const modelRotationSpeed = 0.003;
 
   const garageParts = {
     walls: null,
@@ -174,7 +174,8 @@ controls.maxPolarAngle = 1.42;
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
 
-    object3d.position.sub(center);
+    const centerLocal = object3d.parent ? object3d.parent.worldToLocal(center.clone()) : center;
+    object3d.position.sub(centerLocal);
 
     const maxSize = Math.max(size.x, size.y, size.z);
     const distance = Math.max(6, maxSize * 1.7);
@@ -256,6 +257,7 @@ controls.maxPolarAngle = 1.42;
 
         mountedModel = gltf.scene;
         activeModelKey = nextModelKey;
+        modelGroup.rotation.set(0, 0, 0);
         modelGroup.add(mountedModel);
         frameModel(mountedModel);
 
