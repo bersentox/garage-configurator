@@ -105,23 +105,20 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   renderer.setSize(container.clientWidth, container.clientHeight, false);
   container.appendChild(renderer.domElement);
 
-  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5f1, 0.92);
+  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5e1, 0.8);
   scene.add(hemisphereLight);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.22);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
   scene.add(ambientLight);
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 0.45);
+  const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
   keyLight.position.set(8, 9, 7);
   scene.add(keyLight);
 
-  const fillLight = new THREE.DirectionalLight(0xe7efff, 0.34);
+  const fillLight = new THREE.DirectionalLight(0xe7efff, 0.4);
   fillLight.position.set(-8, 8, -7);
   scene.add(fillLight);
 
-  const rimLight = new THREE.DirectionalLight(0xf5f7ff, 0.2);
-  rimLight.position.set(0, 7, -10);
-  scene.add(rimLight);
 
   const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -155,14 +152,15 @@ controls.maxPolarAngle = 1.42;
     innerWalls: null
   };
 
+  function centerModel(object3d) {
+    const box = new THREE.Box3().setFromObject(object3d);
+    const center = box.getCenter(new THREE.Vector3());
+    object3d.position.sub(center);
+  }
+
   function frameModel(object3d) {
     const box = new THREE.Box3().setFromObject(object3d);
     const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
-
-    const centerLocal = object3d.parent ? object3d.parent.worldToLocal(center.clone()) : center;
-    object3d.position.sub(centerLocal);
-
     const maxSize = Math.max(size.x, size.y, size.z);
     const distance = Math.max(6, maxSize * 1.7);
     camera.position.set(distance * 0.95, distance * 0.35, distance * 1.15);
@@ -244,6 +242,7 @@ controls.maxPolarAngle = 1.42;
         mountedModel = gltf.scene;
         activeModelKey = nextModelKey;
         modelGroup.rotation.set(0, 0, 0);
+        centerModel(mountedModel);
         modelGroup.add(mountedModel);
         frameModel(mountedModel);
 
