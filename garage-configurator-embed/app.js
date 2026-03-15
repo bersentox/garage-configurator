@@ -67,4 +67,13 @@ async function bootstrap() {
 
 bootstrap().catch((error) => {
   console.error(error);
+
+  const appRoot = document.getElementById("app");
+  if (appRoot) {
+    appRoot.innerHTML = `
+      <section style="margin:24px auto;max-width:760px;padding:16px 18px;border:1px solid #fecaca;border-radius:12px;background:#fef2f2;color:#991b1b;font:500 16px/1.4 Arial,sans-serif;">
+        Не удалось запустить конфигуратор. Обновите страницу или попробуйте позже.
+      </section>
+    `;
+  }
 });
