@@ -28,10 +28,10 @@
 .hero-scene {
   display: block;
   position: relative;
-  width: 100%;
-  max-width: 1120px;
+  width: fit-content;
+  max-width: min(1120px, 100%);
   margin: 0 auto;
-  padding: 0;
+  padding: clamp(8px, 0.9vw, 12px);
   overflow: visible;
 }
 
