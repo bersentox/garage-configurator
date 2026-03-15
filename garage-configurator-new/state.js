@@ -1,9 +1,9 @@
 const COLOR_PRESETS = {
   graphite: {
-  wall: "#4a4f55",
-  roof: "#353a40",
-  trim: "#2e3237",
-  gate: "#5a6067",
+  wall: "#737373",
+  roof: "#636363",
+  trim: "#6b6b6b",
+  gate: "#878787",
   interiorWall: "#d5dbe4"
 },
   grey: {
