@@ -1,20 +1,15 @@
 .hero {
   width: 100%;
   min-height: auto;
-  display: flex;
+  display: block;
   position: relative;
   isolation: isolate;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
   margin: 0;
-  padding: clamp(24px, 3vw, 36px) clamp(16px, 2.4vw, 28px) clamp(20px, 2.8vw, 30px);
+  padding: clamp(12px, 1.6vw, 20px) clamp(16px, 2.4vw, 28px) clamp(8px, 1.2vw, 14px);
   box-sizing: border-box;
-  text-align: center;
   line-height: 1.2;
   font-family: Arial, sans-serif;
-  background: linear-gradient(180deg, #162233 0%, #0f172a 100%);
-  border-radius: 24px 24px 0 0;
+  background: transparent;
 }
 
 .hero,
@@ -24,47 +19,24 @@
 
 .hero-inner {
   width: 100%;
-  display: flex;
+  display: block;
   position: relative;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
   margin: 0;
   padding: 0;
-  text-align: center;
-}
-
-.hero-title {
-  margin: 0;
-  font-size: clamp(34px, 3vw, 52px);
-  color: #f8fbff;
-  letter-spacing: 0.02em;
-}
-
-.hero-subtitle {
-  margin: 0;
-  color: #c3cfdf;
-  font-size: clamp(16px, 1.2vw, 20px);
 }
 
 .hero-scene {
   display: block;
   position: relative;
-  width: 100%;
-  max-width: 1120px;
+  width: fit-content;
+  max-width: min(1120px, 100%);
   margin: 0 auto;
-  padding: 0;
+  padding: clamp(8px, 0.9vw, 12px);
   overflow: visible;
-}
-
-.hero-scene::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.25) 100%);
-  z-index: 2;
+  border-radius: 24px;
+  border: 1px solid #d6dee9;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
 }
 
 .garage-scene {
@@ -78,9 +50,9 @@
   padding: 0;
   overflow: hidden;
   line-height: 0;
-  border-radius: 24px;
+  border-radius: 18px;
   background: #dbe2ea;
-  box-shadow: 0 18px 36px rgba(4, 10, 22, 0.42);
+  box-shadow: 0 10px 24px rgba(4, 10, 22, 0.24);
 }
 
 .garage-layer {
@@ -383,12 +355,12 @@
 
 @media (max-width: 700px) {
   .hero {
-    border-radius: 20px 20px 0 0;
-    padding: 18px 12px;
+    padding: 12px 8px 6px;
   }
 
-  .hero-inner {
-    gap: 10px;
+  .hero-scene {
+    padding: 6px;
+    border-radius: 16px;
   }
 
   .hero-scene {

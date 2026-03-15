@@ -23,29 +23,10 @@
       background: transparent;
       color: #0f172a;
     }
-
-    .embed-shell {
-      width: min(1280px, 100%);
-      margin: 0 auto;
-      padding: clamp(12px, 2vw, 24px);
-      box-sizing: border-box;
-    }
-
-    .embed-module {
-      border-radius: 28px;
-      overflow: clip;
-      background: linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
-      border: 1px solid #d7e0eb;
-      box-shadow: 0 22px 56px rgba(15, 23, 42, 0.14);
-    }
   </style>
 </head>
 <body>
-  <main class="embed-shell">
-    <section class="embed-module" aria-label="Модуль конфигуратора гаража">
-      <div id="app"></div>
-    </section>
-  </main>
+  <div id="app" aria-label="Модуль конфигуратора гаража"></div>
 
   <audio id="garageGateSound" src="../audio/gate-opening.mp3" preload="auto"></audio>
   <script src="./config-prices.js"></script>
