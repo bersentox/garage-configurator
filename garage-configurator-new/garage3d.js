@@ -90,28 +90,40 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#f3f4f6");
+  const modelGroup = new THREE.Group();
+  scene.add(modelGroup);
 
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   camera.position.set(7, 5, 9);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.98;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(container.clientWidth, container.clientHeight, false);
   container.appendChild(renderer.domElement);
 
-  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xcbd5e1, 1.05);
+  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5e1, 0.8);
   scene.add(hemisphereLight);
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.15);
-  directionalLight.position.set(8, 10, 7);
-  scene.add(directionalLight);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
+  scene.add(ambientLight);
+
+  const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
+  keyLight.position.set(8, 9, 7);
+  scene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0xe7efff, 0.4);
+  fillLight.position.set(-8, 8, -7);
+  scene.add(fillLight);
+
 
   const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.enablePan = false;
-controls.autoRotate = true;
+controls.autoRotate = false;
 controls.autoRotateSpeed = 0.4;
 controls.enableZoom = true;
 controls.zoomSpeed = 0.7;
@@ -138,20 +150,22 @@ controls.maxPolarAngle = 1.42;
     innerWalls: null
   };
 
+  function centerModel(object3d) {
+    const box = new THREE.Box3().setFromObject(object3d);
+    const center = box.getCenter(new THREE.Vector3());
+    object3d.position.sub(center);
+  }
+
   function frameModel(object3d) {
     const box = new THREE.Box3().setFromObject(object3d);
     const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
-
-    object3d.position.sub(center);
-
     const maxSize = Math.max(size.x, size.y, size.z);
     const distance = Math.max(6, maxSize * 1.7);
     camera.position.set(distance * 0.95, distance * 0.35, distance * 1.15);
     camera.near = 0.1;
     camera.far = Math.max(100, distance * 12);
     camera.updateProjectionMatrix();
-    controls.target.set(0, Math.max(size.y * 0.35, 1.8), 0);
+    controls.target.set(0, 0, 0);
     controls.update();
   }
 
@@ -209,7 +223,7 @@ controls.maxPolarAngle = 1.42;
     const loadId = ++pendingLoadId;
 
     if (mountedModel) {
-      scene.remove(mountedModel);
+      modelGroup.remove(mountedModel);
       disposeModel(mountedModel);
       mountedModel = null;
       clearGarageParts();
@@ -225,7 +239,9 @@ controls.maxPolarAngle = 1.42;
 
         mountedModel = gltf.scene;
         activeModelKey = nextModelKey;
-        scene.add(mountedModel);
+        modelGroup.rotation.set(0, 0, 0);
+        centerModel(mountedModel);
+        modelGroup.add(mountedModel);
         frameModel(mountedModel);
 
         const meshIndex = buildMeshIndex(mountedModel);
