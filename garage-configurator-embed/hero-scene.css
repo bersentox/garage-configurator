@@ -5,7 +5,7 @@
   position: relative;
   isolation: isolate;
   margin: 0;
-  padding: clamp(12px, 1.6vw, 20px) clamp(16px, 2.4vw, 28px) clamp(8px, 1.2vw, 14px);
+  padding: 0;
   box-sizing: border-box;
   line-height: 1.2;
   font-family: Arial, sans-serif;
@@ -33,10 +33,6 @@
   margin: 0 auto;
   padding: clamp(8px, 0.9vw, 12px);
   overflow: visible;
-  border-radius: 24px;
-  border: 1px solid #d6dee9;
-  background: #ffffff;
-  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
 }
 
 .garage-scene {
@@ -51,8 +47,9 @@
   overflow: hidden;
   line-height: 0;
   border-radius: 18px;
+  border: 1px solid #d6dee9;
   background: #dbe2ea;
-  box-shadow: 0 10px 24px rgba(4, 10, 22, 0.24);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.2);
 }
 
 .garage-layer {
@@ -355,12 +352,7 @@
 
 @media (max-width: 700px) {
   .hero {
-    padding: 12px 8px 6px;
-  }
-
-  .hero-scene {
-    padding: 6px;
-    border-radius: 16px;
+    padding: 0;
   }
 
   .hero-scene {
