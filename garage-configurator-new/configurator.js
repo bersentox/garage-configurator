@@ -82,6 +82,7 @@ export function mountConfigurator({ state, root }) {
 
   let garageViewer = {
     applyColors() {},
+    loadModelBySize() {},
     destroy() {}
   };
 
@@ -176,6 +177,7 @@ export function mountConfigurator({ state, root }) {
       button.classList.toggle("active", button.dataset.preset === state.colorPreset);
     });
 
+    garageViewer.loadModelBySize(state.width, state.length);
     syncColorInputs();
     garageViewer.applyColors(state.colors);
 
