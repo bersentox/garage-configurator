@@ -105,35 +105,21 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   renderer.setSize(container.clientWidth, container.clientHeight, false);
   container.appendChild(renderer.domElement);
 
-  let pmremGenerator = null;
-  let environmentMap = null;
-
-  import("https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js/+esm")
-    .then(({ RoomEnvironment }) => {
-      if (destroyed) return;
-      pmremGenerator = new THREE.PMREMGenerator(renderer);
-      environmentMap = pmremGenerator.fromScene(new RoomEnvironment(), 0.12).texture;
-      scene.environment = environmentMap;
-    })
-    .catch(() => {
-      // Optional environment lighting failed to load; keep base lighting only.
-    });
-
-  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5f1, 0.9);
+  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5f1, 0.92);
   scene.add(hemisphereLight);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.18);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.22);
   scene.add(ambientLight);
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  const keyLight = new THREE.DirectionalLight(0xffffff, 0.45);
   keyLight.position.set(8, 9, 7);
   scene.add(keyLight);
 
-  const fillLight = new THREE.DirectionalLight(0xe7efff, 0.38);
+  const fillLight = new THREE.DirectionalLight(0xe7efff, 0.34);
   fillLight.position.set(-8, 8, -7);
   scene.add(fillLight);
 
-  const rimLight = new THREE.DirectionalLight(0xf5f7ff, 0.16);
+  const rimLight = new THREE.DirectionalLight(0xf5f7ff, 0.2);
   rimLight.position.set(0, 7, -10);
   scene.add(rimLight);
 
@@ -183,7 +169,7 @@ controls.maxPolarAngle = 1.42;
     camera.near = 0.1;
     camera.far = Math.max(100, distance * 12);
     camera.updateProjectionMatrix();
-    controls.target.set(0, Math.max(size.y * 0.35, 1.8), 0);
+    controls.target.set(0, 0, 0);
     controls.update();
   }
 
