@@ -1,6 +1,7 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/+esm";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js/+esm";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js/+esm";
+import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js/+esm";
 
 const GARAGE_MODEL_PATHS = {
   "6x6": "../models/garage_6x6.glb",
@@ -141,6 +142,7 @@ controls.maxPolarAngle = 1.42;
   let activeModelKey = "";
   let pendingLoadId = 0;
   let activeColors = {};
+  const modelRotationSpeed = 0.003;
 
   const garageParts = {
     walls: null,
@@ -270,6 +272,7 @@ controls.maxPolarAngle = 1.42;
     if (destroyed) return;
     animationFrameId = window.requestAnimationFrame(animate);
     controls.update();
+    modelGroup.rotation.y += modelRotationSpeed;
     renderer.render(scene, camera);
   }
 
@@ -295,6 +298,8 @@ controls.maxPolarAngle = 1.42;
       if (mountedModel) disposeModel(mountedModel);
 
       renderer.dispose();
+      environmentMap?.dispose?.();
+      pmremGenerator?.dispose?.();
       renderer.domElement.remove();
     }
   };
