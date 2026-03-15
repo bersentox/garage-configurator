@@ -91,6 +91,8 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#f3f4f6");
+  const modelGroup = new THREE.Group();
+  scene.add(modelGroup);
 
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   camera.position.set(7, 5, 9);
@@ -98,7 +100,7 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
+  renderer.toneMappingExposure = 0.98;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(container.clientWidth, container.clientHeight, false);
   container.appendChild(renderer.domElement);
@@ -110,28 +112,28 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
     .then(({ RoomEnvironment }) => {
       if (destroyed) return;
       pmremGenerator = new THREE.PMREMGenerator(renderer);
-      environmentMap = pmremGenerator.fromScene(new RoomEnvironment(), 0.06).texture;
+      environmentMap = pmremGenerator.fromScene(new RoomEnvironment(), 0.12).texture;
       scene.environment = environmentMap;
     })
     .catch(() => {
       // Optional environment lighting failed to load; keep base lighting only.
     });
 
-  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5f1, 1.2);
+  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5f1, 0.9);
   scene.add(hemisphereLight);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.34);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.18);
   scene.add(ambientLight);
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 0.58);
+  const keyLight = new THREE.DirectionalLight(0xffffff, 0.5);
   keyLight.position.set(8, 9, 7);
   scene.add(keyLight);
 
-  const fillLight = new THREE.DirectionalLight(0xe7efff, 0.52);
+  const fillLight = new THREE.DirectionalLight(0xe7efff, 0.38);
   fillLight.position.set(-8, 8, -7);
   scene.add(fillLight);
 
-  const rimLight = new THREE.DirectionalLight(0xf5f7ff, 0.26);
+  const rimLight = new THREE.DirectionalLight(0xf5f7ff, 0.16);
   rimLight.position.set(0, 7, -10);
   scene.add(rimLight);
 
@@ -139,7 +141,7 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.enablePan = false;
-controls.autoRotate = true;
+controls.autoRotate = false;
 controls.autoRotateSpeed = 0.4;
 controls.enableZoom = true;
 controls.zoomSpeed = 0.7;
@@ -157,6 +159,7 @@ controls.maxPolarAngle = 1.42;
   let activeModelKey = "";
   let pendingLoadId = 0;
   let activeColors = {};
+  const modelRotationSpeed = 0.003;
 
   const garageParts = {
     walls: null,
@@ -237,7 +240,7 @@ controls.maxPolarAngle = 1.42;
     const loadId = ++pendingLoadId;
 
     if (mountedModel) {
-      scene.remove(mountedModel);
+      modelGroup.remove(mountedModel);
       disposeModel(mountedModel);
       mountedModel = null;
       clearGarageParts();
@@ -253,7 +256,7 @@ controls.maxPolarAngle = 1.42;
 
         mountedModel = gltf.scene;
         activeModelKey = nextModelKey;
-        scene.add(mountedModel);
+        modelGroup.add(mountedModel);
         frameModel(mountedModel);
 
         const meshIndex = buildMeshIndex(mountedModel);
@@ -282,6 +285,7 @@ controls.maxPolarAngle = 1.42;
     if (destroyed) return;
     animationFrameId = window.requestAnimationFrame(animate);
     controls.update();
+    modelGroup.rotation.y += modelRotationSpeed;
     renderer.render(scene, camera);
   }
 
