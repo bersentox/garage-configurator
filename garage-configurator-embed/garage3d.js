@@ -170,6 +170,8 @@ function createViewerStatus(container) {
 function createViewerImpl({ container, status, modules }) {
   const { THREE, OrbitControls, GLTFLoader } = modules;
 
+  container.style.position = "relative";
+
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#f3f4f6");
   const modelGroup = new THREE.Group();
