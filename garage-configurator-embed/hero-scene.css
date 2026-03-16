@@ -520,14 +520,14 @@
 .garage-door-text {
   position: absolute;
   left: 50%;
-  top: 42%;
+  top: 72%;
   transform: translateX(-50%);
   width: 70%;
 
   text-align: center;
   pointer-events: none;
 
-  font-size: clamp(12px, 1vw, 18px);
+  font-size: clamp(14px, 1.2vw, 22px);
   font-weight: 400;
   letter-spacing: 0.02em;
 
