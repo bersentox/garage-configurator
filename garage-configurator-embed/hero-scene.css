@@ -150,7 +150,7 @@
 
 .garage-brand {
   position: absolute;
-  top: 24%;
+  top: 23%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 6;
@@ -170,7 +170,7 @@
   height: auto;
   object-fit: contain;
   opacity: 0.95;
-  margin-bottom: 14px;
+  margin-bottom: 13px;
    filter:
     drop-shadow(0 2px 4px rgba(0,0,0,0.45))
     drop-shadow(0 0 6px rgba(255,200,120,0.45))
