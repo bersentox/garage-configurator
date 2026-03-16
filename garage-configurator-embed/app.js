@@ -20,8 +20,8 @@ async function bootstrap() {
   }
 
   const [heroMarkup, configuratorMarkup] = await Promise.all([
-    loadFragment("./hero-scene.html"),
-    loadFragment("./configurator.html")
+    loadFragment(new URL("./hero-scene.html", import.meta.url).href),
+    loadFragment(new URL("./configurator.html", import.meta.url).href)
   ]);
 
   appRoot.innerHTML = `${heroMarkup}\n${configuratorMarkup}`;
