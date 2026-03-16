@@ -136,6 +136,13 @@ controls.maxDistance = 18;
 controls.minPolarAngle = 0.75;
 controls.maxPolarAngle = 1.42;
 
+  const isolateWheelEvent = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+  };
+
+  renderer.domElement.addEventListener("wheel", isolateWheelEvent, { passive: false });
+
   const loader = new GLTFLoader();
   let animationFrameId = 0;
   let mountedModel = null;
@@ -296,6 +303,7 @@ controls.maxPolarAngle = 1.42;
       window.removeEventListener("resize", resize);
       resizeObserver?.disconnect();
       controls.dispose();
+      renderer.domElement.removeEventListener("wheel", isolateWheelEvent);
 
       if (mountedModel) disposeModel(mountedModel);
 
