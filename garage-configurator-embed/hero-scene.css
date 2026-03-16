@@ -158,7 +158,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(1px, 0.18vw, 12px);
+  gap: clamp(1px, 0.18vw, 24px);
   width: min(34%, 420px);
   pointer-events: none;
   line-height: 1.04;
