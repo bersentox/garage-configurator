@@ -1,6 +1,6 @@
 .hero {
   width: 100%;
-  min-height: 100vh;
+  min-height: auto;
   display: flex;
   position: relative;
   isolation: isolate;
@@ -8,12 +8,12 @@
   justify-content: center;
   flex-direction: column;
   margin: 0;
-  padding: clamp(24px, 4vw, 48px);
+  padding: clamp(10px, 2vw, 20px) 0;
   box-sizing: border-box;
   text-align: center;
   line-height: 1.2;
   font-family: Arial, sans-serif;
-  background: radial-gradient(circle at center, #1a2332 0%, #0b1320 70%);
+  background: transparent;
 }
 
 .hero,
@@ -382,7 +382,7 @@
 
 @media (max-width: 700px) {
   .hero {
-    padding: 22px 14px;
+    padding: 10px 0;
   }
 
   .hero-inner {
