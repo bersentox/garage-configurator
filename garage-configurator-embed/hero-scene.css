@@ -327,7 +327,7 @@
   appearance: none;
   -webkit-appearance: none;
   position: absolute;
-  bottom: 30px;
+  bottom: clamp(60px, 8vh, 120px);
   left: 50%;
   transform: translateX(-50%);
   z-index: 50;
@@ -456,7 +456,7 @@
   }
 
   .garage-remote {
-    bottom: 48px;
+    bottom: clamp(60px, 8vh, 120px);
   }
 
   .garage-scene-offer {
@@ -517,7 +517,7 @@
   }
 
   .garage-remote {
-    bottom: 22px;
+    bottom: clamp(60px, 8vh, 120px);
   }
 
   .garage-scene-offer {
