@@ -1,3 +1,4 @@
+
 .hero {
   width: 100%;
   min-height: auto;
@@ -147,10 +148,9 @@
   transform: translateY(-28%);
 }
 
-
 .garage-brand {
   position: absolute;
-  top: 8%;
+  top: 13.2%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 6;
@@ -158,38 +158,43 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(3px, 0.35vw, 6px);
-  width: min(30%, 360px);
+  gap: clamp(1px, 0.18vw, 4px);
+  width: min(34%, 420px);
   pointer-events: none;
-  line-height: 1.05;
+  line-height: 1.04;
   text-align: center;
 }
 
 .garage-brand-logo {
-  width: clamp(30px, 3.2vw, 52px);
+  width: clamp(24px, 2.35vw, 38px);
   height: auto;
   object-fit: contain;
-  opacity: 0.94;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.38));
+  opacity: 0.95;
+  margin-bottom: 1px;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.34));
 }
 
 .garage-brand-title {
   display: block;
-  font-size: clamp(16px, 1.35vw, 25px);
+  font-size: clamp(17px, 1.45vw, 26px);
   font-weight: 700;
-  letter-spacing: 0.12em;
-  color: #ee9f88;
-  text-shadow: 0 1px 2px rgba(30, 13, 8, 0.45), 0 0 12px rgba(222, 118, 96, 0.2);
+  letter-spacing: 0.11em;
+  color: #e7a083;
+  text-shadow:
+    0 1px 2px rgba(25, 10, 8, 0.42),
+    0 0 8px rgba(226, 132, 104, 0.14);
 }
 
 .garage-brand-subtitle {
   display: block;
-  font-size: clamp(8px, 0.68vw, 12px);
+  font-size: clamp(9px, 0.78vw, 13px);
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(244, 170, 149, 0.9);
-  text-shadow: 0 1px 1px rgba(34, 14, 10, 0.4), 0 0 8px rgba(208, 112, 94, 0.18);
+  color: rgba(232, 173, 151, 0.84);
+  text-shadow:
+    0 1px 1px rgba(20, 10, 8, 0.28),
+    0 0 5px rgba(214, 126, 102, 0.10);
 }
 
 .garage-choice {
@@ -257,7 +262,6 @@
 .garage-scene:not(.choices-visible) .garage-choice {
   transition-delay: 0s;
 }
-
 
 .garage-choice.selected {
   border-color: rgba(188, 233, 255, 0.95);
@@ -386,7 +390,6 @@
   white-space: nowrap;
 }
 
-
 @media (prefers-reduced-motion: reduce) {
   .garage-remote-dot {
     animation: none;
@@ -426,8 +429,12 @@
   }
 
   .garage-brand {
-    top: 7%;
-    width: min(38%, 300px);
+    top: 11.4%;
+    width: min(42%, 340px);
+  }
+
+  .garage-brand-logo {
+    width: clamp(24px, 4vw, 36px);
   }
 }
 
@@ -484,23 +491,23 @@
   }
 
   .garage-brand {
-    top: 6%;
-    width: min(58%, 230px);
-    gap: 2px;
+    top: 10%;
+    width: min(62%, 250px);
+    gap: 1px;
   }
 
   .garage-brand-logo {
-    width: clamp(24px, 6.2vw, 36px);
+    width: clamp(20px, 6vw, 30px);
+    margin-bottom: 1px;
   }
 
   .garage-brand-title {
-    font-size: clamp(11px, 2.8vw, 16px);
-    letter-spacing: 0.1em;
+    font-size: clamp(12px, 3vw, 16px);
+    letter-spacing: 0.08em;
   }
 
   .garage-brand-subtitle {
-    font-size: clamp(7px, 1.5vw, 9px);
-    letter-spacing: 0.07em;
+    font-size: clamp(7px, 1.8vw, 9px);
+    letter-spacing: 0.05em;
   }
-
 }
