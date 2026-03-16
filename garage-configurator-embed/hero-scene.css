@@ -547,3 +547,27 @@
     letter-spacing: 0.05em;
   }
 }
+.garage-gate-text::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 120%;
+  height: 220%;
+
+  background: radial-gradient(
+    ellipse at center,
+    rgba(120, 200, 255, 0.18) 0%,
+    rgba(80, 170, 255, 0.10) 30%,
+    rgba(40, 120, 255, 0.05) 55%,
+    rgba(0, 0, 0, 0) 75%
+  );
+
+  filter: blur(18px);
+  opacity: 0.6;
+
+  pointer-events: none;
+  z-index: -1;
+}
