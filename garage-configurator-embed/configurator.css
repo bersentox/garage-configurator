@@ -427,6 +427,51 @@
 .primary, .cta-button { background: #f97316; color: #fff; }
 .secondary { background: #e2e8f0; color: #0f172a; }
 
+/* CTA hardening for Tilda embed: prevent external link/button styles from washing out text */
+.t-rec #app .primary,
+.t-rec #app .secondary,
+.t-rec #app .cta-button,
+.t-rec #app .primary:hover,
+.t-rec #app .secondary:hover,
+.t-rec #app .cta-button:hover,
+.t-rec #app .primary:focus,
+.t-rec #app .secondary:focus,
+.t-rec #app .cta-button:focus,
+.t-rec #app .primary:visited,
+.t-rec #app .secondary:visited,
+.t-rec #app .cta-button:visited,
+.t-rec #app .primary:active,
+.t-rec #app .secondary:active,
+.t-rec #app .cta-button:active {
+  opacity: 1;
+  text-decoration: none;
+  -webkit-text-fill-color: currentColor;
+  filter: none;
+  text-shadow: none;
+  mix-blend-mode: normal;
+}
+
+.t-rec #app .primary,
+.t-rec #app .primary:hover,
+.t-rec #app .primary:focus,
+.t-rec #app .primary:visited,
+.t-rec #app .primary:active,
+.t-rec #app .cta-button,
+.t-rec #app .cta-button:hover,
+.t-rec #app .cta-button:focus,
+.t-rec #app .cta-button:visited,
+.t-rec #app .cta-button:active {
+  color: #fff;
+}
+
+.t-rec #app .secondary,
+.t-rec #app .secondary:hover,
+.t-rec #app .secondary:focus,
+.t-rec #app .secondary:visited,
+.t-rec #app .secondary:active {
+  color: #0f172a;
+}
+
 .sticky-bar {
   position: sticky;
   bottom: 12px;
