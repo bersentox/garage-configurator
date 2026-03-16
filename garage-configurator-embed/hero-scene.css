@@ -522,12 +522,12 @@
   left: 50%;
   top: 42%;
   transform: translateX(-50%);
-  width: 80%;
+  width: 70%;
 
   text-align: center;
   pointer-events: none;
 
-  font-size: clamp(26px, 2.2vw, 40px);
+  font-size: clamp(12px, 1vw, 18px);
   font-weight: 400;
   letter-spacing: 0.02em;
 
