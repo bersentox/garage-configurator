@@ -517,3 +517,24 @@
     letter-spacing: 0.05em;
   }
 }
+.garage-door-text {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translateX(-50%);
+  width: 80%;
+
+  text-align: center;
+  pointer-events: none;
+
+  font-size: clamp(26px, 2.2vw, 40px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+
+  color: #eaf6ff;
+
+  text-shadow:
+    0 0 10px rgba(120,200,255,0.45),
+    0 0 22px rgba(80,170,255,0.30),
+    0 0 40px rgba(60,150,255,0.18);
+}
