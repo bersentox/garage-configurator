@@ -1,3 +1,23 @@
+.t-rec #app,
+#app {
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.primary,
+.secondary,
+.cta-button,
+.foundation-option,
+.garage-choice,
+.garage-remote {
+  font-family: Arial, sans-serif;
+}
+
 .configurator-page {
   padding: 28px 20px 140px;
   background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
