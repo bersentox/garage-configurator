@@ -2,18 +2,20 @@ import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/+esm";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js/+esm";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js/+esm";
 import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js/+esm";
+import { resolveEmbedAsset } from "./asset-paths.js";
 
 const GARAGE_MODEL_PATHS = {
-  "6x6": "../models/garage_6x6.glb",
-  "6x8": "../models/garage_6x8.glb",
-  "6x10": "../models/garage_6x10.glb",
-  "8x6": "../models/garage_8x6.glb",
-  "8x8": "../models/garage_8x8.glb",
-  "8x10": "../models/garage_8x10.glb"
+  "6x6": "models/garage_6x6.glb",
+  "6x8": "models/garage_6x8.glb",
+  "6x10": "models/garage_6x10.glb",
+  "8x6": "models/garage_8x6.glb",
+  "8x8": "models/garage_8x8.glb",
+  "8x10": "models/garage_8x10.glb"
 };
 
 function getGarageModelPath(width, length) {
-  return GARAGE_MODEL_PATHS[`${width}x${length}`] || null;
+  const modelPath = GARAGE_MODEL_PATHS[`${width}x${length}`];
+  return modelPath ? resolveEmbedAsset(modelPath) : null;
 }
 
 function buildMeshIndex(root) {
