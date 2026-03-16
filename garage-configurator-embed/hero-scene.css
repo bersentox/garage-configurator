@@ -171,30 +171,36 @@
   object-fit: contain;
   opacity: 0.95;
   margin-bottom: 2px;
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.34));
+   filter:
+    drop-shadow(0 2px 4px rgba(0,0,0,0.45))
+    drop-shadow(0 0 6px rgba(255,200,120,0.45))
+    drop-shadow(0 0 14px rgba(255,180,90,0.35));
 }
 
 .garage-brand-title {
   display: block;
-  font-size: clamp(17px, 1.45vw, 26px);
+  font-size: clamp(20px, 1.8vw, 30px);
   font-weight: 700;
-  letter-spacing: 0.11em;
-  color: #e7a083;
+  letter-spacing: 0.14em;
+
+  color: #f4c26a;
+
   text-shadow:
-    0 1px 2px rgba(25, 10, 8, 0.42),
-    0 0 8px rgba(226, 132, 104, 0.14);
+    0 2px 3px rgba(0,0,0,0.45),
+    0 0 8px rgba(255,210,140,0.45),
+    0 0 18px rgba(255,190,110,0.25);
 }
 
 .garage-brand-subtitle {
-  display: block;
-  font-size: clamp(9px, 0.78vw, 13px);
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font-size: clamp(11px, 0.9vw, 14px);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(232, 173, 151, 0.84);
+
+  color: rgba(255,210,140,0.9);
+
   text-shadow:
-    0 1px 1px rgba(20, 10, 8, 0.28),
-    0 0 5px rgba(214, 126, 102, 0.10);
+    0 1px 2px rgba(0,0,0,0.35),
+    0 0 6px rgba(255,200,120,0.35);
 }
 
 .garage-choice {
