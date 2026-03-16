@@ -150,7 +150,7 @@
 
 .garage-brand {
   position: absolute;
-  top: 13.2%;
+  top: 17%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 6;
@@ -435,7 +435,7 @@
   }
 
   .garage-brand {
-    top: 11.4%;
+    top: 15%;
     width: min(42%, 340px);
   }
 
@@ -497,7 +497,7 @@
   }
 
   .garage-brand {
-    top: 10%;
+    top: 13%;
     width: min(62%, 250px);
     gap: 1px;
   }
