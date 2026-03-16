@@ -1,6 +1,7 @@
 import { createGarageState, getPresetByWidth } from "./state.js";
 import { mountHeroScene } from "./hero-scene.js";
 import { mountConfigurator } from "./configurator.js";
+import { resolveEmbedAsset } from "./asset-paths.js";
 
 async function loadFragment(path) {
   const response = await fetch(path, { cache: "no-store" });
@@ -10,6 +11,14 @@ async function loadFragment(path) {
   }
 
   return response.text();
+}
+
+function applyEmbedAssetSources(root) {
+  root.querySelectorAll("[data-embed-asset]").forEach((node) => {
+    const assetPath = node.getAttribute("data-embed-asset");
+    if (!assetPath) return;
+    node.setAttribute("src", resolveEmbedAsset(assetPath));
+  });
 }
 
 async function bootstrap() {
@@ -25,6 +34,13 @@ async function bootstrap() {
   ]);
 
   appRoot.innerHTML = `${heroMarkup}\n${configuratorMarkup}`;
+  applyEmbedAssetSources(appRoot);
+
+  const gateSound = document.getElementById("garageGateSound");
+  if (gateSound) {
+    const soundPath = gateSound.getAttribute("data-embed-asset") || "audio/gate-opening.mp3";
+    gateSound.setAttribute("src", resolveEmbedAsset(soundPath));
+  }
 
   const state = createGarageState();
   const configuratorStep = document.getElementById("configuratorStep");
