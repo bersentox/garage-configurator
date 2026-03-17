@@ -80,6 +80,13 @@
   line-height: var(--sb-line-height-tight);
 }
 
+.sb__title {
+  margin: 0;
+  font-size: var(--sb-font-size-400);
+  line-height: var(--sb-line-height-tight);
+}
+
+.sb__title,
 .sb__lead,
 .sb__text,
 .sb__metric-label,
@@ -94,6 +101,7 @@
 
 .sb__lead {
   font-size: var(--sb-font-size-200);
+  line-height: var(--sb-line-height-base);
 }
 
 .sb__text,
@@ -104,6 +112,7 @@
 .sb__scheme-step {
   color: var(--sb-color-muted);
   font-size: var(--sb-font-size-100);
+  line-height: var(--sb-line-height-base);
 }
 
 .sb__split {
@@ -190,6 +199,33 @@
 .sb__text-group {
   display: grid;
   gap: var(--sb-space-8);
+}
+
+
+.sb__container--narrow {
+  max-width: calc(var(--sb-container-max) * 0.56);
+}
+
+.sb__phase--analysis {
+  padding-top: var(--sb-space-32);
+  padding-bottom: var(--sb-space-32);
+}
+
+.sb__phase--analysis .sb__container {
+  gap: var(--sb-space-20);
+}
+
+.sb__phase--analysis .sb__text {
+  font-size: var(--sb-font-size-200);
+}
+
+.sb__emphasis {
+  margin: 0;
+  margin-top: var(--sb-space-24);
+  font-size: var(--sb-font-size-300);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: var(--sb-line-height-tight);
 }
 
 .sb__analysis {
@@ -290,6 +326,10 @@
 
   .sb__phase-title {
     font-size: var(--sb-font-size-400);
+  }
+
+  .sb__title {
+    font-size: var(--sb-font-size-500);
   }
 
   .sb__split,
