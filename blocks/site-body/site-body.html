@@ -10,33 +10,98 @@
     <section id="site-body" class="sb" aria-label="6-фазный сценарий принятия решения">
       <div class="sb__container">
         <section class="sb__phase" data-phase="1" aria-labelledby="sb-phase-1-title">
-          <h2 id="sb-phase-1-title">1. История провала</h2>
-          <p>Пользователь сталкивается с последствиями ошибок и понимает цену неопределённости. Это отправная точка сценария.</p>
+          <div class="sb__phase-head">
+            <p class="sb__phase-kicker">Фаза 1</p>
+            <h2 id="sb-phase-1-title" class="sb__phase-title">Контекст проблемы</h2>
+          </div>
+          <div class="sb__split sb__split--media">
+            <div class="sb__media" role="img" aria-label="Потерянные сроки и разрозненные решения"></div>
+            <div class="sb__text-group">
+              <p class="sb__lead">Пользователь видит цену несистемных решений.</p>
+              <p class="sb__text">Сценарий начинается с конкретной боли: ошибки в выборе приводят к потерям времени, бюджета и контроля.</p>
+            </div>
+          </div>
         </section>
 
         <section class="sb__phase" data-phase="2" aria-labelledby="sb-phase-2-title">
-          <h2 id="sb-phase-2-title">2. Закономерность проблемы</h2>
-          <p>Отдельные случаи складываются в понятный паттерн: проблема повторяема и объяснима. Возникает потребность в системном решении.</p>
+          <div class="sb__phase-head">
+            <p class="sb__phase-kicker">Фаза 2</p>
+            <h2 id="sb-phase-2-title" class="sb__phase-title">Аналитика повторяемости</h2>
+          </div>
+          <div class="sb__analysis" role="group" aria-label="Аналитический блок">
+            <p class="sb__metric-label">Доля типовых провалов</p>
+            <p class="sb__metric-value">78%</p>
+            <p class="sb__text">Проблема не случайна: одинаковые ошибки появляются при отсутствии структуры выбора и проверки подрядчика.</p>
+          </div>
         </section>
 
         <section class="sb__phase" data-phase="3" aria-labelledby="sb-phase-3-title">
-          <h2 id="sb-phase-3-title">3. Инвестиция в компанию</h2>
-          <p>Фокус смещается на надёжность команды, процессов и ответственности. Доверие формируется через структурную прозрачность.</p>
+          <div class="sb__phase-head">
+            <p class="sb__phase-kicker">Фаза 3</p>
+            <h2 id="sb-phase-3-title" class="sb__phase-title">Опора на компанию</h2>
+          </div>
+          <ul class="sb__grid" aria-label="Критерии доверия к компании">
+            <li class="sb__grid-item">Прозрачные этапы работ</li>
+            <li class="sb__grid-item">Фиксация сроков и статусов</li>
+            <li class="sb__grid-item">Ответственный менеджер</li>
+            <li class="sb__grid-item">Регламент контроля качества</li>
+          </ul>
         </section>
 
         <section class="sb__phase" data-phase="4" aria-labelledby="sb-phase-4-title">
-          <h2 id="sb-phase-4-title">4. Инвестиция в продукт</h2>
-          <p>Пользователь оценивает продукт как инструмент контроля результата. Решение воспринимается как осмысленное вложение.</p>
+          <div class="sb__phase-head">
+            <p class="sb__phase-kicker">Фаза 4</p>
+            <h2 id="sb-phase-4-title" class="sb__phase-title">Опора на продукт</h2>
+          </div>
+          <div class="sb__split">
+            <ol class="sb__list" aria-label="Что проверяется в продукте">
+              <li>Соответствие задачам участка</li>
+              <li>Прогноз эксплуатационных затрат</li>
+              <li>План обслуживания на сезон</li>
+            </ol>
+            <div class="sb__scheme" role="img" aria-label="Схема: задача, критерии, решение">
+              <p class="sb__scheme-step">Задача</p>
+              <p class="sb__scheme-step">Критерии</p>
+              <p class="sb__scheme-step">Решение</p>
+            </div>
+          </div>
         </section>
 
         <section class="sb__phase" data-phase="5" aria-labelledby="sb-phase-5-title">
-          <h2 id="sb-phase-5-title">5. Навигатор системы</h2>
-          <p>Появляется маршрут по системе: сначала базовая структура, затем детали по запросу. Это снижает когнитивную нагрузку.</p>
+          <div class="sb__phase-head">
+            <p class="sb__phase-kicker">Фаза 5</p>
+            <h2 id="sb-phase-5-title" class="sb__phase-title">Navigator системы</h2>
+          </div>
+          <ol class="sb__timeline" aria-label="Маршрут Navigator">
+            <li class="sb__timeline-item">Сначала: обзор 6 фаз</li>
+            <li class="sb__timeline-item">Далее: выбор нужного этапа</li>
+            <li class="sb__timeline-item">Затем: раскрытие деталей по запросу</li>
+          </ol>
+          <button
+            type="button"
+            class="sb__disclosure-btn"
+            aria-expanded="false"
+            aria-controls="sb-phase-5-panel"
+            data-disclosure-trigger
+          >
+            Показать детали Navigator
+          </button>
+          <div id="sb-phase-5-panel" class="sb__disclosure" hidden data-disclosure-panel>
+            <p class="sb__text">Детали открываются только по действию пользователя, чтобы снизить когнитивную нагрузку и сохранить фокус на текущей фазе.</p>
+          </div>
         </section>
 
         <section class="sb__phase" data-phase="6" aria-labelledby="sb-phase-6-title">
-          <h2 id="sb-phase-6-title">6. Навигатор действия</h2>
-          <p>Пользователь переходит к конкретному следующему шагу с чувством контроля. Действие становится логичным продолжением пути.</p>
+          <div class="sb__phase-head">
+            <p class="sb__phase-kicker">Фаза 6</p>
+            <h2 id="sb-phase-6-title" class="sb__phase-title">Переход к действию</h2>
+          </div>
+          <ol class="sb__steps" aria-label="Следующие шаги">
+            <li class="sb__step">Сформулировать задачу участка</li>
+            <li class="sb__step">Сверить критерии выбора</li>
+            <li class="sb__step">Запросить персональный сценарий</li>
+          </ol>
+          <a class="sb__cta" href="#" aria-label="Перейти к старту сценария">Запустить сценарий под ваш участок</a>
         </section>
       </div>
     </section>
