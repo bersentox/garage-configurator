@@ -322,13 +322,7 @@
 .implementation-construction__content {
   min-width: 0;
   display: grid;
-  gap: 0.28rem;
-}
-
-.implementation-construction__item-summary {
-  color: var(--sb-color-text-soft);
-  font-size: 0.82rem;
-  line-height: 1.35;
+  gap: 0;
 }
 
 .implementation-construction__item-title,
