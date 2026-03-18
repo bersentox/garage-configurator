@@ -3,10 +3,10 @@
 
   const implementationRoot = document.querySelector("#implementation-construction");
 
-  if (implementationRoot && "IntersectionObserver" in window) {
+  if (implementationRoot) {
     const rows = implementationRoot.querySelectorAll(".implementation-construction__row[data-reveal]");
 
-    if (rows.length) {
+    if ("IntersectionObserver" in window && rows.length) {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -28,7 +28,55 @@
       );
 
       rows.forEach((row) => observer.observe(row));
+    } else {
+      rows.forEach((row) => row.classList.add("is-visible"));
     }
+
+    const accordionGroups = implementationRoot.querySelectorAll(".implementation-construction__list[data-accordion-group]");
+
+    const syncAccordionPanel = (item) => {
+      const trigger = item.querySelector(".implementation-construction__trigger");
+      const panel = item.querySelector(".implementation-construction__panel");
+      const inner = panel?.querySelector(".implementation-construction__panel-inner");
+      const isOpen = item.classList.contains("is-open");
+
+      if (!trigger || !panel || !inner) {
+        return;
+      }
+
+      trigger.setAttribute("aria-expanded", String(isOpen));
+      panel.style.setProperty("--accordion-max-height", `${inner.scrollHeight}px`);
+    };
+
+    accordionGroups.forEach((group) => {
+      const items = Array.from(group.querySelectorAll("[data-accordion-item]"));
+      items.forEach((item) => syncAccordionPanel(item));
+
+      group.addEventListener("click", (event) => {
+        const trigger = event.target instanceof Element ? event.target.closest(".implementation-construction__trigger") : null;
+
+        if (!trigger) {
+          return;
+        }
+
+        const item = trigger.closest("[data-accordion-item]");
+
+        if (!item) {
+          return;
+        }
+
+        const willOpen = !item.classList.contains("is-open");
+
+        items.forEach((entry) => {
+          entry.classList.toggle("is-open", entry === item ? willOpen : false);
+          syncAccordionPanel(entry);
+        });
+      });
+    });
+
+    window.addEventListener("resize", () => {
+      implementationRoot.querySelectorAll("[data-accordion-item]").forEach((item) => syncAccordionPanel(item));
+    });
   }
 
   const navigationRoot = document.querySelector("#unified-navigation");
