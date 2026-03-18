@@ -293,16 +293,11 @@
   background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(237, 246, 245, 0.8) 100%);
 }
 
-#primary-cta .sb__section-inner {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(233, 238, 242, 0.9) 100%);
-}
-
 #faq .sb__section-inner {
   background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(245, 247, 249, 1) 100%);
 }
 
 #unified-navigation,
-#primary-cta,
 #faq {
   overflow: hidden;
 }
@@ -973,16 +968,11 @@
   background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(237, 246, 245, 0.8) 100%);
 }
 
-#primary-cta .sb__section-inner {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(233, 238, 242, 0.9) 100%);
-}
-
 #faq .sb__section-inner {
   background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(245, 247, 249, 1) 100%);
 }
 
 #unified-navigation,
-#primary-cta,
 #faq {
   overflow: hidden;
 }
