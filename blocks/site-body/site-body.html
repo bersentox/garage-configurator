@@ -352,11 +352,160 @@
           </div>
         </section>
 
-        <section id="faq" class="sb__section" aria-labelledby="faq-title">
-          <div class="sb__section-inner">
-            <p class="sb__eyebrow">FAQ</p>
-            <h2 id="faq-title" class="sb__title">Блок faq сохранён как отдельная финальная секция новой структуры.</h2>
-            <p class="sb__text">Секция подготовлена под последующее добавление вопросов и ответов в рамках обновлённой архитектуры site_body.</p>
+        <section
+          id="faq"
+          class="site-body-section faq"
+          aria-labelledby="faq-title"
+        >
+          <div class="faq__shell">
+            <header class="faq__header">
+              <h2 id="faq-title" class="faq__title">
+                Ответы на ключевые вопросы перед запуском проекта
+              </h2>
+              <p class="faq__subtitle">
+                Собрали то, что обычно оставляет неясность перед решением — и закрыли это заранее.
+              </p>
+            </header>
+
+            <div class="faq__layout">
+              <div
+                class="faq__list"
+                role="tablist"
+                aria-label="Часто задаваемые вопросы"
+              >
+                <button
+                  class="faq__item is-active"
+                  type="button"
+                  role="tab"
+                  id="faq-tab-01"
+                  aria-selected="true"
+                  aria-controls="faq-detail"
+                  tabindex="0"
+                  data-faq-id="01"
+                >
+                  <span class="faq__question">Как формируется итоговая стоимость?</span>
+                </button>
+                <button
+                  class="faq__item"
+                  type="button"
+                  role="tab"
+                  id="faq-tab-02"
+                  aria-selected="false"
+                  aria-controls="faq-detail"
+                  tabindex="-1"
+                  data-faq-id="02"
+                >
+                  <span class="faq__question">Могут ли появиться дополнительные платежи в процессе?</span>
+                </button>
+                <button
+                  class="faq__item"
+                  type="button"
+                  role="tab"
+                  id="faq-tab-03"
+                  aria-selected="false"
+                  aria-controls="faq-detail"
+                  tabindex="-1"
+                  data-faq-id="03"
+                >
+                  <span class="faq__question">Фиксируется ли цена в договоре?</span>
+                </button>
+                <button
+                  class="faq__item"
+                  type="button"
+                  role="tab"
+                  id="faq-tab-04"
+                  aria-selected="false"
+                  aria-controls="faq-detail"
+                  tabindex="-1"
+                  data-faq-id="04"
+                >
+                  <span class="faq__question">Сколько времени занимает строительство?</span>
+                </button>
+                <button
+                  class="faq__item"
+                  type="button"
+                  role="tab"
+                  id="faq-tab-05"
+                  aria-selected="false"
+                  aria-controls="faq-detail"
+                  tabindex="-1"
+                  data-faq-id="05"
+                >
+                  <span class="faq__question">Что происходит после замера?</span>
+                </button>
+                <button
+                  class="faq__item"
+                  type="button"
+                  role="tab"
+                  id="faq-tab-06"
+                  aria-selected="false"
+                  aria-controls="faq-detail"
+                  tabindex="-1"
+                  data-faq-id="06"
+                >
+                  <span class="faq__question">Кто отвечает за результат?</span>
+                </button>
+                <button
+                  class="faq__item"
+                  type="button"
+                  role="tab"
+                  id="faq-tab-07"
+                  aria-selected="false"
+                  aria-controls="faq-detail"
+                  tabindex="-1"
+                  data-faq-id="07"
+                >
+                  <span class="faq__question">Что если в процессе обнаружатся ограничения участка?</span>
+                </button>
+                <button
+                  class="faq__item"
+                  type="button"
+                  role="tab"
+                  id="faq-tab-08"
+                  aria-selected="false"
+                  aria-controls="faq-detail"
+                  tabindex="-1"
+                  data-faq-id="08"
+                >
+                  <span class="faq__question">Какие гарантии вы даёте после монтажа?</span>
+                </button>
+                <button
+                  class="faq__item"
+                  type="button"
+                  role="tab"
+                  id="faq-tab-09"
+                  aria-selected="false"
+                  aria-controls="faq-detail"
+                  tabindex="-1"
+                  data-faq-id="09"
+                >
+                  <span class="faq__question">Как понять, какой размер гаража мне нужен?</span>
+                </button>
+              </div>
+
+              <div class="faq__detail-wrap">
+                <aside
+                  id="faq-detail"
+                  class="faq__detail is-visible"
+                  role="tabpanel"
+                  aria-labelledby="faq-tab-01"
+                  aria-live="polite"
+                >
+                  <div class="faq__detail-copy">
+                    <h3 class="faq__detail-title">Как формируется итоговая стоимость?</h3>
+                    <div class="faq__detail-text">
+                      <p>Итоговая стоимость собирается из подтверждённых параметров проекта: размеров, конструктивной схемы, материалов, основания, комплектации и условий монтажа.</p>
+                      <p>Сначала фиксируются вводные после контакта и замера, затем они переводятся в техническое задание и коммерческое предложение. Поэтому цена строится не на усреднённой оценке, а на реальной конфигурации объекта.</p>
+                      <p>До старта работ вы понимаете, из чего состоит бюджет, какие решения в него входят и какие этапы зафиксированы в договоре.</p>
+                    </div>
+                  </div>
+                </aside>
+
+                <p class="faq__footer-note">
+                  Следующий шаг — перевести решение в реальный проект без скрытых допущений.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       </div>

@@ -33,11 +33,8 @@
 
   const navigationRoot = document.querySelector("#unified-navigation");
 
-  if (!navigationRoot) {
-    return;
-  }
-
-  const navigationData = {
+  if (navigationRoot) {
+    const navigationData = {
     "01": {
       title: "Контакт",
       label: "связь",
@@ -250,173 +247,341 @@
     },
   };
 
-  const map = navigationRoot.querySelector(".unified-navigation__map");
-  const nodes = Array.from(navigationRoot.querySelectorAll(".unified-navigation__node"));
-  const branch = navigationRoot.querySelector(".unified-navigation__branch");
-  const branchTitle = navigationRoot.querySelector(".unified-navigation__branch-title");
-  const branchText = navigationRoot.querySelector(".unified-navigation__branch-text");
-  const branchList = navigationRoot.querySelector(".unified-navigation__branch-list");
-  const detail = navigationRoot.querySelector(".unified-navigation__detail");
-  const detailStatus = navigationRoot.querySelector(".unified-navigation__detail-status");
-  const detailTitle = navigationRoot.querySelector(".unified-navigation__detail-title");
-  const detailText = navigationRoot.querySelector(".unified-navigation__detail-text");
-  let activeSubstepByStage = Object.fromEntries(Object.keys(navigationData).map((stageId) => [stageId, "01"]));
+    const map = navigationRoot.querySelector(".unified-navigation__map");
+    const nodes = Array.from(navigationRoot.querySelectorAll(".unified-navigation__node"));
+    const branch = navigationRoot.querySelector(".unified-navigation__branch");
+    const branchTitle = navigationRoot.querySelector(".unified-navigation__branch-title");
+    const branchText = navigationRoot.querySelector(".unified-navigation__branch-text");
+    const branchList = navigationRoot.querySelector(".unified-navigation__branch-list");
+    const detail = navigationRoot.querySelector(".unified-navigation__detail");
+    const detailStatus = navigationRoot.querySelector(".unified-navigation__detail-status");
+    const detailTitle = navigationRoot.querySelector(".unified-navigation__detail-title");
+    const detailText = navigationRoot.querySelector(".unified-navigation__detail-text");
+    let activeSubstepByStage = Object.fromEntries(Object.keys(navigationData).map((stageId) => [stageId, "01"]));
 
-  const renderDetail = (stageId, stepNumber) => {
-    const stage = navigationData[stageId];
-    const step = stage?.steps.find((item) => item.number === stepNumber) || stage?.steps[0];
+    const renderDetail = (stageId, stepNumber) => {
+      const stage = navigationData[stageId];
+      const step = stage?.steps.find((item) => item.number === stepNumber) || stage?.steps[0];
 
-    if (!stage || !step || !detail || !detailStatus || !detailTitle || !detailText) {
-      return;
-    }
+      if (!stage || !step || !detail || !detailStatus || !detailTitle || !detailText) {
+        return;
+      }
 
-    detail.classList.remove("is-visible");
-    detail.classList.add("is-updating");
-
-    requestAnimationFrame(() => {
-      detailStatus.textContent = `${stageId} ${stage.title}`;
-      detailTitle.textContent = `${step.number} ${step.title}`;
-      detailText.textContent = step.detailText;
+      detail.classList.remove("is-visible");
+      detail.classList.add("is-updating");
 
       requestAnimationFrame(() => {
-        detail.classList.remove("is-updating");
-        detail.classList.add("is-visible");
+        detailStatus.textContent = `${stageId} ${stage.title}`;
+        detailTitle.textContent = `${step.number} ${step.title}`;
+        detailText.textContent = step.detailText;
+
+        requestAnimationFrame(() => {
+          detail.classList.remove("is-updating");
+          detail.classList.add("is-visible");
+        });
       });
-    });
-  };
-
-  const renderBranch = (stageId) => {
-    const stage = navigationData[stageId];
-
-    if (!stage || !map || !branch || !branchTitle || !branchText || !branchList) {
-      return;
-    }
-
-    map.dataset.activeStage = stageId;
-
-    nodes.forEach((node, index) => {
-      const nodeStage = node.dataset.stage || "";
-      const isActive = nodeStage === stageId;
-      const isComplete = Number(nodeStage) < Number(stageId);
-
-      node.classList.toggle("is-active", isActive);
-      node.classList.toggle("is-complete", isComplete);
-      node.setAttribute("aria-selected", String(isActive));
-      node.tabIndex = isActive ? 0 : -1;
-
-      if (isActive) {
-        branch.setAttribute("aria-labelledby", node.id);
-      }
-
-      node.style.setProperty("--node-order", String(index));
-    });
-
-    branch.classList.remove("is-animating");
-    void branch.offsetWidth;
-    branch.classList.add("is-animating");
-
-    branchTitle.textContent = stage.branchTitle;
-    branchText.textContent = stage.branchText;
-
-    const activeStep = stage.steps.some((step) => step.number === activeSubstepByStage[stageId])
-      ? activeSubstepByStage[stageId]
-      : stage.steps[0]?.number || "01";
-
-    activeSubstepByStage = {
-      ...activeSubstepByStage,
-      [stageId]: activeStep,
     };
 
-    branchList.innerHTML = `
-      <ol class="unified-navigation__subflow" aria-label="Подэтапы ${stage.branchTitle}">
-        ${stage.steps
-          .map((step, index) => `
-            <li class="unified-navigation__subflow-item" style="--subnode-index:${index}">
-              <button
-                class="unified-navigation__subnode${step.number === activeStep ? " is-active" : ""}"
-                type="button"
-                data-stage="${stageId}"
-                data-step="${step.number}"
-                aria-pressed="${String(step.number === activeStep)}"
-              >
-                <span class="unified-navigation__subnode-number">${step.number}</span>
-                <span class="unified-navigation__subnode-copy">
-                  <span class="unified-navigation__subnode-title">${step.title}</span>
-                  <span class="unified-navigation__subnode-label">${step.label}</span>
-                </span>
-              </button>
-              ${index < stage.steps.length - 1 ? '<span class="unified-navigation__subnode-connector" aria-hidden="true"></span>' : ""}
-            </li>
-          `)
-          .join("")}
-      </ol>
-    `;
+    const renderBranch = (stageId) => {
+      const stage = navigationData[stageId];
 
-    branchList.querySelectorAll(".unified-navigation__subnode").forEach((subnode) => {
-      const stageKey = subnode.getAttribute("data-stage") || stageId;
-      const stepKey = subnode.getAttribute("data-step") || activeStep;
+      if (!stage || !map || !branch || !branchTitle || !branchText || !branchList) {
+        return;
+      }
 
-      subnode.addEventListener("click", () => {
-        activeSubstepByStage = {
-          ...activeSubstepByStage,
-          [stageKey]: stepKey,
-        };
+      map.dataset.activeStage = stageId;
 
-        branchList.querySelectorAll(".unified-navigation__subnode").forEach((item) => {
-          const isActive = item === subnode;
-          item.classList.toggle("is-active", isActive);
-          item.setAttribute("aria-pressed", String(isActive));
+      nodes.forEach((node, index) => {
+        const nodeStage = node.dataset.stage || "";
+        const isActive = nodeStage === stageId;
+        const isComplete = Number(nodeStage) < Number(stageId);
+
+        node.classList.toggle("is-active", isActive);
+        node.classList.toggle("is-complete", isComplete);
+        node.setAttribute("aria-selected", String(isActive));
+        node.tabIndex = isActive ? 0 : -1;
+
+        if (isActive) {
+          branch.setAttribute("aria-labelledby", node.id);
+        }
+
+        node.style.setProperty("--node-order", String(index));
+      });
+
+      branch.classList.remove("is-animating");
+      void branch.offsetWidth;
+      branch.classList.add("is-animating");
+
+      branchTitle.textContent = stage.branchTitle;
+      branchText.textContent = stage.branchText;
+
+      const activeStep = stage.steps.some((step) => step.number === activeSubstepByStage[stageId])
+        ? activeSubstepByStage[stageId]
+        : stage.steps[0]?.number || "01";
+
+      activeSubstepByStage = {
+        ...activeSubstepByStage,
+        [stageId]: activeStep,
+      };
+
+      branchList.innerHTML = `
+        <ol class="unified-navigation__subflow" aria-label="Подэтапы ${stage.branchTitle}">
+          ${stage.steps
+            .map((step, index) => `
+              <li class="unified-navigation__subflow-item" style="--subnode-index:${index}">
+                <button
+                  class="unified-navigation__subnode${step.number === activeStep ? " is-active" : ""}"
+                  type="button"
+                  data-stage="${stageId}"
+                  data-step="${step.number}"
+                  aria-pressed="${String(step.number === activeStep)}"
+                >
+                  <span class="unified-navigation__subnode-number">${step.number}</span>
+                  <span class="unified-navigation__subnode-copy">
+                    <span class="unified-navigation__subnode-title">${step.title}</span>
+                    <span class="unified-navigation__subnode-label">${step.label}</span>
+                  </span>
+                </button>
+                ${index < stage.steps.length - 1 ? '<span class="unified-navigation__subnode-connector" aria-hidden="true"></span>' : ""}
+              </li>
+            `)
+            .join("")}
+        </ol>
+      `;
+
+      branchList.querySelectorAll(".unified-navigation__subnode").forEach((subnode) => {
+        const stageKey = subnode.getAttribute("data-stage") || stageId;
+        const stepKey = subnode.getAttribute("data-step") || activeStep;
+
+        subnode.addEventListener("click", () => {
+          activeSubstepByStage = {
+            ...activeSubstepByStage,
+            [stageKey]: stepKey,
+          };
+
+          branchList.querySelectorAll(".unified-navigation__subnode").forEach((item) => {
+            const isActive = item === subnode;
+            item.classList.toggle("is-active", isActive);
+            item.setAttribute("aria-pressed", String(isActive));
+          });
+
+          renderDetail(stageKey, stepKey);
         });
+      });
 
-        renderDetail(stageKey, stepKey);
+      renderDetail(stageId, activeStep);
+    };
+
+    const activateStage = (stageId, focusNode = false) => {
+      if (!navigationData[stageId]) {
+        return;
+      }
+
+      renderBranch(stageId);
+
+      if (focusNode) {
+        const activeNode = nodes.find((node) => node.dataset.stage === stageId);
+        activeNode?.focus();
+      }
+    };
+
+    nodes.forEach((node) => {
+      node.addEventListener("click", () => activateStage(node.dataset.stage || "03", false));
+
+      node.addEventListener("keydown", (event) => {
+        const currentIndex = nodes.indexOf(node);
+
+        if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+          event.preventDefault();
+          const nextNode = nodes[(currentIndex + 1) % nodes.length];
+          activateStage(nextNode.dataset.stage || "03", true);
+        }
+
+        if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+          event.preventDefault();
+          const previousNode = nodes[(currentIndex - 1 + nodes.length) % nodes.length];
+          activateStage(previousNode.dataset.stage || "03", true);
+        }
+
+        if (event.key === "Home") {
+          event.preventDefault();
+          activateStage(nodes[0]?.dataset.stage || "01", true);
+        }
+
+        if (event.key === "End") {
+          event.preventDefault();
+          activateStage(nodes[nodes.length - 1]?.dataset.stage || "07", true);
+        }
       });
     });
 
-    renderDetail(stageId, activeStep);
+    activateStage(map?.dataset.activeStage || "03");
+  }
+
+  const faqRoot = document.querySelector("#faq");
+
+  if (!faqRoot) {
+    return;
+  }
+
+  const faqData = {
+    "01": {
+      title: "Как формируется итоговая стоимость?",
+      paragraphs: [
+        "Итоговая стоимость собирается из подтверждённых параметров проекта: размеров, конструктивной схемы, материалов, основания, комплектации и условий монтажа.",
+        "Сначала фиксируются вводные после контакта и замера, затем они переводятся в техническое задание и коммерческое предложение. Поэтому цена строится не на усреднённой оценке, а на реальной конфигурации объекта.",
+        "До старта работ вы понимаете, из чего состоит бюджет, какие решения в него входят и какие этапы зафиксированы в договоре.",
+      ],
+    },
+    "02": {
+      title: "Могут ли появиться дополнительные платежи в процессе?",
+      paragraphs: [
+        "Нет, если параметры проекта подтверждены до запуска работ и зафиксированы в договоре.",
+        "После замера и обсуждения собирается полное техническое задание, на основании которого рассчитывается состав решения. Именно это закрывает риск случайных доплат уже в процессе.",
+        "Если вы решаете менять конфигурацию после согласования, это оформляется отдельно как новое решение. Поэтому вы всегда понимаете, за что платите и на каком этапе.",
+      ],
+    },
+    "03": {
+      title: "Фиксируется ли цена в договоре?",
+      paragraphs: [
+        "Да. После согласования состава работ, сроков и комплектации стоимость фиксируется в договоре.",
+        "Это означает, что проект переводится из предварительного обсуждения в управляемую систему обязательств, где зафиксированы объём, стоимость и порядок исполнения.",
+        "Такой подход защищает и клиента, и команду от разночтений по ходу реализации.",
+      ],
+    },
+    "04": {
+      title: "Сколько времени занимает строительство?",
+      paragraphs: [
+        "Срок зависит от размеров объекта, типа конструкции, основания, комплектации и условий площадки.",
+        "Мы не называем срок наугад: сначала замеряем участок, собираем задачу и только после этого даём реалистичный календарь по этапам — от подготовки до сдачи.",
+        "За счёт такой последовательности сроки не выглядят как обещание “на глаз”, а становятся частью согласованного маршрута проекта.",
+      ],
+    },
+    "05": {
+      title: "Что происходит после замера?",
+      paragraphs: [
+        "После замера все размеры, ограничения участка, подъезд и особенности площадки переходят в расчётный и проектный контур.",
+        "На этой базе формируется техническое задание, затем коммерческое предложение и логика следующего шага — проектирование или фиксация условий.",
+        "То есть замер не остаётся отдельным визитом, а сразу превращается в основу решения.",
+      ],
+    },
+    "06": {
+      title: "Кто отвечает за результат?",
+      paragraphs: [
+        "За проект отвечает команда, которая ведёт его как единую систему: от входных данных до сдачи объекта.",
+        "Ответственность не дробится между случайными исполнителями по этапам — именно поэтому маршрут проекта заранее собран и связан между собой.",
+        "Клиент понимает, кто ведёт процесс, на каком этапе находится проект и что подтверждено на текущий момент.",
+      ],
+    },
+    "07": {
+      title: "Что если в процессе обнаружатся ограничения участка?",
+      paragraphs: [
+        "Поэтому мы и начинаем с выезда, замера и фиксации ограничений ещё до проектных решений.",
+        "Если на площадке есть перепад высот, сложный подъезд, ограничения по основанию или инженерные вводные, они должны попасть в проект до старта работ, а не после.",
+        "Если новые обстоятельства действительно проявляются позже, они разбираются как отдельная зафиксированная вводная, а не как хаотичная проблема на монтаже.",
+      ],
+    },
+    "08": {
+      title: "Какие гарантии вы даёте после монтажа?",
+      paragraphs: [
+        "Гарантия распространяется на согласованный объём работ и конструктивные решения, которые были реализованы по проекту и договору.",
+        "Но сама надёжность начинается раньше гарантии: с расчёта, спецификации, контроля узлов и проверки геометрии на каждом переходе.",
+        "Именно поэтому итоговый результат опирается не только на обещание после монтажа, но и на предсказуемую систему качества до него.",
+      ],
+    },
+    "09": {
+      title: "Как понять, какой размер гаража мне нужен?",
+      paragraphs: [
+        "Размер определяется не только по габариту автомобиля, но и по сценарию использования: нужен ли запас под хранение, обслуживание, мастерскую или дополнительное оборудование.",
+        "Мы связываем ваш сценарий с реальными ограничениями участка и предлагаем конфигурацию, которая работает на практике, а не только “влезает” по внешнему размеру.",
+        "Так решение становится не абстрактным метражом, а понятной системой под конкретную задачу.",
+      ],
+    },
   };
 
-  const activateStage = (stageId, focusNode = false) => {
-    if (!navigationData[stageId]) {
+  const faqList = faqRoot.querySelector(".faq__list");
+  const faqItems = Array.from(faqRoot.querySelectorAll(".faq__item"));
+  const faqDetail = faqRoot.querySelector(".faq__detail");
+  const faqDetailTitle = faqRoot.querySelector(".faq__detail-title");
+  const faqDetailText = faqRoot.querySelector(".faq__detail-text");
+
+  const renderFaqDetail = (faqId) => {
+    const faqEntry = faqData[faqId];
+
+    if (!faqEntry || !faqDetail || !faqDetailTitle || !faqDetailText) {
       return;
     }
 
-    renderBranch(stageId);
+    faqDetail.classList.remove("is-visible");
+    faqDetail.classList.add("is-updating");
 
-    if (focusNode) {
-      const activeNode = nodes.find((node) => node.dataset.stage === stageId);
-      activeNode?.focus();
+    requestAnimationFrame(() => {
+      faqDetailTitle.textContent = faqEntry.title;
+      faqDetailText.innerHTML = faqEntry.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("");
+
+      requestAnimationFrame(() => {
+        faqDetail.classList.remove("is-updating");
+        faqDetail.classList.add("is-visible");
+      });
+    });
+  };
+
+  const activateFaq = (faqId, focusItem = false) => {
+    const nextItem = faqItems.find((item) => item.dataset.faqId === faqId);
+
+    if (!nextItem || !faqDetail) {
+      return;
+    }
+
+    faqItems.forEach((item) => {
+      const isActive = item === nextItem;
+      item.classList.toggle("is-active", isActive);
+      item.setAttribute("aria-selected", String(isActive));
+      item.tabIndex = isActive ? 0 : -1;
+    });
+
+    faqList?.setAttribute("data-active-faq", faqId);
+    faqDetail.setAttribute("aria-labelledby", nextItem.id);
+    renderFaqDetail(faqId);
+
+    if (focusItem) {
+      nextItem.focus();
     }
   };
 
-  nodes.forEach((node) => {
-    node.addEventListener("click", () => activateStage(node.dataset.stage || "03", false));
+  faqItems.forEach((item) => {
+    item.addEventListener("click", () => activateFaq(item.dataset.faqId || "01"));
 
-    node.addEventListener("keydown", (event) => {
-      const currentIndex = nodes.indexOf(node);
+    item.addEventListener("keydown", (event) => {
+      const currentIndex = faqItems.indexOf(item);
 
-      if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      if (event.key === "ArrowDown" || event.key === "ArrowRight") {
         event.preventDefault();
-        const nextNode = nodes[(currentIndex + 1) % nodes.length];
-        activateStage(nextNode.dataset.stage || "03", true);
+        const nextItem = faqItems[(currentIndex + 1) % faqItems.length];
+        activateFaq(nextItem.dataset.faqId || "01", true);
       }
 
-      if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
         event.preventDefault();
-        const previousNode = nodes[(currentIndex - 1 + nodes.length) % nodes.length];
-        activateStage(previousNode.dataset.stage || "03", true);
+        const previousItem = faqItems[(currentIndex - 1 + faqItems.length) % faqItems.length];
+        activateFaq(previousItem.dataset.faqId || "01", true);
       }
 
       if (event.key === "Home") {
         event.preventDefault();
-        activateStage(nodes[0]?.dataset.stage || "01", true);
+        activateFaq(faqItems[0]?.dataset.faqId || "01", true);
       }
 
       if (event.key === "End") {
         event.preventDefault();
-        activateStage(nodes[nodes.length - 1]?.dataset.stage || "07", true);
+        activateFaq(faqItems[faqItems.length - 1]?.dataset.faqId || "09", true);
       }
     });
   });
 
-  activateStage(map?.dataset.activeStage || "03");
+  if (faqList) {
+    faqList.setAttribute("data-active-faq", "01");
+  }
+
+  activateFaq(faqItems.find((item) => item.classList.contains("is-active"))?.dataset.faqId || "01");
 })();
