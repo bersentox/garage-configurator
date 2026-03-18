@@ -3,131 +3,253 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Site Body — 6-фазный сценарий</title>
+    <title>Site Body — decision layer</title>
     <link rel="stylesheet" href="./site-body.css" />
   </head>
   <body>
-    <section id="site-body" class="sb" aria-label="6-фазный сценарий принятия решения">
+    <section id="site-body" class="sb" aria-label="Decision-acceleration block after configurator">
       <div class="sb__container">
-        <section class="sb__phase" data-phase="1" aria-labelledby="sb-phase-1-title">
-          <div class="sb__phase-head">
-            <p class="sb__phase-kicker">Фаза 1</p>
-            <h2 id="sb-phase-1-title" class="sb__phase-title">История провала</h2>
-          </div>
+        <section class="sb__intro" aria-labelledby="sb-intro-title">
+          <p class="sb__eyebrow">После конфигурации</p>
+          <h2 id="sb-intro-title" class="sb__headline">Внешне гаражи могут выглядеть одинаково. Разница — в том, как они организованы и собраны.</h2>
+          <p class="sb__intro-text">Дальше важен не объём обещаний, а то, где контроль теряется и где он фиксируется заранее.</p>
+        </section>
 
-          <article class="sb__story" aria-label="История провала клиента">
-            <div class="sb__split sb__split--media">
-              <figure class="sb__media sb__media--story">
-                <img src="./assets/images/story.png" alt="Повреждённый гараж после обрушения крыши" />
-              </figure>
-              <div class="sb__text-group">
-                <h3 class="sb__storyTitle">Как Виталий хотел сэкономить миллион — и потерял два</h3>
-                <p class="sb__lead">Виталий выбрал самое дешёвое предложение и убедил себя, что конструкция выдержит. Через сезон крыша прогнулась после снегопада, а потом вместе с ней сложился и весь гараж.</p>
-                <p class="sb__text">Эта история — про цену решений, которые в моменте кажутся выгодными.</p>
+        <section class="sb__comparison" aria-labelledby="sb-compare-control-title">
+          <header class="sb__section-head">
+            <p class="sb__eyebrow">Comparison row 1</p>
+            <h2 id="sb-compare-control-title" class="sb__section-title">Где теряется контроль | Где он фиксируется</h2>
+          </header>
+
+          <div class="sb__contrast" role="list" aria-label="Сравнение хаотичного процесса и системного подхода">
+            <article class="sb__lane sb__lane--risk" role="listitem" aria-labelledby="sb-control-risk-title">
+              <h3 id="sb-control-risk-title" class="sb__lane-title">Хаос</h3>
+              <ul class="sb__pair-list">
+                <li class="sb__pair-item"><span class="sb__pair-label">Сроки</span><span class="sb__pair-text">плавают вместе с бригадой и погодой</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Решения</span><span class="sb__pair-text">принимаются уже по месту и на ходу</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Ответственность</span><span class="sb__pair-text">размыта между менеджером, монтажом и поставками</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Материалы</span><span class="sb__pair-text">могут меняться в процессе без ясной фиксации</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Контроль</span><span class="sb__pair-text">ложится на заказчика и его свободное время</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Обещания</span><span class="sb__pair-text">звучат убедительно, но не собираются в процесс</span></li>
+              </ul>
+            </article>
+
+            <article class="sb__lane sb__lane--system" role="listitem" aria-labelledby="sb-control-system-title">
+              <h3 id="sb-control-system-title" class="sb__lane-title">Система</h3>
+              <ul class="sb__pair-list">
+                <li class="sb__pair-item"><span class="sb__pair-label">Сроки</span><span class="sb__pair-text">разбиты на этапы с понятными точками проверки</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Решения</span><span class="sb__pair-text">принимаются заранее до выхода на площадку</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Ответственность</span><span class="sb__pair-text">собрана в одной связанной системе исполнения</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Материалы</span><span class="sb__pair-text">заданы до начала работ и не плавают по ходу</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Контроль</span><span class="sb__pair-text">встроен в маршрут, а не переносится на клиента</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Результат</span><span class="sb__pair-text">каждый этап даёт проверяемый итог, а не слова</span></li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="sb__comparison" aria-labelledby="sb-compare-quality-title">
+          <header class="sb__section-head">
+            <p class="sb__eyebrow">Comparison row 2</p>
+            <h2 id="sb-compare-quality-title" class="sb__section-title">Где возникают проблемы качества | Как это решено</h2>
+          </header>
+
+          <div class="sb__contrast" role="list" aria-label="Сравнение скрытых рисков качества и инженерных решений">
+            <article class="sb__lane sb__lane--risk" role="listitem" aria-labelledby="sb-quality-risk-title">
+              <h3 id="sb-quality-risk-title" class="sb__lane-title">Скрытые точки риска</h3>
+              <ul class="sb__pair-list">
+                <li class="sb__pair-item"><span class="sb__pair-label">Геометрия</span><span class="sb__pair-text">уходит, если каркас собирают без жёсткой базы</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Узлы</span><span class="sb__pair-text">остаются на глаз и зависят от конкретной смены</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Металл</span><span class="sb__pair-text">упрощают там, где это не видно после монтажа</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Примыкания</span><span class="sb__pair-text">решают локально уже по месту, когда поздно</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Крепёж</span><span class="sb__pair-text">подбирают по остаточному принципу, не по нагрузке</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Кровля</span><span class="sb__pair-text">оставляют на уровень «посмотрим зимой»</span></li>
+              </ul>
+            </article>
+
+            <article class="sb__lane sb__lane--system" role="listitem" aria-labelledby="sb-quality-system-title">
+              <h3 id="sb-quality-system-title" class="sb__lane-title">Решено заранее</h3>
+              <ul class="sb__pair-list">
+                <li class="sb__pair-item"><span class="sb__pair-label">Геометрия</span><span class="sb__pair-text">задаётся сразу и держится всей схемой каркаса</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Узлы</span><span class="sb__pair-text">не остаются в серой зоне и фиксируются до сборки</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Материалы</span><span class="sb__pair-text">определяются заранее без подмен критических позиций</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Примыкания</span><span class="sb__pair-text">закладываются как часть общей системы сопряжений</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Нагрузка</span><span class="sb__pair-text">учитывается до монтажа, а не после первых сезонов</span></li>
+                <li class="sb__pair-item"><span class="sb__pair-label">Кровля</span><span class="sb__pair-text">решается как расчётная часть со своим запасом</span></li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="sb__micro-cta" aria-labelledby="sb-micro-cta-title">
+          <div>
+            <p class="sb__eyebrow">Следующий шаг</p>
+            <h2 id="sb-micro-cta-title" class="sb__section-title">Теперь можно перейти от общих сравнений к вашему варианту.</h2>
+            <p class="sb__support">Без лишних кругов: сверить вводные и собрать решение под участок, задачи и режим эксплуатации.</p>
+          </div>
+          <a class="sb__button sb__button--primary" href="#" aria-label="Подобрать решение под участок">Подобрать решение</a>
+        </section>
+
+        <section class="sb__navigator sb__navigator--system" aria-labelledby="sb-system-nav-title">
+          <header class="sb__section-head">
+            <p class="sb__eyebrow">System navigator</p>
+            <h2 id="sb-system-nav-title" class="sb__section-title">Как устроен путь от первого контакта до готового результата</h2>
+          </header>
+
+          <ol class="sb__route" aria-label="Маршрут системного сценария">
+            <li class="sb__route-step">
+              <span class="sb__route-index">01</span>
+              <div>
+                <h3 class="sb__route-title">Запрос и вводные</h3>
+                <p class="sb__route-text">Фиксируются задачи, формат участка и базовые ограничения.</p>
               </div>
-            </div>
-
-            <p class="sb__storyIntro">Это реальная история одного клиента. Почти дословно — с его слов.</p>
-
-            <div class="sb__storyText" aria-label="Тело истории">
-              <p class="sb__storyBlock">Я построил дом и решил, что с гаражом всё будет просто. Посмотрел предложения, выбрал тех, кто обещал сделать быстро и почти на миллион дешевле остальных.</p>
-              <p class="sb__storyBlock">Смету дали на словах: сказали, что «всё включено», что металл «нормальный», что переплачивать за расчёты и проект смысла нет. Я поверил, потому что звучало уверенно и по-дружески.</p>
-              <p class="sb__quote">— Да мы всё сделаем, не переживай.</p>
-              <p class="sb__storyBlock">Начали бодро. Заехали, разметили площадку, быстро собрали каркас. Я приезжал вечером, смотрел из машины и думал: отлично, сейчас сэкономлю и время, и деньги.</p>
-              <p class="sb__storyBlock">Первые вопросы появились, когда заметил, что стойки стоят не в одной геометрии, а часть узлов просто «прихвачена», без нормального усиления. На мои замечания отвечали, что «потом всё подтянут».</p>
-              <p class="sb__quote">— Да не переживай, сейчас выровняем.</p>
-              <p class="sb__storyBlock">Крышу закрыли быстро, но без нормального расчёта снеговой нагрузки и без понятной схемы водоотвода. Мне снова сказали, что это «типовой вариант» и «у всех так стоит годами».</p>
-              <p class="sb__storyBlock">Осенью всё выглядело нормально. А зимой выпал тяжёлый мокрый снег, и я впервые услышал, как металл внутри гаража «поёт» и щёлкает.</p>
-              <p class="sb__storyBlock">Через несколько дней центральная часть кровли заметно просела. Ворота стало подклинивать, дверь перестала закрываться без усилия. Я позвонил подрядчику, мне пообещали «подъехать на неделе».</p>
-              <p class="sb__storyBlock">Никто не приехал. Ещё через неделю после очередного снегопада крыша прогнулась сильнее, повело стойки, и конструкция буквально сложилась внутрь. Машину успел выгнать, но сам гараж был уже непригоден.</p>
-              <p class="sb__storyBlock">Дальше начался самый дорогой этап: демонтаж, вывоз, повторная подготовка площадки, новый каркас, новые материалы и новая бригада. То, что я «сэкономил» вначале, исчезло сразу.</p>
-              <p class="sb__storyBlock">По факту я потерял не миллион, а почти два: на переделке, простоях, нервах и времени. И главное — понял слишком поздно, что экономить нужно не на надёжности, а на хаосе в принятии решения.</p>
-            </div>
-
-            <aside class="sb__conclusion" aria-label="Вывод компании по истории клиента">
-              <h3 class="sb__conclusionTitle">Вывод</h3>
-              <p class="sb__text">Когда проект собирают без расчётов, контроля узлов и ответственного за результат, риск поломки не «возможен», а почти неизбежен. Надёжный гараж начинается не с низкой цены, а с прозрачной системы выбора и выполнения работ.</p>
-            </aside>
-          </article>
-        </section>
-
-        <section class="sb__phase sb__phase--analysis" data-phase="2" aria-labelledby="sb-phase-2-title">
-          <div class="sb__container sb__container--narrow">
-            <h2 id="sb-phase-2-title" class="sb__title">Почему это происходит</h2>
-            <p class="sb__lead">Проблема возникает не на стройке — она появляется раньше.</p>
-            <p class="sb__text">Когда решения не зафиксированы заранее, а процесс заменяется импровизацией, ошибки становятся неизбежными. Чем позже они обнаруживаются, тем дороже их исправление.</p>
-            <p class="sb__emphasis">Это не случайность. Это закономерность.</p>
-          </div>
-        </section>
-
-        <section class="sb__phase" data-phase="3" aria-labelledby="sb-phase-3-title">
-          <div class="sb__phase-head">
-            <p class="sb__phase-kicker">Фаза 3</p>
-            <h2 id="sb-phase-3-title" class="sb__phase-title">Опора на компанию</h2>
-          </div>
-          <ul class="sb__grid" aria-label="Критерии доверия к компании">
-            <li class="sb__grid-item">Прозрачные этапы работ</li>
-            <li class="sb__grid-item">Фиксация сроков и статусов</li>
-            <li class="sb__grid-item">Ответственный менеджер</li>
-            <li class="sb__grid-item">Регламент контроля качества</li>
-          </ul>
-        </section>
-
-        <section class="sb__phase" data-phase="4" aria-labelledby="sb-phase-4-title">
-          <div class="sb__phase-head">
-            <p class="sb__phase-kicker">Фаза 4</p>
-            <h2 id="sb-phase-4-title" class="sb__phase-title">Опора на продукт</h2>
-          </div>
-          <div class="sb__split">
-            <ol class="sb__list" aria-label="Что проверяется в продукте">
-              <li>Соответствие задачам участка</li>
-              <li>Прогноз эксплуатационных затрат</li>
-              <li>План обслуживания на сезон</li>
-            </ol>
-            <div class="sb__scheme" role="img" aria-label="Схема: задача, критерии, решение">
-              <p class="sb__scheme-step">Задача</p>
-              <p class="sb__scheme-step">Критерии</p>
-              <p class="sb__scheme-step">Решение</p>
-            </div>
-          </div>
-        </section>
-
-        <section class="sb__phase" data-phase="5" aria-labelledby="sb-phase-5-title">
-          <div class="sb__phase-head">
-            <p class="sb__phase-kicker">Фаза 5</p>
-            <h2 id="sb-phase-5-title" class="sb__phase-title">Navigator системы</h2>
-          </div>
-          <ol class="sb__timeline" aria-label="Маршрут Navigator">
-            <li class="sb__timeline-item">Сначала: обзор 6 фаз</li>
-            <li class="sb__timeline-item">Далее: выбор нужного этапа</li>
-            <li class="sb__timeline-item">Затем: раскрытие деталей по запросу</li>
+            </li>
+            <li class="sb__route-step">
+              <span class="sb__route-index">02</span>
+              <div>
+                <h3 class="sb__route-title">Подбор конфигурации</h3>
+                <p class="sb__route-text">Собирается рабочий вариант без случайных допущений по ходу.</p>
+              </div>
+            </li>
+            <li class="sb__route-step">
+              <span class="sb__route-index">03</span>
+              <div>
+                <h3 class="sb__route-title">Фиксация комплектации</h3>
+                <p class="sb__route-text">Материалы, узлы и объём решения закрепляются до запуска.</p>
+              </div>
+            </li>
+            <li class="sb__route-step">
+              <span class="sb__route-index">04</span>
+              <div>
+                <h3 class="sb__route-title">Планирование площадки</h3>
+                <p class="sb__route-text">Определяются примыкания, основание, логистика и порядок работ.</p>
+              </div>
+            </li>
+            <li class="sb__route-step">
+              <span class="sb__route-index">05</span>
+              <div>
+                <h3 class="sb__route-title">Монтаж по этапам</h3>
+                <p class="sb__route-text">Каждый этап проходит свою проверяемую точку контроля.</p>
+              </div>
+            </li>
+            <li class="sb__route-step">
+              <span class="sb__route-index">06</span>
+              <div>
+                <h3 class="sb__route-title">Сдача и эксплуатация</h3>
+                <p class="sb__route-text">На выходе понятен результат, состав решения и дальнейший режим использования.</p>
+              </div>
+            </li>
           </ol>
-          <button
-            type="button"
-            class="sb__disclosure-btn"
-            aria-expanded="false"
-            aria-controls="sb-phase-5-panel"
-            data-disclosure-trigger
-          >
-            Показать детали Navigator
-          </button>
-          <div id="sb-phase-5-panel" class="sb__disclosure" hidden data-disclosure-panel>
-            <p class="sb__text">Детали открываются только по действию пользователя, чтобы снизить когнитивную нагрузку и сохранить фокус на текущей фазе.</p>
+        </section>
+
+        <section class="sb__navigator sb__navigator--action" aria-labelledby="sb-action-nav-title">
+          <header class="sb__section-head sb__section-head--inline">
+            <div>
+              <p class="sb__eyebrow">Action navigator</p>
+              <h2 id="sb-action-nav-title" class="sb__section-title">Что делать прямо сейчас</h2>
+            </div>
+            <a class="sb__button sb__button--primary" href="#" aria-label="Рассчитать решение под участок">Рассчитать под участок</a>
+          </header>
+
+          <ol class="sb__action-list" aria-label="Пошаговое действие пользователя и команды">
+            <li class="sb__action-step">
+              <span class="sb__action-role">Вы</span>
+              <p class="sb__action-text">Отправляете размеры, задачи и желаемую комплектацию.</p>
+            </li>
+            <li class="sb__action-step">
+              <span class="sb__action-role">Мы</span>
+              <p class="sb__action-text">Сверяем сценарий, нагрузку и состав решения без лишних допущений.</p>
+            </li>
+            <li class="sb__action-step">
+              <span class="sb__action-role">Вы</span>
+              <p class="sb__action-text">Смотрите понятный вариант с этапами, сроками и комплектацией.</p>
+            </li>
+            <li class="sb__action-step">
+              <span class="sb__action-role">Мы</span>
+              <p class="sb__action-text">Переводим согласованный вариант в подготовку и монтажный маршрут.</p>
+            </li>
+          </ol>
+        </section>
+
+        <section class="sb__faq" aria-labelledby="sb-faq-title">
+          <header class="sb__section-head">
+            <p class="sb__eyebrow">FAQ</p>
+            <h2 id="sb-faq-title" class="sb__section-title">Что обычно хотят понять до следующего шага</h2>
+          </header>
+
+          <div class="sb__faq-list">
+            <details class="sb__faq-item">
+              <summary class="sb__faq-summary">Сколько стоит гараж и от чего зависит цена?</summary>
+              <p class="sb__faq-answer">Цена зависит от габаритов, состава каркаса, кровли, ворот, основания и условий участка. Смысл расчёта — сразу собрать не абстрактную вилку, а рабочую комплектацию.</p>
+            </details>
+            <details class="sb__faq-item">
+              <summary class="sb__faq-summary">Какие реальные сроки от расчёта до монтажа?</summary>
+              <p class="sb__faq-answer">Сначала фиксируются вводные и комплектация, затем уже называются этапы по подготовке, производству и монтажу. Так сроки не строятся на обещании «сделаем быстро», а на маршруте работ.</p>
+            </details>
+            <details class="sb__faq-item">
+              <summary class="sb__faq-summary">Нужен ли фундамент или можно ставить без него?</summary>
+              <p class="sb__faq-answer">Основание выбирают не по привычке, а по участку, весу конструкции и режиму эксплуатации. Иногда достаточно подготовленной площадки, иногда требуется полноценное основание — это определяется до запуска.</p>
+            </details>
+            <details class="sb__faq-item">
+              <summary class="sb__faq-summary">Что входит в монтаж и что готовится заранее?</summary>
+              <p class="sb__faq-answer">До выхода на площадку должны быть понятны доступ, основание, примыкания, логистика и состав комплекта. Монтаж проходит быстрее и чище, когда площадка и решение уже синхронизированы.</p>
+            </details>
+            <details class="sb__faq-item">
+              <summary class="sb__faq-summary">Как работает гарантия?</summary>
+              <p class="sb__faq-answer">Гарантия имеет смысл только там, где заранее понятны материалы, узлы и объём работ. Поэтому сначала фиксируется система решения, а уже затем формулируются гарантийные условия по согласованной комплектации.</p>
+            </details>
+            <details class="sb__faq-item">
+              <summary class="sb__faq-summary">Делаете ли доставку и как учитывается логистика?</summary>
+              <p class="sb__faq-answer">Да, логистика рассматривается как часть маршрута: доступ на участок, расстояние, разгрузка и порядок поставки влияют на план и учитываются до старта, а не в день монтажа.</p>
+            </details>
+            <details class="sb__faq-item">
+              <summary class="sb__faq-summary">Что входит в комплектацию по умолчанию?</summary>
+              <p class="sb__faq-answer">Базовый состав всегда нужно читать через задачу: каркас, кровля, обшивка, ворота, примыкания и опции должны быть явно перечислены. Чем яснее спецификация, тем меньше пространства для подмен по ходу.</p>
+            </details>
+            <details class="sb__faq-item">
+              <summary class="sb__faq-summary">Можно ли адаптировать решение под нестандартный участок?</summary>
+              <p class="sb__faq-answer">Да, именно для этого и нужен этап сверки вводных. Нестандартный рельеф, ограничения по заезду, соседние строения и индивидуальные размеры должны учитываться до выбора финальной схемы.</p>
+            </details>
+            <details class="sb__faq-item">
+              <summary class="sb__faq-summary">Что важно для дальнейшей эксплуатации?</summary>
+              <p class="sb__faq-answer">Важно, чтобы режим использования был заложен заранее: снеговая нагрузка, проветривание, сценарий открывания, обслуживание кровли и примыканий. Тогда эксплуатация не превращается в поиск слабых мест после монтажа.</p>
+            </details>
           </div>
         </section>
 
-        <section class="sb__phase" data-phase="6" aria-labelledby="sb-phase-6-title">
-          <div class="sb__phase-head">
-            <p class="sb__phase-kicker">Фаза 6</p>
-            <h2 id="sb-phase-6-title" class="sb__phase-title">Переход к действию</h2>
+        <section class="sb__trust" aria-labelledby="sb-trust-title">
+          <header class="sb__section-head">
+            <p class="sb__eyebrow">Trust layer</p>
+            <h2 id="sb-trust-title" class="sb__section-title">Доверие строится не на шуме, а на собранной системе</h2>
+          </header>
+
+          <div class="sb__trust-grid">
+            <article class="sb__trust-card" aria-labelledby="sb-trust-about-title">
+              <h3 id="sb-trust-about-title" class="sb__trust-title">О подходе</h3>
+              <p class="sb__trust-text">Фокус смещён с случайной стройки на заранее собранный маршрут: вводные, комплектация, площадка, монтаж и сдача читаются как единая система.</p>
+            </article>
+            <article class="sb__trust-card" aria-labelledby="sb-trust-proof-title">
+              <h3 id="sb-trust-proof-title" class="sb__trust-title">Достижения</h3>
+              <p class="sb__trust-text">Сильнее всего работают не громкие цифры, а повторяемость процесса: понятные этапы, проверяемые точки и решение, которое не распадается после первой зимы.</p>
+            </article>
+            <article class="sb__trust-card" aria-labelledby="sb-trust-reviews-title">
+              <h3 id="sb-trust-reviews-title" class="sb__trust-title">Отзывы</h3>
+              <p class="sb__trust-text">Лучший отзыв в этом сегменте — когда после монтажа не приходится возвращаться к скрытым компромиссам, а объект спокойно входит в эксплуатацию.</p>
+            </article>
+            <article class="sb__trust-card" aria-labelledby="sb-trust-projects-title">
+              <h3 id="sb-trust-projects-title" class="sb__trust-title">Проекты</h3>
+              <p class="sb__trust-text">Выполненные объекты ценны как подтверждение дисциплины: разные участки, разные задачи, но один принцип — сначала система, потом монтаж.</p>
+            </article>
           </div>
-          <ol class="sb__steps" aria-label="Следующие шаги">
-            <li class="sb__step">Сформулировать задачу участка</li>
-            <li class="sb__step">Сверить критерии выбора</li>
-            <li class="sb__step">Запросить персональный сценарий</li>
-          </ol>
-          <a class="sb__cta" href="#" aria-label="Перейти к старту сценария">Запустить сценарий под ваш участок</a>
         </section>
+
+        <footer class="sb__footer" aria-labelledby="sb-footer-title">
+          <div>
+            <p class="sb__eyebrow">Финальная точка</p>
+            <h2 id="sb-footer-title" class="sb__section-title">Когда решение собрано заранее, следующий шаг становится проще.</h2>
+          </div>
+          <a class="sb__button sb__button--secondary" href="#" aria-label="Перейти к следующему шагу">Перейти к следующему шагу</a>
+        </footer>
       </div>
     </section>
 
