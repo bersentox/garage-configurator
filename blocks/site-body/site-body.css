@@ -914,11 +914,11 @@
 .unified-navigation__detail {
   position: sticky;
   top: 1rem;
+  align-self: start;
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: start;
   gap: 0.85rem;
-  min-height: 100%;
   padding: 1.15rem 1.2rem;
   opacity: 1;
   transform: translate3d(0, 0, 0);
@@ -1594,11 +1594,11 @@
 .unified-navigation__detail {
   position: sticky;
   top: 1rem;
+  align-self: start;
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: start;
   gap: 0.85rem;
-  min-height: 100%;
   padding: 1.15rem 1.2rem;
   opacity: 1;
   transform: translate3d(0, 0, 0);
