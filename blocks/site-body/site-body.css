@@ -689,7 +689,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
   align-items: start;
-  gap: clamp(1rem, 2vw, 1.5rem);
+  gap: 1rem;
 }
 
 .unified-navigation__branch.is-animating {
@@ -1369,7 +1369,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
   align-items: start;
-  gap: clamp(1rem, 2vw, 1.5rem);
+  gap: 1rem;
 }
 
 .unified-navigation__branch.is-animating {
