@@ -270,12 +270,19 @@
       return;
     }
 
-    detailStatus.textContent = `${stageId} ${stage.title}`;
-    detailTitle.textContent = `${step.number} ${step.title}`;
-    detailText.textContent = step.detailText;
-
     detail.classList.remove("is-visible");
-    requestAnimationFrame(() => detail.classList.add("is-visible"));
+    detail.classList.add("is-updating");
+
+    requestAnimationFrame(() => {
+      detailStatus.textContent = `${stageId} ${stage.title}`;
+      detailTitle.textContent = `${step.number} ${step.title}`;
+      detailText.textContent = step.detailText;
+
+      requestAnimationFrame(() => {
+        detail.classList.remove("is-updating");
+        detail.classList.add("is-visible");
+      });
+    });
   };
 
   const renderBranch = (stageId) => {
