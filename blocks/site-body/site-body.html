@@ -158,11 +158,198 @@
           </div>
         </section>
 
-        <section id="unified-navigation" class="sb__section" aria-labelledby="unified-navigation-title">
-          <div class="sb__section-inner">
-            <p class="sb__eyebrow">Unified navigation</p>
-            <h2 id="unified-navigation-title" class="sb__title">Блок unified-navigation выделен в самостоятельную секцию.</h2>
-            <p class="sb__text">Контейнер подготовлен под новую навигационную логику и не содержит промежуточных или устаревших маршрутов из прошлой архитектуры.</p>
+        <section
+          id="unified-navigation"
+          class="site-body-section unified-navigation"
+          aria-labelledby="unified-navigation-title"
+        >
+          <div class="unified-navigation__shell">
+            <header class="unified-navigation__intro">
+              <p class="unified-navigation__eyebrow">Interactive unified navigation</p>
+              <h2 id="unified-navigation-title" class="unified-navigation__title">
+                Весь путь проекта — от звонка до сдачи
+              </h2>
+              <p class="unified-navigation__subtitle">
+                Каждый этап связан со следующим, проходит согласование и контроль перед переходом дальше.
+              </p>
+            </header>
+
+            <div class="unified-navigation__surface">
+              <div
+                class="unified-navigation__map"
+                role="tablist"
+                aria-label="Карта этапов проекта"
+                data-active-stage="03"
+              >
+                <div class="unified-navigation__rail" aria-hidden="true">
+                  <span class="unified-navigation__rail-base"></span>
+                  <span class="unified-navigation__rail-progress"></span>
+                </div>
+
+                <button
+                  class="unified-navigation__node"
+                  type="button"
+                  role="tab"
+                  id="unified-navigation-tab-01"
+                  aria-selected="false"
+                  aria-controls="unified-navigation-branch"
+                  tabindex="-1"
+                  data-stage="01"
+                >
+                  <span class="unified-navigation__node-number">01</span>
+                  <span class="unified-navigation__node-copy">
+                    <span class="unified-navigation__node-title">Контакт</span>
+                    <span class="unified-navigation__node-label">связь</span>
+                  </span>
+                </button>
+
+                <button
+                  class="unified-navigation__node"
+                  type="button"
+                  role="tab"
+                  id="unified-navigation-tab-02"
+                  aria-selected="false"
+                  aria-controls="unified-navigation-branch"
+                  tabindex="-1"
+                  data-stage="02"
+                >
+                  <span class="unified-navigation__node-number">02</span>
+                  <span class="unified-navigation__node-copy">
+                    <span class="unified-navigation__node-title">Замер</span>
+                    <span class="unified-navigation__node-label">выезд</span>
+                  </span>
+                </button>
+
+                <button
+                  class="unified-navigation__node"
+                  type="button"
+                  role="tab"
+                  id="unified-navigation-tab-03"
+                  aria-selected="true"
+                  aria-controls="unified-navigation-branch"
+                  tabindex="0"
+                  data-stage="03"
+                >
+                  <span class="unified-navigation__node-number">03</span>
+                  <span class="unified-navigation__node-copy">
+                    <span class="unified-navigation__node-title">Задание и КП</span>
+                    <span class="unified-navigation__node-label">подтверждение</span>
+                  </span>
+                </button>
+
+                <button
+                  class="unified-navigation__node"
+                  type="button"
+                  role="tab"
+                  id="unified-navigation-tab-04"
+                  aria-selected="false"
+                  aria-controls="unified-navigation-branch"
+                  tabindex="-1"
+                  data-stage="04"
+                >
+                  <span class="unified-navigation__node-number">04</span>
+                  <span class="unified-navigation__node-copy">
+                    <span class="unified-navigation__node-title">Проектирование</span>
+                    <span class="unified-navigation__node-label">утверждение</span>
+                  </span>
+                </button>
+
+                <button
+                  class="unified-navigation__node"
+                  type="button"
+                  role="tab"
+                  id="unified-navigation-tab-05"
+                  aria-selected="false"
+                  aria-controls="unified-navigation-branch"
+                  tabindex="-1"
+                  data-stage="05"
+                >
+                  <span class="unified-navigation__node-number">05</span>
+                  <span class="unified-navigation__node-copy">
+                    <span class="unified-navigation__node-title">Договор</span>
+                    <span class="unified-navigation__node-label">фиксация</span>
+                  </span>
+                </button>
+
+                <button
+                  class="unified-navigation__node"
+                  type="button"
+                  role="tab"
+                  id="unified-navigation-tab-06"
+                  aria-selected="false"
+                  aria-controls="unified-navigation-branch"
+                  tabindex="-1"
+                  data-stage="06"
+                >
+                  <span class="unified-navigation__node-number">06</span>
+                  <span class="unified-navigation__node-copy">
+                    <span class="unified-navigation__node-title">Реализация</span>
+                    <span class="unified-navigation__node-label">сдача</span>
+                  </span>
+                </button>
+
+                <button
+                  class="unified-navigation__node"
+                  type="button"
+                  role="tab"
+                  id="unified-navigation-tab-07"
+                  aria-selected="false"
+                  aria-controls="unified-navigation-branch"
+                  tabindex="-1"
+                  data-stage="07"
+                >
+                  <span class="unified-navigation__node-number">07</span>
+                  <span class="unified-navigation__node-copy">
+                    <span class="unified-navigation__node-title">Сдача</span>
+                    <span class="unified-navigation__node-label">передача</span>
+                  </span>
+                </button>
+              </div>
+
+              <div class="unified-navigation__workspace">
+                <section
+                  id="unified-navigation-branch"
+                  class="unified-navigation__branch"
+                  role="tabpanel"
+                  aria-labelledby="unified-navigation-tab-03"
+                >
+                  <div class="unified-navigation__branch-header">
+                    <div>
+                      <p class="unified-navigation__branch-kicker">Активный переход</p>
+                      <h3 class="unified-navigation__branch-title">03 Задание и КП</h3>
+                      <p class="unified-navigation__branch-text">
+                        Проектируем маршрут подтверждения, чтобы отправить расчёт и согласование без разрыва процесса.
+                      </p>
+                    </div>
+                    <button class="unified-navigation__branch-menu" type="button" aria-label="Дополнительные действия">
+                      <span></span><span></span><span></span>
+                    </button>
+                  </div>
+
+                  <div class="unified-navigation__branch-flow" aria-hidden="true">
+                    <span class="unified-navigation__branch-glow"></span>
+                    <span class="unified-navigation__branch-line unified-navigation__branch-line--down"></span>
+                    <span class="unified-navigation__branch-line unified-navigation__branch-line--return"></span>
+                    <span class="unified-navigation__branch-line unified-navigation__branch-line--detail"></span>
+                  </div>
+
+                  <div class="unified-navigation__branch-list"></div>
+                </section>
+
+                <aside class="unified-navigation__detail" aria-live="polite">
+                  <div class="unified-navigation__detail-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="M7.5 12.5 10.5 15.5 16.5 9.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div class="unified-navigation__detail-copy">
+                    <p class="unified-navigation__detail-status">Статус</p>
+                    <p class="unified-navigation__detail-title">Входные данные подготовлены, расчёт отправлен на подтверждение</p>
+                    <p class="unified-navigation__detail-text">При подтверждении — переход к следующему этапу без повторного сбора вводных.</p>
+                  </div>
+                </aside>
+              </div>
+            </div>
           </div>
         </section>
 
