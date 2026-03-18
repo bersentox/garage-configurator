@@ -9,11 +9,152 @@
   <body>
     <section id="site-body" class="sb" aria-label="Site body block after configurator">
       <div class="sb__container">
-        <section id="implementation-construction" class="sb__section" aria-labelledby="implementation-construction-title">
-          <div class="sb__section-inner">
-            <p class="sb__eyebrow">Implementation construction</p>
-            <h2 id="implementation-construction-title" class="sb__title">Блок implementation-construction готов для новой структуры и дальнейшего наполнения.</h2>
-            <p class="sb__text">Секция сохранена как отдельный независимый контейнер внутри site_body без наследия старых comparison, process, action и trust-блоков.</p>
+        <section
+          id="implementation-construction"
+          class="site-body-section implementation-construction"
+          aria-labelledby="implementation-construction-title"
+        >
+          <div class="site-body-shell implementation-construction__shell">
+            <header class="implementation-construction__intro">
+              <h2 id="implementation-construction-title" class="implementation-construction__title">
+                Реализация и конструкция под контролем
+              </h2>
+              <p class="implementation-construction__subtitle">
+                Каждый проект проходит через две системы одновременно: организацию работ и инженерную логику конструкции.
+              </p>
+            </header>
+
+            <div class="implementation-construction__board">
+              <div class="implementation-construction__grid">
+                <article class="implementation-construction__column implementation-construction__column--delivery" aria-labelledby="implementation-construction-delivery-title">
+                  <div class="implementation-construction__column-head" id="implementation-construction-delivery-title">
+                    Реализация
+                  </div>
+
+                  <div class="implementation-construction__list">
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">01</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Задача и параметры участка фиксируются до начала работ</p>
+                        <p class="implementation-construction__item-text">Исходные вводные согласованы заранее и становятся базой для всего проекта.</p>
+                      </div>
+                      <span class="implementation-construction__badge">зафиксировано</span>
+                    </div>
+
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">02</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Решение формируется с учётом участка и ограничений</p>
+                        <p class="implementation-construction__item-text">План адаптируется под геометрию, подъезд, рельеф и реальные ограничения площадки.</p>
+                      </div>
+                      <span class="implementation-construction__badge">учтено</span>
+                    </div>
+
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">03</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Ответственный закреплён за проектом на всём цикле</p>
+                        <p class="implementation-construction__item-text">Клиент работает с понятным контактом, который ведёт проект от старта до сдачи.</p>
+                      </div>
+                      <span class="implementation-construction__badge">закреплено</span>
+                    </div>
+
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">04</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Этапы и последовательность работ заданы заранее</p>
+                        <p class="implementation-construction__item-text">График собирается как управляемая система без случайных решений по ходу реализации.</p>
+                      </div>
+                      <span class="implementation-construction__badge">задано</span>
+                    </div>
+
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">05</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Каждый этап проходит контроль перед следующим</p>
+                        <p class="implementation-construction__item-text">Промежуточные проверки позволяют держать качество и последовательность под контролем.</p>
+                      </div>
+                      <span class="implementation-construction__badge">проверяется</span>
+                    </div>
+
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">06</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Условия, сроки и обязательства закреплены в договоре</p>
+                        <p class="implementation-construction__item-text">Ключевые параметры проекта формализованы и защищают обе стороны на всём цикле.</p>
+                      </div>
+                      <span class="implementation-construction__badge">в договоре</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="implementation-construction__column implementation-construction__column--engineering" aria-labelledby="implementation-construction-engineering-title">
+                  <div class="implementation-construction__column-head" id="implementation-construction-engineering-title">
+                    Конструкция
+                  </div>
+
+                  <div class="implementation-construction__list">
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">01</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Конструкция рассчитывается под снеговую и ветровую нагрузку</p>
+                        <p class="implementation-construction__item-text">Инженерная схема подбирается по расчётным воздействиям, а не по типовым допущениям.</p>
+                      </div>
+                      <span class="implementation-construction__badge">по расчёту</span>
+                    </div>
+
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">02</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Материалы задаются по инженерной спецификации</p>
+                        <p class="implementation-construction__item-text">Состав системы фиксируется заранее и исключает произвольные замены по ходу работ.</p>
+                      </div>
+                      <span class="implementation-construction__badge">по спецификации</span>
+                    </div>
+
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">03</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Каркас собирается с контролем геометрии</p>
+                        <p class="implementation-construction__item-text">Точность сборки проверяется на ключевых этапах, чтобы система работала как единое целое.</p>
+                      </div>
+                      <span class="implementation-construction__badge">геометрия</span>
+                    </div>
+
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">04</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Узлы и соединения выполнены под расчётные нагрузки</p>
+                        <p class="implementation-construction__item-text">Критические точки решаются как инженерные узлы с понятной логикой надёжности.</p>
+                      </div>
+                      <span class="implementation-construction__badge">нагрузки</span>
+                    </div>
+
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">05</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Кровля и примыкания решены как часть системы</p>
+                        <p class="implementation-construction__item-text">Герметичность, водоотвод и сопряжения закладываются в конструкцию, а не додумываются позже.</p>
+                      </div>
+                      <span class="implementation-construction__badge">система</span>
+                    </div>
+
+                    <div class="implementation-construction__row" data-reveal>
+                      <div class="implementation-construction__number">06</div>
+                      <div class="implementation-construction__content">
+                        <p class="implementation-construction__item-title">Готовый объект проходит проверку перед сдачей</p>
+                        <p class="implementation-construction__item-text">Финальный контроль подтверждает соответствие проектным решениям и ожиданиям клиента.</p>
+                      </div>
+                      <span class="implementation-construction__badge">перед сдачей</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <p class="implementation-construction__footer-note">
+                Надёжный результат начинается задолго до монтажа.
+              </p>
+            </div>
           </div>
         </section>
 
