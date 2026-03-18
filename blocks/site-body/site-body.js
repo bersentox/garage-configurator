@@ -7,23 +7,20 @@
     return;
   }
 
-  const trigger = root.querySelector("[data-disclosure-trigger]");
-  const panel = root.querySelector("[data-disclosure-panel]");
+  const faqItems = Array.from(root.querySelectorAll(".sb__faq-item"));
 
-  if (!trigger || !panel) {
-    return;
-  }
+  faqItems.forEach((item) => {
+    const summary = item.querySelector(".sb__faq-summary");
 
-  const updateState = (isExpanded) => {
-    trigger.setAttribute("aria-expanded", String(isExpanded));
-    panel.hidden = !isExpanded;
-    trigger.textContent = isExpanded ? "Скрыть детали Navigator" : "Показать детали Navigator";
-  };
+    if (!summary) {
+      return;
+    }
 
-  updateState(false);
+    const syncState = () => {
+      summary.setAttribute("aria-expanded", String(item.hasAttribute("open")));
+    };
 
-  trigger.addEventListener("click", () => {
-    const expanded = trigger.getAttribute("aria-expanded") === "true";
-    updateState(!expanded);
+    syncState();
+    item.addEventListener("toggle", syncState);
   });
 })();
