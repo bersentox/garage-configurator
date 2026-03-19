@@ -236,13 +236,31 @@
     overlayTooltip.textContent = '';
     overlayTooltip.style.left = '';
     overlayTooltip.style.top = '';
+    overlayTooltip.style.removeProperty('--tooltip-tail-offset');
   }
 
   function getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, placement, gap) {
+    const horizontalCenter = anchorX - tooltipWidth / 2;
+    const verticalCenter = anchorY - tooltipHeight / 2;
+
     if (placement === 'left') {
       return {
         left: anchorX - gap,
-        top: anchorY - tooltipHeight / 2
+        top: verticalCenter
+      };
+    }
+
+    if (placement === 'top') {
+      return {
+        left: horizontalCenter,
+        top: anchorY - gap
+      };
+    }
+
+    if (placement === 'bottom') {
+      return {
+        left: horizontalCenter,
+        top: anchorY + gap
       };
     }
 
@@ -276,7 +294,7 @@
 
     return {
       left: anchorX + gap,
-      top: anchorY - tooltipHeight / 2
+      top: verticalCenter
     };
   }
 
@@ -284,13 +302,13 @@
     let left = coords.left;
     let top = coords.top;
 
-    if (placement === 'left') {
+    if (placement === 'left' || placement === 'top-left' || placement === 'bottom-left') {
       left -= tooltipWidth;
-    } else if (placement === 'top-left' || placement === 'bottom-left') {
-      left -= tooltipWidth;
+    } else if (placement === 'top' || placement === 'bottom') {
+      left -= tooltipWidth / 2;
     }
 
-    if (placement === 'top-right' || placement === 'top-left') {
+    if (placement === 'top-right' || placement === 'top-left' || placement === 'top') {
       top -= tooltipHeight;
     }
 
@@ -306,16 +324,33 @@
     const leftHalf = anchorX < layerRect.width / 2;
     const nearTop = anchorY < layerRect.height * 0.22;
     const nearBottom = anchorY > layerRect.height * 0.78;
+    const nearCenterX = Math.abs(anchorX - layerRect.width / 2) < layerRect.width * 0.12;
 
     if (nearTop) {
-      return leftHalf ? ['bottom-right', 'right', 'bottom-left', 'left', 'top-right', 'top-left'] : ['bottom-left', 'left', 'bottom-right', 'right', 'top-left', 'top-right'];
+      return leftHalf ? ['bottom-right', 'bottom', 'right', 'bottom-left', 'left', 'top-right', 'top-left'] : ['bottom-left', 'bottom', 'left', 'bottom-right', 'right', 'top-left', 'top-right'];
     }
 
     if (nearBottom) {
-      return leftHalf ? ['top-right', 'right', 'top-left', 'left', 'bottom-right', 'bottom-left'] : ['top-left', 'left', 'top-right', 'right', 'bottom-left', 'bottom-right'];
+      return leftHalf ? ['top-right', 'top', 'right', 'top-left', 'left', 'bottom-right', 'bottom-left'] : ['top-left', 'top', 'left', 'top-right', 'right', 'bottom-left', 'bottom-right'];
     }
 
-    return leftHalf ? ['right', 'bottom-right', 'top-right', 'left', 'bottom-left', 'top-left'] : ['left', 'bottom-left', 'top-left', 'right', 'bottom-right', 'top-right'];
+    if (nearCenterX) {
+      return ['top', 'bottom', leftHalf ? 'right' : 'left', leftHalf ? 'top-right' : 'top-left', leftHalf ? 'bottom-right' : 'bottom-left', leftHalf ? 'left' : 'right'];
+    }
+
+    return leftHalf ? ['right', 'bottom-right', 'top-right', 'bottom', 'top', 'left', 'bottom-left', 'top-left'] : ['left', 'bottom-left', 'top-left', 'bottom', 'top', 'right', 'bottom-right', 'top-right'];
+  }
+
+  function getTailOffset(placement, bounds, anchorX, anchorY) {
+    const tailPadding = 18;
+
+    if (placement === 'left' || placement === 'right') {
+      const offset = anchorY - bounds.top;
+      return Math.max(tailPadding, Math.min(bounds.bottom - bounds.top - tailPadding, offset)) + 'px';
+    }
+
+    const offset = anchorX - bounds.left;
+    return Math.max(tailPadding, Math.min(bounds.right - bounds.left - tailPadding, offset)) + 'px';
   }
 
   function positionOverlayTooltip() {
@@ -356,9 +391,17 @@
     const shiftX = bounds.left < padding ? padding - bounds.left : bounds.right > sceneRect.width - padding ? sceneRect.width - padding - bounds.right : 0;
     const shiftY = bounds.top < padding ? padding - bounds.top : bounds.bottom > sceneRect.height - padding ? sceneRect.height - padding - bounds.bottom : 0;
 
+    const shiftedBounds = {
+      left: bounds.left + shiftX,
+      top: bounds.top + shiftY,
+      right: bounds.right + shiftX,
+      bottom: bounds.bottom + shiftY
+    };
+
     overlayTooltip.className = 'unified-navigation__tooltip unified-navigation__tooltip--' + selectedPlacement + ' is-visible';
     overlayTooltip.style.left = selectedCoords.left + shiftX + 'px';
     overlayTooltip.style.top = selectedCoords.top + shiftY + 'px';
+    overlayTooltip.style.setProperty('--tooltip-tail-offset', getTailOffset(selectedPlacement, shiftedBounds, anchorX, anchorY));
   }
 
   function syncState() {
