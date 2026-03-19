@@ -196,13 +196,45 @@
   }
 
   function getTooltipPlacement(vector) {
-    if (Math.abs(vector.y) > Math.abs(vector.x) && vector.y < 0) {
-      return 'top';
+    if (vector.x >= 0 && vector.y <= -16) {
+      return 'top-right';
     }
-    if (Math.abs(vector.y) > Math.abs(vector.x) && vector.y > 0) {
-      return 'bottom';
+    if (vector.x >= 0 && vector.y >= 16) {
+      return 'bottom-right';
+    }
+    if (vector.x <= 0 && vector.y <= -16) {
+      return 'top-left';
+    }
+    if (vector.x <= 0 && vector.y >= 16) {
+      return 'bottom-left';
     }
     return vector.x < 0 ? 'left' : 'right';
+  }
+
+  function getStageSpecificPlacement(stageKey, vector, index) {
+    if (stageKey === 'contact') {
+      return index === 2 ? 'bottom-right' : 'right';
+    }
+
+    if (stageKey === 'visit') {
+      return index === 2 ? 'bottom-right' : 'right';
+    }
+
+    if (stageKey === 'design') {
+      return getTooltipPlacement(vector);
+    }
+
+    if (stageKey === 'build') {
+      if (vector.x > 0 && vector.y >= 0) {
+        return vector.y > 0 ? 'top-right' : 'right';
+      }
+      if (vector.x < 0 && vector.y >= 0) {
+        return vector.y > 0 ? 'top-left' : 'left';
+      }
+      return getTooltipPlacement(vector);
+    }
+
+    return getTooltipPlacement(vector);
   }
 
   function renderEdges() {
@@ -253,7 +285,13 @@
     const triggerRect = activeTooltipTrigger.getBoundingClientRect();
     const layerRect = tooltipLayer.getBoundingClientRect();
     const placement = activeTooltipTrigger.dataset.tooltipPlacement || 'right';
-    const gap = 12;
+    const gap = 16;
+    const tooltipWidth = overlayTooltip.offsetWidth;
+    const tooltipHeight = overlayTooltip.offsetHeight;
+    const minX = 8;
+    const minY = 8;
+    const maxX = Math.max(minX, layerRect.width - tooltipWidth - 8);
+    const maxY = Math.max(minY, layerRect.height - tooltipHeight - 8);
     let left = 0;
     let top = 0;
 
@@ -261,18 +299,24 @@
       left = triggerRect.right - layerRect.left + gap;
       top = triggerRect.top - layerRect.top + triggerRect.height / 2;
     } else if (placement === 'left') {
-      left = triggerRect.left - layerRect.left - gap;
+      left = triggerRect.left - layerRect.left - tooltipWidth - gap;
       top = triggerRect.top - layerRect.top + triggerRect.height / 2;
-    } else if (placement === 'top') {
-      left = triggerRect.left - layerRect.left + triggerRect.width / 2;
+    } else if (placement === 'top-right') {
+      left = triggerRect.right - layerRect.left + gap;
       top = triggerRect.top - layerRect.top - gap;
+    } else if (placement === 'top-left') {
+      left = triggerRect.left - layerRect.left - tooltipWidth - gap;
+      top = triggerRect.top - layerRect.top - gap;
+    } else if (placement === 'bottom-left') {
+      left = triggerRect.left - layerRect.left - tooltipWidth - gap;
+      top = triggerRect.bottom - layerRect.top + gap;
     } else {
-      left = triggerRect.left - layerRect.left + triggerRect.width / 2;
+      left = triggerRect.right - layerRect.left + gap;
       top = triggerRect.bottom - layerRect.top + gap;
     }
 
-    overlayTooltip.style.left = left + 'px';
-    overlayTooltip.style.top = top + 'px';
+    overlayTooltip.style.left = Math.min(Math.max(left, minX), maxX) + 'px';
+    overlayTooltip.style.top = Math.min(Math.max(top, minY), maxY) + 'px';
   }
 
   function syncState() {
@@ -339,7 +383,7 @@
     const child = document.createElement('button');
     const vectors = getClusterVectors(stage);
     const vector = vectors[index] || { x: 0, y: 0 };
-    const placement = getTooltipPlacement(vector);
+    const placement = getStageSpecificPlacement(stage.key, vector, index);
 
     child.className = 'unified-navigation__child';
     child.type = 'button';
