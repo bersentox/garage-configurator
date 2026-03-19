@@ -189,10 +189,10 @@
 
   function getTooltipPlacement(vector) {
     if (Math.abs(vector.y) > Math.abs(vector.x) && vector.y < 0) {
-      return 'above';
+      return 'top';
     }
     if (Math.abs(vector.y) > Math.abs(vector.x) && vector.y > 0) {
-      return 'below';
+      return 'bottom';
     }
     return vector.x < 0 ? 'left' : 'right';
   }
@@ -244,11 +244,22 @@
 
         child.classList.toggle('is-tooltip-open', isTooltipOpen);
         child.setAttribute('aria-expanded', String(isTooltipOpen));
+        child.setAttribute('aria-pressed', String(isTooltipOpen));
         if (bubble) {
           bubble.hidden = !isTooltipOpen;
+          bubble.setAttribute('aria-hidden', String(!isTooltipOpen));
         }
       });
     });
+  }
+
+  function closeTooltip() {
+    if (!activeTooltipKey) {
+      return;
+    }
+
+    activeTooltipKey = null;
+    syncState();
   }
 
   function setActiveStage(nextStageKey) {
@@ -284,13 +295,26 @@
     child.style.setProperty('--child-y', vector.y + 'px');
     child.style.transitionDelay = index * 70 + 'ms';
     child.setAttribute('aria-expanded', 'false');
+    child.setAttribute('aria-pressed', 'false');
     child.setAttribute('aria-label', label + '. ' + TOOLTIP_COPY[stage.key][label]);
 
-    tooltip.className = 'unified-navigation__tooltip';
+    tooltip.className = 'unified-navigation__tooltip unified-navigation__tooltip--' + placement;
     tooltip.textContent = TOOLTIP_COPY[stage.key][label];
     tooltip.hidden = true;
+    tooltip.setAttribute('aria-hidden', 'true');
 
     child.appendChild(tooltip);
+
+    child.addEventListener('pointerdown', function () {
+      child.classList.add('is-pressed');
+    });
+
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (eventName) {
+      child.addEventListener(eventName, function () {
+        child.classList.remove('is-pressed');
+      });
+    });
+
     child.addEventListener('click', function (event) {
       event.stopPropagation();
       if (activeStageKey !== stage.key) {
@@ -375,10 +399,11 @@
   }
 
   document.addEventListener('click', function (event) {
-    if (!diagram.contains(event.target)) {
-      activeTooltipKey = null;
-      syncState();
+    if (event.target.closest('.unified-navigation__child') || event.target.closest('.unified-navigation__tooltip')) {
+      return;
     }
+
+    closeTooltip();
   });
 
   window.addEventListener('resize', render);
