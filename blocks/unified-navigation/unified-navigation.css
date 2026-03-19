@@ -53,7 +53,9 @@
 .unified-navigation__intro {
   position: relative;
   z-index: 2;
-  max-width: 380px;
+  max-width: clamp(760px, 72vw, 920px);
+  margin: 0 auto 44px;
+  text-align: center;
 }
 
 .unified-navigation__eyebrow {
@@ -84,7 +86,7 @@
 .unified-navigation__diagram {
   position: relative;
   min-height: 760px;
-  margin-top: -92px;
+  margin-top: 0;
   border-radius: 28px;
   isolation: isolate;
   overflow: visible;
@@ -316,16 +318,28 @@
   transform: rotate(-45deg);
 }
 
-.unified-navigation__tooltip--top::after {
+.unified-navigation__tooltip--top-right::after,
+.unified-navigation__tooltip--top-left::after {
   left: 22px;
   bottom: -6px;
   transform: rotate(45deg);
 }
 
-.unified-navigation__tooltip--bottom::after {
+.unified-navigation__tooltip--top-left::after {
+  left: auto;
+  right: 22px;
+}
+
+.unified-navigation__tooltip--bottom-right::after,
+.unified-navigation__tooltip--bottom-left::after {
   left: 22px;
   top: -6px;
   transform: rotate(-135deg);
+}
+
+.unified-navigation__tooltip--bottom-left::after {
+  left: auto;
+  right: 22px;
 }
 
 .unified-navigation__tooltip.is-visible {
@@ -337,9 +351,20 @@
   transform: translateY(-50%) scale(1);
 }
 
-.unified-navigation__tooltip.is-visible.unified-navigation__tooltip--top,
-.unified-navigation__tooltip.is-visible.unified-navigation__tooltip--bottom {
-  transform: translateX(-16%) scale(1);
+.unified-navigation__tooltip.is-visible.unified-navigation__tooltip--top-right {
+  transform: translate(0, -100%) scale(1);
+}
+
+.unified-navigation__tooltip.is-visible.unified-navigation__tooltip--top-left {
+  transform: translate(-100%, -100%) scale(1);
+}
+
+.unified-navigation__tooltip.is-visible.unified-navigation__tooltip--bottom-right {
+  transform: translate(0, 0) scale(1);
+}
+
+.unified-navigation__tooltip.is-visible.unified-navigation__tooltip--bottom-left {
+  transform: translate(-100%, 0) scale(1);
 }
 
 .unified-navigation__child.is-tooltip-open {
@@ -377,6 +402,7 @@
 
   .unified-navigation__intro {
     max-width: 100%;
+    margin-bottom: 36px;
   }
 
   .unified-navigation__diagram {
@@ -430,16 +456,6 @@
   .unified-navigation__child {
     padding: 6px;
     font-size: 0.54rem;
-  }
-
-  .unified-navigation__tooltip--top,
-  .unified-navigation__tooltip--bottom {
-    transform: translateX(-22%) scale(0.96);
-  }
-
-  .unified-navigation__tooltip.is-visible.unified-navigation__tooltip--top,
-  .unified-navigation__tooltip.is-visible.unified-navigation__tooltip--bottom {
-    transform: translateX(-22%) scale(1);
   }
 
   .unified-navigation__bottom {
