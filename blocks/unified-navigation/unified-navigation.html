@@ -1,22 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unified Navigation Prototype</title>
+  <title>Unified Navigation Preview</title>
   <link rel="stylesheet" href="./unified-navigation.css" />
 </head>
 <body>
-  <section class="prototype-shell">
-    <div class="scene" aria-label="Интерактивный узел навигации">
-      <button class="main-node" type="button" aria-expanded="false">
-        <span>Контакт</span>
-      </button>
+  <section class="unified-navigation" aria-labelledby="unified-navigation-title">
+    <div class="unified-navigation__inner">
+      <header class="unified-navigation__intro" aria-live="polite">
+        <p class="unified-navigation__eyebrow">Digital process map</p>
+        <h2 id="unified-navigation-title" class="unified-navigation__title"></h2>
+        <p class="unified-navigation__subtitle"></p>
+      </header>
 
-      <button class="step-node step-1" type="button">Шаг 1</button>
-      <button class="step-node step-2" type="button">Шаг 2</button>
-      <button class="step-node step-3" type="button">Шаг 3</button>
-      <button class="step-node step-4" type="button">Шаг 4</button>
+      <div class="unified-navigation__scene-wrap">
+        <div class="unified-navigation__scene" aria-label="Интерактивная карта этапов проекта">
+          <div class="unified-navigation__scene-texture" aria-hidden="true"></div>
+          <svg class="unified-navigation__connectors unified-navigation__connectors--main" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <svg class="unified-navigation__connectors unified-navigation__connectors--cluster" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="unified-navigation__nodes-layer" data-unified-navigation-stages></div>
+          <div class="unified-navigation__cluster-layer" data-unified-navigation-cluster aria-live="polite"></div>
+          <div class="unified-navigation__status" data-unified-navigation-status></div>
+        </div>
+      </div>
+
+      <p class="unified-navigation__transition" data-unified-navigation-transition></p>
     </div>
   </section>
 
