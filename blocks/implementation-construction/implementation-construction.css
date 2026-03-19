@@ -7,10 +7,10 @@
   --implementation-construction-text: #0f172a;
   --implementation-construction-text-strong: #0b1220;
   --implementation-construction-text-muted: rgba(15, 23, 42, 0.58);
-  --implementation-construction-meta-text: rgba(99, 91, 255, 0.92);
-  --implementation-construction-meta-bg: rgba(99, 91, 255, 0.08);
+  --implementation-construction-meta-text: rgba(30, 58, 138, 0.92);
+  --implementation-construction-meta-bg: rgba(30, 58, 138, 0.08);
   --implementation-construction-hover-fill: rgba(15, 23, 42, 0.018);
-  --implementation-construction-open-fill: rgba(99, 91, 255, 0.03);
+  --implementation-construction-open-fill: rgba(30, 58, 138, 0.03);
   --implementation-construction-panel-shadow:
     0 18px 42px rgba(15, 23, 42, 0.05),
     0 3px 10px rgba(15, 23, 42, 0.02);
@@ -126,10 +126,10 @@
 
 .implementation-construction__item.is-open {
   background: linear-gradient(180deg, #ffffff 0%, #fcfcff 100%);
-  border-color: rgba(99, 91, 255, 0.14);
+  border-color: rgba(30, 58, 138, 0.14);
   box-shadow:
     0 12px 24px rgba(15, 23, 42, 0.04),
-    0 2px 8px rgba(99, 91, 255, 0.05);
+    0 2px 8px rgba(30, 58, 138, 0.05);
 }
 
 .implementation-construction__heading {
@@ -150,7 +150,7 @@
 }
 
 .implementation-construction__trigger:focus-visible {
-  outline: 3px solid rgba(99, 91, 255, 0.18);
+  outline: 3px solid rgba(30, 58, 138, 0.18);
   outline-offset: -3px;
   border-radius: var(--implementation-construction-radius-row);
 }
@@ -165,7 +165,7 @@
   line-height: 1;
   font-weight: 720;
   letter-spacing: 0.18em;
-  color: rgba(99, 91, 255, 0.82);
+  color: rgba(30, 58, 138, 0.82);
   font-variant-numeric: tabular-nums;
 }
 
@@ -200,7 +200,7 @@
   padding: 0 8px;
   border-radius: 999px;
   background: var(--implementation-construction-meta-bg);
-  border: 1px solid rgba(99, 91, 255, 0.1);
+  border: 1px solid rgba(30, 58, 138, 0.1);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 0.74rem;
   line-height: 1;
@@ -242,12 +242,12 @@
 
 .implementation-construction__item.is-open .implementation-construction__chevron {
   transform: rotate(180deg);
-  background: rgba(99, 91, 255, 0.12);
+  background: rgba(30, 58, 138, 0.12);
 }
 
 .implementation-construction__item.is-open .implementation-construction__chevron::before {
-  border-right-color: rgba(99, 91, 255, 0.9);
-  border-bottom-color: rgba(99, 91, 255, 0.9);
+  border-right-color: rgba(30, 58, 138, 0.9);
+  border-bottom-color: rgba(30, 58, 138, 0.9);
 }
 
 .implementation-construction__panel {
