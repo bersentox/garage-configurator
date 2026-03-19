@@ -1,0 +1,124 @@
+:root {
+  --bg: #f7f8fa;
+  --main-size: 96px;
+  --step-size: 56px;
+  --transition: 300ms ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font-family: Inter, Arial, sans-serif;
+  background: var(--bg);
+  color: #203040;
+}
+
+.prototype-shell {
+  width: min(100%, 960px);
+  padding: 48px 24px;
+}
+
+.scene {
+  position: relative;
+  min-height: 360px;
+  border-radius: 28px;
+  background: radial-gradient(circle at center, #ffffff 0%, #f1f4f9 100%);
+  overflow: hidden;
+}
+
+.main-node,
+.step-node {
+  position: absolute;
+  border: 0;
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    opacity var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
+}
+
+.main-node {
+  top: 50%;
+  left: 50%;
+  width: var(--main-size);
+  height: var(--main-size);
+  margin-top: calc(var(--main-size) / -2);
+  margin-left: calc(var(--main-size) / -2);
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 16px 32px rgba(28, 53, 92, 0.12);
+  color: #203040;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.main-node.is-active {
+  transform: scale(1.12);
+  box-shadow: 0 24px 42px rgba(28, 53, 92, 0.22);
+}
+
+.step-node {
+  top: 50%;
+  left: 50%;
+  width: var(--step-size);
+  height: var(--step-size);
+  margin-top: calc(var(--step-size) / -2);
+  margin-left: calc(var(--step-size) / -2);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #dceeff 0%, #c6e2ff 100%);
+  box-shadow: 0 12px 24px rgba(57, 119, 184, 0.16);
+  color: #174265;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(0, 0) scale(0.7);
+}
+
+.scene.is-expanded .step-node {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scene.is-expanded .step-1 {
+  transform: translate(140px, -40px) scale(1);
+}
+
+.scene.is-expanded .step-2 {
+  transform: translate(200px, 0) scale(1);
+}
+
+.scene.is-expanded .step-3 {
+  transform: translate(220px, 60px) scale(1);
+}
+
+.scene.is-expanded .step-4 {
+  transform: translate(180px, 120px) scale(1);
+}
+
+.step-1 {
+  transition-delay: 0ms;
+}
+
+.step-2 {
+  transition-delay: 70ms;
+}
+
+.step-3 {
+  transition-delay: 140ms;
+}
+
+.step-4 {
+  transition-delay: 210ms;
+}
+
+.scene:not(.is-expanded) .step-node {
+  transition-delay: 0ms;
+}
