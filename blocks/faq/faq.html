@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ Preview</title>
+  <link rel="stylesheet" href="./faq.css" />
+</head>
+<body>
+  <section class="faq" aria-labelledby="faq-title">
+    <div class="faq__inner">
+      <header class="faq__header">
+        <h2 id="faq-title" class="faq__title"></h2>
+        <p class="faq__subtitle"></p>
+      </header>
+
+      <div class="faq__layout">
+        <div class="faq__nav" role="tablist" aria-label="Частые вопросы"></div>
+
+        <div class="faq__detail" role="tabpanel" aria-live="polite">
+          <h3 class="faq__detail-title"></h3>
+          <div class="faq__detail-body"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="./faq.js"></script>
+</body>
+</html>
