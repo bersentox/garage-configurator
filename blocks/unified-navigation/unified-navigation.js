@@ -195,47 +195,6 @@
     });
   }
 
-  function getTooltipPlacement(vector) {
-    if (vector.x >= 0 && vector.y <= -16) {
-      return 'top-right';
-    }
-    if (vector.x >= 0 && vector.y >= 16) {
-      return 'bottom-right';
-    }
-    if (vector.x <= 0 && vector.y <= -16) {
-      return 'top-left';
-    }
-    if (vector.x <= 0 && vector.y >= 16) {
-      return 'bottom-left';
-    }
-    return vector.x < 0 ? 'left' : 'right';
-  }
-
-  function getStageSpecificPlacement(stageKey, vector, index) {
-    if (stageKey === 'contact') {
-      return index === 2 ? 'bottom-right' : 'right';
-    }
-
-    if (stageKey === 'visit') {
-      return index === 2 ? 'bottom-right' : 'right';
-    }
-
-    if (stageKey === 'design') {
-      return getTooltipPlacement(vector);
-    }
-
-    if (stageKey === 'build') {
-      if (vector.x > 0 && vector.y >= 0) {
-        return vector.y > 0 ? 'top-right' : 'right';
-      }
-      if (vector.x < 0 && vector.y >= 0) {
-        return vector.y > 0 ? 'top-left' : 'left';
-      }
-      return getTooltipPlacement(vector);
-    }
-
-    return getTooltipPlacement(vector);
-  }
 
   function renderEdges() {
     edgesLayer.innerHTML = '';
@@ -275,6 +234,88 @@
     overlayTooltip.setAttribute('aria-hidden', 'true');
     overlayTooltip.className = 'unified-navigation__tooltip';
     overlayTooltip.textContent = '';
+    overlayTooltip.style.left = '';
+    overlayTooltip.style.top = '';
+  }
+
+  function getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, placement, gap) {
+    if (placement === 'left') {
+      return {
+        left: anchorX - gap,
+        top: anchorY - tooltipHeight / 2
+      };
+    }
+
+    if (placement === 'top-right') {
+      return {
+        left: anchorX + gap,
+        top: anchorY - gap
+      };
+    }
+
+    if (placement === 'top-left') {
+      return {
+        left: anchorX - gap,
+        top: anchorY - gap
+      };
+    }
+
+    if (placement === 'bottom-left') {
+      return {
+        left: anchorX - gap,
+        top: anchorY + gap
+      };
+    }
+
+    if (placement === 'bottom-right') {
+      return {
+        left: anchorX + gap,
+        top: anchorY + gap
+      };
+    }
+
+    return {
+      left: anchorX + gap,
+      top: anchorY - tooltipHeight / 2
+    };
+  }
+
+  function getPlacementBounds(coords, tooltipWidth, tooltipHeight, placement) {
+    let left = coords.left;
+    let top = coords.top;
+
+    if (placement === 'left') {
+      left -= tooltipWidth;
+    } else if (placement === 'top-left' || placement === 'bottom-left') {
+      left -= tooltipWidth;
+    }
+
+    if (placement === 'top-right' || placement === 'top-left') {
+      top -= tooltipHeight;
+    }
+
+    return {
+      left: left,
+      top: top,
+      right: left + tooltipWidth,
+      bottom: top + tooltipHeight
+    };
+  }
+
+  function getPreferredPlacements(anchorX, anchorY, layerRect) {
+    const leftHalf = anchorX < layerRect.width / 2;
+    const nearTop = anchorY < layerRect.height * 0.22;
+    const nearBottom = anchorY > layerRect.height * 0.78;
+
+    if (nearTop) {
+      return leftHalf ? ['bottom-right', 'right', 'bottom-left', 'left', 'top-right', 'top-left'] : ['bottom-left', 'left', 'bottom-right', 'right', 'top-left', 'top-right'];
+    }
+
+    if (nearBottom) {
+      return leftHalf ? ['top-right', 'right', 'top-left', 'left', 'bottom-right', 'bottom-left'] : ['top-left', 'left', 'top-right', 'right', 'bottom-left', 'bottom-right'];
+    }
+
+    return leftHalf ? ['right', 'bottom-right', 'top-right', 'left', 'bottom-left', 'top-left'] : ['left', 'bottom-left', 'top-left', 'right', 'bottom-right', 'top-right'];
   }
 
   function positionOverlayTooltip() {
@@ -282,41 +323,42 @@
       return;
     }
 
-    const triggerRect = activeTooltipTrigger.getBoundingClientRect();
-    const layerRect = tooltipLayer.getBoundingClientRect();
-    const placement = activeTooltipTrigger.dataset.tooltipPlacement || 'right';
-    const gap = 16;
+    const childRect = activeTooltipTrigger.getBoundingClientRect();
+    const sceneRect = diagram.getBoundingClientRect();
+    const anchorX = childRect.left - sceneRect.left + childRect.width / 2;
+    const anchorY = childRect.top - sceneRect.top + childRect.height / 2;
+    const gap = Math.max(12, Math.min(20, Math.round(Math.max(childRect.width, childRect.height) * 0.28)));
     const tooltipWidth = overlayTooltip.offsetWidth;
     const tooltipHeight = overlayTooltip.offsetHeight;
-    const minX = 8;
-    const minY = 8;
-    const maxX = Math.max(minX, layerRect.width - tooltipWidth - 8);
-    const maxY = Math.max(minY, layerRect.height - tooltipHeight - 8);
-    let left = 0;
-    let top = 0;
+    const padding = 8;
+    const placements = getPreferredPlacements(anchorX, anchorY, sceneRect);
+    let selectedPlacement = placements[0];
+    let selectedCoords = getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, selectedPlacement, gap);
+    let bestOverflow = Number.POSITIVE_INFINITY;
 
-    if (placement === 'right') {
-      left = triggerRect.right - layerRect.left + gap;
-      top = triggerRect.top - layerRect.top + triggerRect.height / 2;
-    } else if (placement === 'left') {
-      left = triggerRect.left - layerRect.left - tooltipWidth - gap;
-      top = triggerRect.top - layerRect.top + triggerRect.height / 2;
-    } else if (placement === 'top-right') {
-      left = triggerRect.right - layerRect.left + gap;
-      top = triggerRect.top - layerRect.top - gap;
-    } else if (placement === 'top-left') {
-      left = triggerRect.left - layerRect.left - tooltipWidth - gap;
-      top = triggerRect.top - layerRect.top - gap;
-    } else if (placement === 'bottom-left') {
-      left = triggerRect.left - layerRect.left - tooltipWidth - gap;
-      top = triggerRect.bottom - layerRect.top + gap;
-    } else {
-      left = triggerRect.right - layerRect.left + gap;
-      top = triggerRect.bottom - layerRect.top + gap;
-    }
+    placements.forEach(function (placement) {
+      const coords = getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, placement, gap);
+      const bounds = getPlacementBounds(coords, tooltipWidth, tooltipHeight, placement);
+      const overflow =
+        Math.max(0, padding - bounds.left) +
+        Math.max(0, padding - bounds.top) +
+        Math.max(0, bounds.right - (sceneRect.width - padding)) +
+        Math.max(0, bounds.bottom - (sceneRect.height - padding));
 
-    overlayTooltip.style.left = Math.min(Math.max(left, minX), maxX) + 'px';
-    overlayTooltip.style.top = Math.min(Math.max(top, minY), maxY) + 'px';
+      if (overflow < bestOverflow) {
+        bestOverflow = overflow;
+        selectedPlacement = placement;
+        selectedCoords = coords;
+      }
+    });
+
+    const bounds = getPlacementBounds(selectedCoords, tooltipWidth, tooltipHeight, selectedPlacement);
+    const shiftX = bounds.left < padding ? padding - bounds.left : bounds.right > sceneRect.width - padding ? sceneRect.width - padding - bounds.right : 0;
+    const shiftY = bounds.top < padding ? padding - bounds.top : bounds.bottom > sceneRect.height - padding ? sceneRect.height - padding - bounds.bottom : 0;
+
+    overlayTooltip.className = 'unified-navigation__tooltip unified-navigation__tooltip--' + selectedPlacement + ' is-visible';
+    overlayTooltip.style.left = selectedCoords.left + shiftX + 'px';
+    overlayTooltip.style.top = selectedCoords.top + shiftY + 'px';
   }
 
   function syncState() {
@@ -341,7 +383,7 @@
       return;
     }
 
-    overlayTooltip.className = 'unified-navigation__tooltip unified-navigation__tooltip--' + (activeTooltipTrigger.dataset.tooltipPlacement || 'right') + ' is-visible';
+    overlayTooltip.className = 'unified-navigation__tooltip';
     overlayTooltip.textContent = activeTooltipTrigger.dataset.tooltipText || '';
     overlayTooltip.hidden = false;
     overlayTooltip.setAttribute('aria-hidden', 'false');
@@ -383,13 +425,10 @@
     const child = document.createElement('button');
     const vectors = getClusterVectors(stage);
     const vector = vectors[index] || { x: 0, y: 0 };
-    const placement = getStageSpecificPlacement(stage.key, vector, index);
-
     child.className = 'unified-navigation__child';
     child.type = 'button';
     child.textContent = label;
     child.dataset.tooltipKey = stage.key + ':' + label;
-    child.dataset.tooltipPlacement = placement;
     child.dataset.tooltipText = TOOLTIP_COPY[stage.key][label];
     child.style.setProperty('--child-x', vector.x + 'px');
     child.style.setProperty('--child-y', vector.y + 'px');
