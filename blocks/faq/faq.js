@@ -12,11 +12,27 @@
   const detailTitleNode = root.querySelector('.faq__detail-title');
   const detailBodyNode = root.querySelector('.faq__detail-body');
   const JSON_PATH = '../site-body-content/faq.content.json';
+  const DETAIL_LABEL_TEXT = 'Ответ на вопрос';
 
   let navButtons = [];
   let items = [];
+  let activeIndex = 0;
+
+  function ensureDetailLabel() {
+    let labelNode = detailNode.querySelector('.faq__detail-label');
+
+    if (!labelNode) {
+      labelNode = document.createElement('p');
+      labelNode.className = 'faq__detail-label';
+      detailNode.insertBefore(labelNode, detailTitleNode);
+    }
+
+    labelNode.textContent = DETAIL_LABEL_TEXT;
+  }
 
   function setDetail(item) {
+    ensureDetailLabel();
+
     if (!item) {
       detailTitleNode.textContent = '';
       detailBodyNode.innerHTML = '';
@@ -35,7 +51,9 @@
     });
   }
 
-  function setActive(index) {
+  function setActive(index, shouldFocus) {
+    activeIndex = index;
+
     navButtons.forEach((button, buttonIndex) => {
       const isActive = buttonIndex === index;
       button.classList.toggle('is-active', isActive);
@@ -47,9 +65,22 @@
 
     if (activeButton) {
       detailNode.setAttribute('aria-labelledby', activeButton.id);
+
+      if (shouldFocus) {
+        activeButton.focus();
+      }
     }
 
     setDetail(items[index]);
+  }
+
+  function moveActive(step) {
+    if (!navButtons.length) {
+      return;
+    }
+
+    const nextIndex = (activeIndex + step + navButtons.length) % navButtons.length;
+    setActive(nextIndex, true);
   }
 
   function createNavItem(item, index) {
@@ -68,11 +99,38 @@
     text.className = 'faq__nav-text';
     text.textContent = item.question || '';
 
+    const indicator = document.createElement('span');
+    indicator.className = 'faq__nav-indicator';
+    indicator.setAttribute('aria-hidden', 'true');
+
     button.appendChild(number);
     button.appendChild(text);
+    button.appendChild(indicator);
 
     button.addEventListener('click', function () {
       setActive(index);
+    });
+
+    button.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        moveActive(1);
+      }
+
+      if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+        event.preventDefault();
+        moveActive(-1);
+      }
+
+      if (event.key === 'Home') {
+        event.preventDefault();
+        setActive(0, true);
+      }
+
+      if (event.key === 'End') {
+        event.preventDefault();
+        setActive(navButtons.length - 1, true);
+      }
     });
 
     return button;
