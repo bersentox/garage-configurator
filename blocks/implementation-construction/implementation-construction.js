@@ -1,26 +1,97 @@
-(() => {
-  'use strict';
+(function () {
+  const root = document.querySelector('.implementation-construction');
 
-  const block = document.querySelector('[data-implementation-construction]');
-
-  if (!block) {
+  if (!root) {
     return;
   }
 
-  const source = block.getAttribute('data-source');
-  const columns = Array.from(block.querySelectorAll('.implementation-construction__column'));
-  const footer = block.querySelector('.implementation-construction__footer');
+  const processSurface = root.querySelector('[data-implementation-construction-surface="process"]');
+  const constructionSurface = root.querySelector('[data-implementation-construction-surface="construction"]');
+  const footerNode = root.querySelector('[data-implementation-construction-footer]');
 
-  function createAccordionItem(itemData, sectionIndex, itemIndex) {
+  const JSON_PATH = '../site-body-content/implementation-construction.content.json';
+
+  function normalizeSectionKey(value) {
+    return String(value || '')
+      .trim()
+      .toLowerCase();
+  }
+
+  function resolveSectionGroup(sections) {
+    const result = {
+      process: null,
+      construction: null,
+      footer: ''
+    };
+
+    sections.forEach((section) => {
+      const key = normalizeSectionKey(section.section || section.slug || section.key || section.id || section.title);
+
+      if (!result.process && (key.includes('реал') || key.includes('process') || key.includes('implementation'))) {
+        result.process = section;
+        return;
+      }
+
+      if (!result.construction && (key.includes('констр') || key.includes('construction'))) {
+        result.construction = section;
+        return;
+      }
+
+      if (!result.footer && (key.includes('footer') || key.includes('итог') || key.includes('result'))) {
+        result.footer = section.text || section.content || section.description || '';
+      }
+    });
+
+    if (!result.process && sections[0]) {
+      result.process = sections[0];
+    }
+
+    if (!result.construction && sections[1]) {
+      result.construction = sections[1];
+    }
+
+    if (!result.footer) {
+      const footerCandidate = sections.find((section) => section.footer || section.text || section.content);
+      result.footer =
+        (footerCandidate && (footerCandidate.footer || footerCandidate.text || footerCandidate.content)) || '';
+    }
+
+    return result;
+  }
+
+  function getItems(section) {
+    if (!section) {
+      return [];
+    }
+
+    if (Array.isArray(section.items)) {
+      return section.items;
+    }
+
+    if (Array.isArray(section.points)) {
+      return section.points;
+    }
+
+    if (Array.isArray(section.entries)) {
+      return section.entries;
+    }
+
+    return [];
+  }
+
+  function createItem(itemData, columnKey, itemIndex) {
     const item = document.createElement('article');
     item.className = 'implementation-construction__item';
+
+    const heading = document.createElement('h4');
+    heading.className = 'implementation-construction__heading';
 
     const trigger = document.createElement('button');
     trigger.className = 'implementation-construction__trigger';
     trigger.type = 'button';
 
-    const panelId = `implementation-construction-panel-${sectionIndex}-${itemIndex}`;
-    const triggerId = `implementation-construction-trigger-${sectionIndex}-${itemIndex}`;
+    const triggerId = `implementation-construction-${columnKey}-trigger-${itemIndex}`;
+    const panelId = `implementation-construction-${columnKey}-panel-${itemIndex}`;
 
     trigger.id = triggerId;
     trigger.setAttribute('aria-expanded', 'false');
@@ -28,97 +99,104 @@
 
     const number = document.createElement('span');
     number.className = 'implementation-construction__number';
-    number.textContent = itemData.number || '';
+    number.textContent = String(itemData.number || itemIndex + 1).padStart(2, '0');
 
     const copy = document.createElement('span');
-    copy.className = 'implementation-construction__item-copy';
+    copy.className = 'implementation-construction__copy';
 
     const title = document.createElement('span');
     title.className = 'implementation-construction__item-title';
     title.textContent = itemData.title || '';
 
-    const status = document.createElement('span');
-    status.className = 'implementation-construction__status';
-    status.textContent = itemData.status || '';
+    const meta = document.createElement('span');
+    meta.className = 'implementation-construction__meta';
+    meta.textContent = itemData.status || '';
 
-    const icon = document.createElement('span');
-    icon.className = 'implementation-construction__icon';
-    icon.setAttribute('aria-hidden', 'true');
-    icon.textContent = '+';
+    const chevron = document.createElement('span');
+    chevron.className = 'implementation-construction__chevron';
+    chevron.setAttribute('aria-hidden', 'true');
 
     copy.appendChild(title);
-    copy.appendChild(status);
+
+    if (itemData.status) {
+      copy.appendChild(meta);
+    }
 
     trigger.appendChild(number);
     trigger.appendChild(copy);
-    trigger.appendChild(icon);
+    trigger.appendChild(chevron);
+    heading.appendChild(trigger);
 
     const panel = document.createElement('div');
     panel.className = 'implementation-construction__panel';
     panel.id = panelId;
-    panel.setAttribute('role', 'region');
-    panel.setAttribute('aria-labelledby', triggerId);
     panel.hidden = true;
+    panel.setAttribute('aria-labelledby', triggerId);
+
+    const panelInner = document.createElement('div');
+    panelInner.className = 'implementation-construction__panel-inner';
+
+    const panelContent = document.createElement('div');
+    panelContent.className = 'implementation-construction__panel-content';
 
     const description = document.createElement('p');
     description.className = 'implementation-construction__description';
     description.textContent = itemData.description || '';
 
-    panel.appendChild(description);
+    panelContent.appendChild(description);
+    panelInner.appendChild(panelContent);
+    panel.appendChild(panelInner);
 
-    trigger.addEventListener('click', () => {
+    trigger.addEventListener('click', function () {
       const isOpen = trigger.getAttribute('aria-expanded') === 'true';
       trigger.setAttribute('aria-expanded', String(!isOpen));
-      panel.hidden = isOpen;
       item.classList.toggle('is-open', !isOpen);
-      icon.textContent = isOpen ? '+' : '−';
+      panel.hidden = isOpen;
     });
 
-    item.appendChild(trigger);
+    item.appendChild(heading);
     item.appendChild(panel);
 
     return item;
   }
 
-  const render = (data) => {
-    columns.forEach((column, columnIndex) => {
-      const section = data.sections?.[columnIndex];
-      const title = column.querySelector('.implementation-construction__column-title');
-      const accordion = column.querySelector('.implementation-construction__accordion');
+  function renderSection(surface, section, columnKey) {
+    surface.innerHTML = '';
 
-      if (!section || !title || !accordion) {
-        return;
-      }
-
-      title.textContent = section.title;
-      accordion.replaceChildren(
-        ...section.items.map((item, itemIndex) => createAccordionItem(item, columnIndex, itemIndex)),
-      );
+    getItems(section).forEach((itemData, itemIndex) => {
+      surface.appendChild(createItem(itemData, columnKey, itemIndex));
     });
+  }
 
-    if (footer) {
-      footer.textContent = data.footer || '';
-    }
-  };
-
-  const init = async () => {
-    if (!source) {
-      return;
-    }
-
+  async function init() {
     try {
-      const response = await fetch(source, { cache: 'no-store' });
+      const response = await fetch(JSON_PATH, { cache: 'no-store' });
 
       if (!response.ok) {
-        return;
+        throw new Error(`Failed to load JSON: ${response.status}`);
       }
 
       const data = await response.json();
-      render(data);
-    } catch {
-      /* Intentionally silent to keep the block isolated. */
+      const sections = Array.isArray(data.sections) ? data.sections : [];
+      const resolved = resolveSectionGroup(sections);
+
+      renderSection(processSurface, resolved.process, 'process');
+      renderSection(constructionSurface, resolved.construction, 'construction');
+
+      if (footerNode) {
+        footerNode.textContent =
+          data.footer ||
+          resolved.footer ||
+          'Надёжный результат начинается задолго до монтажа.';
+      }
+    } catch (error) {
+      console.error('[implementation-construction] render failed', error);
+
+      if (footerNode) {
+        footerNode.textContent = 'Надёжный результат начинается задолго до монтажа.';
+      }
     }
-  };
+  }
 
   init();
 })();
