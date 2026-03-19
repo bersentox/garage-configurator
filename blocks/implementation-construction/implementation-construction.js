@@ -104,23 +104,27 @@
     const copy = document.createElement('span');
     copy.className = 'implementation-construction__copy';
 
+    const top = document.createElement('span');
+    top.className = 'implementation-construction__topline';
+
     const title = document.createElement('span');
     title.className = 'implementation-construction__item-title';
     title.textContent = itemData.title || '';
 
-    const meta = document.createElement('span');
-    meta.className = 'implementation-construction__meta';
-    meta.textContent = itemData.status || '';
+    top.appendChild(title);
+
+    if (itemData.status) {
+      const meta = document.createElement('span');
+      meta.className = 'implementation-construction__meta';
+      meta.textContent = itemData.status;
+      top.appendChild(meta);
+    }
+
+    copy.appendChild(top);
 
     const chevron = document.createElement('span');
     chevron.className = 'implementation-construction__chevron';
     chevron.setAttribute('aria-hidden', 'true');
-
-    copy.appendChild(title);
-
-    if (itemData.status) {
-      copy.appendChild(meta);
-    }
 
     trigger.appendChild(number);
     trigger.appendChild(copy);
@@ -150,7 +154,6 @@
     trigger.addEventListener('click', function () {
       const isOpen = trigger.getAttribute('aria-expanded') === 'true';
       const nextOpenState = !isOpen;
-
       trigger.setAttribute('aria-expanded', String(nextOpenState));
       item.classList.toggle('is-open', nextOpenState);
       panel.hidden = !nextOpenState;
