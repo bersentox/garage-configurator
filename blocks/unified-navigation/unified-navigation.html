@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unified Navigation Preview</title>
+  <link rel="stylesheet" href="./unified-navigation.css" />
+</head>
+<body>
+  <section class="unified-navigation" aria-labelledby="unified-navigation-title">
+    <div class="unified-navigation__shell">
+      <header class="unified-navigation__intro">
+        <p class="unified-navigation__eyebrow">DIGITAL PROCESS MAP</p>
+        <h2 id="unified-navigation-title" class="unified-navigation__title">
+          Весь путь проекта —<br />от контакта до сдачи
+        </h2>
+        <p class="unified-navigation__subtitle">
+          Строгая схема этапов с радиальным раскрытием шагов без карточек, списков и боковых панелей.
+        </p>
+      </header>
+
+      <div class="unified-navigation__diagram" data-unified-navigation-diagram>
+        <div class="unified-navigation__grid" aria-hidden="true"></div>
+        <div class="unified-navigation__edges" aria-hidden="true"></div>
+        <div class="unified-navigation__nodes" data-unified-navigation-nodes></div>
+      </div>
+
+      <p class="unified-navigation__bottom">
+        Чистая геометрия, один активный узел и только круговые шаги вокруг выбранного этапа.
+      </p>
+    </div>
+  </section>
+
+  <script src="./unified-navigation.js"></script>
+</body>
+</html>
