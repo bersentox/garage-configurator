@@ -5,120 +5,221 @@
     return;
   }
 
+  const diagram = root.querySelector('[data-unified-navigation-diagram]');
   const nodesLayer = root.querySelector('[data-unified-navigation-nodes]');
   const edgesLayer = root.querySelector('.unified-navigation__edges');
 
+  const SCENE_LAYOUT = {
+    desktop: {
+      contact: { x: 14, y: 28 },
+      visit: { x: 39, y: 16 },
+      brief: { x: 49, y: 26 },
+      design: { x: 37, y: 43 },
+      contract: { x: 61, y: 43 },
+      build: { x: 73, y: 59 },
+      delivery: { x: 79, y: 77 }
+    },
+    tablet: {
+      contact: { x: 16, y: 24 },
+      visit: { x: 39, y: 16 },
+      brief: { x: 52, y: 25 },
+      design: { x: 33, y: 43 },
+      contract: { x: 61, y: 43 },
+      build: { x: 68, y: 61 },
+      delivery: { x: 72, y: 79 }
+    },
+    mobile: {
+      contact: { x: 20, y: 16 },
+      visit: { x: 57, y: 11 },
+      brief: { x: 57, y: 24 },
+      design: { x: 28, y: 39 },
+      contract: { x: 64, y: 42 },
+      build: { x: 44, y: 63 },
+      delivery: { x: 71, y: 82 }
+    }
+  };
+
+  const CLUSTER_TEMPLATES = {
+    right3: [
+      { x: 74, y: -62 },
+      { x: 112, y: 0 },
+      { x: 80, y: 68 }
+    ],
+    left3: [
+      { x: -74, y: -62 },
+      { x: -112, y: 0 },
+      { x: -80, y: 68 }
+    ],
+    cross4: [
+      { x: 0, y: -106 },
+      { x: 106, y: 0 },
+      { x: 0, y: 106 },
+      { x: -106, y: 0 }
+    ]
+  };
+
+  const TOOLTIP_COPY = {
+    contact: {
+      звонок: 'Первичный вход в проект',
+      консультация: 'Обсуждаем задачу и формат',
+      даты: 'Согласуем дату выезда'
+    },
+    visit: {
+      замер: 'Фиксируем реальные размеры',
+      предложения: 'Предлагаем варианты решения',
+      уточнения: 'Снимаем оставшиеся вопросы'
+    },
+    brief: {
+      эскиз: 'Собираем первичную схему',
+      подтверждение: 'Подтверждаем следующий шаг',
+      КП: 'Формируем коммерческое предложение'
+    },
+    design: {
+      проект: 'Разрабатываем проект',
+      правки: 'Вносим согласованные изменения',
+      принятие: 'Фиксируем итоговый вариант'
+    },
+    contract: {
+      выезд: 'Организуем встречу на подписание',
+      подписание: 'Фиксируем обязательства сторон',
+      цена: 'Закрепляем стоимость авансом'
+    },
+    build: {
+      стройка: 'Запуск строительных работ',
+      контроль: 'Контроль хода исполнения',
+      уборка: 'Приводим объект в порядок',
+      приёмка: 'Внутренняя приёмка прорабом'
+    },
+    delivery: {
+      приёмка: 'Приёмка со стороны заказчика',
+      документы: 'Подписываем закрывающие документы',
+      оплата: 'Закрываем итоговый расчёт'
+    }
+  };
+
   const stages = [
     {
+      key: 'contact',
       number: '01',
       title: 'Контакт',
-      size: 112,
-      position: { desktop: { x: 10, y: 32 }, mobile: { x: 18, y: 18 } },
+      cluster: 'left3',
       children: ['звонок', 'консультация', 'даты']
     },
     {
+      key: 'visit',
       number: '02',
       title: 'Визит',
-      size: 118,
-      position: { desktop: { x: 38, y: 14 }, mobile: { x: 56, y: 10 } },
+      cluster: 'left3',
       children: ['замер', 'предложения', 'уточнения']
     },
     {
+      key: 'brief',
       number: '03',
       title: 'Задание\nи КП',
-      size: 124,
-      position: { desktop: { x: 47, y: 29 }, mobile: { x: 56, y: 28 } },
+      cluster: 'right3',
       children: ['эскиз', 'подтверждение', 'КП']
     },
     {
+      key: 'design',
       number: '04',
       title: 'Проектирование',
-      size: 116,
-      position: { desktop: { x: 36, y: 49 }, mobile: { x: 26, y: 45 } },
+      cluster: 'left3',
       children: ['проект', 'правки', 'принятие']
     },
     {
+      key: 'contract',
       number: '05',
       title: 'Договор',
-      size: 118,
-      position: { desktop: { x: 57, y: 49 }, mobile: { x: 62, y: 48 } },
+      cluster: 'right3',
       children: ['выезд', 'подписание', 'цена']
     },
     {
+      key: 'build',
       number: '06',
       title: 'Реализация',
-      size: 118,
-      position: { desktop: { x: 70, y: 66 }, mobile: { x: 42, y: 71 } },
+      cluster: 'cross4',
       children: ['стройка', 'контроль', 'уборка', 'приёмка']
     },
     {
+      key: 'delivery',
       number: '07',
       title: 'Сдача',
-      size: 104,
-      position: { desktop: { x: 76, y: 86 }, mobile: { x: 72, y: 88 } },
+      cluster: 'right3',
       children: ['приёмка', 'документы', 'оплата']
     }
   ];
 
   const connections = [
-    ['01', '02'],
-    ['02', '03'],
-    ['03', '04'],
-    ['03', '05'],
-    ['05', '06'],
-    ['06', '07']
+    ['contact', 'visit'],
+    ['visit', 'brief'],
+    ['brief', 'design'],
+    ['brief', 'contract'],
+    ['contract', 'build'],
+    ['build', 'delivery']
   ];
 
-  let activeStageNumber = null;
+  let activeStageKey = null;
+  let activeTooltipKey = null;
 
-  function isMobileLayout() {
-    return window.matchMedia('(max-width: 1080px)').matches;
+  function getViewport() {
+    if (window.matchMedia('(max-width: 720px)').matches) {
+      return 'mobile';
+    }
+    if (window.matchMedia('(max-width: 1080px)').matches) {
+      return 'tablet';
+    }
+    return 'desktop';
   }
 
   function getPosition(stage) {
-    return isMobileLayout() ? stage.position.mobile : stage.position.desktop;
+    return SCENE_LAYOUT[getViewport()][stage.key];
   }
 
-  function getChildVectors(count) {
-    if (count === 4) {
-      return [
-        { x: 0, y: -92 },
-        { x: 92, y: 0 },
-        { x: 0, y: 92 },
-        { x: -92, y: 0 }
-      ];
-    }
+  function getClusterVectors(stage) {
+    const viewport = getViewport();
+    const scale = viewport === 'mobile' ? 0.62 : viewport === 'tablet' ? 0.82 : 1;
 
-    return [
-      { x: 0, y: -88 },
-      { x: 88, y: 0 },
-      { x: 0, y: 88 }
-    ];
+    return CLUSTER_TEMPLATES[stage.cluster].map(function (vector) {
+      return {
+        x: Math.round(vector.x * scale),
+        y: Math.round(vector.y * scale)
+      };
+    });
+  }
+
+  function getTooltipPlacement(vector) {
+    if (Math.abs(vector.y) > Math.abs(vector.x) && vector.y < 0) {
+      return 'above';
+    }
+    if (Math.abs(vector.y) > Math.abs(vector.x) && vector.y > 0) {
+      return 'below';
+    }
+    return vector.x < 0 ? 'left' : 'right';
   }
 
   function renderEdges() {
     edgesLayer.innerHTML = '';
 
     connections.forEach(function (connection) {
-      const from = stages.find(function (stage) {
-        return stage.number === connection[0];
+      const fromStage = stages.find(function (stage) {
+        return stage.key === connection[0];
       });
-      const to = stages.find(function (stage) {
-        return stage.number === connection[1];
+      const toStage = stages.find(function (stage) {
+        return stage.key === connection[1];
       });
 
-      if (!from || !to) {
+      if (!fromStage || !toStage) {
         return;
       }
 
-      const fromPoint = getPosition(from);
-      const toPoint = getPosition(to);
+      const fromPoint = getPosition(fromStage);
+      const toPoint = getPosition(toStage);
       const dx = toPoint.x - fromPoint.x;
       const dy = toPoint.y - fromPoint.y;
       const length = Math.hypot(dx, dy);
       const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-
       const edge = document.createElement('div');
+
       edge.className = 'unified-navigation__edge';
       edge.style.left = fromPoint.x + '%';
       edge.style.top = fromPoint.y + '%';
@@ -129,66 +230,108 @@
     });
   }
 
-  function createChild(label, index, total) {
-    const child = document.createElement('div');
-    const vectors = getChildVectors(total);
-    const vector = vectors[index] || { x: 0, y: 0 };
+  function syncState() {
+    nodesLayer.querySelectorAll('.unified-navigation__node').forEach(function (node) {
+      const isStageActive = node.dataset.stageKey === activeStageKey;
+      const button = node.querySelector('.unified-navigation__stage-button');
 
-    child.className = 'unified-navigation__child';
-    child.textContent = label;
-    child.style.setProperty('--child-x', vector.x + 'px');
-    child.style.setProperty('--child-y', vector.y + 'px');
-    child.style.transitionDelay = index * 80 + 'ms';
+      node.classList.toggle('is-active', isStageActive);
+      button.setAttribute('aria-expanded', String(isStageActive));
 
-    return child;
+      node.querySelectorAll('.unified-navigation__child').forEach(function (child) {
+        const isTooltipOpen = isStageActive && child.dataset.tooltipKey === activeTooltipKey;
+        const bubble = child.querySelector('.unified-navigation__tooltip');
+
+        child.classList.toggle('is-tooltip-open', isTooltipOpen);
+        child.setAttribute('aria-expanded', String(isTooltipOpen));
+        if (bubble) {
+          bubble.hidden = !isTooltipOpen;
+        }
+      });
+    });
   }
 
-  function setActiveStage(nextStageNumber) {
-    activeStageNumber = activeStageNumber === nextStageNumber ? null : nextStageNumber;
+  function setActiveStage(nextStageKey) {
+    const nextValue = activeStageKey === nextStageKey ? null : nextStageKey;
 
-    nodesLayer.querySelectorAll('.unified-navigation__node').forEach(function (node) {
-      const isActive = node.dataset.stageNumber === activeStageNumber;
-      const button = node.querySelector('.unified-navigation__stage-button');
-      node.classList.toggle('is-active', isActive);
-      button.setAttribute('aria-expanded', String(isActive));
+    if (activeStageKey !== nextValue) {
+      activeTooltipKey = null;
+    }
+
+    activeStageKey = nextValue;
+    syncState();
+  }
+
+  function toggleTooltip(stageKey, childLabel) {
+    const tooltipKey = stageKey + ':' + childLabel;
+    activeTooltipKey = activeTooltipKey === tooltipKey ? null : tooltipKey;
+    syncState();
+  }
+
+  function createChild(stage, label, index) {
+    const child = document.createElement('button');
+    const vectors = getClusterVectors(stage);
+    const vector = vectors[index] || { x: 0, y: 0 };
+    const placement = getTooltipPlacement(vector);
+    const tooltip = document.createElement('span');
+
+    child.className = 'unified-navigation__child';
+    child.type = 'button';
+    child.textContent = label;
+    child.dataset.tooltipKey = stage.key + ':' + label;
+    child.dataset.tooltipPlacement = placement;
+    child.style.setProperty('--child-x', vector.x + 'px');
+    child.style.setProperty('--child-y', vector.y + 'px');
+    child.style.transitionDelay = index * 70 + 'ms';
+    child.setAttribute('aria-expanded', 'false');
+    child.setAttribute('aria-label', label + '. ' + TOOLTIP_COPY[stage.key][label]);
+
+    tooltip.className = 'unified-navigation__tooltip';
+    tooltip.textContent = TOOLTIP_COPY[stage.key][label];
+    tooltip.hidden = true;
+
+    child.appendChild(tooltip);
+    child.addEventListener('click', function (event) {
+      event.stopPropagation();
+      if (activeStageKey !== stage.key) {
+        return;
+      }
+      toggleTooltip(stage.key, label);
     });
+
+    return child;
   }
 
   function createStage(stage) {
     const node = document.createElement('article');
     const position = getPosition(stage);
+    const button = document.createElement('button');
+    const core = document.createElement('span');
+    const number = document.createElement('span');
+    const label = document.createElement('span');
+    const children = document.createElement('div');
 
     node.className = 'unified-navigation__node';
-    node.dataset.stageNumber = stage.number;
-    node.style.setProperty('--node-size', stage.size + 'px');
+    node.dataset.stageKey = stage.key;
     node.style.setProperty('--node-x', position.x);
     node.style.setProperty('--node-y', position.y);
-    node.style.setProperty('--node-x-mobile', stage.position.mobile.x);
-    node.style.setProperty('--node-y-mobile', stage.position.mobile.y);
 
-    const button = document.createElement('button');
     button.className = 'unified-navigation__stage-button';
     button.type = 'button';
     button.setAttribute('aria-expanded', 'false');
     button.setAttribute('aria-label', 'Этап ' + stage.number + ': ' + stage.title.replace(/\n/g, ' '));
 
-    const core = document.createElement('span');
     core.className = 'unified-navigation__stage-core';
-
-    const number = document.createElement('span');
     number.className = 'unified-navigation__stage-number';
     number.textContent = stage.number;
-
-    const label = document.createElement('span');
     label.className = 'unified-navigation__stage-label';
     label.innerHTML = stage.title.replace(/\n/g, '<br />');
 
-    const children = document.createElement('div');
     children.className = 'unified-navigation__children';
     children.setAttribute('aria-hidden', 'true');
 
     stage.children.forEach(function (childLabel, index) {
-      children.appendChild(createChild(childLabel, index, stage.children.length));
+      children.appendChild(createChild(stage, childLabel, index));
     });
 
     core.appendChild(number);
@@ -207,21 +350,36 @@
       });
     });
 
-    button.addEventListener('click', function () {
-      setActiveStage(stage.number);
+    button.addEventListener('click', function (event) {
+      event.stopPropagation();
+      setActiveStage(stage.key);
     });
 
     return node;
   }
 
   function render() {
+    const previousStageKey = activeStageKey;
+    const previousTooltipKey = activeTooltipKey;
+
     nodesLayer.innerHTML = '';
     stages.forEach(function (stage) {
       nodesLayer.appendChild(createStage(stage));
     });
+
     renderEdges();
-    setActiveStage(activeStageNumber);
+
+    activeStageKey = previousStageKey;
+    activeTooltipKey = previousTooltipKey;
+    syncState();
   }
+
+  document.addEventListener('click', function (event) {
+    if (!diagram.contains(event.target)) {
+      activeTooltipKey = null;
+      syncState();
+    }
+  });
 
   window.addEventListener('resize', render);
 
