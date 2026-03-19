@@ -8,6 +8,7 @@
   const diagram = root.querySelector('[data-unified-navigation-diagram]');
   const nodesLayer = root.querySelector('[data-unified-navigation-nodes]');
   const edgesLayer = root.querySelector('.unified-navigation__edges');
+  const tooltipLayer = root.querySelector('[data-unified-navigation-tooltip-layer]');
 
   const SCENE_LAYOUT = {
     desktop: {
@@ -60,40 +61,40 @@
 
   const TOOLTIP_COPY = {
     contact: {
-      звонок: 'Первичный вход в проект',
-      консультация: 'Обсуждаем задачу и формат',
-      даты: 'Согласуем дату выезда'
+      звонок: 'Отвечаем за несколько минут',
+      консультация: 'Уточняем задачу, формат и детали',
+      даты: 'Согласуем дату визита менеджера и замерщика'
     },
     visit: {
-      замер: 'Фиксируем реальные размеры',
+      замер: 'Фиксируем размеры объекта и высоты',
       предложения: 'Предлагаем варианты решения',
-      уточнения: 'Снимаем оставшиеся вопросы'
+      уточнения: 'Снимаем спорные вопросы'
     },
     brief: {
-      эскиз: 'Собираем первичную схему',
+      эскиз: 'Собираем базовую схему',
       подтверждение: 'Подтверждаем следующий шаг',
-      КП: 'Формируем коммерческое предложение'
+      КП: 'Готовим коммерческое предложение'
     },
     design: {
-      проект: 'Разрабатываем проект',
+      проект: 'Разрабатываем рабочую схему',
       правки: 'Вносим согласованные изменения',
       принятие: 'Фиксируем итоговый вариант'
     },
     contract: {
-      выезд: 'Организуем встречу на подписание',
-      подписание: 'Фиксируем обязательства сторон',
-      цена: 'Закрепляем стоимость авансом'
+      выезд: 'Организуем подписание',
+      подписание: 'Закрепляем условия сторон',
+      цена: 'Фиксируем стоимость авансом'
     },
     build: {
-      стройка: 'Запуск строительных работ',
-      контроль: 'Контроль хода исполнения',
-      уборка: 'Приводим объект в порядок',
-      приёмка: 'Внутренняя приёмка прорабом'
+      стройка: 'Запускаем строительные работы',
+      контроль: 'Контролируем ход исполнения',
+      уборка: 'Приводим объект в порядок, вывозим мусор',
+      приёмка: 'Проводим внутреннюю приёмку прорабом'
     },
     delivery: {
-      приёмка: 'Приёмка со стороны заказчика',
-      документы: 'Подписываем закрывающие документы',
-      оплата: 'Закрываем итоговый расчёт'
+      приёмка: 'Заказчик принимает объект',
+      документы: 'Подписываем документы',
+      оплата: 'Закрываем окончательный расчёт'
     }
   };
 
@@ -160,6 +161,13 @@
 
   let activeStageKey = null;
   let activeTooltipKey = null;
+  let activeTooltipTrigger = null;
+  const overlayTooltip = document.createElement('div');
+
+  overlayTooltip.className = 'unified-navigation__tooltip';
+  overlayTooltip.hidden = true;
+  overlayTooltip.setAttribute('aria-hidden', 'true');
+  tooltipLayer.appendChild(overlayTooltip);
 
   function getViewport() {
     if (window.matchMedia('(max-width: 720px)').matches) {
@@ -230,6 +238,43 @@
     });
   }
 
+  function hideOverlayTooltip() {
+    overlayTooltip.hidden = true;
+    overlayTooltip.setAttribute('aria-hidden', 'true');
+    overlayTooltip.className = 'unified-navigation__tooltip';
+    overlayTooltip.textContent = '';
+  }
+
+  function positionOverlayTooltip() {
+    if (!activeTooltipTrigger || !tooltipLayer.contains(overlayTooltip) || overlayTooltip.hidden) {
+      return;
+    }
+
+    const triggerRect = activeTooltipTrigger.getBoundingClientRect();
+    const layerRect = tooltipLayer.getBoundingClientRect();
+    const placement = activeTooltipTrigger.dataset.tooltipPlacement || 'right';
+    const gap = 12;
+    let left = 0;
+    let top = 0;
+
+    if (placement === 'right') {
+      left = triggerRect.right - layerRect.left + gap;
+      top = triggerRect.top - layerRect.top + triggerRect.height / 2;
+    } else if (placement === 'left') {
+      left = triggerRect.left - layerRect.left - gap;
+      top = triggerRect.top - layerRect.top + triggerRect.height / 2;
+    } else if (placement === 'top') {
+      left = triggerRect.left - layerRect.left + triggerRect.width / 2;
+      top = triggerRect.top - layerRect.top - gap;
+    } else {
+      left = triggerRect.left - layerRect.left + triggerRect.width / 2;
+      top = triggerRect.bottom - layerRect.top + gap;
+    }
+
+    overlayTooltip.style.left = left + 'px';
+    overlayTooltip.style.top = top + 'px';
+  }
+
   function syncState() {
     nodesLayer.querySelectorAll('.unified-navigation__node').forEach(function (node) {
       const isStageActive = node.dataset.stageKey === activeStageKey;
@@ -240,17 +285,23 @@
 
       node.querySelectorAll('.unified-navigation__child').forEach(function (child) {
         const isTooltipOpen = isStageActive && child.dataset.tooltipKey === activeTooltipKey;
-        const bubble = child.querySelector('.unified-navigation__tooltip');
 
         child.classList.toggle('is-tooltip-open', isTooltipOpen);
         child.setAttribute('aria-expanded', String(isTooltipOpen));
         child.setAttribute('aria-pressed', String(isTooltipOpen));
-        if (bubble) {
-          bubble.hidden = !isTooltipOpen;
-          bubble.setAttribute('aria-hidden', String(!isTooltipOpen));
-        }
       });
     });
+
+    if (!activeTooltipKey || !activeTooltipTrigger) {
+      hideOverlayTooltip();
+      return;
+    }
+
+    overlayTooltip.className = 'unified-navigation__tooltip unified-navigation__tooltip--' + (activeTooltipTrigger.dataset.tooltipPlacement || 'right') + ' is-visible';
+    overlayTooltip.textContent = activeTooltipTrigger.dataset.tooltipText || '';
+    overlayTooltip.hidden = false;
+    overlayTooltip.setAttribute('aria-hidden', 'false');
+    positionOverlayTooltip();
   }
 
   function closeTooltip() {
@@ -259,6 +310,7 @@
     }
 
     activeTooltipKey = null;
+    activeTooltipTrigger = null;
     syncState();
   }
 
@@ -267,15 +319,19 @@
 
     if (activeStageKey !== nextValue) {
       activeTooltipKey = null;
+      activeTooltipTrigger = null;
     }
 
     activeStageKey = nextValue;
     syncState();
   }
 
-  function toggleTooltip(stageKey, childLabel) {
+  function toggleTooltip(trigger, stageKey, childLabel) {
     const tooltipKey = stageKey + ':' + childLabel;
-    activeTooltipKey = activeTooltipKey === tooltipKey ? null : tooltipKey;
+    const isSameTooltip = activeTooltipKey === tooltipKey;
+
+    activeTooltipKey = isSameTooltip ? null : tooltipKey;
+    activeTooltipTrigger = isSameTooltip ? null : trigger;
     syncState();
   }
 
@@ -284,26 +340,19 @@
     const vectors = getClusterVectors(stage);
     const vector = vectors[index] || { x: 0, y: 0 };
     const placement = getTooltipPlacement(vector);
-    const tooltip = document.createElement('span');
 
     child.className = 'unified-navigation__child';
     child.type = 'button';
     child.textContent = label;
     child.dataset.tooltipKey = stage.key + ':' + label;
     child.dataset.tooltipPlacement = placement;
+    child.dataset.tooltipText = TOOLTIP_COPY[stage.key][label];
     child.style.setProperty('--child-x', vector.x + 'px');
     child.style.setProperty('--child-y', vector.y + 'px');
     child.style.transitionDelay = index * 70 + 'ms';
     child.setAttribute('aria-expanded', 'false');
     child.setAttribute('aria-pressed', 'false');
     child.setAttribute('aria-label', label + '. ' + TOOLTIP_COPY[stage.key][label]);
-
-    tooltip.className = 'unified-navigation__tooltip unified-navigation__tooltip--' + placement;
-    tooltip.textContent = TOOLTIP_COPY[stage.key][label];
-    tooltip.hidden = true;
-    tooltip.setAttribute('aria-hidden', 'true');
-
-    child.appendChild(tooltip);
 
     child.addEventListener('pointerdown', function () {
       child.classList.add('is-pressed');
@@ -320,7 +369,7 @@
       if (activeStageKey !== stage.key) {
         return;
       }
-      toggleTooltip(stage.key, label);
+      toggleTooltip(child, stage.key, label);
     });
 
     return child;
@@ -391,6 +440,10 @@
       nodesLayer.appendChild(createStage(stage));
     });
 
+    if (previousTooltipKey) {
+      activeTooltipTrigger = nodesLayer.querySelector('[data-tooltip-key="' + previousTooltipKey + '"]');
+    }
+
     renderEdges();
 
     activeStageKey = previousStageKey;
@@ -406,7 +459,10 @@
     closeTooltip();
   });
 
-  window.addEventListener('resize', render);
+  window.addEventListener('resize', function () {
+    render();
+    positionOverlayTooltip();
+  });
 
   render();
 })();
