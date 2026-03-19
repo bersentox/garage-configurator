@@ -149,9 +149,11 @@
 
     trigger.addEventListener('click', function () {
       const isOpen = trigger.getAttribute('aria-expanded') === 'true';
-      trigger.setAttribute('aria-expanded', String(!isOpen));
-      item.classList.toggle('is-open', !isOpen);
-      panel.hidden = isOpen;
+      const nextOpenState = !isOpen;
+
+      trigger.setAttribute('aria-expanded', String(nextOpenState));
+      item.classList.toggle('is-open', nextOpenState);
+      panel.hidden = !nextOpenState;
     });
 
     item.appendChild(heading);
