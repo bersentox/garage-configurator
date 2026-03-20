@@ -175,6 +175,7 @@
 
 
   const TOOLTIP_CORNERS = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+  const MANUAL_TOOLTIP_RADIUS = 16;
 
   function normalizeChildConfig(child) {
     if (typeof child === 'string') {
@@ -202,7 +203,7 @@
   }
 
   function getManualTooltipCornerOffset(corner, tooltipWidth, tooltipHeight) {
-    const tooltipRadius = Math.min(16, tooltipWidth / 2, tooltipHeight / 2);
+    const tooltipRadius = Math.min(MANUAL_TOOLTIP_RADIUS, tooltipWidth / 2, tooltipHeight / 2);
     const cornerInset = tooltipRadius * (1 - Math.SQRT1_2);
 
     if (corner === 'top-right') {
@@ -251,10 +252,17 @@
   let activeTooltipKey = null;
   let activeTooltipTrigger = null;
   const overlayTooltip = document.createElement('div');
+  const overlayTooltipContent = document.createElement('span');
+  const overlayTooltipTail = document.createElement('span');
 
   overlayTooltip.className = 'unified-navigation__tooltip';
   overlayTooltip.hidden = true;
   overlayTooltip.setAttribute('aria-hidden', 'true');
+  overlayTooltipContent.className = 'unified-navigation__tooltip-content';
+  overlayTooltipTail.className = 'unified-navigation__tooltip-tail';
+  overlayTooltipTail.setAttribute('aria-hidden', 'true');
+  overlayTooltip.appendChild(overlayTooltipContent);
+  overlayTooltip.appendChild(overlayTooltipTail);
   tooltipLayer.appendChild(overlayTooltip);
 
   function getViewport() {
@@ -325,7 +333,7 @@ function renderEdges() {
     overlayTooltip.hidden = true;
     overlayTooltip.setAttribute('aria-hidden', 'true');
     overlayTooltip.className = 'unified-navigation__tooltip';
-    overlayTooltip.textContent = '';
+    overlayTooltipContent.textContent = '';
     overlayTooltip.style.left = '';
     overlayTooltip.style.top = '';
     overlayTooltip.style.removeProperty('--tooltip-tail-offset');
@@ -529,7 +537,7 @@ function renderEdges() {
     }
 
     overlayTooltip.className = 'unified-navigation__tooltip';
-    overlayTooltip.textContent = activeTooltipTrigger.dataset.tooltipText || '';
+    overlayTooltipContent.textContent = activeTooltipTrigger.dataset.tooltipText || '';
     overlayTooltip.hidden = false;
     overlayTooltip.setAttribute('aria-hidden', 'false');
     positionOverlayTooltip();
