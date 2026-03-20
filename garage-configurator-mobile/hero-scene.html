@@ -1,33 +1,30 @@
 <section class="gc-m-hero" id="heroStep">
   <div class="gc-m-hero__panel">
     <div class="gc-m-hero__eyebrow">MSK-GARAGE · mobile shell</div>
-    <h1 class="gc-m-hero__title">Конфигуратор гаража для iPhone-класса экранов</h1>
-    <p class="gc-m-hero__lead">Отдельная mobile-first сборка: быстрый выбор сценария, компактный viewer, прозрачная pricing-логика и sticky CTA без desktop-артефактов.</p>
+    <h1 class="gc-m-hero__title">Настоящий продуктовый конфигуратор гаража для iPhone-класса экранов</h1>
+    <p class="gc-m-hero__lead">Mobile-first оболочка сохранена, но opening hero снова использует реальную layered scene и реальные продуктовые ассеты из общего корня репозитория.</p>
     <div class="gc-m-hero__chips">
       <span class="gc-m-hero__chip">Single-column flow</span>
       <span class="gc-m-hero__chip">Tilda-safe scope</span>
-      <span class="gc-m-hero__chip">jsDelivr-ready</span>
+      <span class="gc-m-hero__chip">Real shared assets</span>
     </div>
   </div>
 
   <div class="gc-m-hero__scene" id="garageScene">
-    <div class="gc-m-hero__backdrop"></div>
-    <div class="gc-m-hero__garage">
-      <div class="gc-m-hero__roof"></div>
-      <div class="gc-m-hero__body"></div>
+    <img class="gc-m-hero__layer gc-m-hero__layer--background" data-scene-layer="background" alt="" />
+    <div class="gc-m-hero__gate-frame">
+      <img class="gc-m-hero__layer gc-m-hero__layer--interior" data-scene-layer="interior" alt="" />
       <div class="gc-m-hero__gate-mask">
-        <div class="gc-m-hero__gate-content">
-          <div class="gc-m-hero__gate"></div>
-          <p class="gc-m-hero__gate-text">Откройте сцену и выберите сценарий гаража</p>
-        </div>
+        <img class="gc-m-hero__layer gc-m-hero__layer--gate" data-scene-layer="gate" alt="" />
       </div>
-      <div class="gc-m-hero__apron"></div>
     </div>
+    <img class="gc-m-hero__layer gc-m-hero__layer--front" data-scene-layer="front" alt="" />
+    <img class="gc-m-hero__layer gc-m-hero__layer--logo" data-scene-layer="logo11" alt="MSK Garage" />
 
     <div class="gc-m-hero__overlay">
-      <div class="gc-m-hero__status">Премиальная mobile-композиция · без desktop squeeze</div>
+      <div class="gc-m-hero__status">Реальная layered scene · мобильная композиция без desktop squeeze</div>
       <div class="gc-m-hero__chooser">
-        <button class="gc-m-hero__choice" type="button" data-width="6">
+        <button class="gc-m-hero__choice is-selected" type="button" data-width="6">
           <strong>1 машина</strong>
           <span>Ширина 6 м · 1 ворота</span>
         </button>
