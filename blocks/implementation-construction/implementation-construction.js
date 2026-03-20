@@ -1,5 +1,88 @@
 (function () {
-  const root = document.querySelector('.implementation-construction');
+  const APP_ID = 'implementation-construction-app';
+  const MOUNT_FLAG = 'implementationConstructionMounted';
+  const BASE_URL =
+    (window.GARAGE_CONFIGURATOR_EMBED_BASE_URL || '')
+      .trim()
+      .replace(/\/+$/, '');
+  const JSON_PATH = BASE_URL
+    ? `${BASE_URL}/site-body-content/implementation-construction.content.json`
+    : '../site-body-content/implementation-construction.content.json';
+  const TEMPLATE = `
+    <section class="implementation-construction" aria-labelledby="implementation-construction-title">
+      <div class="implementation-construction__inner">
+        <header class="implementation-construction__header">
+          <h2 id="implementation-construction-title" class="implementation-construction__title">
+            Вы инвестируете не в гараж — а в управляемый результат
+          </h2>
+          <p class="implementation-construction__subtitle">
+            Процесс под контролем. Конструкция просчитана. Результат предсказуем.
+          </p>
+        </header>
+        <div
+          class="implementation-construction__layout"
+          role="group"
+          aria-label="Системы контроля проекта и конструкции"
+        >
+          <section
+            class="implementation-construction__column implementation-construction__column--process"
+            aria-labelledby="implementation-construction-column-process-title"
+          >
+            <div class="implementation-construction__column-head">
+              <h3
+                id="implementation-construction-column-process-title"
+                class="implementation-construction__column-title"
+              >
+                Реализация
+              </h3>
+            </div>
+            <div
+              class="implementation-construction__surface implementation-construction__surface--process"
+              data-implementation-construction-surface="process"
+              data-implementation-construction-accordion
+            ></div>
+          </section>
+          <section
+            class="implementation-construction__column implementation-construction__column--construction"
+            aria-labelledby="implementation-construction-column-construction-title"
+          >
+            <div class="implementation-construction__column-head">
+              <h3
+                id="implementation-construction-column-construction-title"
+                class="implementation-construction__column-title"
+              >
+                Конструкция
+              </h3>
+            </div>
+            <div
+              class="implementation-construction__surface implementation-construction__surface--construction"
+              data-implementation-construction-surface="construction"
+              data-implementation-construction-accordion
+            ></div>
+          </section>
+        </div>
+        <p class="implementation-construction__footer" data-implementation-construction-footer></p>
+      </div>
+    </section>
+  `;
+
+  const appRoot = document.getElementById(APP_ID);
+
+  if (!appRoot) {
+    return;
+  }
+
+  if (!appRoot.querySelector('.implementation-construction')) {
+    appRoot.innerHTML = TEMPLATE;
+  }
+
+  if (appRoot.dataset[MOUNT_FLAG] === 'true') {
+    return;
+  }
+
+  appRoot.dataset[MOUNT_FLAG] = 'true';
+
+  const root = appRoot.querySelector('.implementation-construction');
 
   if (!root) {
     return;
@@ -8,8 +91,6 @@
   const processSurface = root.querySelector('[data-implementation-construction-surface="process"]');
   const constructionSurface = root.querySelector('[data-implementation-construction-surface="construction"]');
   const footerNode = root.querySelector('[data-implementation-construction-footer]');
-
-  const JSON_PATH = '../site-body-content/implementation-construction.content.json';
 
   function normalizeSectionKey(value) {
     return String(value || '')

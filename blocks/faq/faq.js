@@ -1,5 +1,47 @@
 (function () {
-  const root = document.querySelector('.faq');
+  const APP_ID = 'faq-app';
+  const MOUNT_FLAG = 'faqMounted';
+  const BASE_URL =
+    (window.GARAGE_CONFIGURATOR_EMBED_BASE_URL || '')
+      .trim()
+      .replace(/\/+$/, '');
+  const JSON_PATH = BASE_URL
+    ? `${BASE_URL}/site-body-content/faq.content.json`
+    : '../site-body-content/faq.content.json';
+  const TEMPLATE = `
+    <section class="faq" aria-labelledby="faq-title">
+      <div class="faq__inner">
+        <header class="faq__header">
+          <h2 id="faq-title" class="faq__title"></h2>
+          <p class="faq__subtitle"></p>
+        </header>
+        <div class="faq__layout">
+          <div class="faq__nav" role="tablist" aria-label="Частые вопросы"></div>
+          <div class="faq__detail" role="tabpanel" aria-live="polite">
+            <h3 class="faq__detail-title"></h3>
+            <div class="faq__detail-body"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+  const appRoot = document.getElementById(APP_ID);
+
+  if (!appRoot) {
+    return;
+  }
+
+  if (!appRoot.querySelector('.faq')) {
+    appRoot.innerHTML = TEMPLATE;
+  }
+
+  if (appRoot.dataset[MOUNT_FLAG] === 'true') {
+    return;
+  }
+
+  appRoot.dataset[MOUNT_FLAG] = 'true';
+
+  const root = appRoot.querySelector('.faq');
 
   if (!root) {
     return;
@@ -11,7 +53,6 @@
   const detailNode = root.querySelector('.faq__detail');
   const detailTitleNode = root.querySelector('.faq__detail-title');
   const detailBodyNode = root.querySelector('.faq__detail-body');
-  const JSON_PATH = '../site-body-content/faq.content.json';
   const DETAIL_LABEL_TEXT = 'Ответ на вопрос';
 
   let navButtons = [];
