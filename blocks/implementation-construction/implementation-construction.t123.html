@@ -380,6 +380,40 @@
   }
 }
 
+
+.implementation-construction,
+.implementation-construction *,
+.implementation-construction *::before,
+.implementation-construction *::after {
+  box-sizing: border-box;
+}
+
+.implementation-construction button {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+.implementation-construction__copy {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.implementation-construction__topline {
+  min-width: 0;
+}
+
+.implementation-construction__item-title {
+  min-width: 0;
+}
+
+.implementation-construction__chevron {
+  flex-shrink: 0;
+}
+
   </style>
 </head>
 <body>
