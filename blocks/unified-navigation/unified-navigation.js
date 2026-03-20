@@ -175,7 +175,7 @@
 
 
   const TOOLTIP_CORNERS = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
-  const MANUAL_TOOLTIP_RADIUS = 16;
+  const TOOLTIP_PADDING = 8;
 
   function normalizeChildConfig(child) {
     if (typeof child === 'string') {
@@ -202,23 +202,20 @@
     return normalized;
   }
 
-  function getManualTooltipCornerOffset(corner, tooltipWidth, tooltipHeight) {
-    const tooltipRadius = Math.min(MANUAL_TOOLTIP_RADIUS, tooltipWidth / 2, tooltipHeight / 2);
-    const cornerInset = tooltipRadius * (1 - Math.SQRT1_2);
-
+  function getManualTooltipAnchorOffset(corner, tooltipWidth, tooltipHeight) {
     if (corner === 'top-right') {
-      return { x: tooltipWidth - cornerInset, y: cornerInset };
+      return { x: tooltipWidth, y: 0 };
     }
 
     if (corner === 'bottom-left') {
-      return { x: cornerInset, y: tooltipHeight - cornerInset };
+      return { x: 0, y: tooltipHeight };
     }
 
     if (corner === 'bottom-right') {
-      return { x: tooltipWidth - cornerInset, y: tooltipHeight - cornerInset };
+      return { x: tooltipWidth, y: tooltipHeight };
     }
 
-    return { x: cornerInset, y: cornerInset };
+    return { x: 0, y: 0 };
   }
 
   function getManualTooltipBounds(trigger, tooltipWidth, tooltipHeight) {
@@ -240,12 +237,16 @@
     const tooltipDistance = Number(trigger.dataset.tooltipDistance) || 0;
     const anchorX = childCenterX + directionX * (childRadius + tooltipDistance);
     const anchorY = childCenterY + directionY * (childRadius + tooltipDistance);
-    const cornerOffset = getManualTooltipCornerOffset(tooltipCorner, tooltipWidth, tooltipHeight);
+    const cornerOffset = getManualTooltipAnchorOffset(tooltipCorner, tooltipWidth, tooltipHeight);
+
+    const left = anchorX - cornerOffset.x;
+    const top = anchorY - cornerOffset.y;
 
     return {
-      corner: tooltipCorner,
-      left: anchorX - cornerOffset.x,
-      top: anchorY - cornerOffset.y
+      left: left,
+      top: top,
+      right: left + tooltipWidth,
+      bottom: top + tooltipHeight
     };
   }
   let activeStageKey = null;
@@ -336,7 +337,9 @@ function renderEdges() {
     overlayTooltipContent.textContent = '';
     overlayTooltip.style.left = '';
     overlayTooltip.style.top = '';
-    overlayTooltip.style.removeProperty('--tooltip-tail-offset');
+    overlayTooltip.style.removeProperty('--tooltip-tail-x');
+    overlayTooltip.style.removeProperty('--tooltip-tail-y');
+    delete overlayTooltip.dataset.tailSide;
   }
 
   function getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, placement, gap) {
@@ -441,16 +444,62 @@ function renderEdges() {
     return leftHalf ? ['right', 'bottom-right', 'top-right', 'bottom', 'top', 'left', 'bottom-left', 'top-left'] : ['left', 'bottom-left', 'top-left', 'bottom', 'top', 'right', 'bottom-right', 'top-right'];
   }
 
-  function getTailOffset(placement, bounds, anchorX, anchorY) {
-    const tailPadding = 18;
+  function getAutoTooltipBounds(anchorX, anchorY, tooltipWidth, tooltipHeight, layerRect, gap) {
+    const placements = getPreferredPlacements(anchorX, anchorY, layerRect);
+    let selectedPlacement = placements[0];
+    let selectedCoords = getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, selectedPlacement, gap);
+    let bestOverflow = Number.POSITIVE_INFINITY;
 
-    if (placement === 'left' || placement === 'right') {
-      const offset = anchorY - bounds.top;
-      return Math.max(tailPadding, Math.min(bounds.bottom - bounds.top - tailPadding, offset)) + 'px';
-    }
+    placements.forEach(function (placement) {
+      const coords = getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, placement, gap);
+      const bounds = getPlacementBounds(coords, tooltipWidth, tooltipHeight, placement);
+      const overflow =
+        Math.max(0, TOOLTIP_PADDING - bounds.left) +
+        Math.max(0, TOOLTIP_PADDING - bounds.top) +
+        Math.max(0, bounds.right - (layerRect.width - TOOLTIP_PADDING)) +
+        Math.max(0, bounds.bottom - (layerRect.height - TOOLTIP_PADDING));
 
-    const offset = anchorX - bounds.left;
-    return Math.max(tailPadding, Math.min(bounds.right - bounds.left - tailPadding, offset)) + 'px';
+      if (overflow < bestOverflow) {
+        bestOverflow = overflow;
+        selectedPlacement = placement;
+        selectedCoords = coords;
+      }
+    });
+
+    const bounds = getPlacementBounds(selectedCoords, tooltipWidth, tooltipHeight, selectedPlacement);
+    const shiftX = bounds.left < TOOLTIP_PADDING ? TOOLTIP_PADDING - bounds.left : bounds.right > layerRect.width - TOOLTIP_PADDING ? layerRect.width - TOOLTIP_PADDING - bounds.right : 0;
+    const shiftY = bounds.top < TOOLTIP_PADDING ? TOOLTIP_PADDING - bounds.top : bounds.bottom > layerRect.height - TOOLTIP_PADDING ? layerRect.height - TOOLTIP_PADDING - bounds.bottom : 0;
+
+    return {
+      left: bounds.left + shiftX,
+      top: bounds.top + shiftY,
+      right: bounds.right + shiftX,
+      bottom: bounds.bottom + shiftY,
+      placement: selectedPlacement
+    };
+  }
+
+  function getTooltipTailGeometry(bounds, anchorX, anchorY) {
+    const centerX = (bounds.left + bounds.right) / 2;
+    const centerY = (bounds.top + bounds.bottom) / 2;
+    const deltaX = anchorX - centerX;
+    const deltaY = anchorY - centerY;
+    const halfWidth = (bounds.right - bounds.left) / 2;
+    const halfHeight = (bounds.bottom - bounds.top) / 2;
+    const safeDeltaX = Math.abs(deltaX) < 0.001 ? (deltaX < 0 ? -0.001 : 0.001) : deltaX;
+    const safeDeltaY = Math.abs(deltaY) < 0.001 ? (deltaY < 0 ? -0.001 : 0.001) : deltaY;
+    const scaleX = halfWidth / Math.abs(safeDeltaX);
+    const scaleY = halfHeight / Math.abs(safeDeltaY);
+    const intersectionScale = Math.min(scaleX, scaleY);
+    const edgeX = centerX + deltaX * intersectionScale;
+    const edgeY = centerY + deltaY * intersectionScale;
+    const side = scaleX < scaleY ? (deltaX < 0 ? 'left' : 'right') : (deltaY < 0 ? 'top' : 'bottom');
+
+    return {
+      side: side,
+      x: edgeX - bounds.left,
+      y: edgeY - bounds.top
+    };
   }
 
   function positionOverlayTooltip() {
@@ -466,52 +515,15 @@ function renderEdges() {
     const tooltipWidth = overlayTooltip.offsetWidth;
     const tooltipHeight = overlayTooltip.offsetHeight;
     const manualBounds = getManualTooltipBounds(activeTooltipTrigger, tooltipWidth, tooltipHeight);
+    const tooltipBounds = manualBounds || getAutoTooltipBounds(anchorX, anchorY, tooltipWidth, tooltipHeight, sceneRect, gap);
+    const tail = getTooltipTailGeometry(tooltipBounds, anchorX, anchorY);
 
-    if (manualBounds) {
-      overlayTooltip.className = 'unified-navigation__tooltip unified-navigation__tooltip--manual unified-navigation__tooltip--corner-' + manualBounds.corner + ' is-visible';
-      overlayTooltip.style.left = manualBounds.left + 'px';
-      overlayTooltip.style.top = manualBounds.top + 'px';
-      overlayTooltip.style.removeProperty('--tooltip-tail-offset');
-      return;
-    }
-
-    const padding = 8;
-    const placements = getPreferredPlacements(anchorX, anchorY, sceneRect);
-    let selectedPlacement = placements[0];
-    let selectedCoords = getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, selectedPlacement, gap);
-    let bestOverflow = Number.POSITIVE_INFINITY;
-
-    placements.forEach(function (placement) {
-      const coords = getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, placement, gap);
-      const bounds = getPlacementBounds(coords, tooltipWidth, tooltipHeight, placement);
-      const overflow =
-        Math.max(0, padding - bounds.left) +
-        Math.max(0, padding - bounds.top) +
-        Math.max(0, bounds.right - (sceneRect.width - padding)) +
-        Math.max(0, bounds.bottom - (sceneRect.height - padding));
-
-      if (overflow < bestOverflow) {
-        bestOverflow = overflow;
-        selectedPlacement = placement;
-        selectedCoords = coords;
-      }
-    });
-
-    const bounds = getPlacementBounds(selectedCoords, tooltipWidth, tooltipHeight, selectedPlacement);
-    const shiftX = bounds.left < padding ? padding - bounds.left : bounds.right > sceneRect.width - padding ? sceneRect.width - padding - bounds.right : 0;
-    const shiftY = bounds.top < padding ? padding - bounds.top : bounds.bottom > sceneRect.height - padding ? sceneRect.height - padding - bounds.bottom : 0;
-
-    const shiftedBounds = {
-      left: bounds.left + shiftX,
-      top: bounds.top + shiftY,
-      right: bounds.right + shiftX,
-      bottom: bounds.bottom + shiftY
-    };
-
-    overlayTooltip.className = 'unified-navigation__tooltip unified-navigation__tooltip--' + selectedPlacement + ' is-visible';
-    overlayTooltip.style.left = selectedCoords.left + shiftX + 'px';
-    overlayTooltip.style.top = selectedCoords.top + shiftY + 'px';
-    overlayTooltip.style.setProperty('--tooltip-tail-offset', getTailOffset(selectedPlacement, shiftedBounds, anchorX, anchorY));
+    overlayTooltip.className = 'unified-navigation__tooltip is-visible';
+    overlayTooltip.style.left = tooltipBounds.left + 'px';
+    overlayTooltip.style.top = tooltipBounds.top + 'px';
+    overlayTooltip.style.setProperty('--tooltip-tail-x', tail.x + 'px');
+    overlayTooltip.style.setProperty('--tooltip-tail-y', tail.y + 'px');
+    overlayTooltip.dataset.tailSide = tail.side;
   }
 
   function syncState() {
