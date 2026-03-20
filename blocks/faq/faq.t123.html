@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ T123 Embed</title>
+  <style>
+.faq {
+  --faq-page-bg: #f4f7fb;
+  --faq-surface-bg: #ffffff;
+  --faq-detail-bg: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  --faq-text: #0f172a;
+  --faq-text-strong: #0b1220;
+  --faq-text-muted: rgba(15, 23, 42, 0.68);
+  --faq-text-soft: rgba(15, 23, 42, 0.5);
+  --faq-border: rgba(15, 23, 42, 0.06);
+  --faq-border-strong: rgba(30, 64, 175, 0.16);
+  --faq-hover-bg: rgba(15, 23, 42, 0.02);
+  --faq-active-bg: linear-gradient(180deg, rgba(30, 64, 175, 0.09) 0%, rgba(30, 64, 175, 0.05) 100%);
+  --faq-active-text: #1e3a8a;
+  --faq-panel-shadow:
+    0 18px 42px rgba(15, 23, 42, 0.05),
+    0 3px 10px rgba(15, 23, 42, 0.02);
+  --faq-detail-shadow:
+    0 22px 46px rgba(15, 23, 42, 0.065),
+    0 4px 14px rgba(15, 23, 42, 0.03);
+  --faq-row-shadow:
+    0 8px 18px rgba(15, 23, 42, 0.035),
+    0 1px 3px rgba(15, 23, 42, 0.03);
+  --faq-row-shadow-active:
+    0 14px 28px rgba(15, 23, 42, 0.055),
+    0 2px 8px rgba(30, 64, 175, 0.06);
+  --faq-radius-panel: 24px;
+  --faq-radius-row: 16px;
+  --faq-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  background: var(--faq-page-bg);
+  color: var(--faq-text);
+  padding: 82px 0 90px;
+}
+
+.faq__inner {
+  width: min(1160px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.faq__header {
+  max-width: 760px;
+  margin: 0 auto 30px;
+  text-align: center;
+}
+
+.faq__title {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  line-height: 1.02;
+  font-weight: 640;
+  letter-spacing: -0.05em;
+  color: var(--faq-text-strong);
+  text-wrap: balance;
+}
+
+.faq__subtitle {
+  margin: 14px auto 0;
+  max-width: 720px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  font-weight: 520;
+  letter-spacing: -0.012em;
+  color: var(--faq-text-muted);
+  text-wrap: balance;
+}
+
+.faq__layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.faq__nav,
+.faq__detail {
+  border-radius: var(--faq-radius-panel);
+}
+
+.faq__nav {
+  padding: 6px;
+  display: grid;
+  gap: 12px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.faq__nav-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 14px;
+  padding: 17px 18px;
+  border: 1px solid var(--faq-border);
+  border-radius: var(--faq-radius-row);
+  background: var(--faq-surface-bg);
+  box-shadow: var(--faq-row-shadow);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 160ms var(--faq-ease),
+    border-color 160ms var(--faq-ease),
+    color 160ms var(--faq-ease),
+    transform 160ms var(--faq-ease),
+    box-shadow 160ms var(--faq-ease);
+}
+
+.faq__nav-item:hover {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.09);
+  transform: translateY(-1px);
+}
+
+.faq__nav-item:focus-visible {
+  outline: 3px solid rgba(30, 64, 175, 0.16);
+  outline-offset: 2px;
+}
+
+.faq__nav-item.is-active {
+  background: var(--faq-active-bg);
+  border-color: var(--faq-border-strong);
+  box-shadow: var(--faq-row-shadow-active);
+}
+
+.faq__nav-number {
+  flex: 0 0 auto;
+  align-self: start;
+  padding-top: 3px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  line-height: 1;
+  font-weight: 720;
+  letter-spacing: 0.18em;
+  color: rgba(30, 64, 175, 0.78);
+  font-variant-numeric: tabular-nums;
+}
+
+.faq__nav-text {
+  min-width: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.99rem;
+  line-height: 1.48;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--faq-text-strong);
+  text-wrap: pretty;
+}
+
+.faq__nav-indicator {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.05);
+  position: relative;
+  justify-self: end;
+  transition:
+    background-color 160ms var(--faq-ease),
+    transform 160ms var(--faq-ease),
+    box-shadow 160ms var(--faq-ease);
+}
+
+.faq__nav-indicator::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: inherit;
+  background: rgba(15, 23, 42, 0.22);
+  transition: background-color 160ms var(--faq-ease), transform 160ms var(--faq-ease);
+}
+
+.faq__nav-item.is-active .faq__nav-text,
+.faq__nav-item.is-active .faq__nav-number {
+  color: var(--faq-active-text);
+}
+
+.faq__nav-item.is-active .faq__nav-indicator {
+  background: rgba(30, 64, 175, 0.13);
+  box-shadow: inset 0 0 0 1px rgba(30, 64, 175, 0.08);
+  transform: scale(1.02);
+}
+
+.faq__nav-item.is-active .faq__nav-indicator::before {
+  background: var(--faq-active-text);
+  transform: scale(1.12);
+}
+
+.faq__detail {
+  position: relative;
+  padding: 34px 36px;
+  background: var(--faq-detail-bg);
+  border: 1px solid rgba(15, 23, 42, 0.055);
+  box-shadow: var(--faq-detail-shadow);
+}
+
+.faq__detail::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.faq__detail-label {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 14px;
+  padding: 0 10px;
+  min-height: 26px;
+  border-radius: 999px;
+  background: rgba(30, 58, 138, 0.08);
+  border: 1px solid rgba(30, 58, 138, 0.1);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.75rem;
+  line-height: 1;
+  font-weight: 620;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(30, 58, 138, 0.8);
+}
+
+.faq__detail-title {
+  margin: 0;
+  max-width: 28ch;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  line-height: 1.28;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  color: var(--faq-text-strong);
+  text-wrap: pretty;
+}
+
+.faq__detail-body {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+  max-width: 66ch;
+}
+
+.faq__detail-body p {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.02rem;
+  line-height: 1.82;
+  font-weight: 460;
+  letter-spacing: -0.006em;
+  color: var(--faq-text-muted);
+}
+
+.faq__detail-body p + p {
+  color: var(--faq-text);
+}
+
+.faq__detail-body:empty::after {
+  content: '';
+  display: block;
+  min-height: 1px;
+}
+
+@media (max-width: 900px) {
+  .faq {
+    padding: 72px 0 80px;
+  }
+
+  .faq__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .faq__nav {
+    padding: 0;
+  }
+
+  .faq__detail {
+    padding: 30px 26px;
+  }
+}
+
+@media (max-width: 640px) {
+  .faq__inner {
+    width: min(100% - 32px, 1160px);
+  }
+
+  .faq__header {
+    margin-bottom: 24px;
+  }
+
+  .faq__subtitle {
+    font-size: 1rem;
+  }
+
+  .faq__nav {
+    gap: 10px;
+  }
+
+  .faq__nav-item {
+    grid-template-columns: 28px minmax(0, 1fr) 16px;
+    gap: 12px;
+    padding: 14px 15px;
+  }
+
+  .faq__nav-text {
+    font-size: 0.95rem;
+  }
+
+  .faq__detail {
+    padding: 24px 20px;
+  }
+
+  .faq__detail-label {
+    margin-bottom: 12px;
+  }
+
+  .faq__detail-title {
+    max-width: none;
+    font-size: 1.18rem;
+  }
+
+  .faq__detail-body {
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .faq__detail-body p {
+    font-size: 0.98rem;
+    line-height: 1.74;
+  }
+}
+
+  </style>
+</head>
+<body>
+<section class="faq" aria-labelledby="faq-title">
+    <div class="faq__inner">
+      <header class="faq__header">
+        <h2 id="faq-title" class="faq__title"></h2>
+        <p class="faq__subtitle"></p>
+      </header>
+
+      <div class="faq__layout">
+        <div class="faq__nav" role="tablist" aria-label="Частые вопросы"></div>
+
+        <div class="faq__detail" role="tabpanel" aria-live="polite">
+          <h3 class="faq__detail-title"></h3>
+          <div class="faq__detail-body"></div>
+        </div>
+      </div>
+    </div>
+  
+  <script type="application/json" class="faq__data">
+{
+  "title": "Ответы на ключевые вопросы перед запуском проекта",
+  "subtitle": "Собрали то, что обычно оставляет неясность перед решением — и закрыли это заранее.",
+  "items": [
+    {
+      "number": "01",
+      "question": "Как формируется итоговая стоимость?",
+      "answer": [
+        "Итоговая стоимость собирается из подтверждённых параметров проекта: размеров, конструктивной схемы, материалов, основания, комплектации и условий монтажа.",
+        "Сначала фиксируются вводные после контакта и замера, затем они переводятся в техническое задание и коммерческое предложение. Поэтому цена строится не на усреднённой оценке, а на реальной конфигурации объекта.",
+        "До старта работ вы понимаете, из чего состоит бюджет, какие решения в него входят и какие этапы зафиксированы в договоре."
+      ]
+    },
+    {
+      "number": "02",
+      "question": "Могут ли появиться дополнительные платежи в процессе?",
+      "answer": [
+        "Нет, если параметры проекта подтверждены до запуска работ и зафиксированы в договоре.",
+        "После замера и обсуждения собирается полное техническое задание, на основании которого рассчитывается состав решения. Именно это закрывает риск случайных доплат уже в процессе.",
+        "Если вы решаете менять конфигурацию после согласования, это оформляется отдельно как новое решение. Поэтому вы всегда понимаете, за что платите и на каком этапе."
+      ]
+    },
+    {
+      "number": "03",
+      "question": "Фиксируется ли цена в договоре?",
+      "answer": [
+        "Да. После согласования состава работ, сроков и комплектации стоимость фиксируется в договоре.",
+        "Это означает, что проект переводится из предварительного обсуждения в управляемую систему обязательств, где зафиксированы объём, стоимость и порядок исполнения.",
+        "Такой подход защищает и клиента, и команду от разночтений по ходу реализации."
+      ]
+    },
+    {
+      "number": "04",
+      "question": "Сколько времени занимает строительство?",
+      "answer": [
+        "Срок зависит от размеров объекта, типа конструкции, основания, комплектации и условий площадки.",
+        "Мы не называем срок наугад: сначала замеряем участок, собираем задачу и только после этого даём реалистичный календарь по этапам — от подготовки до сдачи.",
+        "За счёт такой последовательности сроки не выглядят как обещание “на глаз”, а становятся частью согласованного маршрута проекта."
+      ]
+    },
+    {
+      "number": "05",
+      "question": "Что происходит после замера?",
+      "answer": [
+        "После замера все размеры, ограничения участка, подъезд и особенности площадки переходят в расчётный и проектный контур.",
+        "На этой базе формируется техническое задание, затем коммерческое предложение и логика следующего шага — проектирование или фиксация условий.",
+        "То есть замер не остаётся отдельным визитом, а сразу превращается в основу решения."
+      ]
+    },
+    {
+      "number": "06",
+      "question": "Кто отвечает за результат?",
+      "answer": [
+        "За проект отвечает команда, которая ведёт его как единую систему: от входных данных до сдачи объекта.",
+        "Ответственность не дробится между случайными исполнителями по этапам — именно поэтому маршрут проекта заранее собран и связан между собой.",
+        "Клиент понимает, кто ведёт процесс, на каком этапе находится проект и что подтверждено на текущий момент."
+      ]
+    },
+    {
+      "number": "07",
+      "question": "Что если в процессе обнаружатся ограничения участка?",
+      "answer": [
+        "Поэтому мы и начинаем с выезда, замера и фиксации ограничений ещё до проектных решений.",
+        "Если на площадке есть перепад высот, сложный подъезд, ограничения по основанию или инженерные вводные, они должны попасть в проект до старта работ, а не после.",
+        "Если новые обстоятельства действительно проявляются позже, они разбираются как отдельная зафиксированная вводная, а не как хаотичная проблема на монтаже."
+      ]
+    },
+    {
+      "number": "08",
+      "question": "Какие гарантии вы даёте после монтажа?",
+      "answer": [
+        "Гарантия распространяется на согласованный объём работ и конструктивные решения, которые были реализованы по проекту и договору.",
+        "Но сама надёжность начинается раньше гарантии: с расчёта, спецификации, контроля узлов и проверки геометрии на каждом переходе.",
+        "Именно поэтому итоговый результат опирается не только на обещание после монтажа, но и на предсказуемую систему качества до него."
+      ]
+    },
+    {
+      "number": "09",
+      "question": "Как понять, какой размер гаража мне нужен?",
+      "answer": [
+        "Размер определяется не только по габариту автомобиля, но и по сценарию использования: нужен ли запас под хранение, обслуживание, мастерскую или дополнительное оборудование.",
+        "Мы связываем ваш сценарий с реальными ограничениями участка и предлагаем конфигурацию, которая работает на практике, а не только “влезает” по внешнему размеру.",
+        "Так решение становится не абстрактным метражом, а понятной системой под конкретную задачу."
+      ]
+    }
+  ]
+}
+
+</script>
+</section>
+
+  <script>
+(function () {
+  const root = document.querySelector('.faq');
+
+  if (!root) {
+    return;
+  }
+
+  const titleNode = root.querySelector('.faq__title');
+  const subtitleNode = root.querySelector('.faq__subtitle');
+  const navNode = root.querySelector('.faq__nav');
+  const detailNode = root.querySelector('.faq__detail');
+  const detailTitleNode = root.querySelector('.faq__detail-title');
+  const detailBodyNode = root.querySelector('.faq__detail-body');
+  const dataNode = root.querySelector('.faq__data');
+  const DETAIL_LABEL_TEXT = 'Ответ на вопрос';
+
+  let navButtons = [];
+  let items = [];
+  let activeIndex = 0;
+
+  function ensureDetailLabel() {
+    let labelNode = detailNode.querySelector('.faq__detail-label');
+
+    if (!labelNode) {
+      labelNode = document.createElement('p');
+      labelNode.className = 'faq__detail-label';
+      detailNode.insertBefore(labelNode, detailTitleNode);
+    }
+
+    labelNode.textContent = DETAIL_LABEL_TEXT;
+  }
+
+  function setDetail(item) {
+    ensureDetailLabel();
+
+    if (!item) {
+      detailTitleNode.textContent = '';
+      detailBodyNode.innerHTML = '';
+      return;
+    }
+
+    detailTitleNode.textContent = item.question || '';
+    detailBodyNode.innerHTML = '';
+
+    const paragraphs = Array.isArray(item.answer) ? item.answer : [];
+
+    paragraphs.forEach((paragraph) => {
+      const node = document.createElement('p');
+      node.textContent = paragraph;
+      detailBodyNode.appendChild(node);
+    });
+  }
+
+  function setActive(index, shouldFocus) {
+    activeIndex = index;
+
+    navButtons.forEach((button, buttonIndex) => {
+      const isActive = buttonIndex === index;
+      button.classList.toggle('is-active', isActive);
+      button.setAttribute('aria-selected', String(isActive));
+      button.setAttribute('tabindex', isActive ? '0' : '-1');
+    });
+
+    const activeButton = navButtons[index];
+
+    if (activeButton) {
+      detailNode.setAttribute('aria-labelledby', activeButton.id);
+
+      if (shouldFocus) {
+        activeButton.focus();
+      }
+    }
+
+    setDetail(items[index]);
+  }
+
+  function moveActive(step) {
+    if (!navButtons.length) {
+      return;
+    }
+
+    const nextIndex = (activeIndex + step + navButtons.length) % navButtons.length;
+    setActive(nextIndex, true);
+  }
+
+  function createNavItem(item, index) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'faq__nav-item';
+    button.setAttribute('role', 'tab');
+    button.id = `faq-tab-${index}`;
+    button.setAttribute('aria-controls', 'faq-detail-panel');
+
+    const number = document.createElement('span');
+    number.className = 'faq__nav-number';
+    number.textContent = String(item.number || index + 1).padStart(2, '0');
+
+    const text = document.createElement('span');
+    text.className = 'faq__nav-text';
+    text.textContent = item.question || '';
+
+    const indicator = document.createElement('span');
+    indicator.className = 'faq__nav-indicator';
+    indicator.setAttribute('aria-hidden', 'true');
+
+    button.appendChild(number);
+    button.appendChild(text);
+    button.appendChild(indicator);
+
+    button.addEventListener('click', function () {
+      setActive(index);
+    });
+
+    button.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        moveActive(1);
+      }
+
+      if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+        event.preventDefault();
+        moveActive(-1);
+      }
+
+      if (event.key === 'Home') {
+        event.preventDefault();
+        setActive(0, true);
+      }
+
+      if (event.key === 'End') {
+        event.preventDefault();
+        setActive(navButtons.length - 1, true);
+      }
+    });
+
+    return button;
+  }
+
+  function render() {
+    navNode.innerHTML = '';
+    navButtons = items.map(createNavItem);
+    navButtons.forEach((button) => navNode.appendChild(button));
+
+    detailNode.id = 'faq-detail-panel';
+
+    if (items.length > 0) {
+      setActive(0);
+    } else {
+      setDetail(null);
+    }
+  }
+
+  function init() {
+    try {
+      if (!dataNode) {
+        throw new Error('Missing embedded FAQ data');
+      }
+
+      const data = JSON.parse(dataNode.textContent || '{}');
+      titleNode.textContent = data.title || '';
+      subtitleNode.textContent = data.subtitle || '';
+      items = Array.isArray(data.items) ? data.items : [];
+      render();
+    } catch (error) {
+      console.error('[faq] render failed', error);
+      titleNode.textContent = 'FAQ временно недоступен';
+      subtitleNode.textContent = 'Не удалось загрузить содержимое блока.';
+      items = [];
+      render();
+    }
+  }
+
+  init();
+})();
+
+  </script>
+</body>
+</html>
