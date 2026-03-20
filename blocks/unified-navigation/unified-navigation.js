@@ -118,12 +118,16 @@
       number: '03',
       title: 'Задание\nи КП',
       cluster: 'right3',
-      children: ['эскиз', {
+      children: [
+  'эскиз',
+  {
     label: 'подтверждение',
-    tooltipCorner: 'top-left',
-    tooltipOrbitAngle: 320,
-    tooltipDistance: 2
-  }, 'КП']
+    tooltipCorner: 'bottom-left',
+    tooltipOrbitAngle: 225,
+    tooltipDistance: 6
+  },
+  'КП'
+]
     },
     {
       key: 'design',
