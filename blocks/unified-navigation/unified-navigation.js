@@ -13,7 +13,7 @@
   const SCENE_LAYOUT = {
     desktop: {
       contact: { x: 14, y: 28 },
-      visit: { x: 39, y: 16 },
+      visit: { x: 30, y: 16 },
       brief: { x: 49, y: 26 },
       design: { x: 37, y: 43 },
       contract: { x: 61, y: 43 },
