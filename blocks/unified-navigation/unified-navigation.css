@@ -560,3 +560,7 @@
 .unified-navigation__tooltip--corner-bottom-right .unified-navigation__tooltip-content {
   border-bottom-right-radius: 0;
 }
+
+.unified-navigation__tooltip--manual .unified-navigation__tooltip-tail {
+  display: none;
+}
