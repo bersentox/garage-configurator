@@ -126,7 +126,12 @@
     tooltipOrbitAngle: 225,
     tooltipDistance: 6
   },
-  'КП'
+  {
+    label: 'КП',
+    tooltipCorner: 'bottom-left',
+    tooltipOrbitAngle: 225,
+    tooltipDistance: 6
+  }
 ]
     },
     {
