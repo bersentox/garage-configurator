@@ -21,7 +21,7 @@
         <div class="gc-m-kicker">Шаг 1</div>
         <h3 class="gc-m-section-title" id="lengthSectionTitle">Сценарий и длина</h3>
       </div>
-      <p class="gc-m-section-copy">Сначала выберите сценарий эксплуатации, затем при необходимости уточните длину вручную.</p>
+      <p class="gc-m-section-copy">Сначала выберите сценарий эксплуатации, затем уточните длину в рамках реальных продуктовых GLB-размеров.</p>
     </div>
     <div class="gc-m-stack" id="lengthCards">
       <button class="gc-m-option-card length-card" type="button" data-length="6">
@@ -53,8 +53,9 @@
     <div class="gc-m-surface gc-m-surface--soft">
       <label class="gc-m-field" for="lengthInput">
         <span class="gc-m-field-label">Своя длина, м</span>
-        <input id="lengthInput" class="gc-m-input" type="number" min="6" max="12" step="1" inputmode="numeric" />
+        <input id="lengthInput" class="gc-m-input" type="number" min="6" max="10" step="2" inputmode="numeric" />
       </label>
+      <p class="gc-m-field-hint" id="lengthHint"></p>
       <div class="gc-m-toggle-grid">
         <label class="gc-m-switch" for="shelvesToggle">
           <span>
@@ -98,7 +99,7 @@
         <div class="gc-m-kicker">Шаг 2</div>
         <h3 class="gc-m-section-title" id="viewerTitle">Просмотр модели</h3>
       </div>
-      <p class="gc-m-section-copy">Плавное mobile-centered превью без sticky desktop shell. Крутите модель одним пальцем, страница по-прежнему скроллится естественно.</p>
+      <p class="gc-m-section-copy">В мобильной оболочке сохранён облегчённый WebGL-режим, но viewer теперь подгружает реальные GLB-модели из общего каталога `models/**`.</p>
     </div>
     <div class="gc-m-viewer-frame">
       <div id="garage-3d-viewer" class="gc-m-viewer"></div>
@@ -146,7 +147,7 @@
         <label class="gc-m-color-row"><span>Кровля</span><input type="color" id="roofColor" /></label>
         <label class="gc-m-color-row"><span>Доборные элементы</span><input type="color" id="trimColor" /></label>
         <label class="gc-m-color-row"><span>Ворота</span><input type="color" id="gateColor" /></label>
-        <label class="gc-m-color-row"><span>Внутренние стены</span><input type="color" id="interiorColor" /></label>
+        <label class="gc-m-color-row"><span>Внутренние акценты</span><input type="color" id="interiorColor" /></label>
       </div>
     </div>
   </section>
