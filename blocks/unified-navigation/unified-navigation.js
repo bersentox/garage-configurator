@@ -123,13 +123,13 @@
   {
     label: 'подтверждение',
     tooltipCorner: 'bottom-left',
-    tooltipOrbitAngle: 225,
+    tooltipOrbitAngle: 45,
     tooltipDistance: 6
   },
   {
     label: 'КП',
     tooltipCorner: 'bottom-left',
-    tooltipOrbitAngle: 225,
+    tooltipOrbitAngle: 50,
     tooltipDistance: 6
   }
 ]
