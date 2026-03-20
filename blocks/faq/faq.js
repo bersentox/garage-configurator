@@ -1,38 +1,18 @@
 (function () {
-  const root = document.getElementById('faq-app');
+  const root = document.querySelector('.faq');
 
   if (!root) {
     return;
   }
 
-  const contentUrl = new URL('../site-body-content/faq.content.json', import.meta.url);
-
-  root.innerHTML = `
-    <section class="faq" aria-labelledby="faq-title">
-      <div class="faq__inner">
-        <header class="faq__header">
-          <h2 id="faq-title" class="faq__title"></h2>
-          <p class="faq__subtitle"></p>
-        </header>
-        <div class="faq__layout">
-          <div class="faq__nav" role="tablist" aria-label="Частые вопросы"></div>
-          <div class="faq__detail" role="tabpanel" aria-live="polite">
-            <h3 class="faq__detail-title"></h3>
-            <div class="faq__detail-body"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-  `;
-
-  const section = root.querySelector('.faq');
   const titleNode = root.querySelector('.faq__title');
   const subtitleNode = root.querySelector('.faq__subtitle');
   const navNode = root.querySelector('.faq__nav');
   const detailNode = root.querySelector('.faq__detail');
   const detailTitleNode = root.querySelector('.faq__detail-title');
   const detailBodyNode = root.querySelector('.faq__detail-body');
-  const detailLabelText = 'Ответ на вопрос';
+  const JSON_PATH = '../site-body-content/faq.content.json';
+  const DETAIL_LABEL_TEXT = 'Ответ на вопрос';
 
   let navButtons = [];
   let items = [];
@@ -47,19 +27,24 @@
       detailNode.insertBefore(labelNode, detailTitleNode);
     }
 
-    labelNode.textContent = detailLabelText;
+    labelNode.textContent = DETAIL_LABEL_TEXT;
   }
 
   function setDetail(item) {
     ensureDetailLabel();
-    detailTitleNode.textContent = item ? item.question || '' : '';
-    detailBodyNode.innerHTML = '';
 
     if (!item) {
+      detailTitleNode.textContent = '';
+      detailBodyNode.innerHTML = '';
       return;
     }
 
-    (Array.isArray(item.answer) ? item.answer : []).forEach(function (paragraph) {
+    detailTitleNode.textContent = item.question || '';
+    detailBodyNode.innerHTML = '';
+
+    const paragraphs = Array.isArray(item.answer) ? item.answer : [];
+
+    paragraphs.forEach((paragraph) => {
       const node = document.createElement('p');
       node.textContent = paragraph;
       detailBodyNode.appendChild(node);
@@ -69,18 +54,20 @@
   function setActive(index, shouldFocus) {
     activeIndex = index;
 
-    navButtons.forEach(function (button, buttonIndex) {
+    navButtons.forEach((button, buttonIndex) => {
       const isActive = buttonIndex === index;
       button.classList.toggle('is-active', isActive);
       button.setAttribute('aria-selected', String(isActive));
       button.setAttribute('tabindex', isActive ? '0' : '-1');
     });
 
-    if (navButtons[index]) {
-      detailNode.setAttribute('aria-labelledby', navButtons[index].id);
+    const activeButton = navButtons[index];
+
+    if (activeButton) {
+      detailNode.setAttribute('aria-labelledby', activeButton.id);
 
       if (shouldFocus) {
-        navButtons[index].focus();
+        activeButton.focus();
       }
     }
 
@@ -92,27 +79,27 @@
       return;
     }
 
-    setActive((activeIndex + step + navButtons.length) % navButtons.length, true);
+    const nextIndex = (activeIndex + step + navButtons.length) % navButtons.length;
+    setActive(nextIndex, true);
   }
 
   function createNavItem(item, index) {
     const button = document.createElement('button');
-    const number = document.createElement('span');
-    const text = document.createElement('span');
-    const indicator = document.createElement('span');
-
     button.type = 'button';
     button.className = 'faq__nav-item';
     button.setAttribute('role', 'tab');
-    button.id = 'faq-tab-' + index;
+    button.id = `faq-tab-${index}`;
     button.setAttribute('aria-controls', 'faq-detail-panel');
 
+    const number = document.createElement('span');
     number.className = 'faq__nav-number';
     number.textContent = String(item.number || index + 1).padStart(2, '0');
 
+    const text = document.createElement('span');
     text.className = 'faq__nav-text';
     text.textContent = item.question || '';
 
+    const indicator = document.createElement('span');
     indicator.className = 'faq__nav-indicator';
     indicator.setAttribute('aria-hidden', 'true');
 
@@ -121,7 +108,7 @@
     button.appendChild(indicator);
 
     button.addEventListener('click', function () {
-      setActive(index, false);
+      setActive(index);
     });
 
     button.addEventListener('keydown', function (event) {
@@ -149,38 +136,41 @@
     return button;
   }
 
-  function render(data) {
-    titleNode.textContent = data.title || '';
-    subtitleNode.textContent = data.subtitle || '';
-    items = Array.isArray(data.items) ? data.items : [];
+  function render() {
     navNode.innerHTML = '';
     navButtons = items.map(createNavItem);
-    navButtons.forEach(function (button) {
-      navNode.appendChild(button);
-    });
+    navButtons.forEach((button) => navNode.appendChild(button));
+
     detailNode.id = 'faq-detail-panel';
 
-    if (items.length) {
-      setActive(0, false);
-      return;
+    if (items.length > 0) {
+      setActive(0);
+    } else {
+      setDetail(null);
     }
-
-    setDetail(null);
   }
 
-  fetch(contentUrl, { cache: 'no-store' })
-    .then(function (response) {
+  async function init() {
+    try {
+      const response = await fetch(JSON_PATH, { cache: 'no-store' });
+
       if (!response.ok) {
-        throw new Error('Failed to load content: ' + response.status);
+        throw new Error(`Failed to load JSON: ${response.status}`);
       }
 
-      return response.json();
-    })
-    .then(render)
-    .catch(function () {
-      if (section) {
-        section.hidden = true;
-      }
-      console.error('[faq] fatal runtime fail');
-    });
+      const data = await response.json();
+      titleNode.textContent = data.title || '';
+      subtitleNode.textContent = data.subtitle || '';
+      items = Array.isArray(data.items) ? data.items : [];
+      render();
+    } catch (error) {
+      console.error('[faq] render failed', error);
+      titleNode.textContent = 'FAQ временно недоступен';
+      subtitleNode.textContent = 'Не удалось загрузить содержимое блока.';
+      items = [];
+      render();
+    }
+  }
+
+  init();
 })();
