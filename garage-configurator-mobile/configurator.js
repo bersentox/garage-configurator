@@ -1,8 +1,7 @@
-import { applyColorPreset } from "./state.js";
+import { applyColorPreset, getLayoutByLength } from "./state.js";
 import { createGarage3DViewer } from "./garage3d.js";
 
 const PRICES = window.CONFIG_PRICES || {};
-
 const RATE_PER_M2 = PRICES.RATE_PER_M2 || {};
 const OPTIONS_PRICE = PRICES.OPTIONS_PRICE || {};
 const LAYOUT_SURCHARGE = PRICES.LAYOUT_SURCHARGE || {};
@@ -10,53 +9,119 @@ const ROOF_SURCHARGE = PRICES.ROOF_SURCHARGE || {};
 const ELEMENT_PRICE = PRICES.ELEMENT_PRICE || {};
 const FOUNDATION_RATE_PER_M2 = PRICES.FOUNDATION_RATE_PER_M2 || {};
 
+const LAYOUT_LABELS = {
+  classic: "Классическая компоновка",
+  storage: "С зоной хранения",
+  utility: "С хозблоком"
+};
+
+const OPTION_LABELS = {
+  gateAutomation: "Автоматика ворот",
+  interiorElectricity: "Внутренняя электрика",
+  exteriorLighting: "Внешнее освещение",
+  ventilation: "Вентиляция",
+  gutters: "Водостоки"
+};
+
+const FOUNDATION_LABELS = {
+  none: "Без фундамента",
+  pile: "Свайный",
+  strip: "Ленточный",
+  slab: "Монолитная плита"
+};
+
+const PRESET_LABELS = {
+  graphite: "Графит",
+  grey: "Серый",
+  sand: "Песочный",
+  chocolate: "Шоколад",
+  wood: "Под дерево",
+  industrial: "Индастриал",
+  custom: "Индивидуальная палитра"
+};
+
+const LENGTH_USAGE_BY_WIDTH = {
+  6: { 6: "только для машины", 8: "машина + хранение", 10: "машина + хозблок" },
+  8: { 6: "два авто без запаса", 8: "два авто + хранение", 10: "два авто + мастерская" }
+};
+
 function formatPrice(value) {
-  return new Intl.NumberFormat("ru-RU").format(Math.round(value)) + " ₽";
+  return `${new Intl.NumberFormat("ru-RU").format(Math.round(value))} ₽`;
 }
 
 function getBuildTimeDays(config) {
   let days = 7;
-
+  if (config.width >= 8) days += 1;
   if (config.length >= 8) days += 1;
   if (config.length >= 10) days += 1;
-  if (config.layout === "storage") days += 1;
-  if (config.layout === "utility") days += 2;
   if (config.partition) days += 1;
-  if (config.windows >= 1) days += 0.5;
-  if (config.doors >= 1) days += 0.5;
-
-  return Math.round(days);
+  if (config.doors > 0) days += 1;
+  if (config.windows > 1) days += 1;
+  const enabledOptions = Object.values(config.options).filter(Boolean).length;
+  return days + Math.min(enabledOptions, 2);
 }
 
 function calculatePrice(config) {
-  const ratePerM2 = RATE_PER_M2[config.width] || RATE_PER_M2[6] || 0;
-  const basePrice = config.width * config.length * ratePerM2;
-  const layoutSurcharge = LAYOUT_SURCHARGE[config.layout] || 0;
-  const roofKey = config.roofType || config.roof;
-  const roofSurcharge = ROOF_SURCHARGE[roofKey] || 0;
-  const foundationKey = FOUNDATION_RATE_PER_M2[config.foundation] != null ? config.foundation : "none";
-  const foundationRatePerM2 = FOUNDATION_RATE_PER_M2[foundationKey] || 0;
-  const foundationPrice = config.width * config.length * foundationRatePerM2;
-  let price = basePrice + layoutSurcharge + roofSurcharge + foundationPrice;
+  const widthRate = RATE_PER_M2[config.width] || RATE_PER_M2[6] || 0;
+  const basePrice = config.width * config.length * widthRate;
+  const layout = getLayoutByLength(config.length);
+  const layoutSurcharge = LAYOUT_SURCHARGE[layout] || 0;
+  const roofSurcharge = ROOF_SURCHARGE[config.roofType] || 0;
+  const foundationRate = FOUNDATION_RATE_PER_M2[config.foundation] || 0;
+  const foundationPrice = config.width * config.length * foundationRate;
+  let total = basePrice + layoutSurcharge + roofSurcharge + foundationPrice;
 
-  if (config.shelves) price += ELEMENT_PRICE.shelves || 0;
-  if (config.partition) price += ELEMENT_PRICE.partition || 0;
-  price += config.doors * (ELEMENT_PRICE.door || 0);
-  price += config.windows * (ELEMENT_PRICE.window || 0);
+  if (config.shelves) total += ELEMENT_PRICE.shelves || 0;
+  if (config.partition) total += ELEMENT_PRICE.partition || 0;
+  total += config.doors * (ELEMENT_PRICE.door || 0);
+  total += config.windows * (ELEMENT_PRICE.window || 0);
 
   Object.entries(config.options).forEach(([key, enabled]) => {
-    if (enabled) {
-      price += OPTIONS_PRICE[key] || 0;
-    }
+    if (enabled) total += OPTIONS_PRICE[key] || 0;
   });
 
-  return price;
+  return total;
+}
+
+function buildSummaryMarkup(state) {
+  const additionalItems = [];
+  if (state.shelves) additionalItems.push("стеллажи");
+  if (state.partition) additionalItems.push("перегородка");
+  if (state.doors) additionalItems.push(`${state.doors} доп. двер.`);
+  if (state.windows) additionalItems.push(`${state.windows} доп. окон`);
+
+  const selectedOptions = Object.entries(state.options)
+    .filter(([, enabled]) => enabled)
+    .map(([key]) => OPTION_LABELS[key])
+    .join(", ") || "Без дополнительных инженерных опций";
+
+  const summaryItems = [
+    ["Тип", state.type],
+    ["Размер", `${state.width} × ${state.length} м`],
+    ["Планировка", LAYOUT_LABELS[state.layout]],
+    ["Фундамент", FOUNDATION_LABELS[state.foundation]],
+    ["Цвет", PRESET_LABELS[state.colorPreset] || PRESET_LABELS.custom],
+    ["Доп. элементы", additionalItems.join(", ") || "Без дополнительных элементов"],
+    ["Инженерия", selectedOptions]
+  ];
+
+  return summaryItems
+    .map(([label, value]) => `
+      <article class="gc-m-summary-item">
+        <span class="gc-m-summary-label">${label}</span>
+        <span class="gc-m-summary-value">${value}</span>
+      </article>
+    `)
+    .join("");
 }
 
 export function mountConfigurator({ state, root }) {
-  if (!state.foundation) state.foundation = "none";
   const productTitle = root.querySelector("#productTitle");
   const baseInfo = root.querySelector("#baseInfo");
+  const introPrice = root.querySelector("#introPrice");
+  const introTiming = root.querySelector("#introTiming");
+  const viewerDimension = root.querySelector("#viewerDimension");
+  const viewerPreset = root.querySelector("#viewerPreset");
   const lengthCards = [...root.querySelectorAll(".length-card")];
   const lengthInput = root.querySelector("#lengthInput");
   const shelvesToggle = root.querySelector("#shelvesToggle");
@@ -64,7 +129,7 @@ export function mountConfigurator({ state, root }) {
   const foundationOptions = [...root.querySelectorAll(".foundation-option")];
   const doorsCount = root.querySelector("#doorsCount");
   const windowsCount = root.querySelector("#windowsCount");
-  const presetButtons = [...root.querySelectorAll(".color-presets button")];
+  const presetButtons = [...root.querySelectorAll(".color-presets [data-preset]")];
   const wallColor = root.querySelector("#wallColor");
   const roofColor = root.querySelector("#roofColor");
   const trimColor = root.querySelector("#trimColor");
@@ -80,151 +145,80 @@ export function mountConfigurator({ state, root }) {
   const stickyMeta = root.querySelector("#stickyMeta");
   const finalCta = root.querySelector("#finalCta");
 
-  let garageViewer = {
-    applyColors() {},
-    loadModelBySize() {},
-    destroy() {}
-  };
+  const viewer = createGarage3DViewer({ containerId: "garage-3d-viewer" });
 
-  try {
-    garageViewer = createGarage3DViewer({ containerId: "garage-3d-viewer" });
-  } catch (error) {
-    console.error("[Configurator] Failed to initialize 3D viewer", error);
-  }
-
-  const LAYOUT_LABELS = {
-    classic: "классическая",
-    utility: "с хозблоком",
-    storage: "с зоной хранения"
-  };
-
-  const OPTION_LABELS = {
-    gateAutomation: "автоматика ворот",
-    interiorElectricity: "внутренняя электрика",
-    exteriorLighting: "внешнее освещение",
-    ventilation: "вентиляция",
-    gutters: "водостоки"
-  };
-
-  const FOUNDATION_LABELS = {
-    none: "без фундамента",
-    pile: "свайный",
-    strip: "ленточный",
-    slab: "плита"
-  };
-
-  const PRESET_LABELS = {
-    graphite: "графит",
-    grey: "серый",
-    sand: "песочный",
-    chocolate: "шоколад",
-    wood: "под дерево",
-    industrial: "индустриальный",
-    custom: "индивидуальная композиция"
-  };
-
-  const LENGTH_USAGE_BY_WIDTH = {
-    6: {
-      6: "только для машины",
-      8: "машина + хранение",
-      10: "машина + хозблок"
-    },
-    8: {
-      6: "только для машин",
-      8: "машина + хранение",
-      10: "машина + хозблок"
-    }
-  };
-
-  const syncColorInputs = () => {
+  function syncColorInputs() {
     wallColor.value = state.colors.wall;
     roofColor.value = state.colors.roof;
     trimColor.value = state.colors.trim;
     gateColor.value = state.colors.gate;
     interiorColor.value = state.colors.interiorWall;
-  };
+  }
 
-  const render = () => {
+  function render() {
+    state.layout = getLayoutByLength(state.length);
     state.price = calculatePrice(state);
-    state.buildTimeWeeks = getBuildTimeDays(state);
+    state.buildTimeDays = getBuildTimeDays(state);
 
-    productTitle.textContent = state.type.toUpperCase();
-    baseInfo.textContent = `ширина ${state.width} м • ${state.gates} ${state.gates === 1 ? "ворота" : "ворот"}`;
-    doorsCount.textContent = String(state.doors);
-    windowsCount.textContent = String(state.windows);
+    productTitle.textContent = state.type;
+    baseInfo.textContent = `Ширина ${state.width} м · ${state.gates} ${state.gates === 1 ? "ворота" : "ворот"} · ${LAYOUT_LABELS[state.layout]}`;
+    introPrice.textContent = formatPrice(state.price);
+    introTiming.textContent = `${state.buildTimeDays}–${state.buildTimeDays + 1} дней`;
+
     lengthInput.value = String(state.length);
     shelvesToggle.checked = state.shelves;
     partitionToggle.checked = state.partition;
-    foundationOptions.forEach((option) => {
-      option.classList.toggle("active", option.dataset.foundation === state.foundation);
-    });
+    doorsCount.textContent = String(state.doors);
+    windowsCount.textContent = String(state.windows);
+
     lengthCards.forEach((card) => {
       const cardLength = Number(card.dataset.length);
-      const area = state.width * cardLength;
       const previewConfig = { ...state, length: cardLength };
-      const areaElement = card.querySelector(".length-area");
-      const priceElement = card.querySelector(".length-price");
-      const usageElement = card.querySelector(".length-usage");
-      const presetUsage = LENGTH_USAGE_BY_WIDTH[state.width]?.[cardLength];
+      const area = state.width * cardLength;
+      card.classList.toggle("is-active", cardLength === state.length);
+      card.querySelector(".length-area").textContent = `${area} м²`;
+      card.querySelector(".length-usage").textContent = LENGTH_USAGE_BY_WIDTH[state.width]?.[cardLength] || "индивидуальная компоновка";
+      card.querySelector(".length-price").textContent = `от ${formatPrice(calculatePrice(previewConfig))}`;
+    });
 
-      card.classList.toggle("active", cardLength === state.length);
-      if (areaElement) areaElement.textContent = `${area} м²`;
-      if (priceElement) priceElement.textContent = `от ${formatPrice(calculatePrice(previewConfig))}`;
-      if (usageElement && presetUsage) usageElement.textContent = presetUsage;
+    foundationOptions.forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.foundation === state.foundation);
     });
 
     presetButtons.forEach((button) => {
-      button.classList.toggle("active", button.dataset.preset === state.colorPreset);
+      button.classList.toggle("is-active", button.dataset.preset === state.colorPreset);
     });
 
-    garageViewer.loadModelBySize(state.width, state.length);
+    root.querySelectorAll("[data-option]").forEach((checkbox) => {
+      checkbox.checked = Boolean(state.options[checkbox.dataset.option]);
+    });
+
     syncColorInputs();
-    garageViewer.applyColors(state.colors);
+    viewer.loadModelBySize(state.width, state.length);
+    viewer.applyColors(state.colors);
 
-    const selectedOptions = Object.entries(state.options)
-      .filter(([, value]) => value)
-      .map(([key]) => OPTION_LABELS[key])
-      .join(", ") || "без доп. опций";
+    viewerDimension.textContent = `Размер: ${state.width} × ${state.length} м`;
+    viewerPreset.textContent = `Палитра: ${PRESET_LABELS[state.colorPreset] || PRESET_LABELS.custom}`;
 
-    const additionalItems = [];
-    if (state.shelves) additionalItems.push("стеллажи");
-    if (state.partition) additionalItems.push("перегородка");
-    if (state.doors) additionalItems.push(`${state.doors} ${state.doors === 1 ? "дверь" : "двери"}`);
-    if (state.windows) additionalItems.push(`${state.windows} ${state.windows === 1 ? "окно" : "окна"}`);
+    summaryList.innerHTML = buildSummaryMarkup(state);
+    summaryTime.textContent = `Ориентировочный срок производства и монтажа: ${state.buildTimeDays}–${state.buildTimeDays + 1} дней.`;
 
-    const colorDescription = state.colorPreset === "custom"
-      ? "индивидуальная композиция"
-      : `${PRESET_LABELS[state.colorPreset]} / гармоничное сочетание крыши и фасонных элементов`;
+    const compactLine = `${state.type} · ${state.width} × ${state.length} м · ${FOUNDATION_LABELS[state.foundation]}`;
+    ctaSummary.textContent = compactLine;
+    ctaPrice.textContent = formatPrice(state.price);
+    ctaTime.textContent = `Срок: ${state.buildTimeDays}–${state.buildTimeDays + 1} дней`;
+    stickyPrice.textContent = formatPrice(state.price);
+    stickyMeta.textContent = `${state.width} × ${state.length} м · ${PRESET_LABELS[state.colorPreset] || PRESET_LABELS.custom}`;
+  }
 
-    summaryList.innerHTML = `
-      <li><span class="summary-label">Тип</span><span class="summary-value">${state.type.toLowerCase()}</span></li>
-      <li><span class="summary-label">Размер</span><span class="summary-value">${state.width} × ${state.length} м</span></li>
-      <li><span class="summary-label">Планировка</span><span class="summary-value">${LAYOUT_LABELS[state.layout]}</span></li>
-      <li><span class="summary-label">Дополнительно</span><span class="summary-value">${additionalItems.join(", ") || "без дополнительных элементов"}</span></li>
-      <li><span class="summary-label">Фундамент</span><span class="summary-value">${FOUNDATION_LABELS[state.foundation] || FOUNDATION_LABELS.none}</span></li>
-      <li><span class="summary-label">Цвет</span><span class="summary-value">${colorDescription}</span></li>
-      <li><span class="summary-label">Опции</span><span class="summary-value">${selectedOptions}</span></li>
-    `;
-
-    const priceText = formatPrice(state.price);
-    const timeText = `Срок строительства: ${state.buildTimeWeeks}–${state.buildTimeWeeks + 1} дней`;
-    summaryTime.textContent = timeText;
-    ctaSummary.textContent = `${state.type.toLowerCase()} · ${state.width} × ${state.length} м · ${LAYOUT_LABELS[state.layout]}`;
-    ctaPrice.textContent = priceText;
-    ctaTime.textContent = timeText;
-    stickyPrice.textContent = priceText;
-    stickyMeta.textContent = `${state.width} × ${state.length} м · ${state.gates} ${state.gates === 1 ? "ворота" : "ворот"}`;
-  };
-
-  lengthCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      state.length = Number(card.dataset.length);
-      render();
-    });
-  });
+  lengthCards.forEach((card) => card.addEventListener("click", () => {
+    state.length = Number(card.dataset.length);
+    render();
+  }));
 
   lengthInput.addEventListener("input", () => {
-    state.length = Math.max(6, Number(lengthInput.value) || 6);
+    const nextLength = Math.max(6, Math.min(12, Number(lengthInput.value) || 6));
+    state.length = nextLength;
     render();
   });
 
@@ -247,31 +241,20 @@ export function mountConfigurator({ state, root }) {
     });
   });
 
-  presetButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      applyColorPreset(state, button.dataset.preset);
-      render();
-    });
-  });
+  foundationOptions.forEach((button) => button.addEventListener("click", () => {
+    state.foundation = button.dataset.foundation || "none";
+    render();
+  }));
 
-  [
-    [wallColor, "wall"],
-    [roofColor, "roof"],
-    [trimColor, "trim"],
-    [gateColor, "gate"],
-    [interiorColor, "interiorWall"]
-  ].forEach(([input, key]) => {
+  presetButtons.forEach((button) => button.addEventListener("click", () => {
+    applyColorPreset(state, button.dataset.preset);
+    render();
+  }));
+
+  [[wallColor, "wall"], [roofColor, "roof"], [trimColor, "trim"], [gateColor, "gate"], [interiorColor, "interiorWall"]].forEach(([input, key]) => {
     input.addEventListener("input", () => {
       state.colorPreset = "custom";
       state.colors[key] = input.value;
-      garageViewer.applyColors(state.colors);
-      render();
-    });
-  });
-
-  foundationOptions.forEach((option) => {
-    option.addEventListener("click", () => {
-      state.foundation = option.dataset.foundation || "none";
       render();
     });
   });
@@ -283,21 +266,20 @@ export function mountConfigurator({ state, root }) {
     });
   });
 
-  const observer = new IntersectionObserver(
-    ([entry]) => {
+  const observer = typeof IntersectionObserver !== "undefined"
+    ? new IntersectionObserver(([entry]) => {
       stickyBar.classList.toggle("is-hidden", entry.isIntersecting);
-    },
-    { threshold: 0.2 }
-  );
-  observer.observe(finalCta);
+    }, { threshold: 0.2 })
+    : null;
 
+  observer?.observe(finalCta);
   render();
 
   return {
     render,
     destroy() {
-      observer.disconnect();
-      garageViewer.destroy();
+      observer?.disconnect();
+      viewer.destroy();
     }
   };
 }
