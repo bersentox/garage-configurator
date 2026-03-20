@@ -511,3 +511,38 @@
     border-radius: 20px;
   }
 }
+.unified-navigation__tooltip.is-visible.unified-navigation__tooltip--manual {
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.unified-navigation__tooltip--corner-top-left::after {
+  left: 10px;
+  top: 10px;
+  border-right: 0;
+  border-bottom: 0;
+  transform: rotate(45deg);
+}
+
+.unified-navigation__tooltip--corner-top-right::after {
+  right: 10px;
+  top: 10px;
+  border-left: 0;
+  border-bottom: 0;
+  transform: rotate(45deg);
+}
+
+.unified-navigation__tooltip--corner-bottom-left::after {
+  left: 10px;
+  bottom: 10px;
+  border-top: 0;
+  border-right: 0;
+  transform: rotate(45deg);
+}
+
+.unified-navigation__tooltip--corner-bottom-right::after {
+  right: 10px;
+  bottom: 10px;
+  border-top: 0;
+  border-left: 0;
+  transform: rotate(45deg);
+}
