@@ -1,5 +1,47 @@
 (function () {
-  const root = document.querySelector('.unified-navigation');
+  const APP_ID = 'unified-navigation-app';
+  const MOUNT_FLAG = 'unifiedNavigationMounted';
+  const TEMPLATE = `
+    <section class="unified-navigation" aria-labelledby="unified-navigation-title">
+      <div class="unified-navigation__shell">
+        <header class="unified-navigation__intro">
+          <p class="unified-navigation__eyebrow">DIGITAL PROCESS MAP</p>
+          <h2 id="unified-navigation-title" class="unified-navigation__title">
+            Весь путь проекта —<br />от контакта до сдачи
+          </h2>
+          <p class="unified-navigation__subtitle">
+            Схема этапов с радиальным раскрытием. Нажмите на кружок для подробностей.
+          </p>
+        </header>
+        <div class="unified-navigation__diagram" data-unified-navigation-diagram>
+          <div class="unified-navigation__grid" aria-hidden="true"></div>
+          <div class="unified-navigation__edges" aria-hidden="true"></div>
+          <div class="unified-navigation__nodes" data-unified-navigation-nodes></div>
+          <div class="unified-navigation__tooltip-layer" data-unified-navigation-tooltip-layer aria-hidden="true"></div>
+        </div>
+        <p class="unified-navigation__bottom">
+          Оставьте номер ниже и запустите первый этап.
+        </p>
+      </div>
+    </section>
+  `;
+  const appRoot = document.getElementById(APP_ID);
+
+  if (!appRoot) {
+    return;
+  }
+
+  if (!appRoot.querySelector('.unified-navigation')) {
+    appRoot.innerHTML = TEMPLATE;
+  }
+
+  if (appRoot.dataset[MOUNT_FLAG] === 'true') {
+    return;
+  }
+
+  appRoot.dataset[MOUNT_FLAG] = 'true';
+
+  const root = appRoot.querySelector('.unified-navigation');
 
   if (!root) {
     return;
