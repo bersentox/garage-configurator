@@ -104,14 +104,52 @@
       number: '01',
       title: 'Контакт',
       cluster: 'left3',
-      children: ['звонок', 'консультация', 'даты']
+      children: [
+        {
+          label: 'звонок',
+          tooltipCorner: 'bottom-right',
+          tooltipOrbitAngle: 225,
+          tooltipDistance: 10
+        },
+        {
+          label: 'консультация',
+          tooltipCorner: 'top-right',
+          tooltipOrbitAngle: 180,
+          tooltipDistance: 10
+        },
+        {
+          label: 'даты',
+          tooltipCorner: 'top-right',
+          tooltipOrbitAngle: 140,
+          tooltipDistance: 10
+        }
+      ]
     },
     {
       key: 'visit',
       number: '02',
       title: 'Визит',
       cluster: 'left3',
-      children: ['замер', 'предложения', 'уточнения']
+      children: [
+        {
+          label: 'замер',
+          tooltipCorner: 'bottom-right',
+          tooltipOrbitAngle: 225,
+          tooltipDistance: 10
+        },
+        {
+          label: 'предложения',
+          tooltipCorner: 'top-right',
+          tooltipOrbitAngle: 180,
+          tooltipDistance: 10
+        },
+        {
+          label: 'уточнения',
+          tooltipCorner: 'top-right',
+          tooltipOrbitAngle: 140,
+          tooltipDistance: 10
+        }
+      ]
     },
     {
       key: 'brief',
@@ -119,48 +157,135 @@
       title: 'Задание\nи КП',
       cluster: 'right3',
       children: [
-  'эскиз',
-  {
-    label: 'подтверждение',
-    tooltipCorner: 'bottom-left',
-    tooltipOrbitAngle: 315,
-    tooltipDistance: 10
-  },
-  {
-    label: 'КП',
-    tooltipCorner: 'bottom-left',
-    tooltipOrbitAngle: 320,
-    tooltipDistance: 10
-  }
-]
+        {
+          label: 'эскиз',
+          tooltipCorner: 'bottom-left',
+          tooltipOrbitAngle: 315,
+          tooltipDistance: 10
+        },
+        {
+          label: 'подтверждение',
+          tooltipCorner: 'bottom-left',
+          tooltipOrbitAngle: 315,
+          tooltipDistance: 10
+        },
+        {
+          label: 'КП',
+          tooltipCorner: 'bottom-left',
+          tooltipOrbitAngle: 320,
+          tooltipDistance: 10
+        }
+      ]
     },
     {
       key: 'design',
       number: '04',
       title: 'Проектирование',
       cluster: 'left3',
-      children: ['проект', 'правки', 'принятие']
+      children: [
+        {
+          label: 'проект',
+          tooltipCorner: 'bottom-right',
+          tooltipOrbitAngle: 225,
+          tooltipDistance: 10
+        },
+        {
+          label: 'правки',
+          tooltipCorner: 'top-right',
+          tooltipOrbitAngle: 180,
+          tooltipDistance: 10
+        },
+        {
+          label: 'принятие',
+          tooltipCorner: 'top-right',
+          tooltipOrbitAngle: 140,
+          tooltipDistance: 10
+        }
+      ]
     },
     {
       key: 'contract',
       number: '05',
       title: 'Договор',
       cluster: 'right3',
-      children: ['выезд', 'подписание', 'цена']
+      children: [
+        {
+          label: 'выезд',
+          tooltipCorner: 'bottom-left',
+          tooltipOrbitAngle: 315,
+          tooltipDistance: 10
+        },
+        {
+          label: 'подписание',
+          tooltipCorner: 'top-left',
+          tooltipOrbitAngle: 0,
+          tooltipDistance: 10
+        },
+        {
+          label: 'цена',
+          tooltipCorner: 'top-left',
+          tooltipOrbitAngle: 40,
+          tooltipDistance: 10
+        }
+      ]
     },
     {
       key: 'build',
       number: '06',
       title: 'Реализация',
       cluster: 'cross4',
-      children: ['стройка', 'контроль', 'уборка', 'приёмка']
+      children: [
+        {
+          label: 'стройка',
+          tooltipCorner: 'bottom-left',
+          tooltipOrbitAngle: 300,
+          tooltipDistance: 10
+        },
+        {
+          label: 'контроль',
+          tooltipCorner: 'top-left',
+          tooltipOrbitAngle: 0,
+          tooltipDistance: 10
+        },
+        {
+          label: 'уборка',
+          tooltipCorner: 'top-left',
+          tooltipOrbitAngle: 60,
+          tooltipDistance: 10
+        },
+        {
+          label: 'приёмка',
+          tooltipCorner: 'top-right',
+          tooltipOrbitAngle: 180,
+          tooltipDistance: 10
+        }
+      ]
     },
     {
       key: 'delivery',
       number: '07',
       title: 'Сдача',
       cluster: 'right3',
-      children: ['приёмка', 'документы', 'оплата']
+      children: [
+        {
+          label: 'приёмка',
+          tooltipCorner: 'bottom-left',
+          tooltipOrbitAngle: 315,
+          tooltipDistance: 10
+        },
+        {
+          label: 'документы',
+          tooltipCorner: 'top-left',
+          tooltipOrbitAngle: 0,
+          tooltipDistance: 10
+        },
+        {
+          label: 'оплата',
+          tooltipCorner: 'top-left',
+          tooltipOrbitAngle: 40,
+          tooltipDistance: 10
+        }
+      ]
     }
   ];
 
@@ -178,28 +303,21 @@
   const TOOLTIP_PADDING = 8;
 
   function normalizeChildConfig(child) {
-    if (typeof child === 'string') {
-      return { label: child };
-    }
-
     if (!child || typeof child !== 'object') {
-      return { label: '' };
+      return {
+        label: '',
+        tooltipCorner: 'top-left',
+        tooltipOrbitAngle: 0,
+        tooltipDistance: 10
+      };
     }
 
-    const normalized = {
-      label: typeof child.label === 'string' ? child.label : ''
+    return {
+      label: typeof child.label === 'string' ? child.label : '',
+      tooltipCorner: TOOLTIP_CORNERS.indexOf(child.tooltipCorner) !== -1 ? child.tooltipCorner : 'top-left',
+      tooltipOrbitAngle: Number.isFinite(child.tooltipOrbitAngle) ? child.tooltipOrbitAngle : 0,
+      tooltipDistance: 10
     };
-
-    if (TOOLTIP_CORNERS.indexOf(child.tooltipCorner) !== -1 && Number.isFinite(child.tooltipOrbitAngle)) {
-      normalized.tooltipCorner = child.tooltipCorner;
-      normalized.tooltipOrbitAngle = child.tooltipOrbitAngle;
-    }
-
-    if (Number.isFinite(child.tooltipDistance)) {
-      normalized.tooltipDistance = child.tooltipDistance;
-    }
-
-    return normalized;
   }
 
   function getManualTooltipAnchorOffset(corner, tooltipWidth, tooltipHeight) {
@@ -342,143 +460,6 @@ function renderEdges() {
     delete overlayTooltip.dataset.tailSide;
   }
 
-  function getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, placement, gap) {
-    const horizontalCenter = anchorX - tooltipWidth / 2;
-    const verticalCenter = anchorY - tooltipHeight / 2;
-
-    if (placement === 'left') {
-      return {
-        left: anchorX - gap,
-        top: verticalCenter
-      };
-    }
-
-    if (placement === 'top') {
-      return {
-        left: horizontalCenter,
-        top: anchorY - gap
-      };
-    }
-
-    if (placement === 'bottom') {
-      return {
-        left: horizontalCenter,
-        top: anchorY + gap
-      };
-    }
-
-    if (placement === 'top-right') {
-      return {
-        left: anchorX + gap,
-        top: anchorY - gap
-      };
-    }
-
-    if (placement === 'top-left') {
-      return {
-        left: anchorX - gap,
-        top: anchorY - gap
-      };
-    }
-
-    if (placement === 'bottom-left') {
-      return {
-        left: anchorX - gap,
-        top: anchorY + gap
-      };
-    }
-
-    if (placement === 'bottom-right') {
-      return {
-        left: anchorX + gap,
-        top: anchorY + gap
-      };
-    }
-
-    return {
-      left: anchorX + gap,
-      top: verticalCenter
-    };
-  }
-
-  function getPlacementBounds(coords, tooltipWidth, tooltipHeight, placement) {
-    let left = coords.left;
-    let top = coords.top;
-
-    if (placement === 'left' || placement === 'top-left' || placement === 'bottom-left') {
-      left -= tooltipWidth;
-    } else if (placement === 'top' || placement === 'bottom') {
-      left -= tooltipWidth / 2;
-    }
-
-    if (placement === 'top-right' || placement === 'top-left' || placement === 'top') {
-      top -= tooltipHeight;
-    }
-
-    return {
-      left: left,
-      top: top,
-      right: left + tooltipWidth,
-      bottom: top + tooltipHeight
-    };
-  }
-
-  function getPreferredPlacements(anchorX, anchorY, layerRect) {
-    const leftHalf = anchorX < layerRect.width / 2;
-    const nearTop = anchorY < layerRect.height * 0.22;
-    const nearBottom = anchorY > layerRect.height * 0.78;
-    const nearCenterX = Math.abs(anchorX - layerRect.width / 2) < layerRect.width * 0.12;
-
-    if (nearTop) {
-      return leftHalf ? ['bottom-right', 'bottom', 'right', 'bottom-left', 'left', 'top-right', 'top-left'] : ['bottom-left', 'bottom', 'left', 'bottom-right', 'right', 'top-left', 'top-right'];
-    }
-
-    if (nearBottom) {
-      return leftHalf ? ['top-right', 'top', 'right', 'top-left', 'left', 'bottom-right', 'bottom-left'] : ['top-left', 'top', 'left', 'top-right', 'right', 'bottom-left', 'bottom-right'];
-    }
-
-    if (nearCenterX) {
-      return ['top', 'bottom', leftHalf ? 'right' : 'left', leftHalf ? 'top-right' : 'top-left', leftHalf ? 'bottom-right' : 'bottom-left', leftHalf ? 'left' : 'right'];
-    }
-
-    return leftHalf ? ['right', 'bottom-right', 'top-right', 'bottom', 'top', 'left', 'bottom-left', 'top-left'] : ['left', 'bottom-left', 'top-left', 'bottom', 'top', 'right', 'bottom-right', 'top-right'];
-  }
-
-  function getAutoTooltipBounds(anchorX, anchorY, tooltipWidth, tooltipHeight, layerRect, gap) {
-    const placements = getPreferredPlacements(anchorX, anchorY, layerRect);
-    let selectedPlacement = placements[0];
-    let selectedCoords = getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, selectedPlacement, gap);
-    let bestOverflow = Number.POSITIVE_INFINITY;
-
-    placements.forEach(function (placement) {
-      const coords = getPlacementCoordinates(anchorX, anchorY, tooltipWidth, tooltipHeight, placement, gap);
-      const bounds = getPlacementBounds(coords, tooltipWidth, tooltipHeight, placement);
-      const overflow =
-        Math.max(0, TOOLTIP_PADDING - bounds.left) +
-        Math.max(0, TOOLTIP_PADDING - bounds.top) +
-        Math.max(0, bounds.right - (layerRect.width - TOOLTIP_PADDING)) +
-        Math.max(0, bounds.bottom - (layerRect.height - TOOLTIP_PADDING));
-
-      if (overflow < bestOverflow) {
-        bestOverflow = overflow;
-        selectedPlacement = placement;
-        selectedCoords = coords;
-      }
-    });
-
-    const bounds = getPlacementBounds(selectedCoords, tooltipWidth, tooltipHeight, selectedPlacement);
-    const shiftX = bounds.left < TOOLTIP_PADDING ? TOOLTIP_PADDING - bounds.left : bounds.right > layerRect.width - TOOLTIP_PADDING ? layerRect.width - TOOLTIP_PADDING - bounds.right : 0;
-    const shiftY = bounds.top < TOOLTIP_PADDING ? TOOLTIP_PADDING - bounds.top : bounds.bottom > layerRect.height - TOOLTIP_PADDING ? layerRect.height - TOOLTIP_PADDING - bounds.bottom : 0;
-
-    return {
-      left: bounds.left + shiftX,
-      top: bounds.top + shiftY,
-      right: bounds.right + shiftX,
-      bottom: bounds.bottom + shiftY,
-      placement: selectedPlacement
-    };
-  }
-
   function getTooltipTailGeometry(bounds, anchorX, anchorY) {
     const centerX = (bounds.left + bounds.right) / 2;
     const centerY = (bounds.top + bounds.bottom) / 2;
@@ -511,11 +492,29 @@ function renderEdges() {
     const sceneRect = diagram.getBoundingClientRect();
     const anchorX = childRect.left - sceneRect.left + childRect.width / 2;
     const anchorY = childRect.top - sceneRect.top + childRect.height / 2;
-    const gap = Math.max(12, Math.min(20, Math.round(Math.max(childRect.width, childRect.height) * 0.28)));
     const tooltipWidth = overlayTooltip.offsetWidth;
     const tooltipHeight = overlayTooltip.offsetHeight;
     const manualBounds = getManualTooltipBounds(activeTooltipTrigger, tooltipWidth, tooltipHeight);
-    const tooltipBounds = manualBounds || getAutoTooltipBounds(anchorX, anchorY, tooltipWidth, tooltipHeight, sceneRect, gap);
+
+    if (!manualBounds) {
+      hideOverlayTooltip();
+      return;
+    }
+
+    const clampedLeft = Math.min(
+      Math.max(manualBounds.left, TOOLTIP_PADDING),
+      Math.max(TOOLTIP_PADDING, sceneRect.width - TOOLTIP_PADDING - tooltipWidth)
+    );
+    const clampedTop = Math.min(
+      Math.max(manualBounds.top, TOOLTIP_PADDING),
+      Math.max(TOOLTIP_PADDING, sceneRect.height - TOOLTIP_PADDING - tooltipHeight)
+    );
+    const tooltipBounds = {
+      left: clampedLeft,
+      top: clampedTop,
+      right: clampedLeft + tooltipWidth,
+      bottom: clampedTop + tooltipHeight
+    };
     const tail = getTooltipTailGeometry(tooltipBounds, anchorX, anchorY);
 
     overlayTooltip.className = 'unified-navigation__tooltip is-visible';
