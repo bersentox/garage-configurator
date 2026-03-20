@@ -1,37 +1,23 @@
 export function mountHeroScene({ state, onSelectWidth }) {
-  const garageScene = document.getElementById("garageScene");
-  const garageRemoteButton = document.getElementById("garageRemoteButton");
-  const garageGateSound = document.getElementById("garageGateSound");
-  const widthButtons = document.querySelectorAll(".garage-choice[data-width]");
-  let revealTimerId = null;
+  const scene = document.getElementById("garageScene");
+  const remoteButton = document.getElementById("garageRemoteButton");
+  const widthButtons = [...document.querySelectorAll(".gc-m-hero__choice[data-width]")];
+  let revealTimerId = 0;
 
-  if (!garageScene || !garageRemoteButton) {
-    return;
-  }
+  if (!scene || !remoteButton) return;
 
-  garageRemoteButton.addEventListener("click", () => {
-    const isOpen = garageScene.classList.contains("open");
-
-    if (garageGateSound) {
-      garageGateSound.currentTime = 0;
-      garageGateSound.volume = 0.6;
-      garageGateSound.play().catch(() => {});
-    }
-
-    if (revealTimerId) {
-      clearTimeout(revealTimerId);
-      revealTimerId = null;
-    }
-
-    garageScene.classList.toggle("open");
-    garageRemoteButton.setAttribute("aria-pressed", String(!isOpen));
+  remoteButton.addEventListener("click", () => {
+    const isOpen = scene.classList.contains("is-open");
+    window.clearTimeout(revealTimerId);
+    scene.classList.toggle("is-open", !isOpen);
+    scene.classList.toggle("choices-visible", !isOpen);
+    remoteButton.setAttribute("aria-pressed", String(!isOpen));
+    remoteButton.querySelector(".gc-m-hero__remote-text").textContent = isOpen ? "Открыть" : "Готово";
 
     if (!isOpen) {
-      revealTimerId = setTimeout(() => {
-        garageScene.classList.add("choices-visible");
-      }, 320);
-    } else {
-      garageScene.classList.remove("choices-visible");
+      revealTimerId = window.setTimeout(() => {
+        scene.classList.add("choices-visible");
+      }, 180);
     }
   });
 
@@ -39,7 +25,7 @@ export function mountHeroScene({ state, onSelectWidth }) {
     button.addEventListener("click", () => {
       const width = Number(button.dataset.width);
       state.width = width;
-      widthButtons.forEach((node) => node.classList.toggle("selected", node === button));
+      widthButtons.forEach((node) => node.classList.toggle("is-selected", node === button));
       onSelectWidth(width);
     });
   });

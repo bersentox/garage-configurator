@@ -1,270 +1,116 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/+esm";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js/+esm";
-import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js/+esm";
-import { RoomEnvironment } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js/+esm";
-import { resolveEmbedAsset } from "./asset-paths.js";
 
-const GARAGE_MODEL_PATHS = {
-  "6x6": "models/garage_6x6.glb",
-  "6x8": "models/garage_6x8.glb",
-  "6x10": "models/garage_6x10.glb",
-  "8x6": "models/garage_8x6.glb",
-  "8x8": "models/garage_8x8.glb",
-  "8x10": "models/garage_8x10.glb"
-};
-
-function getGarageModelPath(width, length) {
-  const modelPath = GARAGE_MODEL_PATHS[`${width}x${length}`];
-  return modelPath ? resolveEmbedAsset(modelPath) : null;
+function clampPixelRatio() {
+  return Math.min(window.devicePixelRatio || 1, 1.5);
 }
 
-function buildMeshIndex(root) {
-  const index = [];
-
-  root.traverse((node) => {
-    if (!node.isMesh) return;
-
-    const meshName = (node.name || "").toLowerCase();
-    const materialName = (node.material?.name || "").toLowerCase();
-    const sourceName = `${meshName} ${materialName}`.trim();
-    index.push({ node, sourceName, meshName, materialName });
-    console.log("[Garage3D] mesh:", node.name || "(unnamed)", "material:", node.material?.name || "(unnamed)");
-  });
-
-  return index;
-}
-
-function findFirstMatch(meshIndex, terms) {
-  return meshIndex.find(({ sourceName }) => terms.some((term) => sourceName.includes(term)))?.node || null;
-}
-
-function detectGarageParts(meshIndex) {
-  const garageParts = {
-    walls: null,
-    roof: null,
-    gate: null,
-    trim: null,
-    innerWalls: null
-  };
-
-  garageParts.walls = findFirstMatch(meshIndex, ["wall", "walls", "body", "facade", "fasad", "стен"]);
-  garageParts.roof = findFirstMatch(meshIndex, ["roof", "top", "кры", "кров"]);
-  garageParts.gate = findFirstMatch(meshIndex, ["gate", "door", "ворот"]);
-  garageParts.trim = findFirstMatch(meshIndex, ["trim", "frame", "fascia", "corner", "угол", "обод"]);
-  garageParts.innerWalls = findFirstMatch(meshIndex, ["inner", "interior", "inside", "внутр"]);
-
-  console.log("[Garage3D] parts map", {
-    walls: garageParts.walls?.name || null,
-    roof: garageParts.roof?.name || null,
-    gate: garageParts.gate?.name || null,
-    trim: garageParts.trim?.name || null,
-    innerWalls: garageParts.innerWalls?.name || null
-  });
-
-  return garageParts;
-}
-
-function cloneAndSetColor(mesh, color) {
-  if (!mesh?.material) return;
-
-  if (Array.isArray(mesh.material)) {
-    mesh.material = mesh.material.map((material) => {
-      const cloned = material.clone();
-      if (cloned.color) cloned.color.set(color);
-      return cloned;
-    });
-    return;
-  }
-
-  mesh.material = mesh.material.clone();
-  if (mesh.material.color) {
-    mesh.material.color.set(color);
-  }
+function createMaterial(color) {
+  return new THREE.MeshStandardMaterial({ color, roughness: 0.82, metalness: 0.12 });
 }
 
 export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) {
   const container = document.getElementById(containerId);
-  if (!container) {
-    return {
-      applyColors() {},
-      destroy() {}
-    };
-  }
+  if (!container) return { applyColors() {}, loadModelBySize() {}, destroy() {} };
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color("#f3f4f6");
-  const modelGroup = new THREE.Group();
-  scene.add(modelGroup);
+  scene.background = new THREE.Color("#dfe7ef");
+  scene.fog = new THREE.Fog("#dfe7ef", 12, 24);
 
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.set(7, 5, 9);
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+  camera.position.set(6.5, 4.4, 8.4);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "low-power" });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.98;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setSize(container.clientWidth, container.clientHeight, false);
+  renderer.setPixelRatio(clampPixelRatio());
+  renderer.setSize(container.clientWidth || 1, container.clientHeight || 1, false);
   container.appendChild(renderer.domElement);
 
-  const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xdbe5e1, 0.8);
-  scene.add(hemisphereLight);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.enablePan = false;
+  controls.enableZoom = false;
+  controls.rotateSpeed = 0.55;
+  controls.minPolarAngle = 0.95;
+  controls.maxPolarAngle = 1.35;
+  controls.target.set(0, 1.2, 0);
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
-  scene.add(ambientLight);
-
-  const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
-  keyLight.position.set(8, 9, 7);
+  const ambient = new THREE.HemisphereLight(0xffffff, 0x8ea0b6, 1.15);
+  scene.add(ambient);
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  keyLight.position.set(6, 9, 7);
   scene.add(keyLight);
-
-  const fillLight = new THREE.DirectionalLight(0xe7efff, 0.4);
-  fillLight.position.set(-8, 8, -7);
+  const fillLight = new THREE.DirectionalLight(0xcad8ea, 0.55);
+  fillLight.position.set(-4, 5, -5);
   scene.add(fillLight);
 
+  const ground = new THREE.Mesh(
+    new THREE.CylinderGeometry(7, 7.6, 0.22, 48),
+    new THREE.MeshStandardMaterial({ color: "#cfd8e2", roughness: 1, metalness: 0 })
+  );
+  ground.position.y = -0.12;
+  scene.add(ground);
 
-  const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
-controls.enablePan = false;
-controls.autoRotate = false;
-controls.autoRotateSpeed = 0.1;
-controls.enableZoom = true;
-controls.zoomSpeed = 0.7;
-controls.rotateSpeed = 0.85;
-controls.minDistance = 7;
-controls.maxDistance = 18;
-controls.minPolarAngle = 0.75;
-controls.maxPolarAngle = 1.42;
+  const garageGroup = new THREE.Group();
+  scene.add(garageGroup);
 
-  const isolateWheelEvent = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-  };
+  const walls = new THREE.Mesh(new THREE.BoxGeometry(4.6, 2.55, 4.4), createMaterial("#7a818b"));
+  walls.position.y = 1.3;
+  garageGroup.add(walls);
 
-  renderer.domElement.addEventListener("wheel", isolateWheelEvent, { passive: false });
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(3.55, 1.1, 4), createMaterial("#3f4651"));
+  roof.rotation.y = Math.PI * 0.25;
+  roof.position.y = 3.02;
+  roof.scale.set(1.3, 1, 1.55);
+  garageGroup.add(roof);
 
-  const loader = new GLTFLoader();
-  let animationFrameId = 0;
-  let mountedModel = null;
+  const gate = new THREE.Mesh(new THREE.BoxGeometry(1.7, 1.7, 0.12), createMaterial("#5d6674"));
+  gate.position.set(0, 0.92, 2.24);
+  garageGroup.add(gate);
+
+  const trim = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.14, 4.55), createMaterial("#191f29"));
+  trim.position.y = 2.54;
+  garageGroup.add(trim);
+
+  const innerWalls = new THREE.Mesh(new THREE.BoxGeometry(4.1, 2.2, 3.85), createMaterial("#d7dde5"));
+  innerWalls.position.y = 1.28;
+  innerWalls.visible = false;
+  garageGroup.add(innerWalls);
+
+  const footing = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.18, 4.8), createMaterial("#98a3b1"));
+  footing.position.y = 0.02;
+  garageGroup.add(footing);
+
+  let currentSize = { width: 6, length: 6 };
+  let frameId = 0;
   let destroyed = false;
   let resizeObserver = null;
-  let activeModelKey = "";
-  let pendingLoadId = 0;
-  let activeColors = {};
-  const modelRotationSpeed = 0.0007;
 
-  const garageParts = {
-    walls: null,
-    roof: null,
-    gate: null,
-    trim: null,
-    innerWalls: null
-  };
+  function updateGeometry(width, length) {
+    currentSize = { width, length };
+    const widthScale = width / 6;
+    const lengthScale = length / 6;
 
-  function centerModel(object3d) {
-    const box = new THREE.Box3().setFromObject(object3d);
-    const center = box.getCenter(new THREE.Vector3());
-    object3d.position.sub(center);
-  }
+    walls.scale.set(widthScale, 1, Math.min(lengthScale, 2));
+    trim.scale.set(widthScale, 1, Math.min(lengthScale, 2));
+    footing.scale.set(widthScale, 1, Math.min(lengthScale, 2));
+    innerWalls.scale.set(Math.max(0.9, widthScale * 0.92), 1, Math.max(0.9, Math.min(lengthScale, 2) * 0.92));
+    roof.scale.set(1.3 * widthScale, 1, 1.55 * Math.min(lengthScale, 2));
 
-  function frameModel(object3d) {
-    const box = new THREE.Box3().setFromObject(object3d);
-    const size = box.getSize(new THREE.Vector3());
-    const maxSize = Math.max(size.x, size.y, size.z);
-    const distance = Math.max(6, maxSize * 1.7);
-    camera.position.set(distance * 0.95, distance * 0.35, distance * 1.15);
-    camera.near = 0.1;
-    camera.far = Math.max(100, distance * 12);
-    camera.updateProjectionMatrix();
-    controls.target.set(0, 0, 0);
-    controls.update();
-  }
+    const gateWidth = width >= 8 ? 2.9 : 1.7;
+    gate.geometry.dispose();
+    gate.geometry = new THREE.BoxGeometry(gateWidth, 1.7, 0.12);
+    gate.position.set(0, 0.92, 2.24 * Math.min(lengthScale, 2));
 
-  function setGarageColor(partName, color) {
-    const mesh = garageParts[partName];
-    if (!mesh || !color) return;
-
-    cloneAndSetColor(mesh, color);
+    controls.target.set(0, 1.25, 0);
   }
 
   function applyColors(colors = {}) {
-    activeColors = { ...activeColors, ...colors };
-    setGarageColor("walls", colors.wall);
-    setGarageColor("roof", colors.roof);
-    setGarageColor("trim", colors.trim);
-    setGarageColor("gate", colors.gate);
-    setGarageColor("innerWalls", colors.interiorWall);
-  }
-
-  function disposeModel(model) {
-    if (!model) return;
-
-    model.traverse((node) => {
-      if (!node.isMesh) return;
-      node.geometry?.dispose?.();
-
-      if (Array.isArray(node.material)) {
-        node.material.forEach((material) => material?.dispose?.());
-      } else {
-        node.material?.dispose?.();
-      }
-    });
-  }
-
-  function clearGarageParts() {
-    Object.keys(garageParts).forEach((key) => {
-      garageParts[key] = null;
-    });
-  }
-
-  function loadModelBySize(width, length) {
-    const nextModelPath = getGarageModelPath(width, length);
-    const nextModelKey = `${width}x${length}`;
-
-    if (!nextModelPath) {
-      console.error("[Garage3D] Unsupported model size", { width, length });
-      return;
-    }
-
-    if (activeModelKey === nextModelKey && mountedModel) {
-      applyColors(activeColors);
-      return;
-    }
-
-    const loadId = ++pendingLoadId;
-
-    if (mountedModel) {
-      modelGroup.remove(mountedModel);
-      disposeModel(mountedModel);
-      mountedModel = null;
-      clearGarageParts();
-    }
-
-    loader.load(
-      nextModelPath,
-      (gltf) => {
-        if (destroyed || loadId !== pendingLoadId) {
-          disposeModel(gltf.scene);
-          return;
-        }
-
-        mountedModel = gltf.scene;
-        activeModelKey = nextModelKey;
-        modelGroup.rotation.set(0, 0, 0);
-        centerModel(mountedModel);
-        modelGroup.add(mountedModel);
-        frameModel(mountedModel);
-
-        const meshIndex = buildMeshIndex(mountedModel);
-        Object.assign(garageParts, detectGarageParts(meshIndex));
-        applyColors(activeColors);
-      },
-      undefined,
-      (error) => {
-        if (loadId !== pendingLoadId) return;
-        console.error("[Garage3D] Failed to load model", { path: nextModelPath, error });
-      }
-    );
+    if (colors.wall) walls.material.color.set(colors.wall);
+    if (colors.roof) roof.material.color.set(colors.roof);
+    if (colors.gate) gate.material.color.set(colors.gate);
+    if (colors.trim) trim.material.color.set(colors.trim);
+    if (colors.interiorWall) innerWalls.material.color.set(colors.interiorWall);
   }
 
   function resize() {
@@ -273,15 +119,15 @@ controls.maxPolarAngle = 1.42;
     const height = container.clientHeight || 1;
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(clampPixelRatio());
     renderer.setSize(width, height, false);
   }
 
   function animate() {
     if (destroyed) return;
-    animationFrameId = window.requestAnimationFrame(animate);
+    frameId = window.requestAnimationFrame(animate);
+    garageGroup.rotation.y += 0.0022;
     controls.update();
-    modelGroup.rotation.y += modelRotationSpeed;
     renderer.render(scene, camera);
   }
 
@@ -291,26 +137,27 @@ controls.maxPolarAngle = 1.42;
   }
 
   window.addEventListener("resize", resize);
+  updateGeometry(currentSize.width, currentSize.length);
   resize();
   animate();
 
   return {
     applyColors,
-    loadModelBySize,
+    loadModelBySize(width, length) {
+      updateGeometry(width, length);
+    },
     destroy() {
       destroyed = true;
-      window.cancelAnimationFrame(animationFrameId);
+      window.cancelAnimationFrame(frameId);
       window.removeEventListener("resize", resize);
       resizeObserver?.disconnect();
       controls.dispose();
-      renderer.domElement.removeEventListener("wheel", isolateWheelEvent);
-
-      if (mountedModel) disposeModel(mountedModel);
-
       renderer.dispose();
-      environmentMap?.dispose?.();
-      pmremGenerator?.dispose?.();
-      renderer.domElement.remove();
+      container.contains(renderer.domElement) && renderer.domElement.remove();
+      [walls, roof, gate, trim, innerWalls, footing, ground].forEach((mesh) => {
+        mesh.geometry?.dispose?.();
+        mesh.material?.dispose?.();
+      });
     }
   };
 }

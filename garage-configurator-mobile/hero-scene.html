@@ -1,45 +1,47 @@
-<section class="hero" id="heroStep">
-  <div class="hero-inner">
-    <div class="hero-scene">
-      <div id="garageScene" class="garage-scene" aria-live="polite">
-        <img class="garage-layer garage-background" data-embed-asset="images/garages/scene/background.webp" alt="Фон сцены гаража" />
-        <img class="garage-layer garage-interior" data-embed-asset="images/garages/scene/interior.webp" alt="Интерьер гаража" />
+<section class="gc-m-hero" id="heroStep">
+  <div class="gc-m-hero__panel">
+    <div class="gc-m-hero__eyebrow">MSK-GARAGE · mobile shell</div>
+    <h1 class="gc-m-hero__title">Конфигуратор гаража для iPhone-класса экранов</h1>
+    <p class="gc-m-hero__lead">Отдельная mobile-first сборка: быстрый выбор сценария, компактный viewer, прозрачная pricing-логика и sticky CTA без desktop-артефактов.</p>
+    <div class="gc-m-hero__chips">
+      <span class="gc-m-hero__chip">Single-column flow</span>
+      <span class="gc-m-hero__chip">Tilda-safe scope</span>
+      <span class="gc-m-hero__chip">jsDelivr-ready</span>
+    </div>
+  </div>
 
-        <div class="garage-gate-mask" aria-hidden="true">
-          <div class="garage-gate-content">
-            <img class="garage-gate" data-embed-asset="images/garages/scene/gate.webp" alt="Ворота гаража" />
-            <span class="garage-gate-text">Чтобы собрать свой гараж — нажмите на пульт</span>
-          </div>
-        </div>
-
-        <img class="garage-layer garage-front" data-embed-asset="images/garages/scene/front.webp" alt="Передний план гаража" />
-
-        <div class="garage-brand" aria-hidden="true">
-          <img class="garage-brand-logo" data-embed-asset="images/garages/scene/logo11.webp" alt="Логотип MSK-GARAGE" />
-          <span class="garage-brand-title">MSK-GARAGE</span>
-          <span class="garage-brand-subtitle">гаражи из сэндвич-панелей</span>
-        </div>
-
-        <button id="garageRemoteButton" class="garage-remote" type="button" aria-label="Открыть ворота" aria-pressed="false">
-          <span class="garage-remote-dot" aria-hidden="true"></span>
-          <span class="garage-remote-line" aria-hidden="true"></span>
-          <span class="garage-remote-label">🏠</span>
-        </button>
-
-        <div class="garage-interior-ui" aria-hidden="true">
-          <div class="garage-interior-buttons">
-            <button class="garage-choice" type="button" data-width="6">
-              <span class="garage-choice-main">1 МАШИНА</span>
-              <span class="garage-choice-sub">/ 6 м</span>
-            </button>
-
-            <button class="garage-choice" type="button" data-width="8">
-              <span class="garage-choice-main">2 МАШИНЫ</span>
-              <span class="garage-choice-sub">/ 8 м</span>
-            </button>
-          </div>
+  <div class="gc-m-hero__scene" id="garageScene">
+    <div class="gc-m-hero__backdrop"></div>
+    <div class="gc-m-hero__garage">
+      <div class="gc-m-hero__roof"></div>
+      <div class="gc-m-hero__body"></div>
+      <div class="gc-m-hero__gate-mask">
+        <div class="gc-m-hero__gate-content">
+          <div class="gc-m-hero__gate"></div>
+          <p class="gc-m-hero__gate-text">Откройте сцену и выберите сценарий гаража</p>
         </div>
       </div>
+      <div class="gc-m-hero__apron"></div>
     </div>
+
+    <div class="gc-m-hero__overlay">
+      <div class="gc-m-hero__status">Премиальная mobile-композиция · без desktop squeeze</div>
+      <div class="gc-m-hero__chooser">
+        <button class="gc-m-hero__choice" type="button" data-width="6">
+          <strong>1 машина</strong>
+          <span>Ширина 6 м · 1 ворота</span>
+        </button>
+        <button class="gc-m-hero__choice" type="button" data-width="8">
+          <strong>2 машины</strong>
+          <span>Ширина 8 м · 2 ворот</span>
+        </button>
+      </div>
+    </div>
+
+    <button id="garageRemoteButton" class="gc-m-hero__remote" type="button" aria-label="Открыть мобильную сцену" aria-pressed="false">
+      <span class="gc-m-hero__remote-dot"></span>
+      <span class="gc-m-hero__remote-line"></span>
+      <span class="gc-m-hero__remote-text">Открыть</span>
+    </button>
   </div>
 </section>
