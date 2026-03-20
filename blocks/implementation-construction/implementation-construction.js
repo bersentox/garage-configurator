@@ -1,5 +1,5 @@
 (function () {
-  const root = document.querySelector('.implementation-construction');
+  const root = document.getElementById('implementation-construction-app');
 
   if (!root) {
     return;
@@ -9,7 +9,7 @@
   const constructionSurface = root.querySelector('[data-implementation-construction-surface="construction"]');
   const footerNode = root.querySelector('[data-implementation-construction-footer]');
 
-  const JSON_PATH = '../site-body-content/implementation-construction.content.json';
+  const JSON_URL = new URL('../site-body-content/implementation-construction.content.json', import.meta.url);
 
   function normalizeSectionKey(value) {
     return String(value || '')
@@ -175,7 +175,7 @@
 
   async function init() {
     try {
-      const response = await fetch(JSON_PATH, { cache: 'no-store' });
+      const response = await fetch(JSON_URL, { cache: 'no-store' });
 
       if (!response.ok) {
         throw new Error(`Failed to load JSON: ${response.status}`);
