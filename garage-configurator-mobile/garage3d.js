@@ -1,26 +1,58 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/+esm";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js/+esm";
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/+esm';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js/+esm';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js/+esm';
+import { resolveModelAsset } from './asset-paths.js';
+
+const MODEL_FILES = {
+  '6x6': 'garage_6x6.glb',
+  '6x8': 'garage_6x8.glb',
+  '6x10': 'garage_6x10.glb',
+  '8x6': 'garage_8x6.glb',
+  '8x8': 'garage_8x8.glb',
+  '8x10': 'garage_8x10.glb'
+};
+
+const SUPPORTED_LENGTHS = [6, 8, 10];
+const MATERIAL_ROLE_MAP = {
+  gate: ['mat_gate', 'gate'],
+  roof: ['mat_roof', 'roof'],
+  trim: ['mat_trim', 'trim', 'foundation'],
+  wall: ['mat_walls', 'walls'],
+  interiorWall: ['mat_windows', 'mat_glass', 'windows', 'glass']
+};
 
 function clampPixelRatio() {
-  return Math.min(window.devicePixelRatio || 1, 1.5);
+  return Math.min(window.devicePixelRatio || 1, 1.25);
 }
 
-function createMaterial(color) {
-  return new THREE.MeshStandardMaterial({ color, roughness: 0.82, metalness: 0.12 });
+function normalizeSize(width, length) {
+  const canonicalWidth = Number(width) >= 8 ? 8 : 6;
+  const numericLength = Number(length) || 6;
+  const canonicalLength = SUPPORTED_LENGTHS.reduce((closest, option) => (
+    Math.abs(option - numericLength) < Math.abs(closest - numericLength) ? option : closest
+  ), SUPPORTED_LENGTHS[0]);
+  return { width: canonicalWidth, length: canonicalLength, key: `${canonicalWidth}x${canonicalLength}` };
 }
 
-export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) {
+function disposeMaterial(material) {
+  if (Array.isArray(material)) {
+    material.forEach(disposeMaterial);
+    return;
+  }
+  material?.dispose?.();
+}
+
+export function createGarage3DViewer({ containerId = 'garage-3d-viewer' } = {}) {
   const container = document.getElementById(containerId);
   if (!container) return { applyColors() {}, loadModelBySize() {}, destroy() {} };
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color("#dfe7ef");
-  scene.fog = new THREE.Fog("#dfe7ef", 12, 24);
+  scene.background = new THREE.Color('#dde6ee');
 
-  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-  camera.position.set(6.5, 4.4, 8.4);
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+  camera.position.set(8.2, 4.6, 9.8);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "low-power" });
+  const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'low-power' });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.setPixelRatio(clampPixelRatio());
   renderer.setSize(container.clientWidth || 1, container.clientHeight || 1, false);
@@ -33,84 +65,129 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   controls.rotateSpeed = 0.55;
   controls.minPolarAngle = 0.95;
   controls.maxPolarAngle = 1.35;
-  controls.target.set(0, 1.2, 0);
+  controls.target.set(0, 1.65, 0);
 
-  const ambient = new THREE.HemisphereLight(0xffffff, 0x8ea0b6, 1.15);
+  const ambient = new THREE.HemisphereLight(0xffffff, 0x94a5b8, 1.2);
   scene.add(ambient);
-  const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
-  keyLight.position.set(6, 9, 7);
+
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.1);
+  keyLight.position.set(8, 10, 6);
   scene.add(keyLight);
-  const fillLight = new THREE.DirectionalLight(0xcad8ea, 0.55);
-  fillLight.position.set(-4, 5, -5);
+
+  const fillLight = new THREE.DirectionalLight(0xd9e7f5, 0.5);
+  fillLight.position.set(-6, 5, -5);
   scene.add(fillLight);
 
   const ground = new THREE.Mesh(
-    new THREE.CylinderGeometry(7, 7.6, 0.22, 48),
-    new THREE.MeshStandardMaterial({ color: "#cfd8e2", roughness: 1, metalness: 0 })
+    new THREE.CircleGeometry(9, 48),
+    new THREE.MeshStandardMaterial({ color: '#c8d3df', roughness: 1, metalness: 0 })
   );
-  ground.position.y = -0.12;
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -0.01;
   scene.add(ground);
 
-  const garageGroup = new THREE.Group();
-  scene.add(garageGroup);
+  const loader = new GLTFLoader();
+  const modelAnchor = new THREE.Group();
+  scene.add(modelAnchor);
 
-  const walls = new THREE.Mesh(new THREE.BoxGeometry(4.6, 2.55, 4.4), createMaterial("#7a818b"));
-  walls.position.y = 1.3;
-  garageGroup.add(walls);
-
-  const roof = new THREE.Mesh(new THREE.ConeGeometry(3.55, 1.1, 4), createMaterial("#3f4651"));
-  roof.rotation.y = Math.PI * 0.25;
-  roof.position.y = 3.02;
-  roof.scale.set(1.3, 1, 1.55);
-  garageGroup.add(roof);
-
-  const gate = new THREE.Mesh(new THREE.BoxGeometry(1.7, 1.7, 0.12), createMaterial("#5d6674"));
-  gate.position.set(0, 0.92, 2.24);
-  garageGroup.add(gate);
-
-  const trim = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.14, 4.55), createMaterial("#191f29"));
-  trim.position.y = 2.54;
-  garageGroup.add(trim);
-
-  const innerWalls = new THREE.Mesh(new THREE.BoxGeometry(4.1, 2.2, 3.85), createMaterial("#d7dde5"));
-  innerWalls.position.y = 1.28;
-  innerWalls.visible = false;
-  garageGroup.add(innerWalls);
-
-  const footing = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.18, 4.8), createMaterial("#98a3b1"));
-  footing.position.y = 0.02;
-  garageGroup.add(footing);
-
-  let currentSize = { width: 6, length: 6 };
-  let frameId = 0;
+  let currentModel = null;
+  let activeRequestId = 0;
+  let lastRequestedKey = '';
+  let currentColors = {};
   let destroyed = false;
+  let frameId = 0;
   let resizeObserver = null;
 
-  function updateGeometry(width, length) {
-    currentSize = { width, length };
-    const widthScale = width / 6;
-    const lengthScale = length / 6;
-
-    walls.scale.set(widthScale, 1, Math.min(lengthScale, 2));
-    trim.scale.set(widthScale, 1, Math.min(lengthScale, 2));
-    footing.scale.set(widthScale, 1, Math.min(lengthScale, 2));
-    innerWalls.scale.set(Math.max(0.9, widthScale * 0.92), 1, Math.max(0.9, Math.min(lengthScale, 2) * 0.92));
-    roof.scale.set(1.3 * widthScale, 1, 1.55 * Math.min(lengthScale, 2));
-
-    const gateWidth = width >= 8 ? 2.9 : 1.7;
-    gate.geometry.dispose();
-    gate.geometry = new THREE.BoxGeometry(gateWidth, 1.7, 0.12);
-    gate.position.set(0, 0.92, 2.24 * Math.min(lengthScale, 2));
-
-    controls.target.set(0, 1.25, 0);
+  function collectColorTargets(root) {
+    const targets = { wall: [], roof: [], gate: [], trim: [], interiorWall: [] };
+    root.traverse((node) => {
+      if (!node.isMesh) return;
+      node.castShadow = false;
+      node.receiveShadow = false;
+      const materials = Array.isArray(node.material) ? node.material : [node.material];
+      materials.forEach((material) => {
+        if (!material || !material.name) return;
+        const name = material.name.toLowerCase();
+        Object.entries(MATERIAL_ROLE_MAP).forEach(([role, markers]) => {
+          if (markers.some((marker) => name.includes(marker))) {
+            targets[role].push(material);
+          }
+        });
+      });
+    });
+    return targets;
   }
 
-  function applyColors(colors = {}) {
-    if (colors.wall) walls.material.color.set(colors.wall);
-    if (colors.roof) roof.material.color.set(colors.roof);
-    if (colors.gate) gate.material.color.set(colors.gate);
-    if (colors.trim) trim.material.color.set(colors.trim);
-    if (colors.interiorWall) innerWalls.material.color.set(colors.interiorWall);
+  function fitCameraToModel(root) {
+    const box = new THREE.Box3().setFromObject(root);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    controls.target.copy(center);
+    const distance = Math.max(size.x, size.z) * 1.28 + 2.8;
+    camera.position.set(center.x + distance * 0.82, center.y + size.y * 0.95, center.z + distance);
+    camera.lookAt(center);
+  }
+
+  function applyColors(colors = currentColors) {
+    currentColors = { ...currentColors, ...colors };
+    if (!currentModel?.userData?.colorTargets) return;
+
+    Object.entries(currentModel.userData.colorTargets).forEach(([role, materials]) => {
+      const colorValue = currentColors[role];
+      if (!colorValue) return;
+      materials.forEach((material) => {
+        material.color?.set(colorValue);
+        material.needsUpdate = true;
+      });
+    });
+  }
+
+  function clearCurrentModel() {
+    if (!currentModel) return;
+    modelAnchor.remove(currentModel);
+    currentModel.traverse((node) => {
+      if (!node.isMesh) return;
+      node.geometry?.dispose?.();
+      disposeMaterial(node.material);
+    });
+    currentModel = null;
+  }
+
+  function setLoadingState(isLoading, message = '') {
+    container.dataset.loading = String(isLoading);
+    container.dataset.message = message;
+  }
+
+  function loadModelBySize(width, length) {
+    const { key } = normalizeSize(width, length);
+    if (key === lastRequestedKey && currentModel) {
+      applyColors();
+      return Promise.resolve();
+    }
+
+    lastRequestedKey = key;
+    const requestId = ++activeRequestId;
+    setLoadingState(true, 'Загружаем модель');
+
+    return loader.loadAsync(resolveModelAsset(MODEL_FILES[key]))
+      .then((gltf) => {
+        if (destroyed || requestId != activeRequestId) return;
+        clearCurrentModel();
+        currentModel = gltf.scene;
+        currentModel.rotation.y = -0.38;
+        currentModel.position.set(0, 0, 0);
+        currentModel.scale.setScalar(0.34);
+        currentModel.userData.colorTargets = collectColorTargets(currentModel);
+        modelAnchor.add(currentModel);
+        fitCameraToModel(currentModel);
+        applyColors();
+        setLoadingState(false);
+      })
+      .catch((error) => {
+        if (requestId != activeRequestId) return;
+        console.error('[garage-configurator-mobile] GLB load failed', error);
+        setLoadingState(false, 'Модель недоступна');
+      });
   }
 
   function resize() {
@@ -126,38 +203,37 @@ export function createGarage3DViewer({ containerId = "garage-3d-viewer" } = {}) 
   function animate() {
     if (destroyed) return;
     frameId = window.requestAnimationFrame(animate);
-    garageGroup.rotation.y += 0.0022;
     controls.update();
     renderer.render(scene, camera);
   }
 
-  if (typeof ResizeObserver !== "undefined") {
+  if (typeof ResizeObserver !== 'undefined') {
     resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(container);
   }
 
-  window.addEventListener("resize", resize);
-  updateGeometry(currentSize.width, currentSize.length);
+  window.addEventListener('resize', resize);
   resize();
   animate();
 
   return {
     applyColors,
-    loadModelBySize(width, length) {
-      updateGeometry(width, length);
+    getCanonicalSize(width, length) {
+      return normalizeSize(width, length);
     },
+    loadModelBySize,
     destroy() {
       destroyed = true;
+      activeRequestId += 1;
       window.cancelAnimationFrame(frameId);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener('resize', resize);
       resizeObserver?.disconnect();
       controls.dispose();
+      clearCurrentModel();
+      ground.geometry.dispose();
+      disposeMaterial(ground.material);
       renderer.dispose();
       container.contains(renderer.domElement) && renderer.domElement.remove();
-      [walls, roof, gate, trim, innerWalls, footing, ground].forEach((mesh) => {
-        mesh.geometry?.dispose?.();
-        mesh.material?.dispose?.();
-      });
     }
   };
 }
