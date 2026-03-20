@@ -159,6 +159,80 @@
     ['build', 'delivery']
   ];
 
+
+  const TOOLTIP_CORNERS = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+
+  function normalizeChildConfig(child) {
+    if (typeof child === 'string') {
+      return { label: child };
+    }
+
+    if (!child || typeof child !== 'object') {
+      return { label: '' };
+    }
+
+    const normalized = {
+      label: typeof child.label === 'string' ? child.label : ''
+    };
+
+    if (TOOLTIP_CORNERS.indexOf(child.tooltipCorner) !== -1 && Number.isFinite(child.tooltipOrbitAngle)) {
+      normalized.tooltipCorner = child.tooltipCorner;
+      normalized.tooltipOrbitAngle = child.tooltipOrbitAngle;
+    }
+
+    if (Number.isFinite(child.tooltipDistance)) {
+      normalized.tooltipDistance = child.tooltipDistance;
+    }
+
+    return normalized;
+  }
+
+  function getManualTooltipCornerOffset(corner, tooltipWidth, tooltipHeight) {
+    const tooltipRadius = Math.min(16, tooltipWidth / 2, tooltipHeight / 2);
+    const cornerInset = tooltipRadius * (1 - Math.SQRT1_2);
+
+    if (corner === 'top-right') {
+      return { x: tooltipWidth - cornerInset, y: cornerInset };
+    }
+
+    if (corner === 'bottom-left') {
+      return { x: cornerInset, y: tooltipHeight - cornerInset };
+    }
+
+    if (corner === 'bottom-right') {
+      return { x: tooltipWidth - cornerInset, y: tooltipHeight - cornerInset };
+    }
+
+    return { x: cornerInset, y: cornerInset };
+  }
+
+  function getManualTooltipBounds(trigger, tooltipWidth, tooltipHeight) {
+    const tooltipCorner = trigger.dataset.tooltipCorner;
+    const orbitAngle = Number(trigger.dataset.tooltipOrbitAngle);
+
+    if (TOOLTIP_CORNERS.indexOf(tooltipCorner) === -1 || !Number.isFinite(orbitAngle)) {
+      return null;
+    }
+
+    const childRect = trigger.getBoundingClientRect();
+    const sceneRect = diagram.getBoundingClientRect();
+    const childCenterX = childRect.left - sceneRect.left + childRect.width / 2;
+    const childCenterY = childRect.top - sceneRect.top + childRect.height / 2;
+    const childRadius = Math.max(childRect.width, childRect.height) / 2;
+    const angleInRadians = orbitAngle * (Math.PI / 180);
+    const directionX = Math.cos(angleInRadians);
+    const directionY = Math.sin(angleInRadians);
+    const tooltipDistance = Number(trigger.dataset.tooltipDistance) || 0;
+    const anchorX = childCenterX + directionX * (childRadius + tooltipDistance);
+    const anchorY = childCenterY + directionY * (childRadius + tooltipDistance);
+    const cornerOffset = getManualTooltipCornerOffset(tooltipCorner, tooltipWidth, tooltipHeight);
+
+    return {
+      corner: tooltipCorner,
+      left: anchorX - cornerOffset.x,
+      top: anchorY - cornerOffset.y
+    };
+  }
   let activeStageKey = null;
   let activeTooltipKey = null;
   let activeTooltipTrigger = null;
@@ -369,6 +443,16 @@ function renderEdges() {
     const gap = Math.max(12, Math.min(20, Math.round(Math.max(childRect.width, childRect.height) * 0.28)));
     const tooltipWidth = overlayTooltip.offsetWidth;
     const tooltipHeight = overlayTooltip.offsetHeight;
+    const manualBounds = getManualTooltipBounds(activeTooltipTrigger, tooltipWidth, tooltipHeight);
+
+    if (manualBounds) {
+      overlayTooltip.className = 'unified-navigation__tooltip unified-navigation__tooltip--manual unified-navigation__tooltip--corner-' + manualBounds.corner + ' is-visible';
+      overlayTooltip.style.left = manualBounds.left + 'px';
+      overlayTooltip.style.top = manualBounds.top + 'px';
+      overlayTooltip.style.removeProperty('--tooltip-tail-offset');
+      return;
+    }
+
     const padding = 8;
     const placements = getPreferredPlacements(anchorX, anchorY, sceneRect);
     let selectedPlacement = placements[0];
@@ -468,8 +552,10 @@ function renderEdges() {
     syncState();
   }
 
-  function createChild(stage, label, index) {
+  function createChild(stage, childConfig, index) {
     const child = document.createElement('button');
+    const normalizedChild = normalizeChildConfig(childConfig);
+    const label = normalizedChild.label;
     const vectors = getClusterVectors(stage);
     const vector = vectors[index] || { x: 0, y: 0 };
     child.className = 'unified-navigation__child';
@@ -477,6 +563,13 @@ function renderEdges() {
     child.textContent = label;
     child.dataset.tooltipKey = stage.key + ':' + label;
     child.dataset.tooltipText = TOOLTIP_COPY[stage.key][label];
+    if (normalizedChild.tooltipCorner) {
+      child.dataset.tooltipCorner = normalizedChild.tooltipCorner;
+      child.dataset.tooltipOrbitAngle = String(normalizedChild.tooltipOrbitAngle);
+    }
+    if (Number.isFinite(normalizedChild.tooltipDistance)) {
+      child.dataset.tooltipDistance = String(normalizedChild.tooltipDistance);
+    }
     child.style.setProperty('--child-x', vector.x + 'px');
     child.style.setProperty('--child-y', vector.y + 'px');
     child.style.transitionDelay = index * 70 + 'ms';
