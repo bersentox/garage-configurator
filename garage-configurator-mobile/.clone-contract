@@ -1,8 +1,0 @@
-SOURCE_DIR=garage-configurator-embed
-TARGET_DIR=garage-configurator-mobile
-CLONE_MODE=full_recursive_copy
-ALLOW_SOURCE_EDITS=false
-ALLOW_TARGET_REFACTOR=false
-ALLOW_RENAME=false
-ALLOW_DELETE=false
-ALLOW_SHARED_RUNTIME_DEPENDENCY=false
