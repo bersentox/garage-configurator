@@ -523,3 +523,25 @@
     border-radius: 20px;
   }
 }
+.unified-navigation__tooltip {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.unified-navigation__tooltip-content {
+  position: relative;
+  z-index: 1;
+  display: block;
+  padding: 10px 12px;
+  border-radius: var(--unified-navigation-tooltip-radius, 16px);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(124, 155, 201, 0.2);
+  box-shadow: var(--unified-navigation-tooltip-shadow);
+}
+
+.unified-navigation__tooltip-tail {
+  z-index: 0;
+}
