@@ -196,38 +196,42 @@
   }
 
 
-  function renderEdges() {
-    edgesLayer.innerHTML = '';
+function renderEdges() {
+  edgesLayer.innerHTML = '';
 
-    connections.forEach(function (connection) {
-      const fromStage = stages.find(function (stage) {
-        return stage.key === connection[0];
-      });
-      const toStage = stages.find(function (stage) {
-        return stage.key === connection[1];
-      });
+  const layerRect = edgesLayer.getBoundingClientRect();
 
-      if (!fromStage || !toStage) {
-        return;
-      }
+  connections.forEach(function (connection) {
+    const fromNode = nodesLayer.querySelector('[data-stage-key="' + connection[0] + '"]');
+    const toNode = nodesLayer.querySelector('[data-stage-key="' + connection[1] + '"]');
 
-      const fromPoint = getPosition(fromStage);
-      const toPoint = getPosition(toStage);
-      const dx = toPoint.x - fromPoint.x;
-      const dy = toPoint.y - fromPoint.y;
-      const length = Math.hypot(dx, dy);
-      const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-      const edge = document.createElement('div');
+    if (!fromNode || !toNode) {
+      return;
+    }
 
-      edge.className = 'unified-navigation__edge';
-      edge.style.left = fromPoint.x + '%';
-      edge.style.top = fromPoint.y + '%';
-      edge.style.width = length + '%';
-      edge.style.transform = 'rotate(' + angle + 'deg)';
+    const fromRect = fromNode.getBoundingClientRect();
+    const toRect = toNode.getBoundingClientRect();
 
-      edgesLayer.appendChild(edge);
-    });
-  }
+    const fromX = fromRect.left - layerRect.left + fromRect.width / 2;
+    const fromY = fromRect.top - layerRect.top + fromRect.height / 2;
+    const toX = toRect.left - layerRect.left + toRect.width / 2;
+    const toY = toRect.top - layerRect.top + toRect.height / 2;
+
+    const dx = toX - fromX;
+    const dy = toY - fromY;
+    const length = Math.hypot(dx, dy);
+    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+    const edge = document.createElement('div');
+    edge.className = 'unified-navigation__edge';
+    edge.style.left = fromX + 'px';
+    edge.style.top = fromY + 'px';
+    edge.style.width = length + 'px';
+    edge.style.transform = 'rotate(' + angle + 'deg)';
+
+    edgesLayer.appendChild(edge);
+  });
+}
 
   function hideOverlayTooltip() {
     overlayTooltip.hidden = true;
