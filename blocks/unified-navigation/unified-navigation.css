@@ -545,3 +545,18 @@
 .unified-navigation__tooltip-tail {
   z-index: 0;
 }
+.unified-navigation__tooltip--corner-top-left .unified-navigation__tooltip-content {
+  border-top-left-radius: 0;
+}
+
+.unified-navigation__tooltip--corner-top-right .unified-navigation__tooltip-content {
+  border-top-right-radius: 0;
+}
+
+.unified-navigation__tooltip--corner-bottom-left .unified-navigation__tooltip-content {
+  border-bottom-left-radius: 0;
+}
+
+.unified-navigation__tooltip--corner-bottom-right .unified-navigation__tooltip-content {
+  border-bottom-right-radius: 0;
+}
