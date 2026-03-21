@@ -1,6 +1,6 @@
-import * as THREE from 'https://unpkg.com/three@0.160.1/build/three.module.js';
-import { OrbitControls } from 'https://unpkg.com/three@0.160.1/examples/jsm/controls/OrbitControls.js';
-import { GLTFLoader } from 'https://unpkg.com/three@0.160.1/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from './vendor/three/three.module.js';
+import { OrbitControls } from './vendor/three/OrbitControls.js';
+import { GLTFLoader } from './vendor/three/GLTFLoader.js';
 
 const state = {
   type: 'single',
@@ -48,10 +48,17 @@ let animationId;
 let loadToken = 0;
 const loader = new GLTFLoader();
 
-initViewer();
-bindControls();
-updateUI();
-loadCurrentModel();
+boot();
+
+function boot() {
+  bindControls();
+  updateUI();
+
+  if (!refs.viewer) return;
+
+  initViewer();
+  loadCurrentModel();
+}
 
 function initViewer() {
   scene = new THREE.Scene();
