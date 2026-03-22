@@ -10,8 +10,16 @@ const state = {
 
 const CONFIG = {
   prices: {
-    single: { label: 'от 1 000 000 ₽', copy: 'Для гаража на одни ворота. Финальный расчёт зависит от комплектации, площадки и монтажа.' },
-    double: { label: 'от 2 000 000 ₽', copy: 'Для гаража на двое ворот. Финальная стоимость уточняется после выбора комплектации и условий монтажа.' },
+    single: {
+      '6': { label: 'от 1 000 000 ₽', copy: 'Для гаража на одни ворота. Финальный расчёт зависит от комплектации, площадки и монтажа.' },
+      '8': { label: 'от 1 200 000 ₽', copy: 'Для гаража на одни ворота. Финальный расчёт зависит от комплектации, площадки и монтажа.' },
+      '10': { label: 'от 1 400 000 ₽', copy: 'Для гаража на одни ворота. Финальный расчёт зависит от комплектации, площадки и монтажа.' },
+    },
+    double: {
+      '6': { label: 'от 2 000 000 ₽', copy: 'Для гаража на двое ворот. Финальная стоимость уточняется после выбора комплектации и условий монтажа.' },
+      '8': { label: 'от 2 300 000 ₽', copy: 'Для гаража на двое ворот. Финальная стоимость уточняется после выбора комплектации и условий монтажа.' },
+      '10': { label: 'от 2 600 000 ₽', copy: 'Для гаража на двое ворот. Финальная стоимость уточняется после выбора комплектации и условий монтажа.' },
+    },
   },
   labels: {
     type: { single: '1 ворота', double: '2 ворота' },
@@ -169,8 +177,9 @@ function updateUI() {
   refs.lengthSummary.textContent = `${state.length} м`;
   refs.colorSummary.textContent = CONFIG.labels.color[state.color];
   refs.viewerTitle.textContent = `Гараж ${state.type === 'single' ? '6' : '8'}×${state.length} · ${CONFIG.labels.type[state.type]}`;
-  refs.priceValue.textContent = CONFIG.prices[state.type].label;
-  refs.priceCopy.textContent = CONFIG.prices[state.type].copy;
+  const currentPrice = CONFIG.prices[state.type][state.length];
+  refs.priceValue.textContent = currentPrice.label;
+  refs.priceCopy.textContent = currentPrice.copy;
 }
 
 function loadCurrentModel() {
