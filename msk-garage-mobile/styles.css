@@ -68,24 +68,8 @@ button { font: inherit; }
   z-index: 1;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   min-height: calc(100svh - var(--safe-top));
-}
-.hero__brand {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding-top: 4px;
-}
-.hero__logo { width: 148px; }
-.hero__tag {
-  font-size: 0.72rem;
-  line-height: 1.25;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.76);
-  max-width: 126px;
-  text-align: right;
 }
 .hero__copy { margin-top: auto; padding-top: 52px; }
 .eyebrow {
@@ -106,39 +90,45 @@ h1, h2, h3, p { margin: 0; }
   max-width: 12ch;
 }
 .hero__lead {
-  margin-top: 16px;
+  margin-top: 14px;
   font-size: 0.98rem;
   line-height: 1.6;
   color: var(--muted);
-  max-width: 34ch;
+  max-width: 28ch;
+}
+.hero__cta-wrap {
+  margin-top: 22px;
+}
+.hero__cta {
+  width: 100%;
+}
+.hero__cta-note {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.72);
 }
 .hero__actions {
   display: grid;
-  gap: 12px;
-  margin-top: 28px;
+  gap: 10px;
+  margin-top: 18px;
 }
 .choice-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 18px 18px;
+  padding: 15px 16px;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 20px;
   backdrop-filter: blur(10px);
-  box-shadow: var(--shadow);
+  box-shadow: 0 14px 38px rgba(2, 8, 18, 0.24);
+  opacity: 0.9;
 }
 .choice-card--primary { border-color: rgba(227, 187, 120, 0.52); }
 .choice-card__label { font-size: 1rem; font-weight: 700; }
 .choice-card__meta { color: rgba(255,255,255,0.72); font-size: 0.9rem; }
-.hero__scroll {
-  margin-top: 18px;
-  align-self: flex-start;
-  padding: 12px 14px;
-  color: rgba(255,255,255,0.84);
-  font-size: 0.9rem;
-}
 
 section { padding: 26px 0; }
 .section-soft { background: linear-gradient(180deg, var(--surface-light) 0%, var(--surface-light-alt) 100%); color: var(--text-dark); }
