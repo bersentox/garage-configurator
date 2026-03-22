@@ -68,11 +68,9 @@ button { font: inherit; }
   z-index: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   min-height: calc(100svh - var(--safe-top));
-  text-align: center;
 }
-.hero__copy { margin-top: auto; padding-top: 52px; }
+.hero__copy { margin-top: 0; padding-top: 56px; }
 .eyebrow {
   margin: 0 0 10px;
   font-size: 0.76rem;
@@ -88,17 +86,17 @@ h1, h2, h3, p { margin: 0; }
   font-size: clamp(2.2rem, 8vw, 3.35rem);
   line-height: 0.95;
   letter-spacing: -0.06em;
-  max-width: 100%;
+  max-width: 12ch;
 }
 .hero__lead {
   margin-top: 14px;
   font-size: 0.98rem;
   line-height: 1.6;
   color: var(--muted);
-  max-width: 100%;
+  max-width: 28ch;
 }
 .hero__cta-wrap {
-  margin-top: 22px;
+  margin-top: auto;
 }
 .hero__cta {
   width: 100%;
