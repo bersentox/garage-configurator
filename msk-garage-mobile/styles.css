@@ -312,13 +312,15 @@ section { padding: 26px 0; }
   background: linear-gradient(135deg, #11203a 0%, #1a2d4d 100%);
   color: var(--text);
 }
+.light-section .price-card .price-card__label { color: rgba(255,255,255,0.68); }
+.light-section .price-card .price-card__value { color: var(--text); }
+.light-section .price-card .price-card__copy { color: rgba(255,255,255,0.76); }
 .price-card__label { color: rgba(255,255,255,0.68); font-size: 0.86rem; }
 .price-card__value {
   margin-top: 8px;
   font-size: 1.8rem;
   letter-spacing: -0.05em;
   font-weight: 800;
-  color: var(--text);
 }
 .price-card__copy { margin-top: 8px; line-height: 1.55; color: rgba(255,255,255,0.76); }
 .button {
