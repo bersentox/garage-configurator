@@ -70,6 +70,7 @@ button { font: inherit; }
   flex-direction: column;
   justify-content: flex-end;
   min-height: calc(100svh - var(--safe-top));
+  text-align: center;
 }
 .hero__copy { margin-top: auto; padding-top: 52px; }
 .eyebrow {
