@@ -28,9 +28,17 @@ const CONFIG = {
     color: { sand: 'Песочный', chocolate: 'Шоколадный', graphite: 'Графит' },
   },
   modelMap: {
-    single: { '6': 'assets/models/garage_6x6.glb', '8': 'assets/models/garage_6x8.glb', '10': 'assets/models/garage_6x10.glb' },
-    double: { '6': 'assets/models/garage_8x6.glb', '8': 'assets/models/garage_8x8.glb', '10': 'assets/models/garage_8x10.glb' },
+  single: {
+    '6': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_6x6.glb',
+    '8': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_6x8.glb',
+    '10': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_6x10.glb',
   },
+  double: {
+    '6': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_8x6.glb',
+    '8': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_8x8.glb',
+    '10': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_8x10.glb',
+  }
+}
   colors: {
     sand: 0xc5ab79,
     chocolate: 0x5d4032,
