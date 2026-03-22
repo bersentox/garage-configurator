@@ -143,6 +143,8 @@ h1, h2, h3, p { margin: 0; }
 section { padding: 26px 0; }
 .section-soft { background: linear-gradient(180deg, var(--surface-light) 0%, var(--surface-light-alt) 100%); color: var(--text-dark); }
 .section-heading {
+  position: relative;
+  z-index: 3;
   display: grid;
   gap: 10px;
   margin-bottom: 18px;
@@ -153,33 +155,19 @@ section { padding: 26px 0; }
   font-size: 1.75rem;
   line-height: 1.02;
   letter-spacing: -0.05em;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+}
+.section-heading p {
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 .section-heading p:last-child {
   font-size: 0.98rem;
   line-height: 1.62;
-  color: var(--muted-dark);
 }
 
-.configurator-section {
-  position: relative;
-  z-index: 2;
-  padding-top: 28px;
-  color: var(--text-dark);
-  background: linear-gradient(
-    180deg,
-    #0d1627 0%,
-    #efe8dc 35%,
-    #f6f1e8 100%
-  );
-}
-
-.configurator-section .section-heading {
-  color: #0f1728;
-}
-
-.configurator-section .section-heading p {
-  color: rgba(15, 23, 40, 0.8);
-}
+.configurator-section { padding-top: 28px; color: var(--text-dark); }
 .viewer-card,
 .config-card,
 .final-cta__card,
