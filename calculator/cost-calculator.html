@@ -1,0 +1,1953 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Мега-калькулятор (каркас + панели + доборы + допы + фундамент)</title>
+  <style>
+    :root{
+      --bg:#f6f7f9; --card:#fff; --text:#1f2933; --muted:#5b6676; --border:#e4e8ee;
+      --radius:14px; --shadow:0 10px 30px rgba(0,0,0,.06);
+    }
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:16px;background:var(--bg);color:var(--text)}
+    .wrap{max-width:1060px;margin:0 auto}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tabbtn{padding:10px 12px;border-radius:999px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:14px}
+    .tabbtn[aria-selected="true"]{border-color:#111827;background:#111827;color:#fff}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width: 860px){.grid{grid-template-columns:1fr}}
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    @media (max-width: 860px){.grid3{grid-template-columns:1fr}}
+    .small{font-size:12px;color:var(--muted)}
+    .row{display:flex;justify-content:space-between;gap:10px;margin:6px 0;font-variant-numeric:tabular-nums}
+    hr{border:none;border-top:1px solid #e6ebf0;margin:10px 0}
+    b{font-variant-numeric:tabular-nums}
+    .section{display:none}
+    .section.is-active{display:block}
+    table{width:100%}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    input[type="number"], input[type="text"], select{
+      border:1px solid var(--border);border-radius:10px;padding:10px 10px;font-size:14px;outline:none;background:#fff;width:100%;
+      box-sizing:border-box;
+    }
+    button{border:1px solid var(--border);background:#fff;border-radius:10px;padding:10px 12px;cursor:pointer;font-weight:600;color:var(--text)}
+    .mono{font-variant-numeric:tabular-nums}
+    .tbl{width:100%;border-collapse:separate;border-spacing:0 8px}
+    .tbl th{font-size:12px;color:var(--muted);text-align:left;font-weight:600;padding:0 8px}
+    .tbl td{background:#fff;border:1px solid var(--border);padding:10px 8px}
+    .tbl tr td:first-child{border-radius:10px 0 0 10px}
+    .tbl tr td:last-child{border-radius:0 10px 10px 0}
+    .num{text-align:right;white-space:nowrap}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:#fff;font-size:12px;color:var(--muted)}
+  </style>
+
+  <script>
+    // Глобальные параметры (ширина-пресет и длина) — один раз сверху, везде используются
+    window.MegaGlobal = (function(){
+      const LS = "mega_global_v1";
+      const state = { preset: "8", L: 8 };
+
+      function load(){
+        try{
+          const raw = localStorage.getItem(LS);
+          if(!raw) return;
+          const obj = JSON.parse(raw);
+          if(obj && typeof obj === "object"){
+            if(obj.preset === "6" || obj.preset === "8") state.preset = obj.preset;
+            if(Number(obj.L) > 0) state.L = Number(obj.L);
+          }
+        }catch(e){}
+      }
+      function save(){
+        try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+      }
+      function setPreset(p){
+        state.preset = (p==="6") ? "6" : "8";
+        save();
+        broadcast();
+      }
+      function setL(v){
+        const n = Math.max(1, Number(v)||1);
+        state.L = n;
+        save();
+        broadcast();
+      }
+      function broadcast(){
+        // событие для всех вкладок
+        document.dispatchEvent(new CustomEvent("mega:globalChange", { detail: { preset: state.preset, L: state.L }}));
+      }
+      function get(){
+        return { preset: state.preset, L: state.L };
+      }
+      load();
+      return { state, setPreset, setL, get, broadcast };
+    })();
+
+    // Агрегатор итогов
+    window.MegaCalc = (function(){
+      const state = { frame:0, panels:0, dobory:0, extras:0, foundation:0 };
+      const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+      function set(key, value){
+        state[key] = Number(value||0);
+        render();
+      }
+      function total(){
+        return state.frame + state.panels + state.dobory + state.extras + state.foundation;
+      }
+      function render(){
+        const el = document.getElementById('mega_summary');
+        if(!el) return;
+        el.innerHTML =
+          '<div class="row"><span>Металлокаркас</span><b>'+rub(state.frame)+' ₽</b></div>' +
+          '<div class="row"><span>Сэндвич-панели + расходники</span><b>'+rub(state.panels)+' ₽</b></div>' +
+          '<div class="row"><span>Доборы</span><b>'+rub(state.dobory)+' ₽</b></div>' +
+          '<div class="row"><span>Доп. опции (штучные)</span><b>'+rub(state.extras)+' ₽</b></div>' +
+          '<div class="row"><span>Фундамент (плита 250 мм)</span><b>'+rub(state.foundation)+' ₽</b></div>' +
+          '<hr>' +
+          '<div class="row"><span><b>ИТОГО</b></span><b>'+rub(total())+' ₽</b></div>' +
+          '<div class="small">Все суммы обновляются автоматически из вкладок.</div>';
+      }
+      return { set, render, state };
+    })();
+
+    // ===== MegaBill: единый реестр позиций для общей сметы =====
+    window.MegaBill = (function(){
+      const store = {}; // { key: { title, items:[{name,unit,qty,price,sum}] } }
+      const n = (v)=> Number(v||0);
+
+      function normalizeItem(it){
+        const qty = n(it && it.qty);
+        const price = n(it && it.price);
+        const sum = (it && Number.isFinite(Number(it.sum))) ? Number(it.sum) : qty * price;
+        return {
+          name: String(it && it.name || ""),
+          unit: String(it && it.unit || ""),
+          qty, price, sum
+        };
+      }
+
+      function setSection(key, payload){
+        if(!key) return;
+        const title = payload && payload.title ? String(payload.title) : String(key);
+        const items = Array.isArray(payload && payload.items) ? payload.items.map(normalizeItem) : [];
+        store[key] = { title, items };
+        document.dispatchEvent(new CustomEvent("mega:billChange", { detail: { key } }));
+      }
+
+      function getAll(){
+        return JSON.parse(JSON.stringify(store));
+      }
+
+      function fmt(nm, digits=3){
+        return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:digits}).format(Number(nm||0));
+      }
+      function money(nm){
+        return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(nm||0)) + " ₽";
+      }
+
+      function buildText(){
+        const lines = [];
+        let grand = 0;
+        for(const key of Object.keys(store)){
+          const sec = store[key];
+          if(!sec || !Array.isArray(sec.items) || sec.items.length===0) continue;
+          lines.push(`=== ${sec.title} ===`);
+          lines.push(`Позиция\tЕд.\tКол-во\tЦена\tСумма`);
+          let sub = 0;
+          for(const it of sec.items){
+            if(!it || !it.name) continue;
+            sub += Number(it.sum)||0;
+            lines.push(`${it.name}\t${it.unit}\t${fmt(it.qty)}\t${money(it.price)}\t${money(it.sum)}`);
+          }
+          lines.push(`Итого ${sec.title}:\t\t\t\t${money(sub)}`);
+          lines.push("");
+          grand += sub;
+        }
+        lines.push(`ИТОГО СМЕТА:\t\t\t\t${money(grand)}`);
+        return lines.join("\n");
+      }
+
+      function buildMarkdown(){
+        const lines = [];
+        let grand = 0;
+        const copy = getAll();
+        for(const key of Object.keys(copy)){
+          const sec = copy[key];
+          if(!sec || !Array.isArray(sec.items) || sec.items.length===0) continue;
+          lines.push(`### ${sec.title}`);
+          lines.push(`| Позиция | Ед. | Кол-во | Цена | Сумма |`);
+          lines.push(`|---|---:|---:|---:|---:|`);
+          let sub = 0;
+          for(const it of sec.items){
+            sub += Number(it.sum)||0;
+            lines.push(`| ${it.name} | ${it.unit} | ${fmt(it.qty)} | ${money(it.price)} | ${money(it.sum)} |`);
+          }
+          lines.push(`| **Итого ${sec.title}** |  |  |  | **${money(sub)}** |`);
+          lines.push("");
+          grand += sub;
+        }
+        lines.push(`## ИТОГО СМЕТА: ${money(grand)}`);
+        return lines.join("\n");
+      }
+
+      return { setSection, getAll, buildText, buildMarkdown };
+    })();
+
+  </script>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- Вкладки -->
+    <div class="card">
+      <div class="tabs" role="tablist" aria-label="Разделы">
+        <button class="tabbtn" data-tab="frame" role="tab" aria-selected="true">Металлокаркас</button>
+        <button class="tabbtn" data-tab="panels" role="tab" aria-selected="false">Сэндвич-панели</button>
+        <button class="tabbtn" data-tab="dobory" role="tab" aria-selected="false">Доборы</button>
+        <button class="tabbtn" data-tab="extras" role="tab" aria-selected="false">Доп. опции</button>
+        <button class="tabbtn" data-tab="foundation" role="tab" aria-selected="false">Фундамент</button>
+        <button class="tabbtn" data-tab="summary" role="tab" aria-selected="false">Общая смета</button>
+      </div>
+      <div class="small" style="margin-top:10px">
+        Один файл. Общие параметры сверху. Все цены/параметры сохраняются в браузере.
+      </div>
+    </div>
+
+    <!-- Глобальные параметры -->
+    <div class="card">
+      <div class="grid">
+        <div>
+          <label>Пресет ширины</label>
+          <select id="g_preset">
+            <option value="6">6 м</option>
+            <option value="8">8 м</option>
+          </select>
+        </div>
+        <div>
+          <label>Длина L (м)</label>
+          <input id="g_L" type="number" step="0.1" min="1" value="8"/>
+        </div>
+      </div>
+      <div class="small" style="margin-top:10px">
+        Эти значения используются во всех вкладках автоматически.
+      </div>
+    </div>
+
+    <!-- Общий итог -->
+    <div class="card" id="mega_summary"></div>
+
+    <!-- TAB: Металлокаркас -->
+    <section class="card section is-active" id="tab_frame" aria-label="Металлокаркас">
+      <div class="wrap">
+        <div class="card">
+          <div class="row">
+            <span class="pill">Ширина: <b id="f_showW">—</b></span>
+            <span class="pill">Длина: <b id="f_showL">—</b></span>
+            <span class="pill">Подсказка: <b id="f_hint">—</b></span>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Шаг рам/ферм (м)</label>
+              <input id="f_step" type="number" value="2.5" step="0.1" min="0.5"/>
+            </div>
+            <div>
+              <label>Линий прогонов 60×60 (шт)</label>
+              <input id="f_lines" type="number" value="10" step="1" min="0"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Доставка ферм (₽)</label>
+              <input id="f_Fship" type="number" value="0" step="100" min="0"/>
+            </div>
+            <div>
+              <label>Доставка металла (профиль/труба) (₽)</label>
+              <input id="f_Mship" type="number" value="0" step="100" min="0"/>
+            </div>
+          </div>
+
+          <hr/>
+
+          <h3>Цены труб (₽/м)</h3>
+          <div class="grid3">
+            <div>
+              <label>60×60</label>
+              <input id="f_P6060" type="number" value="359.9" step="0.1" min="0"/>
+            </div>
+            <div>
+              <label>80×60</label>
+              <input id="f_P8060" type="number" value="550" step="1" min="0"/>
+            </div>
+            <div>
+              <label>80×80</label>
+              <input id="f_P8080" type="number" value="610" step="1" min="0"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>100×100 (₽/м)</label>
+              <input id="f_P100" type="number" value="990" step="1" min="0"/>
+            </div>
+            <div>
+              <label>Цена 1 фермы (₽/шт)</label>
+              <div class="grid">
+                <div>
+                  <input id="f_farm6" type="number" value="15000" step="500" min="0"/>
+                  <div class="small">для ширины 6 м</div>
+                </div>
+                <div>
+                  <input id="f_farm8" type="number" value="35000" step="500" min="0"/>
+                  <div class="small">для ширины 8 м</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr/>
+
+          <h3>Отходы и расходники</h3>
+          <div class="grid">
+            <div>
+              <label>K6060 (отход закупа 12 м)</label>
+              <input id="f_K6060" type="number" value="1.08" step="0.01" min="1"/>
+            </div>
+            <div>
+              <label>K80 (80×60 / 80×80 / 100×100)</label>
+              <input id="f_K80" type="number" value="1.05" step="0.01" min="1"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Сварочная проволока (₽ на 1 м металла)</label>
+              <input id="f_wire" type="number" value="10" step="1" min="0"/>
+              <div class="small">Считается по сварочному метражу (рамы+прогоны), без ферм.</div>
+            </div>
+            <div>
+              <label>Отрезные диски (₽ на 1 м металла)</label>
+              <input id="f_discs" type="number" value="7" step="1" min="0"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Грунт+эмаль (₽ на 1 м металла)</label>
+              <input id="f_paint" type="number" value="25" step="1" min="0"/>
+            </div>
+            <div>
+              <label>Валики/лотки/чаши (фикс на объект, ₽)</label>
+              <input id="f_painttools" type="number" value="1500" step="100" min="0"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Краска/грунт на 1 ферму (₽/ферма)</label>
+              <input id="f_paintPerFarm" type="number" value="0" step="100" min="0"/>
+              <div class="small">Если фермы уже покрашены — 0.</div>
+            </div>
+            <div style="display:flex;align-items:flex-end;justify-content:flex-end;gap:8px">
+              <button id="f_reset" type="button">Сбросить (каркас)</button>
+            </div>
+          </div>
+
+          <div class="small" style="margin-top:10px">
+            Вывод внизу: метраж каждой трубы (чистый и закуп с отходом), стоимость по каждой трубе, затем фермы, доставки и расходники.
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Вывод</h3>
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th style="width:36%">Позиция</th>
+                <th class="num" style="width:16%">Метры (чистые)</th>
+                <th class="num" style="width:16%">Закуп с отходом</th>
+                <th class="num" style="width:14%">Цена</th>
+                <th class="num" style="width:18%">Сумма</th>
+              </tr>
+            </thead>
+            <tbody id="f_rows"></tbody>
+          </table>
+
+          <div class="row"><span><b>ИТОГО металлокаркас</b></span><b id="f_total">0 ₽</b></div>
+          <div class="small" id="f_note"></div>
+        </div>
+      </div>
+
+      <script>
+      (function(){
+        const LS = "mega_frame_v3";
+        const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+        const mfmt = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:3}).format(Number(x||0));
+
+        function el(id){ return document.getElementById(id); }
+        function num(id){ return Number(el(id).value); }
+        function ceilDiv(a,b){ return Math.ceil(a/b); }
+
+        function load(){
+          try{
+            const raw = localStorage.getItem(LS);
+            if(!raw) return;
+            const st = JSON.parse(raw)||{};
+            [
+              "f_step","f_lines","f_Fship","f_Mship",
+              "f_P6060","f_P8060","f_P8080","f_P100","f_farm6","f_farm8",
+              "f_K6060","f_K80",
+              "f_wire","f_discs","f_paint","f_painttools","f_paintPerFarm"
+            ].forEach(id=>{ if(st[id]!==undefined && el(id)) el(id).value = st[id]; });
+          }catch(e){}
+        }
+        function save(){
+          const st = {};
+          [
+            "f_step","f_lines","f_Fship","f_Mship",
+            "f_P6060","f_P8060","f_P8080","f_P100","f_farm6","f_farm8",
+            "f_K6060","f_K80",
+            "f_wire","f_discs","f_paint","f_painttools","f_paintPerFarm"
+          ].forEach(id=>{ if(el(id)) st[id] = el(id).value; });
+          try{ localStorage.setItem(LS, JSON.stringify(st)); }catch(e){}
+        }
+
+        function calc(){
+          save();
+
+          const g = window.MegaGlobal.get();
+          const preset = g.preset;
+          const L = Number(g.L);
+
+          el("f_showW").textContent = preset + " м";
+          el("f_showL").textContent = rub(L) + " м";
+
+          const step = num("f_step");
+          const LINES = Math.max(0, Math.floor(num("f_lines")));
+
+          const Fship = num("f_Fship");
+          const Mship = num("f_Mship");
+
+          const P6060 = num("f_P6060");
+          const P8060 = num("f_P8060");
+          const P8080 = num("f_P8080");
+          const P100  = num("f_P100");
+
+          const FarmPrice6 = num("f_farm6");
+          const FarmPrice8 = num("f_farm8");
+
+          const K6060 = num("f_K6060");
+          const K80   = num("f_K80");
+
+          const wire = num("f_wire");
+          const discs = num("f_discs");
+          const paint = num("f_paint");
+          const paintTools = num("f_painttools");
+          const paintPerFarm = num("f_paintPerFarm");
+
+          if(!(L>0) || !(step>0)){
+            el("f_rows").innerHTML = '<tr><td colspan="5" class="small">Проверь L и шаг.</td></tr>';
+            el("f_total").textContent = "0 ₽";
+            el("f_hint").textContent = "—";
+            if(window.MegaCalc) window.MegaCalc.set("frame", 0);
+            return;
+          }
+
+          // N ферм/рам (внутренняя логика)
+          const N = ceilDiv(L, step) + 1;
+          const Nmid = Math.max(0, N - 2);
+          el("f_hint").textContent = `N ферм/шагов = ${N} (промежуточных ${Nmid})`;
+
+          // прогоны 60×60 (чистые метры)
+          const M_runs_6060 = LINES * L;
+
+          // метры рам по типам (чистые)
+          let M6060_frames = 0, M8060_frames = 0, M8080_frames = 0, M100_frames = 0;
+          let M_weld = 0; // для расходников (без ферм)
+
+          if (preset === "6") {
+            const H = 2.38, Gw = 3.0;
+
+            const M_first_8080 = 2 * H;
+            const M_first_8060 = (2*H + Gw);
+            const M_first_6060 = (4*1.24) + (2*2.32);
+
+            const M_last_8080  = 2 * H;
+            const M_last_6060  = 5.64;
+
+            const M_mid_8080   = 2 * H;
+
+            M6060_frames += (M_first_6060 + M_last_6060);
+            M8080_frames += (M_first_8080 + M_last_8080) + (Nmid * M_mid_8080);
+            M8060_frames += M_first_8060;
+
+            M_weld = M_runs_6060 +
+              (M_first_6060 + M_first_8080) +
+              (M_last_6060  + M_last_8080) +
+              (Nmid * (M_mid_8080));
+          } else {
+            const H = 2.36, Gw = 3.0;
+
+            const M_first_100  = 2 * H;
+            const M_first_8060 = (4*H + 2*Gw);
+            const M_first_6060 = (4*0.47) + (2*0.54) + (1*1.10) + (2*H);
+
+            const M_last_100   = 2 * H;
+            const M_last_6060  = (7.8 + 2.3);
+
+            const M_mid_100    = 2 * H;
+
+            M6060_frames += (M_first_6060 + M_last_6060);
+            M8060_frames += M_first_8060;
+            M100_frames  += (M_first_100 + M_last_100) + (Nmid * M_mid_100);
+
+            M_weld = M_runs_6060 +
+              (M_first_6060 + M_first_100) +
+              (M_last_6060  + M_last_100) +
+              (Nmid * (M_mid_100));
+          }
+
+          // чистые метры по типам (рамы + прогоны)
+          const M6060 = M6060_frames + M_runs_6060;
+          const M8060 = M8060_frames;
+          const M8080 = M8080_frames;
+          const M100  = M100_frames;
+
+          // закупочные метры с отходом
+          const Buy6060 = M6060 * K6060;
+          const Buy8060 = M8060 * K80;
+          const Buy8080 = M8080 * K80;
+          const Buy100  = M100  * K80;
+
+          // стоимость труб
+          const Cost6060 = Buy6060 * P6060;
+          const Cost8060 = Buy8060 * P8060;
+          const Cost8080 = Buy8080 * P8080;
+          const Cost100  = Buy100  * P100;
+
+          const CostPipes = Cost6060 + Cost8060 + Cost8080 + Cost100;
+
+          // фермы
+          const FarmPrice = (preset === "6") ? FarmPrice6 : FarmPrice8;
+          const CostFarms = (N * FarmPrice) + Fship;
+
+          // расходники
+          const CostWire  = M_weld * wire;
+          const CostDiscs = M_weld * discs;
+          const CostPaint = (M_weld * paint) + (N * paintPerFarm) + paintTools;
+          const CostConsum = CostWire + CostDiscs + CostPaint;
+
+          const Total = CostPipes + CostFarms + Mship + CostConsum;
+
+          const rows = [
+            {name:"Труба 60×60", m:M6060, buy:Buy6060, price:P6060, sum:Cost6060},
+            {name:"Труба 80×60", m:M8060, buy:Buy8060, price:P8060, sum:Cost8060},
+            {name:"Труба 80×80", m:M8080, buy:Buy8080, price:P8080, sum:Cost8080},
+            {name:"Труба 100×100", m:M100,  buy:Buy100,  price:P100,  sum:Cost100},
+            {name:"ИТОГО трубы", isTotal:true, sum:CostPipes},
+            {name:"Фермы (покупные) + доставка ферм", m:`N=${N}`, sum:CostFarms},
+            {name:"Доставка металла (профиль/труба)", sum:Mship},
+            {name:"Расходники: проволока", m:mfmt(M_weld)+" м", sum:CostWire},
+            {name:"Расходники: диски", m:mfmt(M_weld)+" м", sum:CostDiscs},
+            {name:"Расходники: грунт/эмаль + инструменты + (₽/ферма)", sum:CostPaint},
+            {name:"ИТОГО расходники", isTotal:true, sum:CostConsum},
+          ];
+
+          const tb = el("f_rows");
+          tb.innerHTML = "";
+          rows.forEach(r=>{
+            const tr = document.createElement("tr");
+            tr.innerHTML =
+              `<td>${r.isTotal ? "<b>"+r.name+"</b>" : r.name}</td>
+               <td class="num mono">${r.m===undefined ? "" : (typeof r.m==="string" ? r.m : mfmt(r.m))}</td>
+               <td class="num mono">${r.buy===undefined ? "" : mfmt(r.buy)}</td>
+               <td class="num mono">${r.price===undefined ? "" : rub(r.price)}</td>
+               <td class="num mono"><b>${rub(r.sum)} ₽</b></td>`;
+            tb.appendChild(tr);
+          });
+
+          el("f_total").textContent = rub(Total) + " ₽";
+          el("f_note").textContent = `Сварочный метраж (для проволоки/дисков/покраски), без ферм: ${mfmt(M_weld)} м.`;
+
+          if(window.MegaCalc) window.MegaCalc.set("frame", Total);
+          if(window.MegaBill){
+            const itemsBill = [];
+            itemsBill.push({name:"Труба 60×60 (закуп)", unit:"м", qty:Buy6060, price:P6060, sum:Cost6060});
+            itemsBill.push({name:"Труба 80×60 (закуп)", unit:"м", qty:Buy8060, price:P8060, sum:Cost8060});
+            itemsBill.push({name:"Труба 80×80 (закуп)", unit:"м", qty:Buy8080, price:P8080, sum:Cost8080});
+            itemsBill.push({name:"Труба 100×100 (закуп)", unit:"м", qty:Buy100,  price:P100,  sum:Cost100});
+            itemsBill.push({name:"Фермы (покупные)", unit:"шт", qty:N, price:FarmPrice, sum:(N*FarmPrice)});
+            itemsBill.push({name:"Доставка ферм", unit:"фикс", qty:1, price:Fship, sum:Fship});
+            itemsBill.push({name:"Доставка металла (профиль/труба)", unit:"фикс", qty:1, price:Mship, sum:Mship});
+            itemsBill.push({name:"Сварочная проволока", unit:"фикс", qty:1, price:CostWire, sum:CostWire});
+            itemsBill.push({name:"Отрезные диски", unit:"фикс", qty:1, price:CostDiscs, sum:CostDiscs});
+            itemsBill.push({name:"Грунт/эмаль + инструменты", unit:"фикс", qty:1, price:CostPaint, sum:CostPaint});
+            window.MegaBill.setSection("frame", { title:"Металлокаркас", items: itemsBill });
+          }
+
+        }
+
+        function bind(){
+          load();
+          [
+            "f_step","f_lines","f_Fship","f_Mship",
+            "f_P6060","f_P8060","f_P8080","f_P100","f_farm6","f_farm8",
+            "f_K6060","f_K80",
+            "f_wire","f_discs","f_paint","f_painttools","f_paintPerFarm"
+          ].forEach(id=>{
+            if(!el(id)) return;
+            el(id).addEventListener("input", calc);
+            el(id).addEventListener("change", calc);
+          });
+
+          el("f_reset").addEventListener("click", ()=>{
+            localStorage.removeItem(LS);
+            location.reload();
+          });
+
+          document.addEventListener("mega:globalChange", calc);
+          calc();
+        }
+
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
+    <!-- TAB: Сэндвич-панели -->
+    <section class="card section" id="tab_panels" aria-label="Сэндвич-панели">
+      <div class="wrap">
+        <div class="card">
+          <div class="row">
+            <span class="pill">Ширина: <b id="p_showW">—</b></span>
+            <span class="pill">Длина: <b id="p_showL">—</b></span>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Цена стеновых панелей (₽/м²)</label>
+              <input id="p_wallPrice" min="0" step="10" type="number" value="2500"/>
+            </div>
+            <div>
+              <label>Цена кровельных панелей (₽/м²)</label>
+              <input id="p_roofPrice" min="0" step="10" type="number" value="2500"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Доставка сэндвич-панелей (₽)</label>
+              <input id="p_ship" min="0" step="100" type="number" value="0"/>
+            </div>
+            <div>
+              <label>Высота стен (м)</label>
+              <input id="p_H" min="1" step="0.01" type="number" value="2.4"/>
+            </div>
+          </div>
+
+          <hr/>
+
+          <div class="grid">
+            <div>
+              <label>Козырёк спереди/сзади (м)</label>
+              <input id="p_eave" min="0" step="0.01" type="number" value="0.27"/>
+            </div>
+            <div>
+              <label>Рабочая ширина кровельной панели (м)</label>
+              <input id="p_roofBW" min="0.5" step="0.01" type="number" value="1.0"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Скатов</label>
+              <input id="p_slopes" max="2" min="1" step="1" type="number" value="2"/>
+            </div>
+            <div>
+              <label>Подсказка</label>
+              <div class="small" id="p_hint" style="padding:10px;border:1px solid var(--border);border-radius:10px;background:#fff">—</div>
+            </div>
+          </div>
+
+          <hr/>
+
+          <div class="grid">
+            <div>
+              <label>Цена самореза стенового 6.3×135 (₽/шт)</label>
+              <input id="p_pScrewWall" min="0" step="1" type="number" value="54"/>
+            </div>
+            <div>
+              <label>Цена самореза кровельного 6.3×175 (₽/шт)</label>
+              <input id="p_pScrewRoof" min="0" step="1" type="number" value="85"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Запас на брак/утери саморезов (%)</label>
+              <input id="p_screwWastePct" max="30" min="0" step="1" type="number" value="7"/>
+            </div>
+            <div>
+              <label>Округлять саморезы до (шт)</label>
+              <input id="p_screwRoundTo" min="1" step="10" type="number" value="10"/>
+            </div>
+          </div>
+
+          <hr/>
+
+          <div class="grid">
+            <div>
+              <label>Цена пены (₽/шт)</label>
+              <input id="p_foamPrice" min="0" step="10" type="number" value="600"/>
+            </div>
+            <div>
+              <label>Цена герметика (₽/шт)</label>
+              <input id="p_sealPrice" min="0" step="10" type="number" value="350"/>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <button id="p_btn" type="button">Посчитать</button>
+            <button id="p_reset" type="button" style="margin-left:8px">Сбросить (панели)</button>
+          </div>
+
+          <div class="small" style="margin-top:10px">
+            Пена и герметик: Q = CEILING(6 + L). Кровля: 6 саморезов на панель. Боковые панели: L≤6 → 1; 6&lt;L≤12 → 2; 12&lt;L≤16 → 4.
+          </div>
+        </div>
+
+        <div class="card" id="p_out"></div>
+      </div>
+
+      <script>
+      (function(){
+        const LS = "mega_panels_v1";
+        function el(id){ return document.getElementById(id); }
+        function num(id){ return Number(el(id).value); }
+        function ceil(x){ return Math.ceil(x); }
+        function rub(x){ return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0)); }
+        function pcs0(x){ return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(Number(x||0)); }
+
+        // Панели
+        var S6 = 3.420, S8 = 4.450;
+        var AFB6 = 36.6, AFB8 = 44.4;
+
+        // Саморезы (константа стен)
+        var CWallScrews6 = 71;
+        var CWallScrews8 = 96;
+
+        function panelsPerRowSide(L){
+          if (L <= 6) return 1;
+          if (L <= 12) return 2;
+          if (L <= 16) return 4;
+          return null;
+        }
+
+        function roundUpTo(x, step){
+          if(step <= 0) return x;
+          return Math.ceil(x / step) * step;
+        }
+
+        function load(){
+          try{
+            const raw = localStorage.getItem(LS);
+            if(!raw) return;
+            const st = JSON.parse(raw)||{};
+            ["p_wallPrice","p_roofPrice","p_ship","p_H","p_eave","p_roofBW","p_slopes","p_pScrewWall","p_pScrewRoof","p_screwWastePct","p_screwRoundTo","p_foamPrice","p_sealPrice"]
+              .forEach(id=>{ if(st[id]!==undefined) el(id).value = st[id]; });
+          }catch(e){}
+        }
+        function save(){
+          const st = {};
+          ["p_wallPrice","p_roofPrice","p_ship","p_H","p_eave","p_roofBW","p_slopes","p_pScrewWall","p_pScrewRoof","p_screwWastePct","p_screwRoundTo","p_foamPrice","p_sealPrice"]
+            .forEach(id=> st[id]=el(id).value);
+          try{ localStorage.setItem(LS, JSON.stringify(st)); }catch(e){}
+        }
+
+        function calc(){
+          save();
+
+          const g = window.MegaGlobal.get();
+          const preset = g.preset;
+          const L = Number(g.L);
+
+          el("p_showW").textContent = preset + " м";
+          el("p_showL").textContent = rub(L) + " м";
+
+          var wallPrice = num('p_wallPrice');
+          var roofPrice = num('p_roofPrice');
+          var ship = num('p_ship');
+          var H = num('p_H');
+          var eave = num('p_eave');
+          var roofBW = num('p_roofBW');
+          var slopes = Math.min(2, Math.max(1, Math.round(num('p_slopes'))));
+
+          var pScrewWall = num('p_pScrewWall');
+          var pScrewRoof = num('p_pScrewRoof');
+          var screwWastePct = num('p_screwWastePct');
+          var screwRoundTo = num('p_screwRoundTo');
+
+          var foamPrice = num('p_foamPrice');
+          var sealPrice = num('p_sealPrice');
+
+          if(!(L>0) || !(H>0) || !(roofBW>0)){
+            el('p_out').innerHTML = '<div class="small" style="color:#8a4b00">Проверь входные значения (L, H, ширина панели).</div>';
+            if(window.MegaCalc) window.MegaCalc.set('panels', 0);
+            return;
+          }
+
+          var S = (preset==='6') ? S6 : S8;
+          var AFB = (preset==='6') ? AFB6 : AFB8;
+          var CWallScrews = (preset==='6') ? CWallScrews6 : CWallScrews8;
+
+          // стены
+          var Aside = 2 * L * H;
+          var Awalls = Aside + AFB;
+
+          // кровля
+          var Lroof = L + 2*eave;
+          var Nroof = ceil(Lroof / roofBW);
+          var RoofPanels = slopes * Nroof;
+          var Aroof = RoofPanels * roofBW * S;
+
+          var CostWallsPanels = Awalls * wallPrice;
+          var CostRoofPanels = Aroof * roofPrice;
+          var CostPanels = CostWallsPanels + CostRoofPanels;
+
+          // боковые панели (шт)
+          var Prow = panelsPerRowSide(L);
+          if (Prow === null){
+            el('p_out').innerHTML =
+              '<div class="small" style="color:#8a4b00">Длина L=' + rub(L) + ' м &gt; 16 м. В этом калькуляторе боковые панели/саморезы считаются только до 16 м.</div>';
+            el('p_hint').textContent = '—';
+            if(window.MegaCalc) window.MegaCalc.set('panels', 0);
+            return;
+          }
+
+          var SidePanelsTotal = 4 * Prow;
+          var SideJointsTotal = 4 * (Prow - 1);
+
+          // саморезы
+          var ScrewsRoof_base = RoofPanels * 6;
+          var ScrewsSide_base = SidePanelsTotal * 6;
+          var ScrewsWall_base = CWallScrews + ScrewsSide_base;
+
+          var kWaste = 1 + (screwWastePct/100);
+          var ScrewsWall_with = roundUpTo(ceil(ScrewsWall_base * kWaste), screwRoundTo);
+          var ScrewsRoof_with = roundUpTo(ceil(ScrewsRoof_base * kWaste), screwRoundTo);
+
+          var CostScrewWall = ScrewsWall_with * pScrewWall;
+          var CostScrewRoof = ScrewsRoof_with * pScrewRoof;
+          var CostScrews = CostScrewWall + CostScrewRoof;
+
+          // пена + герметик
+          var Qfoam = ceil(6 + L);
+          var Qseal = ceil(6 + L);
+          var CostFoam = Qfoam * foamPrice;
+          var CostSeal = Qseal * sealPrice;
+          var CostChem = CostFoam + CostSeal;
+
+          var Total = CostPanels + CostScrews + CostChem + ship;
+
+          el('p_hint').textContent =
+            'Кровля: рядов=' + Nroof + ', панелей=' + RoofPanels +
+            ' | Боковые: панелей/ряд=' + Prow + ', боковых панелей=' + SidePanelsTotal;
+
+          el('p_out').innerHTML =
+            '<h3>Панели (по площади)</h3>' +
+            '<div class="row"><span>Площадь стен</span><b>' + rub(Awalls) + ' м²</b></div>' +
+            '<div class="row"><span>Площадь кровли</span><b>' + rub(Aroof) + ' м²</b></div>' +
+            '<div class="row"><span>Стоимость стеновых панелей</span><b>' + rub(CostWallsPanels) + ' ₽</b></div>' +
+            '<div class="row"><span>Стоимость кровельных панелей</span><b>' + rub(CostRoofPanels) + ' ₽</b></div>' +
+            '<div class="row"><span><b>Итого панели</b></span><b>' + rub(CostPanels) + ' ₽</b></div>' +
+            '<div class="row"><span>Доставка панелей</span><b>' + rub(ship) + ' ₽</b></div>' +
+            '<hr>' +
+            '<h3>Боковые панели (в штуках)</h3>' +
+            '<div class="row"><span>Панелей по длине на 1 ряд одной стороны</span><b>' + pcs0(Prow) + ' шт</b></div>' +
+            '<div class="row"><span>Боковых панелей на гараж</span><b>' + pcs0(SidePanelsTotal) + ' шт</b></div>' +
+            '<div class="row"><span>Стыков по длине на гараж</span><b>' + pcs0(SideJointsTotal) + ' шт</b></div>' +
+            '<hr>' +
+            '<h3>Саморезы (с запасом)</h3>' +
+            '<div class="row"><span>Стеновые базово (без запаса)</span><b>' + pcs0(ScrewsWall_base) + ' шт</b></div>' +
+            '<div class="row"><span>Кровельные базово (без запаса)</span><b>' + pcs0(ScrewsRoof_base) + ' шт</b></div>' +
+            '<div class="row"><span>Запас</span><b>' + rub(screwWastePct) + '%</b></div>' +
+            '<div class="row"><span>Округление</span><b>до ' + pcs0(screwRoundTo) + ' шт</b></div>' +
+            '<div class="row"><span><b>Стеновые 6.3×135</b></span><b>' + pcs0(ScrewsWall_with) + ' шт</b></div>' +
+            '<div class="row"><span>Стоимость стеновых саморезов</span><b>' + rub(CostScrewWall) + ' ₽</b></div>' +
+            '<div class="row"><span><b>Кровельные 6.3×175</b></span><b>' + pcs0(ScrewsRoof_with) + ' шт</b></div>' +
+            '<div class="row"><span>Стоимость кровельных саморезов</span><b>' + rub(CostScrewRoof) + ' ₽</b></div>' +
+            '<div class="row"><span><b>Итого саморезы</b></span><b>' + rub(CostScrews) + ' ₽</b></div>' +
+            '<hr>' +
+            '<h3>Пена и герметик</h3>' +
+            '<div class="row"><span>Количество (Q = CEILING(6 + L))</span><b>' + pcs0(Qfoam) + ' шт</b></div>' +
+            '<div class="row"><span>Пена</span><b>' + rub(CostFoam) + ' ₽</b></div>' +
+            '<div class="row"><span>Герметик</span><b>' + rub(CostSeal) + ' ₽</b></div>' +
+            '<div class="row"><span><b>Итого пена+герметик</b></span><b>' + rub(CostChem) + ' ₽</b></div>' +
+            '<hr>' +
+            '<h3>Итог</h3>' +
+            '<div class="row"><span><b>Панели + саморезы + пена/герметик + доставка</b></span><b>' + rub(Total) + ' ₽</b></div>';
+
+          if(window.MegaCalc) window.MegaCalc.set('panels', Total);
+          if(window.MegaBill){
+            const itemsBill = [];
+            itemsBill.push({name:"Стеновые панели", unit:"м²", qty:Awalls, price:wallPrice, sum:CostWallsPanels});
+            itemsBill.push({name:"Кровельные панели", unit:"м²", qty:Aroof, price:roofPrice, sum:CostRoofPanels});
+            itemsBill.push({name:"Саморезы стеновые 6.3×135", unit:"шт", qty:ScrewsWall_with, price:pScrewWall, sum:CostScrewWall});
+            itemsBill.push({name:"Саморезы кровельные 6.3×175", unit:"шт", qty:ScrewsRoof_with, price:pScrewRoof, sum:CostScrewRoof});
+            itemsBill.push({name:"Пена", unit:"шт", qty:Qfoam, price:foamPrice, sum:CostFoam});
+            itemsBill.push({name:"Герметик", unit:"шт", qty:Qseal, price:sealPrice, sum:CostSeal});
+            itemsBill.push({name:"Доставка панелей", unit:"фикс", qty:1, price:ship, sum:ship});
+            window.MegaBill.setSection("panels", { title:"Сэндвич-панели", items: itemsBill });
+          }
+
+        }
+
+        function bind(){
+          load();
+
+          el('p_btn').addEventListener('click', calc);
+          el('p_reset').addEventListener('click', ()=>{
+            localStorage.removeItem(LS);
+            location.reload();
+          });
+
+          ["p_wallPrice","p_roofPrice","p_ship","p_H","p_eave","p_roofBW","p_slopes","p_pScrewWall","p_pScrewRoof","p_screwWastePct","p_screwRoundTo","p_foamPrice","p_sealPrice"]
+            .forEach(id=>{
+              el(id).addEventListener('input', calc);
+              el(id).addEventListener('change', calc);
+            });
+
+          document.addEventListener("mega:globalChange", calc);
+
+          calc();
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
+    <!-- TAB: Доборы -->
+    <section class="card section" id="tab_dobory" aria-label="Доборы">
+      <div class="wrap">
+        <div class="card">
+          <div class="row">
+            <span class="pill">Ширина: <b id="d_showW">—</b></span>
+            <span class="pill">Длина: <b id="d_showL">—</b></span>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Козырёк спереди/сзади (м)</label>
+              <input id="d_eave" min="0" step="0.01" type="number" value="0.27"/>
+              <div class="small">Lroof = L + 2*eave</div>
+            </div>
+            <div>
+              <label>Запас на доборы (%)</label>
+              <input id="d_wastePct" max="30" min="0" step="1" type="number" value="7"/>
+            </div>
+          </div>
+
+          <hr/>
+
+          <div class="grid3">
+            <div>
+              <label>Ворот (шт)</label>
+              <input id="d_gates" max="4" min="0" step="1" type="number" value="1"/>
+            </div>
+            <div>
+              <label>Дверей (шт)</label>
+              <input id="d_doors" max="4" min="0" step="1" type="number" value="1"/>
+            </div>
+            <div>
+              <label>Окон (шт)</label>
+              <input id="d_windows" max="10" min="0" step="1" type="number" value="1"/>
+            </div>
+          </div>
+
+          <hr/>
+
+          <div class="grid">
+            <div>
+              <button id="d_btn" type="button">Посчитать</button>
+              <span class="small" id="d_hint" style="margin-left:10px"></span>
+            </div>
+            <div style="text-align:right">
+              <button id="d_reset" title="Сбросить сохранённые цены" type="button">Сбросить (доборы)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Цены по позициям (₽/м) — сохраняются</h3>
+          <div class="small">№9 — один (отлив). №12 — один (под стеновые панели). Цена одна, метры считаются отдельно.</div>
+          <table class="tbl" style="margin-top:8px">
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Позиция</th>
+                <th style="width:160px">Цена (₽/м)</th>
+              </tr>
+            </thead>
+            <tbody id="d_priceTable"></tbody>
+          </table>
+        </div>
+
+        <div class="card" id="d_out"></div>
+      </div>
+
+      <script>
+      (function(){
+        const LS_PRICE = "trim_calc_prices_v1";
+        const LS_PARAMS = "mega_dobory_params_v1";
+
+        function el(id){ return document.getElementById(id); }
+        function num(id){ return Number(el(id).value); }
+        function ceil(x){ return Math.ceil(x); }
+        function rub(x){ return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0)); }
+
+        const ITEMS = [
+          {key:"1",  name:"№1 Крышка для кровли фасадная"},
+          {key:"2",  name:"№2 Крышка для кровли боковая с капельником"},
+          {key:"3",  name:"№3 Уголок под кровлю с острым углом (боковой)"},
+          {key:"4",  name:"№4 Уголок под кровлю фасад/зад (прямой)"},
+          {key:"5",  name:"№5 Крышка для ворот"},
+          {key:"6",  name:"№6 Верхний конёк"},
+          {key:"7",  name:"№7 Нижний конёк"},
+          {key:"8",  name:"№8 Фальш-ребро панели (задняя часть)"},
+          {key:"9",  name:"№9 Отлив (весь: фасад/зад + бока)"},
+          {key:"10", name:"№10 Угол стеновых панелей"},
+          {key:"11", name:"№11 Уголок для двери"},
+          {key:"12", name:"№12 Под стеновые панели (весь: фасад/зад + бока)"},
+          {key:"13", name:"№13 Стык панелей"},
+          {key:"14", name:"№14 Крышка для окна"}
+        ];
+
+        function loadPrices(){
+          try{
+            const raw = localStorage.getItem(LS_PRICE);
+            if(!raw) return {};
+            return JSON.parse(raw) || {};
+          } catch(e){ return {}; }
+        }
+        function savePrices(prices){
+          localStorage.setItem(LS_PRICE, JSON.stringify(prices));
+        }
+
+        function loadParams(){
+          try{
+            const raw = localStorage.getItem(LS_PARAMS);
+            if(!raw) return;
+            const st = JSON.parse(raw)||{};
+            ["d_eave","d_wastePct","d_gates","d_doors","d_windows"].forEach(id=>{
+              if(st[id]!==undefined) el(id).value = st[id];
+            });
+          }catch(e){}
+        }
+        function saveParams(){
+          const st = {};
+          ["d_eave","d_wastePct","d_gates","d_doors","d_windows"].forEach(id=> st[id]=el(id).value);
+          try{ localStorage.setItem(LS_PARAMS, JSON.stringify(st)); }catch(e){}
+        }
+
+        function buildPriceTable(){
+          const saved = loadPrices();
+          const tb = el('d_priceTable');
+          tb.innerHTML = "";
+          ITEMS.forEach(it=>{
+            const v = (saved[it.key] ?? 0);
+            const tr = document.createElement("tr");
+            tr.innerHTML =
+              `<td class="mono">${it.key}</td>
+               <td>${it.name}</td>
+               <td><input type="number" id="dp_${it.key}" value="${v}" step="10" min="0"/></td>`;
+            tb.appendChild(tr);
+          });
+        }
+
+        function readPrices(){
+          const prices = {};
+          ITEMS.forEach(it=>{
+            const inp = el("dp_"+it.key);
+            prices[it.key] = inp ? Number(inp.value) : 0;
+          });
+          return prices;
+        }
+
+        function constLengths(preset, gates, doors, windows){
+          if(preset === "6"){
+            return {
+              "1": 3.5*2,
+              "4": 3.055*4,
+              "5": (3.0*1 + 2.2*2) * gates,
+              "8": 3.5*2,
+              "10": 2.3*4,
+              "9": (3.0 + 6.0),
+              "12": (3.0 + 6.0),
+              "11": (2.0*2 + 1.0*2) * doors,
+              "14": (0.6*2 + 1.0*2) * windows
+            };
+          } else {
+            return {
+              "1": 4.45*2,
+              "4": 4.069*4,
+              "5": (3.0*2 + 2.2*4) * gates,
+              "8": 4.45*2,
+              "10": 2.3*4,
+              "9": (0.75*3 + 8.0),
+              "12": (0.75*3 + 8.0),
+              "11": (2.0*2 + 1.0*1) * doors,
+              "13": 2.3*4,
+              "14": (0.6*2 + 1.0*2) * windows
+            };
+          }
+        }
+
+        function variableLengths(L, Lroof){
+          return {
+            "2": 2 * Lroof,
+            "3": 2 * Lroof,
+            "6": 1 * Lroof,
+            "7": 1 * Lroof,
+            "9": 2 * L,
+            "12": 2 * L
+          };
+        }
+
+        function calc(){
+          saveParams();
+
+          const g = window.MegaGlobal.get();
+          const preset = g.preset;
+          const L = Number(g.L);
+
+          el("d_showW").textContent = preset + " м";
+          el("d_showL").textContent = rub(L) + " м";
+
+          const eave = num("d_eave");
+          const wastePct = num("d_wastePct");
+
+          const gates = Math.max(0, Math.round(num("d_gates")));
+          const doors = Math.max(0, Math.round(num("d_doors")));
+          const windows = Math.max(0, Math.round(num("d_windows")));
+
+          if(!(L>0)){
+            el("d_out").innerHTML = `<div class="small" style="color:#8a4b00">Проверь длину L.</div>`;
+            if(window.MegaCalc) window.MegaCalc.set('dobory', 0);
+            return;
+          }
+
+          const prices = readPrices();
+          savePrices(prices);
+
+          const Lroof = L + 2*eave;
+          const kWaste = 1 + wastePct/100;
+
+          const C = constLengths(preset, gates, doors, windows);
+          const V = variableLengths(L, Lroof);
+
+          const lens = {};
+          Object.keys(C).forEach(k=> lens[k] = (lens[k]||0) + C[k]);
+          Object.keys(V).forEach(k=> lens[k] = (lens[k]||0) + V[k]);
+
+          Object.keys(lens).forEach(k=> lens[k] = lens[k] * kWaste);
+
+          let totalLen = 0;
+          let totalCost = 0;
+
+          let rows = "";
+          ITEMS.forEach(it=>{
+            const len = lens[it.key] || 0;
+            const p = prices[it.key] || 0;
+            const cost = len * p;
+            if(len <= 0 && p <= 0) return;
+
+            totalLen += len;
+            totalCost += cost;
+
+            rows += `
+              <tr>
+                <td class="mono">${it.key}</td>
+                <td>${it.name}</td>
+                <td class="mono num">${rub(len)}</td>
+                <td class="mono num">${rub(p)}</td>
+                <td class="mono num"><b>${rub(cost)}</b></td>
+              </tr>`;
+          });
+
+          if(!rows){
+            rows = `<tr><td colspan="5" class="small">Введи цены (₽/м) — расчёт появится.</td></tr>`;
+          }
+
+          el("d_hint").textContent = `Lroof=${rub(Lroof)} м, запас=${rub(wastePct)}%, ворота=${gates}, двери=${doors}, окна=${windows}`;
+
+          el("d_out").innerHTML = `
+            <h3>Результат</h3>
+            <div class="row"><span>Суммарная длина доборов (с запасом)</span><b>${rub(totalLen)} м</b></div>
+            <div class="row"><span>Итого стоимость доборов</span><b>${rub(totalCost)} ₽</b></div>
+            <hr>
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th style="width:60px">№</th>
+                  <th>Позиция</th>
+                  <th style="width:140px" class="num">Длина (м)</th>
+                  <th style="width:140px" class="num">Цена (₽/м)</th>
+                  <th style="width:160px" class="num">Стоимость (₽)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+                <tr>
+                  <td colspan="2"><b>ИТОГО</b></td>
+                  <td class="mono num"><b>${rub(totalLen)}</b></td>
+                  <td></td>
+                  <td class="mono num"><b>${rub(totalCost)}</b></td>
+                </tr>
+              </tbody>
+            </table>
+            <hr>
+            <div class="small">
+              Коэффициенты сейчас: №2=2·Lroof, №3=2·Lroof, №6=1·Lroof, №7=1·Lroof, №9(бока)=2·L, №12(бока)=2·L.
+            </div>
+          `;
+
+          if(window.MegaCalc) window.MegaCalc.set('dobory', totalCost);
+          if(window.MegaBill){
+            const itemsBill = [];
+            ITEMS.forEach(it=>{
+              const len = lens[it.key] || 0;
+              const p = prices[it.key] || 0;
+              if(len<=0 && p<=0) return;
+              itemsBill.push({name:it.name, unit:"м", qty:len, price:p, sum:(len*p)});
+            });
+            window.MegaBill.setSection("dobory", { title:"Доборы", items: itemsBill });
+          }
+
+        }
+
+        function bind(){
+          buildPriceTable();
+          loadParams();
+
+          el("d_btn").addEventListener("click", calc);
+          el("d_reset").addEventListener("click", function(){
+            localStorage.removeItem(LS_PRICE);
+            localStorage.removeItem(LS_PARAMS);
+            location.reload();
+          });
+
+          ["d_eave","d_wastePct","d_gates","d_doors","d_windows"].forEach(id=>{
+            el(id).addEventListener("input", calc);
+            el(id).addEventListener("change", calc);
+          });
+
+          // автопересчёт и сохранение цен
+          document.addEventListener("input", (e)=>{
+            if(!e.target) return;
+            if(e.target.id && e.target.id.startsWith("dp_")) calc();
+          });
+
+          document.addEventListener("mega:globalChange", calc);
+
+          calc();
+        }
+
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
+    <!-- TAB: Доп. опции -->
+    <section class="card section" id="tab_extras" aria-label="Доп. опции">
+      <div class="wrap">
+        <div class="card">
+          <h3>Дополнительные опции (штучные)</h3>
+          <div class="small">
+            Для каждой позиции укажи цену (₽/шт) и количество. Значения сохраняются.
+          </div>
+          <table class="tbl" style="margin-top:10px">
+            <thead>
+              <tr>
+                <th style="width:52px">#</th>
+                <th>Опция</th>
+                <th style="width:160px">Цена (₽/шт)</th>
+                <th style="width:140px">Количество</th>
+                <th style="width:170px">Сумма (₽)</th>
+              </tr>
+            </thead>
+            <tbody id="x_optRows"></tbody>
+          </table>
+          <div style="margin-top:12px; display:flex; gap:10px; align-items:center;">
+            <button id="x_reset" type="button">Сбросить (допы)</button>
+            <span class="small">Сбросит сохранённые цены и количества.</span>
+          </div>
+        </div>
+        <div class="card" id="x_out"></div>
+      </div>
+
+      <script>
+      (function(){
+        const LS_KEY = "extras_config_v1";
+
+        const ITEMS = [
+          {key:"gates",   name:"Ворота"},
+          {key:"auto",    name:"Автоматика для ворот"},
+          {key:"door",    name:"Дверь"},
+          {key:"windows", name:"Окна"},
+          {key:"shelving",name:"Стеллажи"},
+          {key:"gutters", name:"Водостоки"},
+          {key:"electro", name:"Электрика и свет"}
+        ];
+
+        function el(id){ return document.getElementById(id); }
+        function rub(x){ return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0)); }
+
+        function loadState(){
+          try{
+            const raw = localStorage.getItem(LS_KEY);
+            if(!raw) return {};
+            return JSON.parse(raw) || {};
+          } catch(e){ return {}; }
+        }
+
+        function saveState(st){
+          localStorage.setItem(LS_KEY, JSON.stringify(st));
+        }
+
+        function buildTable(){
+          const st = loadState();
+          const tb = el("x_optRows");
+          tb.innerHTML = "";
+
+          ITEMS.forEach((it, idx)=>{
+            const price = (st[it.key]?.price ?? 0);
+            const qty   = (st[it.key]?.qty ?? 0);
+
+            const tr = document.createElement("tr");
+            tr.innerHTML =
+              `<td class="mono">${idx+1}</td>
+               <td>${it.name}</td>
+               <td><input type="number" id="xp_${it.key}" value="${price}" step="100" min="0"></td>
+               <td><input type="number" id="xq_${it.key}" value="${qty}" step="1" min="0"></td>
+               <td class="mono num"><b id="xs_${it.key}">0</b></td>`;
+            tb.appendChild(tr);
+          });
+        }
+
+        function readStateFromInputs(){
+          const st = {};
+          ITEMS.forEach(it=>{
+            const p = Number(el("xp_"+it.key).value || 0);
+            const q = Number(el("xq_"+it.key).value || 0);
+            st[it.key] = {price:p, qty:q};
+          });
+          return st;
+        }
+
+        function calc(){
+          const st = readStateFromInputs();
+          saveState(st);
+
+          let total = 0;
+
+          ITEMS.forEach(it=>{
+            const p = st[it.key].price || 0;
+            const q = st[it.key].qty || 0;
+            const sum = p * q;
+            total += sum;
+            el("xs_"+it.key).textContent = rub(sum);
+          });
+
+          el("x_out").innerHTML =
+            `<h3>Итог по доп. опциям</h3>
+             <div class="row"><span>Сумма доп. опций</span><b class="mono">${rub(total)} ₽</b></div>`;
+
+          if(window.MegaCalc) window.MegaCalc.set('extras', total);
+          if(window.MegaBill){
+            const itemsBill = [];
+            ITEMS.forEach(it=>{
+              const p = st[it.key].price || 0;
+              const q = st[it.key].qty || 0;
+              if(q<=0 && p<=0) return;
+              itemsBill.push({name:it.name, unit:"шт", qty:q, price:p, sum:(p*q)});
+            });
+            window.MegaBill.setSection("extras", { title:"Доп. опции", items: itemsBill });
+          }
+
+        }
+
+        function bind(){
+          buildTable();
+
+          document.addEventListener("input", (e)=>{
+            if(!e.target) return;
+            if(e.target.id.startsWith("xp_") || e.target.id.startsWith("xq_")) calc();
+          });
+
+          el("x_reset").addEventListener("click", ()=>{
+            localStorage.removeItem(LS_KEY);
+            location.reload();
+          });
+
+          calc();
+        }
+
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
+<!-- TAB: Фундамент -->
+<section class="card section" id="tab_foundation" aria-label="Фундамент">
+  <div class="wrap">
+    <div class="card">
+      <div class="row">
+        <span class="pill">Ширина: <b id="fd_showW">—</b></span>
+        <span class="pill">Длина: <b id="fd_showL">—</b></span>
+      </div>
+
+      <div class="grid" style="margin-top:12px">
+        <div>
+          <label>Нужен бетононасос</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input id="fd_needPump" type="checkbox" style="width:auto">
+            <span class="small">Добавит 1 смену насоса</span>
+          </div>
+        </div>
+        <div>
+          <label>Добавить земляные работы (ставка за м²)</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input id="fd_needExcav" type="checkbox" style="width:auto">
+            <span class="small">Если включено — позиция “земляные работы” = S</span>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="grid">
+        <div>
+          <label>Толщина плиты (м)</label>
+          <input id="fd_n_thk" type="number" step="0.01" min="0.2" value="0.25" />
+        </div>
+        <div>
+          <label>Коэфф. нахлёстов (плёнки)</label>
+          <input id="fd_n_ov" type="number" step="0.01" min="1" value="1.05" />
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:12px">
+        <div>
+          <label>Фиксаторы (шт/м²)</label>
+          <input id="fd_n_ch" type="number" step="0.1" min="0" value="5" />
+        </div>
+        <div>
+          <label>Рейс миксера (м³/рейс)</label>
+          <input id="fd_n_truck" type="number" step="0.1" min="1" value="7" />
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:12px">
+        <div>
+          <label>Песок (толщина, м)</label>
+          <input id="fd_n_sand" type="number" step="0.01" min="0" value="0.10" />
+        </div>
+        <div>
+          <label>Щебень (толщина, м)</label>
+          <input id="fd_n_grav" type="number" step="0.01" min="0" value="0.10" />
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:12px">
+        <div>
+          <label>Арматура: шаг сетки (м)</label>
+          <input id="fd_n_rebarStep" type="number" step="0.01" min="0.10" value="0.20" />
+        </div>
+        <div>
+          <label>Арматура: запас (коэф.)</label>
+          <input id="fd_n_rebarWaste" type="number" step="0.01" min="1" value="1.07" />
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:12px">
+        <div>
+          <label>Арматура: защитный слой (м)</label>
+          <input id="fd_n_rebarCover" type="number" step="0.01" min="0" value="0.05" />
+        </div>
+        <div>
+          <label>Арматура: слоёв</label>
+          <input id="fd_n_rebarLayers" type="number" step="1" min="1" value="2" />
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <button id="fd_reset" type="button">Сбросить (фундамент)</button>
+      </div>
+
+      <div class="small" style="margin-top:10px">
+        Счёт: бетон V=S·thk, арматура (пруток): метраж по шагу сетки × слои × запас, опалубка по периметру: P.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row"><span>Площадь S (м²)</span><b id="fd_outS">—</b></div>
+      <div class="row"><span>Периметр P (пог.м)</span><b id="fd_outP">—</b></div>
+      <div class="row"><span>Бетон V (м³)</span><b id="fd_outV">—</b></div>
+      <hr>
+      <div class="row"><span><b>ИТОГО фундамент</b></span><b id="fd_grand">0 ₽</b></div>
+    </div>
+
+    <div class="card">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th style="width:34%">Позиция</th>
+            <th style="width:10%">Ед.</th>
+            <th style="width:14%" class="num">Кол-во</th>
+            <th style="width:18%" class="num">Цена</th>
+            <th style="width:24%" class="num">Сумма</th>
+          </tr>
+        </thead>
+        <tbody id="fd_rows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+(function(){
+  const LS_KEY = "gc_foundation_v3";
+
+  const fmt = (n)=> Number(n||0).toLocaleString("ru-RU");
+  const money = (n)=> fmt(n) + " ₽";
+  const round = (n, d=3)=> {
+    const p = Math.pow(10,d);
+    return Math.round((Number(n)||0)*p)/p;
+  };
+
+  const state = {
+    needPump: false,
+    needExcav: false,
+    norms: {
+      thk: 0.25, ov: 1.05, chairsPerM2: 5, sandThk: 0.10, gravThk: 0.10, truckM3: 7,
+      // Арматура (пруток)
+      rebarStep: 0.20,
+      rebarWaste: 1.07,
+      rebarCover: 0.05,
+      rebarLayers: 2
+    },
+    prices: {
+      concrete_m3: 0, truck_trip: 0, pump_shift: 0,
+      // ВАЖНО: цена за погонный метр арматуры
+      rebar_m: 0,
+      chairs_pc: 0, tie_fix: 0,
+      film_m2: 0, geotext_m2: 0,
+      sand_m3: 0, gravel_m3: 0, vibro_day: 0,
+      formwork_m: 0, form_lumber: 0, screws_fix: 0,
+      excav_m2: 0
+    }
+  };
+
+  function el(id){ return document.getElementById(id); }
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return;
+      const obj = JSON.parse(raw);
+      if(obj && typeof obj === "object"){
+        state.needPump = !!obj.needPump;
+        state.needExcav = !!obj.needExcav;
+        state.norms = Object.assign(state.norms, obj.norms||{});
+        state.prices = Object.assign(state.prices, obj.prices||{});
+        // миграция: если было mesh_m2 — переносим (не теряем ввод)
+        if(state.prices.mesh_m2 != null && state.prices.rebar_m == null){
+          state.prices.rebar_m = Number(state.prices.mesh_m2)||0;
+        }
+        delete state.prices.mesh_m2;
+      }
+    }catch(e){}
+  }
+  function save(){
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  const items = [
+    {key:"concrete_m3",  name:"Бетон (плита)", unit:"м³", qty: (m)=> m.V },
+    {key:"truck_trip",   name:"Доставка бетона (миксеры)", unit:"рейс", qty: (m)=> m.trips },
+    {key:"pump_shift",   name:"Бетононасос (смена)", unit:"смена", qty: (m)=> m.needPump ? 1 : 0 },
+
+    // ВАЖНО: арматура в погонных метрах (2 слоя по умолчанию через norms.rebarLayers)
+    {key:"rebar_m",      name:"Арматура (пруток, сетка, слои)", unit:"пог.м", qty: (m)=> m.rebarLen },
+
+    {key:"chairs_pc",    name:"Фиксаторы защитного слоя", unit:"шт", qty: (m)=> m.S * m.chairsPerM2 },
+    {key:"tie_fix",      name:"Вязальная проволока / расходники", unit:"фикс", qty: (m)=> 1 },
+
+    {key:"film_m2",      name:"Плёнка ПЭ под плиту", unit:"м²", qty: (m)=> m.S * m.ov },
+    {key:"geotext_m2",   name:"Геотекстиль", unit:"м²", qty: (m)=> m.S * m.ov },
+
+    {key:"sand_m3",      name:"Песок (подушка)", unit:"м³", qty: (m)=> m.S * m.sandThk },
+    {key:"gravel_m3",    name:"Щебень (подушка)", unit:"м³", qty: (m)=> m.S * m.gravThk },
+
+    {key:"vibro_day",    name:"Виброплита (аренда/смена)", unit:"смена", qty: (m)=> 1 },
+
+    {key:"formwork_m",   name:"Опалубка борта (по периметру)", unit:"пог.м", qty: (m)=> m.P },
+    {key:"form_lumber",  name:"Брус/стойки/укосины (по периметру)", unit:"пог.м", qty: (m)=> m.P },
+    {key:"screws_fix",   name:"Крепёж (саморезы/гвозди)", unit:"фикс", qty: (m)=> 1 },
+
+    {key:"excav_m2",     name:"Земляные работы (планировка/выемка)", unit:"м²", qty: (m)=> m.needExcav ? m.S : 0 }
+  ];
+
+  function metrics(){
+    const g = window.MegaGlobal.get();
+    const W = Number(g.preset)||0;
+    const L = Math.max(1, Number(g.L)||1);
+    const S = W * L;
+    const P = 2*(W + L);
+
+    const thk = Math.max(0.2, Number(state.norms.thk)||0.25);
+    const V = S * thk;
+
+    const ov = Math.max(1, Number(state.norms.ov)||1.05);
+    const chairsPerM2 = Math.max(0, Number(state.norms.chairsPerM2)||0);
+    const sandThk = Math.max(0, Number(state.norms.sandThk)||0);
+    const gravThk = Math.max(0, Number(state.norms.gravThk)||0);
+
+    const truckM3 = Math.max(1, Number(state.norms.truckM3)||7);
+    const trips = Math.ceil(V / truckM3);
+
+    // ----- Арматура (пруток) -----
+    const step   = Math.max(0.05, Number(state.norms.rebarStep)||0.20);
+    const waste  = Math.max(1,    Number(state.norms.rebarWaste)||1.07);
+    const cover  = Math.max(0,    Number(state.norms.rebarCover)||0);
+    const layers = Math.max(1,    Math.round(Number(state.norms.rebarLayers)||2));
+
+    // “чистые” размеры сетки внутри плиты
+    const Wi = Math.max(0, W - 2*cover);
+    const Li = Math.max(0, L - 2*cover);
+
+    // количество стержней в каждом направлении (на 1 слой)
+    const nAlongL = Math.floor(Wi/step) + 1; // стержни длиной Li, раскладываем по ширине
+    const nAlongW = Math.floor(Li/step) + 1; // стержни длиной Wi, раскладываем по длине
+
+    const len1 = nAlongL * Li + nAlongW * Wi;
+    const rebarLen = len1 * layers * waste; // пог.м на все слои с запасом
+    // -----------------------------
+
+    return {
+      W, L, S, P, thk, V, ov, chairsPerM2, sandThk, gravThk, truckM3, trips,
+      needPump: !!state.needPump, needExcav: !!state.needExcav,
+      rebarLen
+    };
+  }
+
+  // Таблица строится один раз. Дальше обновляем только qty/sum, не трогая input.value (чтобы курсор не сбивался)
+  function buildTableOnce(){
+    const tb = el("fd_rows");
+    tb.innerHTML = "";
+    for(const it of items){
+      const tr = document.createElement("tr");
+      tr.dataset.key = it.key;
+
+      tr.innerHTML =
+        `<td>${it.name}</td>
+         <td>${it.unit}</td>
+         <td class="num mono" data-col="qty">0</td>
+         <td class="num" data-col="price">
+           <input type="number" step="1" min="0" id="fd_p_${it.key}" style="width:140px">
+         </td>
+         <td class="num mono" data-col="sum">0 ₽</td>`;
+      tb.appendChild(tr);
+
+      const inp = tr.querySelector("#fd_p_"+it.key);
+      inp.value = Number(state.prices[it.key]||0);
+
+      inp.addEventListener("input", ()=>{
+        state.prices[it.key] = Number(inp.value)||0;
+        save();
+        recalc();
+      });
+    }
+  }
+
+  function hydrateControlsOnce(){
+    el("fd_needPump").checked = state.needPump;
+    el("fd_needExcav").checked = state.needExcav;
+
+    el("fd_n_thk").value = state.norms.thk;
+    el("fd_n_ov").value = state.norms.ov;
+    el("fd_n_ch").value = state.norms.chairsPerM2;
+    el("fd_n_sand").value = state.norms.sandThk;
+    el("fd_n_grav").value = state.norms.gravThk;
+    el("fd_n_truck").value = state.norms.truckM3;
+
+    el("fd_n_rebarStep").value = state.norms.rebarStep;
+    el("fd_n_rebarWaste").value = state.norms.rebarWaste;
+    el("fd_n_rebarCover").value = state.norms.rebarCover;
+    el("fd_n_rebarLayers").value = state.norms.rebarLayers;
+  }
+
+  function recalc(){
+    const g = window.MegaGlobal.get();
+    el("fd_showW").textContent = g.preset + " м";
+    el("fd_showL").textContent = fmt(g.L) + " м";
+
+    const m = metrics();
+
+    el("fd_outS").textContent = round(m.S,2);
+    el("fd_outP").textContent = round(m.P,2);
+    el("fd_outV").textContent = round(m.V,3);
+
+    let grand = 0;
+
+    for(const it of items){
+      const q = Number(it.qty(m)) || 0;
+      const price = Number(state.prices[it.key]) || 0;
+      const sum = q * price;
+      grand += sum;
+
+      const tr = el("fd_rows").querySelector(`tr[data-key="${it.key}"]`);
+      if(!tr) continue;
+
+      tr.querySelector('[data-col="qty"]').textContent =
+        (it.unit === "фикс" || it.unit === "смена" || it.unit === "рейс") ? round(q,0) : round(q,3);
+
+      tr.querySelector('[data-col="sum"]').textContent = money(sum);
+
+      tr.style.opacity = (q === 0) ? "0.45" : "1";
+    }
+
+    el("fd_grand").textContent = money(grand);
+
+    if(window.MegaCalc) window.MegaCalc.set("foundation", grand);
+          if(window.MegaBill){
+            const itemsBill = [];
+            for(const it of items){
+              const q = Number(it.qty(m)) || 0;
+              const price = Number(state.prices[it.key]) || 0;
+              const sum = q * price;
+              if(q<=0 && price<=0) continue;
+              itemsBill.push({name:it.name, unit:it.unit, qty:q, price, sum});
+            }
+            window.MegaBill.setSection("foundation", { title:"Фундамент", items: itemsBill });
+          }
+
+  }
+
+  function bind(){
+    load();
+    hydrateControlsOnce();
+    buildTableOnce();
+
+    el("fd_needPump").addEventListener("change", ()=>{
+      state.needPump = el("fd_needPump").checked;
+      save(); recalc();
+    });
+    el("fd_needExcav").addEventListener("change", ()=>{
+      state.needExcav = el("fd_needExcav").checked;
+      save(); recalc();
+    });
+
+    function bindNorm(id, key, caster){
+      const fn = caster || ((v)=> Number(v)||0);
+      el(id).addEventListener("input", ()=>{
+        state.norms[key] = fn(el(id).value);
+        save(); recalc();
+      });
+    }
+
+    bindNorm("fd_n_thk","thk");
+    bindNorm("fd_n_ov","ov");
+    bindNorm("fd_n_ch","chairsPerM2");
+    bindNorm("fd_n_sand","sandThk");
+    bindNorm("fd_n_grav","gravThk");
+    bindNorm("fd_n_truck","truckM3");
+
+    bindNorm("fd_n_rebarStep","rebarStep");
+    bindNorm("fd_n_rebarWaste","rebarWaste");
+    bindNorm("fd_n_rebarCover","rebarCover");
+    bindNorm("fd_n_rebarLayers","rebarLayers",(v)=> Math.max(1, Math.round(Number(v)||1)));
+
+    el("fd_reset").addEventListener("click", ()=>{
+      localStorage.removeItem(LS_KEY);
+      location.reload();
+    });
+
+    document.addEventListener("mega:globalChange", recalc);
+
+    recalc();
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+  else bind();
+})();
+  </script>
+</section>
+
+
+
+    <!-- TAB: Общая смета -->
+    <section class="card section" id="tab_summary" aria-label="Общая смета">
+      <div class="wrap">
+        <div class="card">
+          <div class="row" style="justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div>
+              <h3 style="margin:0">Общая смета</h3>
+              <div class="small">Собирает все позиции из вкладок. Кнопки копируют смету в буфер обмена.</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button id="sm_copy" type="button">Копировать</button>
+              <button id="sm_copy_md" type="button">Копировать (Markdown)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th style="width:22%">Раздел</th>
+                <th style="width:42%">Позиция</th>
+                <th style="width:8%">Ед.</th>
+                <th style="width:10%" class="num">Кол-во</th>
+                <th style="width:9%" class="num">Цена</th>
+                <th style="width:9%" class="num">Сумма</th>
+              </tr>
+            </thead>
+            <tbody id="sm_rows"></tbody>
+          </table>
+          <hr>
+          <div class="row"><span><b>ИТОГО смета</b></span><b id="sm_grand">0 ₽</b></div>
+          <div class="small" id="sm_status" style="margin-top:8px"></div>
+        </div>
+      </div>
+
+      <script>
+      (function(){
+        const el = (id)=> document.getElementById(id);
+        const fmt = (n)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:3}).format(Number(n||0));
+        const money = (n)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(n||0)) + " ₽";
+
+        async function copyText(text){
+          try{
+            await navigator.clipboard.writeText(text);
+            el("sm_status").textContent = "Скопировано в буфер обмена.";
+          }catch(e){
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand("copy");
+            document.body.removeChild(ta);
+            el("sm_status").textContent = "Скопировано (fallback).";
+          }
+        }
+
+        function render(){
+          const tb = el("sm_rows");
+          tb.innerHTML = "";
+          const store = window.MegaBill ? window.MegaBill.getAll() : {};
+          let grand = 0;
+          let rows = 0;
+
+          for(const k of Object.keys(store)){
+            const sec = store[k];
+            if(!sec || !Array.isArray(sec.items) || sec.items.length===0) continue;
+
+            for(const it of sec.items){
+              if(!it || !it.name) continue;
+              const sum = Number(it.sum)||0;
+              grand += sum;
+              rows += 1;
+
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${sec.title}</td>
+                <td>${it.name}</td>
+                <td>${it.unit}</td>
+                <td class="num mono">${fmt(it.qty)}</td>
+                <td class="num mono">${money(it.price)}</td>
+                <td class="num mono"><b>${money(sum)}</b></td>
+              `;
+              tb.appendChild(tr);
+            }
+          }
+
+          el("sm_grand").textContent = money(grand);
+          el("sm_status").textContent = rows
+            ? ("Строк в смете: " + rows)
+            : "Пока нет позиций. Открой вкладки и внеси цены/параметры — смета заполнится автоматически.";
+        }
+
+        function bind(){
+          el("sm_copy").addEventListener("click", ()=>{
+            if(window.MegaBill) copyText(window.MegaBill.buildText());
+          });
+          el("sm_copy_md").addEventListener("click", ()=>{
+            if(window.MegaBill) copyText(window.MegaBill.buildMarkdown());
+          });
+          document.addEventListener("mega:billChange", render);
+          render();
+        }
+
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
+
+  </div>
+
+  <script>
+    (function(){
+      const LS_TAB = "mega_calc_active_tab_v2";
+
+      function setActive(key){
+        document.querySelectorAll('.section').forEach(s=>s.classList.remove('is-active'));
+        const sec = document.getElementById('tab_'+key);
+        if(sec) sec.classList.add('is-active');
+
+        document.querySelectorAll('.tabbtn').forEach(b=>b.setAttribute('aria-selected', String(b.dataset.tab===key)));
+        try{ localStorage.setItem(LS_TAB, key); }catch(e){}
+      }
+
+      // global controls bind
+      const gp = document.getElementById("g_preset");
+      const gL = document.getElementById("g_L");
+      const st = window.MegaGlobal.get();
+      gp.value = st.preset;
+      gL.value = st.L;
+
+      gp.addEventListener("change", ()=> window.MegaGlobal.setPreset(gp.value));
+      gL.addEventListener("input", ()=> window.MegaGlobal.setL(gL.value));
+
+      document.addEventListener("mega:globalChange", (e)=>{
+        const d = e.detail || window.MegaGlobal.get();
+        if(gp.value !== d.preset) gp.value = d.preset;
+        if(Number(gL.value) !== Number(d.L)) gL.value = d.L;
+      });
+
+      document.addEventListener('click', (e)=>{
+        const btn = e.target && e.target.closest('.tabbtn');
+        if(!btn) return;
+        setActive(btn.dataset.tab);
+      });
+
+      let saved = null;
+      try{ saved = localStorage.getItem(LS_TAB); }catch(e){}
+      if(saved) setActive(saved);
+
+      // первичная инициализация
+      window.MegaCalc && window.MegaCalc.render();
+      window.MegaGlobal && window.MegaGlobal.broadcast();
+    })();
+  </script>
+</body>
+</html>
