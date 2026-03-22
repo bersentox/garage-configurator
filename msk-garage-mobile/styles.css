@@ -69,6 +69,7 @@ button { font: inherit; }
   display: flex;
   flex-direction: column;
   min-height: calc(100svh - var(--safe-top));
+  width: 100%;
 }
 .hero__copy { margin-top: 0; padding-top: 56px; }
 .eyebrow {
