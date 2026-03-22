@@ -1,0 +1,248 @@
+<div id="garage-mobile-root">
+  <div class="page-shell">
+    <header class="hero dark-section" id="top">
+      <div class="hero__backdrop"></div>
+      <div class="hero__overlay"></div>
+      <div class="hero__content mobile-frame">
+        <div class="hero__copy">
+          <p class="eyebrow">ГАРАЖИ ИЗ СЭНДВИЧ-ПАНЕЛЕЙ</p>
+          <h1>Подберите гараж<br />и сразу увидите стоимость</h1>
+          <p class="hero__lead">
+            Выберите формат, длину и цвет.<br />
+            3D-модель и ориентир цены — сразу.
+          </p>
+        </div>
+
+        <div class="hero__cta-wrap">
+          <a class="button button--primary hero__cta" href="#configurator">Открыть конфигуратор</a>
+          <p class="hero__cta-note">Без звонков. Сразу с ценой.</p>
+        </div>
+
+        <div class="hero__actions" aria-label="Быстрый выбор типа гаража">
+          <a class="choice-card choice-card--primary" href="#configurator" data-type-choice="single">
+            <span class="choice-card__label">1 ворота</span>
+            <span class="choice-card__meta">от 1 000 000 ₽</span>
+          </a>
+          <a class="choice-card" href="#configurator" data-type-choice="double">
+            <span class="choice-card__label">2 ворота</span>
+            <span class="choice-card__meta">от 2 000 000 ₽</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="configurator-section mobile-frame light-section" id="configurator">
+        <div class="section-heading">
+          <p class="eyebrow eyebrow--dark">Конфигуратор</p>
+          <h2>Выберите конфигурацию гаража</h2>
+          <p>
+            Выберите тип, длину и цвет. Ниже сразу покажем 3D-модель и ориентир стоимости.
+          </p>
+        </div>
+
+        <div class="viewer-card">
+          <div class="viewer-card__topline">
+            <div>
+              <span class="viewer-card__kicker">3D просмотр</span>
+              <h3 id="viewer-title">Гараж 6×6 · 1 ворота</h3>
+            </div>
+            <span class="viewer-status" id="viewer-status">Модель загружается</span>
+          </div>
+          <div class="viewer" id="viewer" aria-labelledby="viewer-title"></div>
+          <p class="viewer-hint">Поверните модель пальцем. Масштабирование ограничено для стабильной работы на мобильных устройствах.</p>
+        </div>
+
+        <div class="config-card">
+          <div class="control-group" data-control="type">
+            <div class="control-group__header">
+              <h3>Тип гаража</h3>
+              <span id="type-summary">1 ворота</span>
+            </div>
+            <div class="segmented" role="radiogroup" aria-label="Тип гаража">
+              <button class="segmented__button is-active" type="button" data-option="type" data-value="single">1 ворота</button>
+              <button class="segmented__button" type="button" data-option="type" data-value="double">2 ворота</button>
+            </div>
+          </div>
+
+          <div class="control-group" data-control="length">
+            <div class="control-group__header">
+              <h3>Длина</h3>
+              <span id="length-summary">6 м</span>
+            </div>
+            <div class="chip-row" role="radiogroup" aria-label="Длина">
+              <button class="chip is-active" type="button" data-option="length" data-value="6">6</button>
+              <button class="chip" type="button" data-option="length" data-value="8">8</button>
+              <button class="chip" type="button" data-option="length" data-value="10">10</button>
+            </div>
+          </div>
+
+          <div class="control-group" data-control="color">
+            <div class="control-group__header">
+              <h3>Цвет</h3>
+              <span id="color-summary">Песочный</span>
+            </div>
+            <div class="swatches" role="radiogroup" aria-label="Цвет">
+              <button class="swatch is-active" type="button" data-option="color" data-value="sand" aria-label="Песочный">
+                <span class="swatch__dot swatch__dot--sand"></span>
+                <span>Песочный</span>
+              </button>
+              <button class="swatch" type="button" data-option="color" data-value="chocolate" aria-label="Шоколадный">
+                <span class="swatch__dot swatch__dot--chocolate"></span>
+                <span>Шоколадный</span>
+              </button>
+              <button class="swatch" type="button" data-option="color" data-value="graphite" aria-label="Графит">
+                <span class="swatch__dot swatch__dot--graphite"></span>
+                <span>Графит</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="price-card" aria-live="polite">
+            <p class="price-card__label">Ориентир по стоимости</p>
+            <p class="price-card__value" id="price-value">от 1 000 000 ₽</p>
+            <p class="price-card__copy" id="price-copy">
+              Для гаража на одни ворота. Финальный расчёт зависит от комплектации, площадки и монтажа.
+            </p>
+          </div>
+
+          <div class="cta-stack">
+            <a class="button button--primary" href="#popup:kalkul">Получить расчёт</a>
+            <a class="button button--secondary" href="tel:+79969500777">Позвонить сейчас</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="trust-section section-soft light-section">
+        <div class="mobile-frame">
+          <div class="section-heading section-heading--light">
+            <p class="eyebrow eyebrow--amber">Реализация и монтаж</p>
+            <h2>Прозрачный процесс без перегруженной коммуникации</h2>
+            <p>Показываем, как проходит работа: от выбора конфигурации до готового гаража на участке.</p>
+          </div>
+
+          <div class="trust-grid">
+            <article class="trust-panel">
+              <h3>До начала работ</h3>
+              <div class="trust-list">
+                <details open>
+                  <summary><span>01</span> Уточняем сценарий использования и формат въезда</summary>
+                  <p>Сразу определяем, нужен ли гараж на одни или двое ворот, сколько техники хранится и какой запас по длине требуется.</p>
+                </details>
+                <details>
+                  <summary><span>02</span> Согласовываем конфигурацию и внешний вид</summary>
+                  <p>Подбираем длину, цвет, визуальный характер фасада и уровень оснащения без лишней технической перегрузки.</p>
+                </details>
+                <details>
+                  <summary><span>03</span> Фиксируем понятный ориентир по стоимости</summary>
+                  <p>Вы получаете базовый ценовой диапазон и чёткое понимание, что влияет на финальный расчёт.</p>
+                </details>
+              </div>
+            </article>
+
+            <article class="trust-panel">
+              <h3>На площадке</h3>
+              <div class="trust-list">
+                <details open>
+                  <summary><span>04</span> Подготавливаем решение под конкретный участок</summary>
+                  <p>Учитываем заезд, размещение, монтажные ограничения и логику последующей эксплуатации.</p>
+                </details>
+                <details>
+                  <summary><span>05</span> Монтируем быстро и аккуратно</summary>
+                  <p>Сэндвич-панели дают чистый визуальный результат, предсказуемую сборку и достойный внешний вид уже на первом этапе.</p>
+                </details>
+                <details>
+                  <summary><span>06</span> Передаём объект в готовом для использования состоянии</summary>
+                  <p>Финальный проход, проверка узлов, пояснение по эксплуатации и переход к следующему этапу без неопределённости.</p>
+                </details>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="process-section mobile-frame light-section">
+        <div class="section-heading">
+          <p class="eyebrow eyebrow--dark">Этапы проекта</p>
+          <h2>Лёгкая навигация по всему пути заказа</h2>
+          <p>Показываем путь проекта коротко и понятно — от выбора конфигурации до монтажа.</p>
+        </div>
+
+        <div class="timeline">
+          <article class="timeline-item is-active" role="button" tabindex="0" aria-pressed="true">
+            <span class="timeline-item__index">01</span>
+            <div>
+              <h3>Выбор конфигурации</h3>
+              <p>Определяем тип ворот, длину и цвет в мобильном конфигураторе за 1–2 минуты.</p>
+            </div>
+          </article>
+          <article class="timeline-item" role="button" tabindex="0" aria-pressed="false">
+            <span class="timeline-item__index">02</span>
+            <div>
+              <h3>Уточнение задачи</h3>
+              <p>Обсуждаем площадку, сценарий эксплуатации и желаемое оснащение без лишних созвонов.</p>
+            </div>
+          </article>
+          <article class="timeline-item" role="button" tabindex="0" aria-pressed="false">
+            <span class="timeline-item__index">03</span>
+            <div>
+              <h3>Расчёт и согласование</h3>
+              <p>Фиксируем ориентир по стоимости, комплект и последовательность дальнейших действий.</p>
+            </div>
+          </article>
+          <article class="timeline-item" role="button" tabindex="0" aria-pressed="false">
+            <span class="timeline-item__index">04</span>
+            <div>
+              <h3>Подготовка и производство</h3>
+              <p>Готовим комплект под ваш проект, чтобы монтаж прошёл без непредвиденных задержек.</p>
+            </div>
+          </article>
+          <article class="timeline-item" role="button" tabindex="0" aria-pressed="false">
+            <span class="timeline-item__index">05</span>
+            <div>
+              <h3>Монтаж и сдача</h3>
+              <p>Собираем, проверяем и передаём готовый гараж с понятным сценарием дальнейшей эксплуатации.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="faq-section section-soft light-section">
+        <div class="mobile-frame">
+          <div class="section-heading section-heading--light">
+            <p class="eyebrow eyebrow--amber">FAQ</p>
+            <h2>Что спрашивают перед заказом чаще всего</h2>
+            <p>Коротко отвечаем на основные вопросы, которые помогают принять решение быстрее.</p>
+          </div>
+
+          <div class="faq-list">
+            <details open>
+              <summary>Сколько времени занимает производство и монтаж?</summary>
+              <p>Срок зависит от сезона, комплектации и площадки. После уточнения конфигурации даём понятный ориентир по срокам и этапам.</p>
+            </details>
+            <details>
+              <summary>Можно ли адаптировать конфигурацию под участок?</summary>
+              <p>Да. Учитываем заезд, размеры площадки, высоту, инженерные ограничения и пожелания по эксплуатации.</p>
+            </details>
+            <details>
+              <summary>Насколько точна цена в конфигураторе?</summary>
+              <p>Это стартовый ориентир. Финальная стоимость зависит от комплектации, фундамента, монтажа и условий на объекте.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="final-cta mobile-frame light-section">
+        <div class="final-cta__card">
+          <p class="eyebrow eyebrow--dark">Следующий шаг</p>
+          <h2>Получите расчёт под вашу задачу</h2>
+          <p>Оставьте заявку — уточним детали, подтвердим конфигурацию и подготовим расчёт без лишней переписки.</p>
+          <div class="cta-stack cta-stack--final">
+            <a class="button button--primary" href="#popup:kalkul">Получить расчёт</a>
+            <a class="button button--secondary" href="tel:+79969500777">Позвонить сейчас</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

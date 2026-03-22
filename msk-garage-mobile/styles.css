@@ -1,0 +1,441 @@
+:root,
+#garage-mobile-root {
+  color-scheme: dark;
+  --bg: #08111f;
+  --bg-soft: #101a2c;
+  --surface: rgba(8, 17, 31, 0.78);
+  --surface-solid: #0f1b30;
+  --surface-light: #f5f0e6;
+  --surface-light-alt: #fffaf2;
+  --stroke: rgba(255, 255, 255, 0.1);
+  --stroke-soft: rgba(7, 18, 33, 0.08);
+  --text: #f5f7fb;
+  --text-dark: #0f1728;
+  --muted: rgba(245, 247, 251, 0.72);
+  --muted-dark: rgba(15, 23, 40, 0.68);
+  --accent: #d4a85d;
+  --accent-strong: #e3bb78;
+  --accent-soft: rgba(212, 168, 93, 0.16);
+  --shadow: 0 20px 60px rgba(2, 8, 18, 0.34);
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-md: 18px;
+  --radius-sm: 14px;
+  --max-mobile: 430px;
+  --safe-top: max(20px, env(safe-area-inset-top));
+  --safe-bottom: max(20px, env(safe-area-inset-bottom));
+  --font: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+#garage-mobile-root,
+#garage-mobile-root * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body.msk-garage-mobile-body {
+  margin: 0;
+  font-family: var(--font);
+  background: linear-gradient(180deg, #08111f 0%, #0d1627 20%, #efe8dc 20%, #f6f1e8 100%);
+  color: var(--text);
+}
+#garage-mobile-root {
+  display: block;
+  min-height: 100vh;
+  font-family: var(--font);
+  background: linear-gradient(180deg, #08111f 0%, #0d1627 20%, #efe8dc 20%, #f6f1e8 100%);
+  color: var(--text);
+}
+#garage-mobile-root img { max-width: 100%; display: block; }
+#garage-mobile-root a { color: inherit; text-decoration: none; }
+#garage-mobile-root button { font: inherit; }
+
+#garage-mobile-root .page-shell { min-height: 100vh; }
+#garage-mobile-root .mobile-frame {
+  width: min(calc(100% - 24px), var(--max-mobile));
+  margin: 0 auto;
+}
+
+#garage-mobile-root .hero {
+  position: relative;
+  min-height: 100svh;
+  padding: var(--safe-top) 0 34px;
+  overflow: hidden;
+  background: #09111f;
+}
+#garage-mobile-root .hero__backdrop,
+#garage-mobile-root .hero__overlay {
+  position: absolute;
+  inset: 0;
+}
+#garage-mobile-root .hero__backdrop {
+  background: center / cover no-repeat url("assets/images/hero1.webp");
+  transform: scale(1.04);
+}
+#garage-mobile-root .hero__overlay {
+  background: linear-gradient(180deg, rgba(5, 10, 18, 0.28) 0%, rgba(6, 12, 24, 0.58) 42%, rgba(7, 13, 25, 0.94) 100%);
+}
+#garage-mobile-root .hero__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100svh - var(--safe-top));
+}
+#garage-mobile-root .hero__copy {
+  margin-top: 0;
+  padding-top: 56px;
+  width: 100%;
+  text-align: center;
+}
+#garage-mobile-root .eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+#garage-mobile-root .hero .eyebrow {
+  color: var(--accent-strong);
+  text-align: center;
+}
+#garage-mobile-root .eyebrow--dark { color: #9a6f2a; }
+#garage-mobile-root .eyebrow--amber { color: #b07c2d; }
+#garage-mobile-root h1, #garage-mobile-root h2, #garage-mobile-root h3, #garage-mobile-root p { margin: 0; }
+#garage-mobile-root .hero h1 {
+  font-size: clamp(2.2rem, 8vw, 3.35rem);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+  max-width: 24ch;
+  text-align: center;
+}
+#garage-mobile-root .hero__lead {
+  margin-top: 14px;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 42ch;
+  text-align: center;
+}
+#garage-mobile-root .hero__cta-wrap {
+  width: 100%;
+  margin-top: auto;
+}
+#garage-mobile-root .hero__cta {
+  width: 100%;
+}
+#garage-mobile-root .hero__cta-note {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.72);
+}
+#garage-mobile-root .hero__actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  align-items: center;
+  width: 100%;
+}
+#garage-mobile-root .choice-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 15px 16px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 38px rgba(2, 8, 18, 0.24);
+  opacity: 0.9;
+}
+#garage-mobile-root .choice-card--primary { border-color: rgba(227, 187, 120, 0.52); }
+#garage-mobile-root .choice-card__label { font-size: 1rem; font-weight: 700; }
+#garage-mobile-root .choice-card__meta { color: rgba(255,255,255,0.72); font-size: 0.9rem; }
+
+#garage-mobile-root section { padding: 26px 0; }
+#garage-mobile-root .section-soft { background: linear-gradient(180deg, var(--surface-light) 0%, var(--surface-light-alt) 100%); color: var(--text-dark); }
+#garage-mobile-root .light-section {
+  color: var(--text-dark);
+}
+
+#garage-mobile-root .light-section h1,
+#garage-mobile-root .light-section h2,
+#garage-mobile-root .light-section h3 {
+  color: var(--text-dark);
+}
+
+#garage-mobile-root .light-section p {
+  color: var(--muted-dark);
+}
+
+#garage-mobile-root .dark-section {
+  color: var(--text);
+}
+
+#garage-mobile-root .dark-section h1,
+#garage-mobile-root .dark-section h2,
+#garage-mobile-root .dark-section h3 {
+  color: var(--text);
+}
+
+#garage-mobile-root .dark-section p {
+  color: var(--muted);
+}
+
+#garage-mobile-root .section-heading {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+#garage-mobile-root .section-heading--light { color: var(--text-dark); }
+#garage-mobile-root .section-heading h2 {
+  font-size: 1.75rem;
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+#garage-mobile-root .section-heading p:last-child {
+  font-size: 0.98rem;
+  line-height: 1.62;
+}
+
+#garage-mobile-root .configurator-section { padding-top: 28px; color: var(--text-dark); }
+#garage-mobile-root .configurator-section > .section-heading .eyebrow { color: var(--accent-strong); }
+#garage-mobile-root .configurator-section > .section-heading h2 { color: var(--text); }
+#garage-mobile-root .configurator-section > .section-heading p:last-child { color: rgba(255,255,255,0.85); }
+#garage-mobile-root .viewer-card,
+#garage-mobile-root .config-card,
+#garage-mobile-root .final-cta__card,
+#garage-mobile-root .trust-panel,
+#garage-mobile-root .timeline-item,
+#garage-mobile-root .faq-list details {
+  border-radius: var(--radius-xl);
+  box-shadow: 0 16px 40px rgba(13, 21, 39, 0.09);
+}
+#garage-mobile-root .viewer-card,
+#garage-mobile-root .config-card,
+#garage-mobile-root .final-cta__card {
+  background: #fffdf9;
+  border: 1px solid rgba(15, 23, 40, 0.06);
+}
+#garage-mobile-root .viewer-card { padding: 16px; }
+#garage-mobile-root .viewer-card__topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+#garage-mobile-root .viewer-card__kicker {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(212, 168, 93, 0.14);
+  color: #835c1d;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+#garage-mobile-root .viewer-card h3 { font-size: 1.1rem; line-height: 1.15; }
+#garage-mobile-root .viewer-status {
+  font-size: 0.78rem;
+  color: var(--muted-dark);
+  text-align: right;
+  max-width: 92px;
+}
+#garage-mobile-root .viewer {
+  position: relative;
+  height: 320px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: radial-gradient(circle at top, rgba(212, 168, 93, 0.25), transparent 34%), linear-gradient(180deg, #dfe6ef 0%, #eef2f6 48%, #d4dbe4 100%);
+}
+#garage-mobile-root .viewer canvas { width: 100%; height: 100%; display: block; }
+#garage-mobile-root .viewer-hint {
+  margin-top: 12px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--muted-dark);
+}
+#garage-mobile-root .config-card { margin-top: 14px; padding: 16px; }
+#garage-mobile-root .control-group + .control-group,
+#garage-mobile-root .control-group + .price-card,
+#garage-mobile-root .price-card + .cta-stack { margin-top: 18px; }
+#garage-mobile-root .control-group__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+#garage-mobile-root .control-group__header h3 { font-size: 1rem; }
+#garage-mobile-root .control-group__header span { color: var(--muted-dark); font-size: 0.9rem; }
+#garage-mobile-root .segmented,
+#garage-mobile-root .chip-row,
+#garage-mobile-root .swatches,
+#garage-mobile-root .cta-stack { display: grid; gap: 10px; }
+#garage-mobile-root .segmented { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#garage-mobile-root .segmented__button,
+#garage-mobile-root .chip,
+#garage-mobile-root .swatch,
+#garage-mobile-root .button {
+  min-height: 52px;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 40, 0.08);
+  background: #f6f3ed;
+  color: var(--text-dark);
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+}
+#garage-mobile-root .segmented__button.is-active,
+#garage-mobile-root .chip.is-active,
+#garage-mobile-root .swatch.is-active {
+  background: #13213a;
+  color: var(--text);
+  border-color: rgba(19, 33, 58, 0.88);
+  box-shadow: 0 12px 26px rgba(8, 17, 31, 0.18);
+}
+#garage-mobile-root .chip-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+#garage-mobile-root .chip { font-weight: 700; }
+#garage-mobile-root .swatches { grid-template-columns: 1fr; }
+#garage-mobile-root .swatch { justify-content: flex-start; padding: 0 16px; font-weight: 600; }
+#garage-mobile-root .swatch__dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.25);
+}
+#garage-mobile-root .swatch__dot--sand { background: #c5ab79; }
+#garage-mobile-root .swatch__dot--chocolate { background: #5d4032; }
+#garage-mobile-root .swatch__dot--graphite { background: #3f4651; }
+#garage-mobile-root .price-card {
+  padding: 18px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #11203a 0%, #1a2d4d 100%);
+  color: var(--text);
+}
+#garage-mobile-root .light-section .price-card .price-card__label { color: rgba(255,255,255,0.68); }
+#garage-mobile-root .light-section .price-card .price-card__value { color: var(--text); }
+#garage-mobile-root .light-section .price-card .price-card__copy { color: rgba(255,255,255,0.76); }
+#garage-mobile-root .price-card__label { color: rgba(255,255,255,0.68); font-size: 0.86rem; }
+#garage-mobile-root .price-card__value {
+  margin-top: 8px;
+  font-size: 1.8rem;
+  letter-spacing: -0.05em;
+  font-weight: 800;
+}
+#garage-mobile-root .price-card__copy { margin-top: 8px; line-height: 1.55; color: rgba(255,255,255,0.76); }
+#garage-mobile-root .button {
+  width: 100%;
+  min-height: 56px;
+  font-weight: 700;
+}
+#garage-mobile-root .button--primary {
+  background: linear-gradient(180deg, var(--accent-strong), var(--accent));
+  color: #1b1205;
+  border-color: rgba(190, 146, 74, 0.48);
+}
+#garage-mobile-root .button--secondary { background: transparent; }
+
+#garage-mobile-root .trust-grid,
+#garage-mobile-root .faq-list,
+#garage-mobile-root .timeline { display: grid; gap: 14px; }
+#garage-mobile-root .trust-panel {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--stroke-soft);
+  padding: 16px;
+}
+#garage-mobile-root .trust-panel h3 { font-size: 1.02rem; margin-bottom: 12px; }
+#garage-mobile-root .trust-list { display: grid; gap: 10px; }
+#garage-mobile-root .trust-list details,
+#garage-mobile-root .faq-list details {
+  background: #fff;
+  border: 1px solid rgba(15, 23, 40, 0.08);
+  border-radius: 18px;
+  padding: 14px 16px;
+}
+#garage-mobile-root .trust-list summary,
+#garage-mobile-root .faq-list summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+#garage-mobile-root summary::-webkit-details-marker { display: none; }
+#garage-mobile-root .trust-list summary span,
+#garage-mobile-root .timeline-item__index {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(212,168,93,0.14);
+  color: #8b6522;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+#garage-mobile-root .trust-list p,
+#garage-mobile-root .timeline-item p,
+#garage-mobile-root .faq-list p,
+#garage-mobile-root .final-cta__card p { color: var(--muted-dark); line-height: 1.62; }
+#garage-mobile-root .trust-list details[open],
+#garage-mobile-root .faq-list details[open] { background: #fffaf2; }
+#garage-mobile-root .trust-list details p,
+#garage-mobile-root .faq-list details p { padding-top: 10px; }
+
+#garage-mobile-root .process-section { color: var(--text-dark); }
+#garage-mobile-root .timeline-item {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 14px;
+  padding: 16px;
+  background: #fffdf9;
+  border: 1px solid rgba(15,23,40,0.06);
+  cursor: pointer;
+}
+#garage-mobile-root .timeline-item:focus-visible {
+  outline: 3px solid rgba(19, 33, 58, 0.18);
+  outline-offset: 3px;
+}
+#garage-mobile-root .timeline-item.is-active { background: linear-gradient(180deg, #13213a 0%, #1a2c49 100%); }
+#garage-mobile-root .timeline-item.is-active h3,
+#garage-mobile-root .timeline-item.is-active p { color: var(--text); }
+
+#garage-mobile-root .light-section .timeline-item.is-active h3,
+#garage-mobile-root .light-section .timeline-item.is-active p {
+  color: var(--text);
+}
+#garage-mobile-root .timeline-item h3 { font-size: 1rem; margin-bottom: 6px; }
+
+#garage-mobile-root .faq-section { padding-bottom: 18px; }
+#garage-mobile-root .faq-list details { padding: 16px; }
+
+#garage-mobile-root .final-cta { padding: 8px 0 40px; color: var(--text-dark); }
+#garage-mobile-root .final-cta__card {
+  padding: 20px;
+  background: linear-gradient(180deg, #fffaf2 0%, #fff 100%);
+}
+#garage-mobile-root .final-cta__card h2 {
+  font-size: 1.72rem;
+  line-height: 1.03;
+  letter-spacing: -0.05em;
+  margin-bottom: 10px;
+}
+#garage-mobile-root .final-cta__card > p:last-of-type { margin-bottom: 18px; }
+
+@media (min-width: 431px) {
+  #garage-mobile-root .page-shell { max-width: 100%; }
+}
