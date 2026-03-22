@@ -194,6 +194,9 @@ section { padding: 26px 0; }
 }
 
 .configurator-section { padding-top: 28px; color: var(--text-dark); }
+.configurator-section > .section-heading .eyebrow { color: var(--accent-strong); }
+.configurator-section > .section-heading h2 { color: var(--text); }
+.configurator-section > .section-heading p:last-child { color: rgba(255,255,255,0.85); }
 .viewer-card,
 .config-card,
 .final-cta__card,
