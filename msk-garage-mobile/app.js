@@ -44,6 +44,7 @@ let camera;
 let renderer;
 let controls;
 let currentModel;
+let currentPivot;
 let animationId;
 let loadToken = 0;
 const loader = new GLTFLoader();
@@ -96,7 +97,6 @@ function initViewer() {
   controls.maxDistance = 10;
   controls.minPolarAngle = Math.PI / 3.4;
   controls.maxPolarAngle = Math.PI / 2.08;
-  controls.target.set(0, 0.6, 0);
 
   window.addEventListener('resize', handleResize);
   animate();
@@ -148,13 +148,22 @@ function loadCurrentModel() {
     modelPath,
     (gltf) => {
       if (token !== loadToken) return;
-      if (currentModel) scene.remove(currentModel);
-      currentModel = gltf.scene;
+      if (currentPivot) scene.remove(currentPivot);
 
-      centerModel(currentModel);
-      currentModel.rotation.y = -Math.PI / 5.2;
-      scene.add(currentModel);
+      currentModel = gltf.scene;
+      currentPivot = new THREE.Group();
+
+      const fit = normalizeModelIntoPivot(currentModel, currentPivot);
+
+      currentPivot.rotation.y = -Math.PI / 5.2;
+      scene.add(currentPivot);
+
       applyColorTint();
+      applyViewerFit(fit);
+
+      controls.target.copy(fit.center);
+      controls.update();
+
       refs.viewerStatus.textContent = '3D готов';
     },
     undefined,
@@ -165,19 +174,59 @@ function loadCurrentModel() {
   );
 }
 
-function centerModel(model) {
-  const box = new THREE.Box3().setFromObject(model);
-  const size = new THREE.Vector3();
-  const center = new THREE.Vector3();
-  box.getSize(size);
-  box.getCenter(center);
+function normalizeModelIntoPivot(model, pivot) {
+  const rawBox = new THREE.Box3().setFromObject(model);
+  const rawSize = new THREE.Vector3();
+  const rawCenter = new THREE.Vector3();
+  rawBox.getSize(rawSize);
+  rawBox.getCenter(rawCenter);
 
-  model.position.sub(center);
-  model.position.y = -box.min.y - size.y * 0.15 - 0.95;
-
-  const maxSize = Math.max(size.x, size.y, size.z) || 1;
+  const maxSize = Math.max(rawSize.x, rawSize.y, rawSize.z) || 1;
   const scale = 4.6 / maxSize;
   model.scale.setScalar(scale);
+
+  const scaledBox = new THREE.Box3().setFromObject(model);
+  const scaledSize = new THREE.Vector3();
+  const scaledCenter = new THREE.Vector3();
+  scaledBox.getSize(scaledSize);
+  scaledBox.getCenter(scaledCenter);
+
+  model.position.set(
+    -scaledCenter.x,
+    -scaledCenter.y + scaledSize.y * 0.35,
+    -scaledCenter.z
+  );
+
+  pivot.add(model);
+
+  const finalBox = new THREE.Box3().setFromObject(pivot);
+  const finalSize = new THREE.Vector3();
+  const finalCenter = new THREE.Vector3();
+  finalBox.getSize(finalSize);
+  finalBox.getCenter(finalCenter);
+
+  return { box: finalBox, size: finalSize, center: finalCenter };
+}
+
+function applyViewerFit({ size, center }) {
+  const maxDim = Math.max(size.x, size.y, size.z) || 1;
+
+  const fitHeightDistance = maxDim / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
+  const fitWidthDistance = fitHeightDistance / camera.aspect;
+  const distance = Math.max(fitHeightDistance, fitWidthDistance) * 1.2;
+
+  camera.position.set(
+    center.x + distance * 0.9,
+    center.y + distance * 0.45,
+    center.z + distance * 1.05
+  );
+
+  camera.near = Math.max(0.1, distance / 100);
+  camera.far = Math.max(100, distance * 10);
+  camera.updateProjectionMatrix();
+
+  controls.minDistance = distance * 0.7;
+  controls.maxDistance = distance * 1.5;
 }
 
 function applyColorTint() {
@@ -216,7 +265,7 @@ function handleResize() {
 
 function animate() {
   animationId = requestAnimationFrame(animate);
-  if (currentModel) currentModel.rotation.y += 0.0015;
+  if (currentPivot) currentPivot.rotation.y += 0.0015;
   controls.update();
   renderer.render(scene, camera);
 }
