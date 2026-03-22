@@ -68,14 +68,13 @@ button { font: inherit; }
   z-index: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
   min-height: calc(100svh - var(--safe-top));
 }
 .hero__copy {
   margin-top: 0;
   padding-top: 56px;
+  width: 100%;
   text-align: center;
-  align-items: center;
 }
 .eyebrow {
   margin: 0 0 10px;
@@ -84,6 +83,10 @@ button { font: inherit; }
   text-transform: uppercase;
   color: var(--accent-strong);
   font-weight: 700;
+}
+
+.hero .eyebrow {
+  color: var(--accent-strong);
   text-align: center;
 }
 .eyebrow--dark { color: #9a6f2a; }
@@ -101,10 +104,11 @@ h1, h2, h3, p { margin: 0; }
   font-size: 0.98rem;
   line-height: 1.6;
   color: var(--muted);
-  max-width: 36ch;
+  max-width: 42ch;
   text-align: center;
 }
 .hero__cta-wrap {
+  width: 100%;
   margin-top: auto;
 }
 .hero__cta {
@@ -389,6 +393,11 @@ summary::-webkit-details-marker { display: none; }
 .timeline-item.is-active { background: linear-gradient(180deg, #13213a 0%, #1a2c49 100%); }
 .timeline-item.is-active h3,
 .timeline-item.is-active p { color: var(--text); }
+
+.light-section .timeline-item.is-active h3,
+.light-section .timeline-item.is-active p {
+  color: var(--text);
+}
 .timeline-item h3 { font-size: 1rem; margin-bottom: 6px; }
 
 .faq-section { padding-bottom: 18px; }
