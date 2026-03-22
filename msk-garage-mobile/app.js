@@ -124,6 +124,27 @@ function bindControls() {
       loadCurrentModel();
     });
   });
+
+  const timelineItems = document.querySelectorAll('.timeline-item');
+  if (!timelineItems.length) return;
+
+  const setActiveTimelineItem = (nextItem) => {
+    timelineItems.forEach((item) => {
+      const isActive = item === nextItem;
+      item.classList.toggle('is-active', isActive);
+      item.setAttribute('aria-pressed', String(isActive));
+    });
+  };
+
+  timelineItems.forEach((item) => {
+    item.addEventListener('click', () => setActiveTimelineItem(item));
+    item.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setActiveTimelineItem(item);
+      }
+    });
+  });
 }
 
 function updateUI() {

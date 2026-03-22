@@ -395,6 +395,11 @@ summary::-webkit-details-marker { display: none; }
   padding: 16px;
   background: #fffdf9;
   border: 1px solid rgba(15,23,40,0.06);
+  cursor: pointer;
+}
+.timeline-item:focus-visible {
+  outline: 3px solid rgba(19, 33, 58, 0.18);
+  outline-offset: 3px;
 }
 .timeline-item.is-active { background: linear-gradient(180deg, #13213a 0%, #1a2c49 100%); }
 .timeline-item.is-active h3,
