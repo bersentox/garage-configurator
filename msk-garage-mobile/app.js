@@ -38,7 +38,7 @@ const CONFIG = {
     '8': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_8x8.glb',
     '10': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_8x10.glb',
   }
-}
+},
   colors: {
     sand: 0xc5ab79,
     chocolate: 0x5d4032,
