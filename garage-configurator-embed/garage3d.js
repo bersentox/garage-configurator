@@ -261,7 +261,7 @@ controls.maxPolarAngle = 1.42;
         modelGroup.add(mountedModel);
         frameModel(mountedModel);
           // сместить композицию влево
-          controls.target.x -= 0.3;
+          controls.target.x -= 2;
           controls.update();
         const meshIndex = buildMeshIndex(mountedModel);
         Object.assign(garageParts, detectGarageParts(meshIndex));
