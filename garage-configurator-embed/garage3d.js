@@ -179,7 +179,7 @@ controls.maxPolarAngle = 1.42;
     const maxSize = Math.max(size.x, size.y, size.z);
     const distance = Math.max(6, maxSize * 1.7);
    camera.position.set(
-    distance * 0.95 + 0.8, // вправо камера -> модель визуально левее
+    distance * 0.95 + 2, // вправо камера -> модель визуально левее
     distance * 0.35,
     distance * 1.15
   );
