@@ -2,6 +2,8 @@ import * as THREE from './vendor/three/three.module.js';
 import { OrbitControls } from './vendor/three/OrbitControls.js';
 import { GLTFLoader } from './vendor/three/GLTFLoader.js';
 
+const root = document.getElementById('garage-mobile-root');
+
 const state = {
   type: 'single',
   length: '6',
@@ -26,8 +28,16 @@ const CONFIG = {
     color: { sand: 'Песочный', chocolate: 'Шоколадный', graphite: 'Графит' },
   },
   modelMap: {
-    single: { '6': 'assets/models/garage_6x6.glb', '8': 'assets/models/garage_6x8.glb', '10': 'assets/models/garage_6x10.glb' },
-    double: { '6': 'assets/models/garage_8x6.glb', '8': 'assets/models/garage_8x8.glb', '10': 'assets/models/garage_8x10.glb' },
+    single: {
+      '6': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_6x6.glb',
+      '8': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_6x8.glb',
+      '10': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_6x10.glb',
+    },
+    double: {
+      '6': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_8x6.glb',
+      '8': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_8x8.glb',
+      '10': 'https://bersentox.github.io/garage-configurator/msk-garage-mobile/assets/models/garage_8x10.glb',
+    },
   },
   colors: {
     sand: 0xc5ab79,
@@ -37,14 +47,14 @@ const CONFIG = {
 };
 
 const refs = {
-  viewer: document.getElementById('viewer'),
-  viewerTitle: document.getElementById('viewer-title'),
-  viewerStatus: document.getElementById('viewer-status'),
-  priceValue: document.getElementById('price-value'),
-  priceCopy: document.getElementById('price-copy'),
-  typeSummary: document.getElementById('type-summary'),
-  lengthSummary: document.getElementById('length-summary'),
-  colorSummary: document.getElementById('color-summary'),
+  viewer: root?.querySelector('#viewer'),
+  viewerTitle: root?.querySelector('#viewer-title'),
+  viewerStatus: root?.querySelector('#viewer-status'),
+  priceValue: root?.querySelector('#price-value'),
+  priceCopy: root?.querySelector('#price-copy'),
+  typeSummary: root?.querySelector('#type-summary'),
+  lengthSummary: root?.querySelector('#length-summary'),
+  colorSummary: root?.querySelector('#color-summary'),
 };
 
 let scene;
@@ -60,6 +70,8 @@ const loader = new GLTFLoader();
 boot();
 
 function boot() {
+  if (!root) return;
+
   bindControls();
   updateUI();
 
@@ -111,7 +123,7 @@ function initViewer() {
 }
 
 function bindControls() {
-  document.querySelectorAll('[data-option]').forEach((button) => {
+  root.querySelectorAll('[data-option]').forEach((button) => {
     button.addEventListener('click', () => {
       const option = button.dataset.option;
       const value = button.dataset.value;
@@ -125,7 +137,7 @@ function bindControls() {
     });
   });
 
-  document.querySelectorAll('[data-type-choice]').forEach((link) => {
+  root.querySelectorAll('[data-type-choice]').forEach((link) => {
     link.addEventListener('click', () => {
       state.type = link.dataset.typeChoice;
       updateUI();
@@ -133,7 +145,7 @@ function bindControls() {
     });
   });
 
-  const timelineItems = document.querySelectorAll('.timeline-item');
+  const timelineItems = root.querySelectorAll('.timeline-item');
   if (!timelineItems.length) return;
 
   const setActiveTimelineItem = (nextItem) => {
@@ -154,7 +166,7 @@ function bindControls() {
     });
   });
 
-  const faqItems = document.querySelectorAll('.faq-list details');
+  const faqItems = root.querySelectorAll('.faq-list details');
   faqItems.forEach((item) => {
     item.addEventListener('toggle', () => {
       if (!item.open) return;
@@ -169,9 +181,9 @@ function bindControls() {
 }
 
 function updateUI() {
-  document.querySelectorAll('[data-option="type"]').forEach((button) => button.classList.toggle('is-active', button.dataset.value === state.type));
-  document.querySelectorAll('[data-option="length"]').forEach((button) => button.classList.toggle('is-active', button.dataset.value === state.length));
-  document.querySelectorAll('[data-option="color"]').forEach((button) => button.classList.toggle('is-active', button.dataset.value === state.color));
+  root.querySelectorAll('[data-option="type"]').forEach((button) => button.classList.toggle('is-active', button.dataset.value === state.type));
+  root.querySelectorAll('[data-option="length"]').forEach((button) => button.classList.toggle('is-active', button.dataset.value === state.length));
+  root.querySelectorAll('[data-option="color"]').forEach((button) => button.classList.toggle('is-active', button.dataset.value === state.color));
 
   refs.typeSummary.textContent = CONFIG.labels.type[state.type];
   refs.lengthSummary.textContent = `${state.length} м`;
