@@ -258,12 +258,11 @@ controls.maxPolarAngle = 1.42;
         activeModelKey = nextModelKey;
         modelGroup.rotation.set(0, 0, 0);
         centerModel(mountedModel);
-          // микро-калибровка
-          mountedModel.position.x -= 0.3;
-          mountedModel.position.z -= 0.05;
         modelGroup.add(mountedModel);
         frameModel(mountedModel);
-
+          // сместить композицию влево
+          controls.target.x -= 0.3;
+          controls.update();
         const meshIndex = buildMeshIndex(mountedModel);
         Object.assign(garageParts, detectGarageParts(meshIndex));
         applyColors(activeColors);
