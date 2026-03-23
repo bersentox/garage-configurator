@@ -259,7 +259,7 @@ controls.maxPolarAngle = 1.42;
         modelGroup.rotation.set(0, 0, 0);
         centerModel(mountedModel);
           // микро-калибровка
-          mountedModel.position.x -= 0.2;
+          mountedModel.position.x -= 0.3;
           mountedModel.position.z -= 0.05;
         modelGroup.add(mountedModel);
         frameModel(mountedModel);
