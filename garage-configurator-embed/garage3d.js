@@ -171,12 +171,6 @@ controls.maxPolarAngle = 1.42;
 
   // ставим на землю
   object3d.position.y -= box.min.y;
-
-    centerModel(mountedModel);
-
-// микро-сдвиг (подбираешь руками)
-mountedModel.position.x += 0.1;
-mountedModel.position.z -= 0.05;
 }
 
   function frameModel(object3d) {
@@ -264,6 +258,9 @@ mountedModel.position.z -= 0.05;
         activeModelKey = nextModelKey;
         modelGroup.rotation.set(0, 0, 0);
         centerModel(mountedModel);
+          // микро-калибровка
+          mountedModel.position.x += 0.1;
+          mountedModel.position.z -= 0.05;
         modelGroup.add(mountedModel);
         frameModel(mountedModel);
 
