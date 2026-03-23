@@ -1,0 +1,1570 @@
+<section class="mg-block" aria-labelledby="mg-title">
+  <style>
+    .mg-block,
+    .mg-block * {
+      box-sizing: border-box;
+    }
+
+    .mg-block {
+      --mg-bg: #f2f3f5;
+      --mg-surface: #ffffff;
+      --mg-surface-soft: #f7f7f8;
+      --mg-line: rgba(17, 17, 17, 0.1);
+      --mg-line-strong: rgba(17, 17, 17, 0.18);
+      --mg-text: #111111;
+      --mg-muted: rgba(17, 17, 17, 0.62);
+      --mg-subtle: rgba(17, 17, 17, 0.42);
+      --mg-accent: #1f5eff;
+      --mg-accent-soft: rgba(31, 94, 255, 0.08);
+      --mg-shadow: 0 24px 60px rgba(17, 17, 17, 0.06);
+      --mg-radius-xl: 40px;
+      --mg-radius-lg: 28px;
+      --mg-radius-md: 20px;
+      --mg-radius-sm: 16px;
+      --mg-ease: cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, #f7f7f8 0%, #f1f2f4 36%, #eceef1 100%);
+      color: var(--mg-text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: clamp(40px, 5vw, 72px) 0;
+    }
+
+    .mg-shell {
+      width: min(1320px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: clamp(24px, 3vw, 40px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: var(--mg-radius-xl);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.84));
+      box-shadow: var(--mg-shadow);
+      backdrop-filter: blur(0);
+    }
+
+    .mg-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+      gap: clamp(24px, 4vw, 48px);
+      align-items: end;
+      padding-bottom: clamp(28px, 4vw, 44px);
+      border-bottom: 1px solid var(--mg-line);
+    }
+
+    .mg-kicker,
+    .mg-section-kicker,
+    .mg-process-label,
+    .mg-faq-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      padding: 0 12px;
+      border: 1px solid rgba(17, 17, 17, 0.08);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mg-subtle);
+    }
+
+    .mg-kicker::before,
+    .mg-section-kicker::before,
+    .mg-process-label::before,
+    .mg-faq-label::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--mg-accent);
+    }
+
+    .mg-title {
+      margin: 18px 0 0;
+      max-width: 12ch;
+      font-size: clamp(2.8rem, 6vw, 5.8rem);
+      line-height: 0.92;
+      font-weight: 650;
+      letter-spacing: -0.07em;
+      text-wrap: balance;
+    }
+
+    .mg-lead {
+      margin: 18px 0 0;
+      max-width: 62ch;
+      font-size: clamp(1rem, 1.5vw, 1.18rem);
+      line-height: 1.65;
+      font-weight: 450;
+      color: var(--mg-muted);
+      text-wrap: pretty;
+    }
+
+    .mg-hero-aside {
+      display: grid;
+      gap: 14px;
+      padding: 18px 0 0;
+    }
+
+    .mg-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mg-stat {
+      padding: 18px;
+      border: 1px solid var(--mg-line);
+      border-radius: var(--mg-radius-md);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .mg-stat-value {
+      display: block;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      line-height: 1;
+      font-weight: 620;
+      letter-spacing: -0.05em;
+    }
+
+    .mg-stat-label {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: var(--mg-muted);
+    }
+
+    .mg-story {
+      display: grid;
+      gap: clamp(28px, 4vw, 44px);
+      margin-top: clamp(28px, 4vw, 42px);
+    }
+
+    .mg-section {
+      position: relative;
+      padding: clamp(24px, 3vw, 36px);
+      border: 1px solid rgba(17, 17, 17, 0.08);
+      border-radius: calc(var(--mg-radius-xl) - 8px);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(248, 248, 249, 0.9));
+    }
+
+    .mg-section + .mg-section::before {
+      content: "";
+      position: absolute;
+      top: calc(clamp(24px, 3vw, 36px) * -1);
+      left: clamp(24px, 3vw, 36px);
+      width: 1px;
+      height: clamp(24px, 3vw, 36px);
+      background: linear-gradient(180deg, rgba(17, 17, 17, 0), rgba(17, 17, 17, 0.12));
+    }
+
+    .mg-section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+
+    .mg-section-title {
+      margin: 14px 0 0;
+      max-width: 12ch;
+      font-size: clamp(2rem, 3vw, 3.2rem);
+      line-height: 0.96;
+      font-weight: 620;
+      letter-spacing: -0.055em;
+      text-wrap: balance;
+    }
+
+    .mg-section-copy {
+      margin: 14px 0 0;
+      max-width: 58ch;
+      font-size: 1.02rem;
+      line-height: 1.7;
+      color: var(--mg-muted);
+      text-wrap: pretty;
+    }
+
+    .mg-section-note {
+      margin: 0;
+      padding-left: 20px;
+      border-left: 1px solid var(--mg-line-strong);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--mg-muted);
+    }
+
+    .mg-nav-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .mg-nav-stageboard {
+      position: relative;
+      padding: clamp(18px, 2.2vw, 26px);
+      border: 1px solid var(--mg-line);
+      border-radius: var(--mg-radius-lg);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(247, 247, 248, 0.9));
+      overflow: hidden;
+    }
+
+    .mg-nav-stageboard::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(17, 17, 17, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17, 17, 17, 0.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .mg-nav-rail {
+      position: absolute;
+      inset: 50% 72px auto 72px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(17, 17, 17, 0.08), rgba(17, 17, 17, 0.18), rgba(17, 17, 17, 0.08));
+      transform: translateY(-50%);
+    }
+
+    .mg-nav-stages {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: clamp(10px, 1vw, 14px);
+      min-height: 420px;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .mg-stage {
+      position: relative;
+      display: grid;
+      justify-items: center;
+      gap: 16px;
+    }
+
+    .mg-stage:nth-child(even) {
+      align-self: end;
+      padding-bottom: 64px;
+    }
+
+    .mg-stage:nth-child(odd) {
+      align-self: start;
+      padding-top: 24px;
+    }
+
+    .mg-stage-button {
+      position: relative;
+      width: clamp(94px, 8vw, 112px);
+      height: clamp(94px, 8vw, 112px);
+      border: 1px solid var(--mg-line);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 16px 28px rgba(17, 17, 17, 0.06);
+      cursor: pointer;
+      transition:
+        transform 220ms var(--mg-ease),
+        border-color 220ms var(--mg-ease),
+        box-shadow 220ms var(--mg-ease),
+        background-color 220ms var(--mg-ease);
+    }
+
+    .mg-stage-button:hover,
+    .mg-stage-button:focus-visible {
+      transform: translateY(-3px);
+      border-color: rgba(17, 17, 17, 0.2);
+      box-shadow: 0 20px 30px rgba(17, 17, 17, 0.08);
+      outline: none;
+    }
+
+    .mg-stage.is-active .mg-stage-button {
+      border-color: rgba(31, 94, 255, 0.28);
+      box-shadow: 0 22px 34px rgba(17, 17, 17, 0.08), 0 0 0 8px rgba(31, 94, 255, 0.07);
+    }
+
+    .mg-stage-number {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.74rem;
+      line-height: 1;
+      font-weight: 750;
+      letter-spacing: 0.18em;
+      color: var(--mg-subtle);
+    }
+
+    .mg-stage-title {
+      display: block;
+      max-width: 72px;
+      margin: 0 auto;
+      font-size: 0.95rem;
+      line-height: 1.08;
+      font-weight: 620;
+      letter-spacing: -0.04em;
+      text-wrap: balance;
+    }
+
+    .mg-stage-meta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 24px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--mg-line);
+      font-size: 0.73rem;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      color: var(--mg-subtle);
+      text-transform: uppercase;
+    }
+
+    .mg-nav-detail {
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 18px;
+      padding: clamp(20px, 2.5vw, 28px);
+      border: 1px solid var(--mg-line);
+      border-radius: var(--mg-radius-lg);
+      background: rgba(255, 255, 255, 0.84);
+      min-height: 100%;
+    }
+
+    .mg-nav-detail-step {
+      font-size: 0.74rem;
+      font-weight: 750;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mg-subtle);
+    }
+
+    .mg-nav-detail-title {
+      margin: 0;
+      font-size: clamp(1.5rem, 2vw, 2.2rem);
+      line-height: 1.02;
+      font-weight: 620;
+      letter-spacing: -0.05em;
+      text-wrap: balance;
+    }
+
+    .mg-nav-detail-copy {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.72;
+      color: var(--mg-muted);
+    }
+
+    .mg-nav-points {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mg-nav-point {
+      display: grid;
+      grid-template-columns: 84px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+      padding: 14px 0;
+      border-top: 1px solid rgba(17, 17, 17, 0.08);
+    }
+
+    .mg-nav-point:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .mg-nav-point-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mg-subtle);
+    }
+
+    .mg-nav-point-text {
+      font-size: 0.98rem;
+      line-height: 1.6;
+      color: var(--mg-text);
+    }
+
+    .mg-nav-footer {
+      padding-top: 14px;
+      border-top: 1px solid rgba(17, 17, 17, 0.08);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: var(--mg-muted);
+    }
+
+    .mg-process-board {
+      border: 1px solid var(--mg-line);
+      border-radius: var(--mg-radius-lg);
+      overflow: hidden;
+      background: rgba(255,255,255,0.78);
+    }
+
+    .mg-process-switch {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      padding: 6px;
+      border: 1px solid var(--mg-line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.92);
+      margin-bottom: 18px;
+    }
+
+    .mg-process-tab {
+      min-height: 44px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--mg-muted);
+      font-size: 0.92rem;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      transition: background-color 180ms var(--mg-ease), color 180ms var(--mg-ease);
+    }
+
+    .mg-process-tab.is-active {
+      background: var(--mg-text);
+      color: #fff;
+    }
+
+    .mg-process-grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.78fr) minmax(0, 1.22fr);
+      min-height: 620px;
+    }
+
+    .mg-process-index {
+      padding: 14px;
+      border-right: 1px solid var(--mg-line);
+      background: rgba(246, 246, 247, 0.9);
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .mg-process-item {
+      width: 100%;
+      padding: 16px 16px 16px 18px;
+      border: 1px solid transparent;
+      border-radius: var(--mg-radius-sm);
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      transition:
+        background-color 180ms var(--mg-ease),
+        border-color 180ms var(--mg-ease),
+        transform 180ms var(--mg-ease);
+    }
+
+    .mg-process-item:hover,
+    .mg-process-item:focus-visible {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(17, 17, 17, 0.08);
+      transform: translateX(2px);
+      outline: none;
+    }
+
+    .mg-process-item.is-active {
+      background: #fff;
+      border-color: rgba(17, 17, 17, 0.1);
+      box-shadow: 0 12px 24px rgba(17, 17, 17, 0.05);
+    }
+
+    .mg-process-item-number {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.72rem;
+      font-weight: 750;
+      letter-spacing: 0.16em;
+      color: var(--mg-subtle);
+    }
+
+    .mg-process-item-title {
+      display: block;
+      font-size: 1rem;
+      line-height: 1.45;
+      font-weight: 610;
+      letter-spacing: -0.02em;
+    }
+
+    .mg-process-detail {
+      display: grid;
+      align-content: start;
+      gap: 22px;
+      padding: clamp(24px, 3vw, 34px);
+      background: rgba(255, 255, 255, 0.94);
+    }
+
+    .mg-process-detail-head {
+      display: grid;
+      gap: 12px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--mg-line);
+    }
+
+    .mg-process-detail-kicker {
+      font-size: 0.76rem;
+      font-weight: 750;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mg-subtle);
+    }
+
+    .mg-process-detail-title {
+      margin: 0;
+      max-width: 16ch;
+      font-size: clamp(1.7rem, 2.4vw, 2.6rem);
+      line-height: 1.02;
+      font-weight: 620;
+      letter-spacing: -0.05em;
+      text-wrap: balance;
+    }
+
+    .mg-process-detail-status {
+      display: inline-flex;
+      width: fit-content;
+      min-height: 30px;
+      align-items: center;
+      padding: 0 12px;
+      border: 1px solid rgba(17, 17, 17, 0.08);
+      border-radius: 999px;
+      background: rgba(17,17,17,0.04);
+      font-size: 0.78rem;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mg-muted);
+    }
+
+    .mg-process-detail-copy {
+      margin: 0;
+      max-width: 58ch;
+      font-size: 1.04rem;
+      line-height: 1.78;
+      color: var(--mg-muted);
+    }
+
+    .mg-process-affirmations {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mg-process-affirmation {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      font-size: 0.98rem;
+      line-height: 1.65;
+      color: var(--mg-text);
+    }
+
+    .mg-process-affirmation::before {
+      content: "";
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(17, 17, 17, 0.14);
+      background: radial-gradient(circle at center, var(--mg-text) 0 3px, transparent 4px);
+      margin-top: 2px;
+    }
+
+    .mg-process-footer {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--mg-line);
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--mg-muted);
+    }
+
+    .mg-faq-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .mg-faq-intro {
+      position: sticky;
+      top: 24px;
+      display: grid;
+      gap: 18px;
+      padding: clamp(22px, 3vw, 30px);
+      border: 1px solid var(--mg-line);
+      border-radius: var(--mg-radius-lg);
+      background: rgba(255,255,255,0.84);
+    }
+
+    .mg-faq-title {
+      margin: 0;
+      max-width: 14ch;
+      font-size: clamp(1.9rem, 2.8vw, 3rem);
+      line-height: 0.98;
+      font-weight: 620;
+      letter-spacing: -0.05em;
+      text-wrap: balance;
+    }
+
+    .mg-faq-copy,
+    .mg-faq-trust {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.72;
+      color: var(--mg-muted);
+    }
+
+    .mg-faq-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mg-faq-item {
+      border: 1px solid var(--mg-line);
+      border-radius: var(--mg-radius-md);
+      background: rgba(255,255,255,0.82);
+      overflow: hidden;
+      transition: border-color 180ms var(--mg-ease), box-shadow 180ms var(--mg-ease), transform 180ms var(--mg-ease);
+    }
+
+    .mg-faq-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 24px rgba(17,17,17,0.04);
+    }
+
+    .mg-faq-item.is-open {
+      border-color: rgba(17,17,17,0.14);
+      box-shadow: 0 18px 28px rgba(17,17,17,0.05);
+    }
+
+    .mg-faq-trigger {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr) 24px;
+      gap: 16px;
+      align-items: center;
+      padding: 18px 20px;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .mg-faq-trigger:focus-visible {
+      outline: 2px solid rgba(17,17,17,0.16);
+      outline-offset: -2px;
+    }
+
+    .mg-faq-number {
+      font-size: 0.72rem;
+      font-weight: 750;
+      letter-spacing: 0.18em;
+      color: var(--mg-subtle);
+    }
+
+    .mg-faq-question {
+      font-size: 1rem;
+      line-height: 1.45;
+      font-weight: 610;
+      letter-spacing: -0.02em;
+      color: var(--mg-text);
+    }
+
+    .mg-faq-icon {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(17,17,17,0.05);
+    }
+
+    .mg-faq-icon::before,
+    .mg-faq-icon::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      background: rgba(17,17,17,0.66);
+      transition: transform 180ms var(--mg-ease), opacity 180ms var(--mg-ease);
+    }
+
+    .mg-faq-icon::before {
+      width: 10px;
+      height: 1.5px;
+    }
+
+    .mg-faq-icon::after {
+      width: 1.5px;
+      height: 10px;
+    }
+
+    .mg-faq-item.is-open .mg-faq-icon::after {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+
+    .mg-faq-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 220ms var(--mg-ease);
+    }
+
+    .mg-faq-item.is-open .mg-faq-panel {
+      grid-template-rows: 1fr;
+    }
+
+    .mg-faq-panel-inner {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .mg-faq-answer {
+      display: grid;
+      gap: 14px;
+      padding: 0 20px 20px 90px;
+      color: var(--mg-muted);
+    }
+
+    .mg-faq-answer p {
+      margin: 0;
+      font-size: 0.99rem;
+      line-height: 1.74;
+    }
+
+    .mg-reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 600ms var(--mg-ease), transform 600ms var(--mg-ease);
+    }
+
+    .mg-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1180px) {
+      .mg-hero,
+      .mg-section-head,
+      .mg-nav-layout,
+      .mg-faq-layout,
+      .mg-process-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mg-nav-stages {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        min-height: auto;
+        row-gap: 18px;
+      }
+
+      .mg-stage,
+      .mg-stage:nth-child(odd),
+      .mg-stage:nth-child(even) {
+        align-self: auto;
+        padding: 0;
+      }
+
+      .mg-nav-rail {
+        display: none;
+      }
+
+      .mg-process-index {
+        border-right: 0;
+        border-bottom: 1px solid var(--mg-line);
+      }
+
+      .mg-faq-intro {
+        position: relative;
+        top: auto;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .mg-shell {
+        width: min(100%, calc(100% - 20px));
+        padding: 18px;
+        border-radius: 28px;
+      }
+
+      .mg-title {
+        max-width: 9ch;
+      }
+
+      .mg-stat-grid,
+      .mg-nav-stages {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .mg-section,
+      .mg-nav-stageboard,
+      .mg-nav-detail,
+      .mg-faq-intro,
+      .mg-process-detail {
+        padding: 18px;
+      }
+
+      .mg-nav-point,
+      .mg-faq-trigger {
+        grid-template-columns: 1fr;
+      }
+
+      .mg-faq-answer {
+        padding: 0 18px 18px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mg-block *,
+      .mg-block *::before,
+      .mg-block *::after {
+        scroll-behavior: auto !important;
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+      }
+
+      .mg-reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+
+  <div class="mg-shell">
+    <header class="mg-hero mg-reveal">
+      <div>
+        <span class="mg-kicker">Garage system</span>
+        <h2 id="mg-title" class="mg-title">Один маршрут проекта. От первого контакта до сдачи.</h2>
+        <p class="mg-lead">
+          Мы пересобрали весь путь клиента как единую инженерную систему: сначала вы быстро понимаете логику,
+          затем видите, как контролируется реализация, и в финале закрываете сомнения перед решением.
+        </p>
+      </div>
+      <aside class="mg-hero-aside" aria-label="Ключевые ориентиры блока">
+        <div class="mg-stat-grid">
+          <div class="mg-stat">
+            <span class="mg-stat-value">07</span>
+            <span class="mg-stat-label">этапов ведут проект по прямой, без хаоса между решениями</span>
+          </div>
+          <div class="mg-stat">
+            <span class="mg-stat-value">12</span>
+            <span class="mg-stat-label">контрольных точек удерживают реализацию и конструкцию в системе</span>
+          </div>
+          <div class="mg-stat">
+            <span class="mg-stat-value">09</span>
+            <span class="mg-stat-label">ответов снимают ключевые возражения до старта работ</span>
+          </div>
+          <div class="mg-stat">
+            <span class="mg-stat-value">1</span>
+            <span class="mg-stat-label">понятный продуктовый сценарий вместо набора отдельных блоков</span>
+          </div>
+        </div>
+      </aside>
+    </header>
+
+    <div class="mg-story">
+      <section class="mg-section mg-nav mg-reveal" aria-labelledby="mg-nav-title">
+        <div class="mg-section-head">
+          <div>
+            <span class="mg-section-kicker">Navigation</span>
+            <h3 id="mg-nav-title" class="mg-section-title">Сначала человек чувствует контроль над системой.</h3>
+            <p class="mg-section-copy">
+              Вместо разрозненных действий — ясный маршрут. Каждый шаг открывает следующий и показывает,
+              что именно происходит, что фиксируется и почему проект движется предсказуемо.
+            </p>
+          </div>
+          <p class="mg-section-note">
+            Нажмите на этап, чтобы увидеть микрошаги и смысл перехода. Это обзор всей системы, а не декоративная схема.
+          </p>
+        </div>
+
+        <div class="mg-nav-layout">
+          <div class="mg-nav-stageboard" aria-label="Маршрут проекта">
+            <div class="mg-nav-rail" aria-hidden="true"></div>
+            <div class="mg-nav-stages" data-mg-nav-stages></div>
+          </div>
+          <article class="mg-nav-detail" aria-live="polite">
+            <div class="mg-nav-detail-step" data-mg-nav-step></div>
+            <h4 class="mg-nav-detail-title" data-mg-nav-title></h4>
+            <p class="mg-nav-detail-copy" data-mg-nav-copy></p>
+            <div class="mg-nav-points" data-mg-nav-points></div>
+            <div class="mg-nav-footer" data-mg-nav-footer></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="mg-section mg-process mg-reveal" aria-labelledby="mg-process-title">
+        <div class="mg-section-head">
+          <div>
+            <span class="mg-process-label">Understanding</span>
+            <h3 id="mg-process-title" class="mg-section-title">Потом приходит инженерная ясность.</h3>
+            <p class="mg-section-copy">
+              Реализация и конструкция здесь не спорят друг с другом. Это две стороны одной системы: как проект управляется
+              и как он собирается так, чтобы результат был устойчивым и проверяемым.
+            </p>
+          </div>
+          <p class="mg-section-note">
+            Переключайтесь между контурами и проходите пункты по порядку. Визуальный шум убран — осталась только логика решения.
+          </p>
+        </div>
+
+        <div class="mg-process-switch" role="tablist" aria-label="Контуры контроля">
+          <button class="mg-process-tab is-active" type="button" role="tab" aria-selected="true" data-mg-process-tab="process">Реализация</button>
+          <button class="mg-process-tab" type="button" role="tab" aria-selected="false" data-mg-process-tab="construction">Конструкция</button>
+        </div>
+
+        <div class="mg-process-board">
+          <div class="mg-process-grid">
+            <div class="mg-process-index" data-mg-process-index></div>
+            <article class="mg-process-detail" aria-live="polite">
+              <div class="mg-process-detail-head">
+                <div class="mg-process-detail-kicker" data-mg-process-kicker></div>
+                <h4 class="mg-process-detail-title" data-mg-process-title></h4>
+                <div class="mg-process-detail-status" data-mg-process-status></div>
+              </div>
+              <p class="mg-process-detail-copy" data-mg-process-copy></p>
+              <div class="mg-process-affirmations" data-mg-process-affirmations></div>
+              <div class="mg-process-footer">Надёжный результат начинается задолго до монтажа.</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="mg-section mg-faq mg-reveal" aria-labelledby="mg-faq-title">
+        <div class="mg-faq-layout">
+          <div class="mg-faq-intro">
+            <span class="mg-faq-label">Trust → decision</span>
+            <h3 id="mg-faq-title" class="mg-faq-title">Спокойный блок, который закрывает сомнения до следующего шага.</h3>
+            <p class="mg-faq-copy">
+              Здесь нет давления и рекламной риторики. Только ответы, которые помогают понять бюджет, сроки,
+              ответственность и устойчивость решения до старта проекта.
+            </p>
+            <p class="mg-faq-trust">
+              Если маршрут понятен, а контроль прозрачен, решение принимается без лишнего напряжения.
+            </p>
+          </div>
+          <div class="mg-faq-list" data-mg-faq-list></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.currentScript && document.currentScript.closest('.mg-block');
+      if (!root) {
+        root = document.querySelector('.mg-block');
+      }
+      if (!root) {
+        return;
+      }
+
+      var data = {
+        navigation: [
+          {
+            number: '01',
+            title: 'Контакт',
+            meta: 'старт',
+            summary: 'Вход в систему начинается быстро: задача уточняется, формат общения понятен, следующий шаг назначается без задержек.',
+            footer: 'Человек сразу чувствует, что его ведут по маршруту, а не оставляют в неопределённости.',
+            points: [
+              { label: 'Звонок', text: 'Отвечаем за несколько минут и снимаем первый уровень неопределённости.' },
+              { label: 'Консультация', text: 'Уточняем задачу, сценарий использования и ключевые ограничения.' },
+              { label: 'Даты', text: 'Согласуем визит, чтобы перевести диалог в предметную плоскость.' }
+            ]
+          },
+          {
+            number: '02',
+            title: 'Визит',
+            meta: 'контекст',
+            summary: 'Проект выходит из уровня предположений. Площадка, размеры и реальные ограничения становятся частью решения.',
+            footer: 'После визита проект уже опирается на факты, а не на усреднённые оценки.',
+            points: [
+              { label: 'Замер', text: 'Фиксируем размеры, высоты и условия участка.' },
+              { label: 'Предложения', text: 'Показываем рабочие варианты под реальную конфигурацию площадки.' },
+              { label: 'Уточнения', text: 'Разбираем спорные вопросы до следующего шага.' }
+            ]
+          },
+          {
+            number: '03',
+            title: 'Задание и КП',
+            meta: 'решение',
+            summary: 'Собранные данные превращаются в техническую рамку проекта и коммерческое предложение, связанное с реальной конфигурацией.',
+            footer: 'На этом этапе клиент понимает не просто цену, а логику состава проекта.',
+            points: [
+              { label: 'Эскиз', text: 'Собираем базовую схему будущего объекта.' },
+              { label: 'Подтверждение', text: 'Фиксируем следующий шаг и границы решения.' },
+              { label: 'КП', text: 'Готовим коммерческое предложение на подтверждённых вводных.' }
+            ]
+          },
+          {
+            number: '04',
+            title: 'Проектирование',
+            meta: 'система',
+            summary: 'Решение приобретает инженерную форму. Все правки проходят через понятный контур согласования и не ломают общую логику.',
+            footer: 'Проектирование работает как фильтр качества, а не как формальность после продажи.',
+            points: [
+              { label: 'Проект', text: 'Разрабатываем рабочую схему будущей реализации.' },
+              { label: 'Правки', text: 'Вносим только согласованные изменения и сохраняем управляемость.' },
+              { label: 'Принятие', text: 'Фиксируем итоговый вариант перед договорными обязательствами.' }
+            ]
+          },
+          {
+            number: '05',
+            title: 'Договор',
+            meta: 'фиксация',
+            summary: 'Стоимость, сроки и объём ответственности закрепляются как система обязательств, а не как устные договорённости.',
+            footer: 'Именно здесь маршрут окончательно становится управляемым для обеих сторон.',
+            points: [
+              { label: 'Выезд', text: 'Организуем финальный шаг к подписанию без операционного шума.' },
+              { label: 'Подписание', text: 'Закрепляем условия, состав проекта и порядок исполнения.' },
+              { label: 'Цена', text: 'Фиксируем стоимость на подтверждённой конфигурации.' }
+            ]
+          },
+          {
+            number: '06',
+            title: 'Реализация',
+            meta: 'контроль',
+            summary: 'Стройка идёт не сама по себе: у процесса есть последовательность, контрольные точки и внутренняя приёмка до выхода к клиенту.',
+            footer: 'Монтаж становится последствием системы, собранной заранее.',
+            points: [
+              { label: 'Стройка', text: 'Запускаем работы по заранее собранному маршруту.' },
+              { label: 'Контроль', text: 'Проверяем переходы между этапами, а не только финальный результат.' },
+              { label: 'Уборка', text: 'Приводим объект в порядок и убираем следы процесса.' },
+              { label: 'Приёмка', text: 'Проводим внутреннюю проверку перед сдачей.' }
+            ]
+          },
+          {
+            number: '07',
+            title: 'Сдача',
+            meta: 'финал',
+            summary: 'Объект передаётся в спокойном, понятном сценарии: проверка, документы и окончательное закрытие проекта без подвешенных вопросов.',
+            footer: 'Финал выглядит естественным завершением маршрута, а не последним стрессом.',
+            points: [
+              { label: 'Приёмка', text: 'Клиент принимает объект в понятной логике проверки.' },
+              { label: 'Документы', text: 'Подписываем закрывающие документы и фиксируем результат.' },
+              { label: 'Оплата', text: 'Окончательный расчёт происходит после прозрачной сдачи.' }
+            ]
+          }
+        ],
+        process: {
+          process: {
+            label: 'Контур реализации',
+            items: [
+              {
+                number: '01',
+                title: 'Задача и параметры участка фиксируются до начала работ',
+                status: 'зафиксировано',
+                description: 'Исходные вводные согласованы заранее и становятся базой для всего проекта.',
+                affirmations: [
+                  'Проект стартует с подтверждённых параметров, а не с догадок.',
+                  'Команда и клиент опираются на один набор вводных.',
+                  'Это снижает риск пересборки решения по ходу работ.'
+                ]
+              },
+              {
+                number: '02',
+                title: 'Решение формируется с учётом участка и ограничений',
+                status: 'учтено',
+                description: 'План адаптируется под геометрию, подъезд, рельеф и реальные ограничения площадки.',
+                affirmations: [
+                  'Участок влияет на решение с самого начала.',
+                  'Нестандартные условия не всплывают неожиданно на монтаже.',
+                  'Коммерческая и проектная логика остаются связаны между собой.'
+                ]
+              },
+              {
+                number: '03',
+                title: 'Ответственный закреплён за проектом на всём цикле',
+                status: 'закреплено',
+                description: 'Клиент работает с понятным контактом, который ведёт проект от старта до сдачи.',
+                affirmations: [
+                  'Маршрут не распадается между случайными исполнителями.',
+                  'Любой статус проекта можно быстро прояснить.',
+                  'Ответственность не теряется на переходах между этапами.'
+                ]
+              },
+              {
+                number: '04',
+                title: 'Этапы и последовательность работ заданы заранее',
+                status: 'задано',
+                description: 'График собирается как управляемая система без случайных решений по ходу реализации.',
+                affirmations: [
+                  'Команда работает по понятной последовательности.',
+                  'Сроки формируются из логики проекта, а не из обещаний “на глаз”.',
+                  'Следующий шаг понятен ещё до завершения текущего.'
+                ]
+              },
+              {
+                number: '05',
+                title: 'Каждый этап проходит контроль перед следующим',
+                status: 'проверяется',
+                description: 'Промежуточные проверки позволяют держать качество и последовательность под контролем.',
+                affirmations: [
+                  'Ошибки не доезжают до финальной стадии.',
+                  'Контроль встроен в процесс, а не оставлен на конец.',
+                  'Качество поддерживается в динамике, а не только в отчёте.'
+                ]
+              },
+              {
+                number: '06',
+                title: 'Условия, сроки и обязательства закреплены в договоре',
+                status: 'в договоре',
+                description: 'Ключевые параметры проекта формализованы и защищают обе стороны на всём цикле.',
+                affirmations: [
+                  'Стоимость и объём работ зафиксированы в прозрачной структуре.',
+                  'Ожидания не расходятся с исполнением.',
+                  'Проект управляется через обязательства, а не через импровизацию.'
+                ]
+              }
+            ]
+          },
+          construction: {
+            label: 'Контур конструкции',
+            items: [
+              {
+                number: '01',
+                title: 'Конструкция рассчитывается под снеговую и ветровую нагрузку',
+                status: 'по расчёту',
+                description: 'Инженерная схема подбирается по расчётным воздействиям, а не по типовым допущениям.',
+                affirmations: [
+                  'Основа решения — реальная нагрузочная логика.',
+                  'Надёжность закладывается в схему, а не добавляется обещанием.',
+                  'Проект не зависит от случайной “типовости”.'
+                ]
+              },
+              {
+                number: '02',
+                title: 'Материалы задаются по инженерной спецификации',
+                status: 'по спецификации',
+                description: 'Состав системы фиксируется заранее и исключает произвольные замены по ходу работ.',
+                affirmations: [
+                  'Материалы становятся частью проектного решения.',
+                  'Снижается риск замены на более слабые аналоги.',
+                  'Клиент понимает, из чего именно собирается объект.'
+                ]
+              },
+              {
+                number: '03',
+                title: 'Каркас собирается с контролем геометрии',
+                status: 'геометрия',
+                description: 'Точность сборки проверяется на ключевых этапах, чтобы система работала как единое целое.',
+                affirmations: [
+                  'Геометрия — это не косметика, а условие работы всей конструкции.',
+                  'Точность контролируется по ходу сборки.',
+                  'Это напрямую влияет на сопряжения и срок службы.'
+                ]
+              },
+              {
+                number: '04',
+                title: 'Узлы и соединения выполнены под расчётные нагрузки',
+                status: 'нагрузки',
+                description: 'Критические точки решаются как инженерные узлы с понятной логикой надёжности.',
+                affirmations: [
+                  'Ключевые соединения работают под ожидаемые усилия.',
+                  'Надёжность строится на деталях, а не только на общем силуэте.',
+                  'Слабые места устраняются в проектной логике заранее.'
+                ]
+              },
+              {
+                number: '05',
+                title: 'Кровля и примыкания решены как часть системы',
+                status: 'система',
+                description: 'Герметичность, водоотвод и сопряжения закладываются в конструкцию, а не додумываются позже.',
+                affirmations: [
+                  'Критичные примыкания проектируются вместе с каркасом.',
+                  'Риск протечек и слабых переходов снижается заранее.',
+                  'Система работает как цельная инженерная оболочка.'
+                ]
+              },
+              {
+                number: '06',
+                title: 'Готовый объект проходит проверку перед сдачей',
+                status: 'перед сдачей',
+                description: 'Финальный контроль подтверждает соответствие проектным решениям и ожиданиям клиента.',
+                affirmations: [
+                  'Сдача опирается на внутреннюю проверку, а не на надежду.',
+                  'Проект закрывается только после подтверждения качества.',
+                  'Финал выглядит уверенно, потому что система была собрана заранее.'
+                ]
+              }
+            ]
+          }
+        },
+        faq: [
+          {
+            number: '01',
+            question: 'Как формируется итоговая стоимость?',
+            answer: [
+              'Итоговая стоимость собирается из подтверждённых параметров проекта: размеров, конструктивной схемы, материалов, основания, комплектации и условий монтажа.',
+              'Сначала фиксируются вводные после контакта и замера, затем они переводятся в техническое задание и коммерческое предложение. Поэтому цена строится не на усреднённой оценке, а на реальной конфигурации объекта.',
+              'До старта работ вы понимаете, из чего состоит бюджет, какие решения в него входят и какие этапы зафиксированы в договоре.'
+            ]
+          },
+          {
+            number: '02',
+            question: 'Могут ли появиться дополнительные платежи в процессе?',
+            answer: [
+              'Нет, если параметры проекта подтверждены до запуска работ и зафиксированы в договоре.',
+              'После замера и обсуждения собирается полное техническое задание, на основании которого рассчитывается состав решения. Именно это закрывает риск случайных доплат уже в процессе.',
+              'Если вы решаете менять конфигурацию после согласования, это оформляется отдельно как новое решение.'
+            ]
+          },
+          {
+            number: '03',
+            question: 'Фиксируется ли цена в договоре?',
+            answer: [
+              'Да. После согласования состава работ, сроков и комплектации стоимость фиксируется в договоре.',
+              'Проект переводится из предварительного обсуждения в управляемую систему обязательств, где зафиксированы объём, стоимость и порядок исполнения.',
+              'Такой подход защищает и клиента, и команду от разночтений по ходу реализации.'
+            ]
+          },
+          {
+            number: '04',
+            question: 'Сколько времени занимает строительство?',
+            answer: [
+              'Срок зависит от размеров объекта, типа конструкции, основания, комплектации и условий площадки.',
+              'Сначала замеряется участок, собирается задача и только после этого даётся реалистичный календарь по этапам — от подготовки до сдачи.',
+              'Поэтому сроки становятся частью согласованного маршрута проекта, а не обещанием “на глаз”.'
+            ]
+          },
+          {
+            number: '05',
+            question: 'Что происходит после замера?',
+            answer: [
+              'После замера все размеры, ограничения участка, подъезд и особенности площадки переходят в расчётный и проектный контур.',
+              'На этой базе формируется техническое задание, затем коммерческое предложение и логика следующего шага — проектирование или фиксация условий.',
+              'То есть замер не остаётся отдельным визитом, а сразу превращается в основу решения.'
+            ]
+          },
+          {
+            number: '06',
+            question: 'Кто отвечает за результат?',
+            answer: [
+              'За проект отвечает команда, которая ведёт его как единую систему: от входных данных до сдачи объекта.',
+              'Ответственность не дробится между случайными исполнителями по этапам — именно поэтому маршрут проекта заранее собран и связан между собой.',
+              'Клиент понимает, кто ведёт процесс, на каком этапе находится проект и что подтверждено на текущий момент.'
+            ]
+          },
+          {
+            number: '07',
+            question: 'Что если в процессе обнаружатся ограничения участка?',
+            answer: [
+              'Именно поэтому проект начинается с выезда, замера и фиксации ограничений ещё до проектных решений.',
+              'Если на площадке есть перепад высот, сложный подъезд, ограничения по основанию или инженерные вводные, они должны попасть в проект до старта работ.',
+              'Если новые обстоятельства действительно проявляются позже, они разбираются как отдельная зафиксированная вводная, а не как хаотичная проблема на монтаже.'
+            ]
+          },
+          {
+            number: '08',
+            question: 'Какие гарантии вы даёте после монтажа?',
+            answer: [
+              'Гарантия распространяется на согласованный объём работ и конструктивные решения, которые были реализованы по проекту и договору.',
+              'Но сама надёжность начинается раньше гарантии: с расчёта, спецификации, контроля узлов и проверки геометрии на каждом переходе.',
+              'Именно поэтому итоговый результат опирается не только на обещание после монтажа, но и на предсказуемую систему качества до него.'
+            ]
+          },
+          {
+            number: '09',
+            question: 'Как понять, какой размер гаража мне нужен?',
+            answer: [
+              'Размер определяется не только по габариту автомобиля, но и по сценарию использования: нужен ли запас под хранение, обслуживание, мастерскую или дополнительное оборудование.',
+              'Мы связываем ваш сценарий с реальными ограничениями участка и предлагаем конфигурацию, которая работает на практике, а не только “влезает” по внешнему размеру.',
+              'Так решение становится не абстрактным метражом, а понятной системой под конкретную задачу.'
+            ]
+          }
+        ]
+      };
+
+      var navStageContainer = root.querySelector('[data-mg-nav-stages]');
+      var navStepNode = root.querySelector('[data-mg-nav-step]');
+      var navTitleNode = root.querySelector('[data-mg-nav-title]');
+      var navCopyNode = root.querySelector('[data-mg-nav-copy]');
+      var navPointsNode = root.querySelector('[data-mg-nav-points]');
+      var navFooterNode = root.querySelector('[data-mg-nav-footer]');
+      var processIndexNode = root.querySelector('[data-mg-process-index]');
+      var processKickerNode = root.querySelector('[data-mg-process-kicker]');
+      var processTitleNode = root.querySelector('[data-mg-process-title]');
+      var processStatusNode = root.querySelector('[data-mg-process-status]');
+      var processCopyNode = root.querySelector('[data-mg-process-copy]');
+      var processAffirmationsNode = root.querySelector('[data-mg-process-affirmations]');
+      var processTabs = Array.prototype.slice.call(root.querySelectorAll('[data-mg-process-tab]'));
+      var faqListNode = root.querySelector('[data-mg-faq-list]');
+
+      var activeStage = 0;
+      var activeProcessKey = 'process';
+      var activeProcessItem = 0;
+
+      function renderNavDetail(index) {
+        var item = data.navigation[index];
+        if (!item) {
+          return;
+        }
+
+        activeStage = index;
+        navStepNode.textContent = 'Этап ' + item.number + ' · ' + item.meta;
+        navTitleNode.textContent = item.title;
+        navCopyNode.textContent = item.summary;
+        navFooterNode.textContent = item.footer;
+        navPointsNode.innerHTML = '';
+
+        item.points.forEach(function (point) {
+          var row = document.createElement('div');
+          row.className = 'mg-nav-point';
+
+          var label = document.createElement('div');
+          label.className = 'mg-nav-point-label';
+          label.textContent = point.label;
+
+          var text = document.createElement('div');
+          text.className = 'mg-nav-point-text';
+          text.textContent = point.text;
+
+          row.appendChild(label);
+          row.appendChild(text);
+          navPointsNode.appendChild(row);
+        });
+
+        Array.prototype.forEach.call(navStageContainer.querySelectorAll('.mg-stage'), function (node, nodeIndex) {
+          var button = node.querySelector('.mg-stage-button');
+          var isActive = nodeIndex === index;
+          node.classList.toggle('is-active', isActive);
+          if (button) {
+            button.setAttribute('aria-pressed', String(isActive));
+          }
+        });
+      }
+
+      function renderNavigation() {
+        if (!navStageContainer) {
+          return;
+        }
+
+        navStageContainer.innerHTML = '';
+
+        data.navigation.forEach(function (stage, index) {
+          var node = document.createElement('div');
+          node.className = 'mg-stage' + (index === 0 ? ' is-active' : '');
+
+          var button = document.createElement('button');
+          button.className = 'mg-stage-button';
+          button.type = 'button';
+          button.setAttribute('aria-label', 'Открыть этап ' + stage.number + ': ' + stage.title);
+          button.setAttribute('aria-pressed', String(index === 0));
+
+          var number = document.createElement('span');
+          number.className = 'mg-stage-number';
+          number.textContent = stage.number;
+
+          var title = document.createElement('span');
+          title.className = 'mg-stage-title';
+          title.textContent = stage.title;
+
+          button.appendChild(number);
+          button.appendChild(title);
+          button.addEventListener('click', function () {
+            renderNavDetail(index);
+          });
+
+          var meta = document.createElement('div');
+          meta.className = 'mg-stage-meta';
+          meta.textContent = stage.meta;
+
+          node.appendChild(button);
+          node.appendChild(meta);
+          navStageContainer.appendChild(node);
+        });
+
+        renderNavDetail(activeStage);
+      }
+
+      function renderProcessDetail(item, sectionLabel) {
+        if (!item) {
+          return;
+        }
+
+        processKickerNode.textContent = sectionLabel + ' · шаг ' + item.number;
+        processTitleNode.textContent = item.title;
+        processStatusNode.textContent = item.status;
+        processCopyNode.textContent = item.description;
+        processAffirmationsNode.innerHTML = '';
+
+        (item.affirmations || []).forEach(function (text) {
+          var row = document.createElement('div');
+          row.className = 'mg-process-affirmation';
+          row.textContent = text;
+          processAffirmationsNode.appendChild(row);
+        });
+      }
+
+      function renderProcessIndex() {
+        var section = data.process[activeProcessKey];
+        if (!section || !processIndexNode) {
+          return;
+        }
+
+        processIndexNode.innerHTML = '';
+        section.items.forEach(function (item, index) {
+          var button = document.createElement('button');
+          button.className = 'mg-process-item' + (index === activeProcessItem ? ' is-active' : '');
+          button.type = 'button';
+          button.setAttribute('aria-pressed', String(index === activeProcessItem));
+
+          var number = document.createElement('span');
+          number.className = 'mg-process-item-number';
+          number.textContent = item.number;
+
+          var title = document.createElement('span');
+          title.className = 'mg-process-item-title';
+          title.textContent = item.title;
+
+          button.appendChild(number);
+          button.appendChild(title);
+          button.addEventListener('click', function () {
+            activeProcessItem = index;
+            renderProcessIndex();
+          });
+
+          processIndexNode.appendChild(button);
+        });
+
+        renderProcessDetail(section.items[activeProcessItem], section.label);
+      }
+
+      function bindProcessTabs() {
+        processTabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            var key = tab.getAttribute('data-mg-process-tab');
+            if (!key || key === activeProcessKey) {
+              return;
+            }
+            activeProcessKey = key;
+            activeProcessItem = 0;
+            processTabs.forEach(function (button) {
+              var isActive = button === tab;
+              button.classList.toggle('is-active', isActive);
+              button.setAttribute('aria-selected', String(isActive));
+            });
+            renderProcessIndex();
+          });
+        });
+      }
+
+      function createFaqItem(item, index) {
+        var article = document.createElement('article');
+        article.className = 'mg-faq-item' + (index === 0 ? ' is-open' : '');
+
+        var trigger = document.createElement('button');
+        trigger.className = 'mg-faq-trigger';
+        trigger.type = 'button';
+        trigger.setAttribute('aria-expanded', String(index === 0));
+
+        var number = document.createElement('span');
+        number.className = 'mg-faq-number';
+        number.textContent = item.number;
+
+        var question = document.createElement('span');
+        question.className = 'mg-faq-question';
+        question.textContent = item.question;
+
+        var icon = document.createElement('span');
+        icon.className = 'mg-faq-icon';
+        icon.setAttribute('aria-hidden', 'true');
+
+        var panel = document.createElement('div');
+        panel.className = 'mg-faq-panel';
+
+        var panelInner = document.createElement('div');
+        panelInner.className = 'mg-faq-panel-inner';
+
+        var answer = document.createElement('div');
+        answer.className = 'mg-faq-answer';
+
+        item.answer.forEach(function (paragraph) {
+          var p = document.createElement('p');
+          p.textContent = paragraph;
+          answer.appendChild(p);
+        });
+
+        panelInner.appendChild(answer);
+        panel.appendChild(panelInner);
+        trigger.appendChild(number);
+        trigger.appendChild(question);
+        trigger.appendChild(icon);
+        article.appendChild(trigger);
+        article.appendChild(panel);
+
+        trigger.addEventListener('click', function () {
+          var isOpen = article.classList.contains('is-open');
+          Array.prototype.forEach.call(faqListNode.querySelectorAll('.mg-faq-item'), function (node) {
+            var button = node.querySelector('.mg-faq-trigger');
+            node.classList.remove('is-open');
+            if (button) {
+              button.setAttribute('aria-expanded', 'false');
+            }
+          });
+
+          if (!isOpen) {
+            article.classList.add('is-open');
+            trigger.setAttribute('aria-expanded', 'true');
+          }
+        });
+
+        return article;
+      }
+
+      function renderFaq() {
+        if (!faqListNode) {
+          return;
+        }
+        faqListNode.innerHTML = '';
+        data.faq.forEach(function (item, index) {
+          faqListNode.appendChild(createFaqItem(item, index));
+        });
+      }
+
+      function initReveal() {
+        var items = Array.prototype.slice.call(root.querySelectorAll('.mg-reveal'));
+        if (!('IntersectionObserver' in window)) {
+          items.forEach(function (node) {
+            node.classList.add('is-visible');
+          });
+          return;
+        }
+
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+        items.forEach(function (node) {
+          observer.observe(node);
+        });
+      }
+
+      renderNavigation();
+      bindProcessTabs();
+      renderProcessIndex();
+      renderFaq();
+      initReveal();
+    })();
+  </script>
+</section>
