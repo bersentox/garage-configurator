@@ -178,7 +178,11 @@ controls.maxPolarAngle = 1.42;
     const size = box.getSize(new THREE.Vector3());
     const maxSize = Math.max(size.x, size.y, size.z);
     const distance = Math.max(6, maxSize * 1.7);
-    camera.position.set(distance * 0.95, distance * 0.35, distance * 1.15);
+   camera.position.set(
+    distance * 0.95 + 0.8, // вправо камера -> модель визуально левее
+    distance * 0.35,
+    distance * 1.15
+  );
     camera.near = 0.1;
     camera.far = Math.max(100, distance * 12);
     camera.updateProjectionMatrix();
