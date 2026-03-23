@@ -162,10 +162,16 @@ controls.maxPolarAngle = 1.42;
   };
 
   function centerModel(object3d) {
-    const box = new THREE.Box3().setFromObject(object3d);
-    const center = box.getCenter(new THREE.Vector3());
-    object3d.position.sub(center);
-  }
+  const box = new THREE.Box3().setFromObject(object3d);
+  const center = box.getCenter(new THREE.Vector3());
+
+  // центр по X и Z
+  object3d.position.x -= center.x;
+  object3d.position.z -= center.z;
+
+  // ставим на землю
+  object3d.position.y -= box.min.y;
+}
 
   function frameModel(object3d) {
     const box = new THREE.Box3().setFromObject(object3d);
