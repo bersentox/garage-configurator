@@ -187,7 +187,7 @@ controls.maxPolarAngle = 1.42;
     camera.far = Math.max(100, distance * 12);
 
     // сдвиг картинки внутри кадра
-    camera.filmOffset = 6;
+    camera.filmOffset = 4;
     
     camera.updateProjectionMatrix();
     controls.target.set(0, 0, 0);
