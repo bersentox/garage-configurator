@@ -261,6 +261,7 @@ controls.maxPolarAngle = 1.42;
         modelGroup.add(mountedModel);
         frameModel(mountedModel);
           // сместить композицию влево
+          console.log("TARGET SHIFT TEST");
           controls.target.x -= 10;
           controls.update();
         const meshIndex = buildMeshIndex(mountedModel);
