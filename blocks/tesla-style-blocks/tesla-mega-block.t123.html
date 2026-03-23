@@ -1,0 +1,1317 @@
+<section class="mg-block" aria-labelledby="mg-title">
+  <style>
+    .mg-block {
+      --mg-bg: #f3f3f1;
+      --mg-surface: #ffffff;
+      --mg-surface-2: #f7f7f4;
+      --mg-surface-3: #ecece7;
+      --mg-line: rgba(17, 17, 17, 0.08);
+      --mg-line-strong: rgba(17, 17, 17, 0.16);
+      --mg-text: #111111;
+      --mg-muted: rgba(17, 17, 17, 0.62);
+      --mg-soft: rgba(17, 17, 17, 0.42);
+      --mg-accent: #1f1f1f;
+      --mg-radius-xl: 36px;
+      --mg-radius-lg: 24px;
+      --mg-radius-md: 18px;
+      --mg-radius-sm: 14px;
+      --mg-shadow: 0 22px 60px rgba(17, 17, 17, 0.06);
+      --mg-shadow-soft: 0 14px 30px rgba(17, 17, 17, 0.045);
+      --mg-max: min(1320px, calc(100% - 40px));
+      --mg-ease: cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      overflow: clip;
+      background:
+        linear-gradient(180deg, #f7f7f3 0%, #f1f1ed 100%);
+      color: var(--mg-text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 28px 0;
+    }
+
+    .mg-block, .mg-block * { box-sizing: border-box; }
+    .mg-block button, .mg-block input, .mg-block textarea, .mg-block select { font: inherit; }
+
+    .mg-shell {
+      width: var(--mg-max);
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 44px;
+      box-shadow: var(--mg-shadow);
+      backdrop-filter: none;
+      overflow: hidden;
+    }
+
+    .mg-hero,
+    .mg-nav,
+    .mg-process,
+    .mg-faq,
+    .mg-cta {
+      padding-left: clamp(20px, 4vw, 48px);
+      padding-right: clamp(20px, 4vw, 48px);
+    }
+
+    .mg-hero {
+      padding-top: clamp(32px, 6vw, 72px);
+      padding-bottom: clamp(28px, 5vw, 56px);
+      border-bottom: 1px solid var(--mg-line);
+    }
+
+    .mg-kicker {
+      margin: 0 0 18px;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mg-soft);
+      font-weight: 700;
+    }
+
+    .mg-hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      gap: clamp(24px, 4vw, 52px);
+      align-items: end;
+    }
+
+    .mg-title {
+      margin: 0;
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      line-height: 0.9;
+      letter-spacing: -0.065em;
+      font-weight: 650;
+      max-width: 10ch;
+      text-wrap: balance;
+    }
+
+    .mg-lead {
+      margin: 0;
+      font-size: clamp(1rem, 1.6vw, 1.18rem);
+      line-height: 1.7;
+      letter-spacing: -0.015em;
+      color: var(--mg-muted);
+      max-width: 52ch;
+    }
+
+    .mg-metrics {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mg-metric {
+      padding: 18px 18px 16px;
+      border: 1px solid var(--mg-line);
+      border-radius: var(--mg-radius-md);
+      background: rgba(255, 255, 255, 0.62);
+    }
+
+    .mg-metric-value {
+      display: block;
+      font-size: clamp(1.2rem, 2vw, 1.7rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      font-weight: 620;
+    }
+
+    .mg-metric-label {
+      display: block;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: var(--mg-muted);
+    }
+
+    .mg-section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.72fr);
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    .mg-section-kicker {
+      margin: 0 0 10px;
+      font-size: 0.76rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mg-soft);
+      font-weight: 700;
+    }
+
+    .mg-section-title {
+      margin: 0;
+      font-size: clamp(1.8rem, 3vw, 3.2rem);
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+      font-weight: 620;
+      max-width: 12ch;
+      text-wrap: balance;
+    }
+
+    .mg-section-copy {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--mg-muted);
+      max-width: 44ch;
+    }
+
+    .mg-nav {
+      padding-top: clamp(34px, 5vw, 58px);
+      padding-bottom: clamp(40px, 5vw, 68px);
+      border-bottom: 1px solid var(--mg-line);
+    }
+
+    .mg-nav-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: clamp(24px, 4vw, 40px);
+      align-items: stretch;
+    }
+
+    .mg-orbit {
+      position: relative;
+      min-height: 620px;
+      border-radius: 32px;
+      border: 1px solid var(--mg-line);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(245,245,241,0.95) 100%);
+      overflow: hidden;
+      padding: 18px;
+    }
+
+    .mg-orbit::before,
+    .mg-orbit::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .mg-orbit::before {
+      background-image:
+        linear-gradient(rgba(17,17,17,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17,17,17,0.05) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: radial-gradient(circle at center, black 54%, transparent 92%);
+    }
+
+    .mg-orbit::after {
+      background: radial-gradient(circle at center, rgba(17,17,17,0.045), transparent 60%);
+    }
+
+    .mg-orbit-svg,
+    .mg-orbit-nodes,
+    .mg-orbit-detail {
+      position: absolute;
+      inset: 0;
+    }
+
+    .mg-orbit-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .mg-orbit-line {
+      stroke: rgba(17,17,17,0.12);
+      stroke-width: 1.25;
+    }
+
+    .mg-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      border: 0;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+    }
+
+    .mg-node-ring {
+      width: clamp(96px, 9vw, 120px);
+      height: clamp(96px, 9vw, 120px);
+      border-radius: 999px;
+      border: 1px solid var(--mg-line-strong);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--mg-shadow-soft);
+      display: grid;
+      place-items: center;
+      transition: transform 220ms var(--mg-ease), border-color 220ms var(--mg-ease), background-color 220ms var(--mg-ease);
+    }
+
+    .mg-node:hover .mg-node-ring,
+    .mg-node:focus-visible .mg-node-ring,
+    .mg-node.is-active .mg-node-ring {
+      transform: scale(1.03);
+      border-color: rgba(17,17,17,0.28);
+      background: #ffffff;
+    }
+
+    .mg-node:focus-visible { outline: none; }
+
+    .mg-node-core {
+      width: 72%;
+      text-align: center;
+      display: grid;
+      gap: 7px;
+      justify-items: center;
+    }
+
+    .mg-node-number {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mg-soft);
+      font-weight: 700;
+    }
+
+    .mg-node-label {
+      font-size: 0.98rem;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      font-weight: 620;
+      text-wrap: balance;
+    }
+
+    .mg-child {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      padding: 10px 14px;
+      min-width: 116px;
+      border-radius: 999px;
+      border: 1px solid var(--mg-line);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--mg-muted);
+      font-size: 0.86rem;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      box-shadow: var(--mg-shadow-soft);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms var(--mg-ease), transform 240ms var(--mg-ease), color 200ms var(--mg-ease), border-color 200ms var(--mg-ease);
+      text-align: center;
+    }
+
+    .mg-child.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mg-child.is-selected {
+      color: var(--mg-text);
+      border-color: rgba(17,17,17,0.22);
+    }
+
+    .mg-nav-panel {
+      display: grid;
+      gap: 18px;
+      grid-template-rows: auto auto 1fr;
+    }
+
+    .mg-panel {
+      border: 1px solid var(--mg-line);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.78);
+      padding: 22px;
+      min-height: 0;
+    }
+
+    .mg-panel-label {
+      margin: 0 0 10px;
+      font-size: 0.74rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mg-soft);
+      font-weight: 700;
+    }
+
+    .mg-panel-title {
+      margin: 0;
+      font-size: clamp(1.3rem, 2vw, 2rem);
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+      font-weight: 620;
+      text-wrap: balance;
+    }
+
+    .mg-panel-copy {
+      margin: 14px 0 0;
+      font-size: 0.98rem;
+      line-height: 1.72;
+      color: var(--mg-muted);
+      max-width: 42ch;
+    }
+
+    .mg-panel-list {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .mg-panel-list li {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      color: var(--mg-muted);
+      line-height: 1.55;
+    }
+
+    .mg-panel-list li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      margin-top: 0.45em;
+      border-radius: 999px;
+      background: rgba(17,17,17,0.18);
+    }
+
+    .mg-signal {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mg-signal-item {
+      padding: 16px;
+      border-radius: var(--mg-radius-md);
+      background: var(--mg-surface-2);
+      border: 1px solid var(--mg-line);
+    }
+
+    .mg-signal-label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mg-soft);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .mg-signal-value {
+      display: block;
+      font-size: 1rem;
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+      font-weight: 560;
+    }
+
+    .mg-process {
+      padding-top: clamp(38px, 5vw, 62px);
+      padding-bottom: clamp(38px, 5vw, 62px);
+      border-bottom: 1px solid var(--mg-line);
+    }
+
+    .mg-process-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      gap: clamp(20px, 3vw, 30px);
+      align-items: start;
+    }
+
+    .mg-process-rail {
+      position: sticky;
+      top: 16px;
+      border: 1px solid var(--mg-line);
+      border-radius: 30px;
+      background: rgba(255,255,255,0.72);
+      padding: 24px;
+    }
+
+    .mg-tabs {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      padding: 4px;
+      border-radius: 999px;
+      background: var(--mg-surface-3);
+      margin-bottom: 24px;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .mg-tab {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      background: transparent;
+      color: var(--mg-muted);
+      cursor: pointer;
+      font-size: 0.95rem;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      font-weight: 600;
+      transition: background-color 180ms var(--mg-ease), color 180ms var(--mg-ease);
+    }
+
+    .mg-tab.is-active {
+      background: #ffffff;
+      color: var(--mg-text);
+      box-shadow: 0 4px 12px rgba(17,17,17,0.06);
+    }
+
+    .mg-process-summary {
+      display: grid;
+      gap: 18px;
+    }
+
+    .mg-process-summary-title {
+      margin: 0;
+      font-size: clamp(1.5rem, 2vw, 2.2rem);
+      line-height: 1;
+      letter-spacing: -0.045em;
+      font-weight: 620;
+    }
+
+    .mg-process-summary-copy,
+    .mg-process-footer {
+      margin: 0;
+      color: var(--mg-muted);
+      line-height: 1.72;
+      font-size: 1rem;
+    }
+
+    .mg-process-timeline {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mg-step {
+      border: 1px solid var(--mg-line);
+      border-radius: 22px;
+      background: rgba(255,255,255,0.68);
+      overflow: hidden;
+    }
+
+    .mg-step-button {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: start;
+      padding: 20px 22px;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .mg-step-button:focus-visible {
+      outline: 2px solid rgba(17,17,17,0.18);
+      outline-offset: -2px;
+    }
+
+    .mg-step-number {
+      font-size: 0.8rem;
+      line-height: 1;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mg-soft);
+      font-weight: 700;
+      padding-top: 3px;
+    }
+
+    .mg-step-title {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.45;
+      letter-spacing: -0.02em;
+      font-weight: 590;
+      text-wrap: pretty;
+    }
+
+    .mg-step-status {
+      align-self: start;
+      white-space: nowrap;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: var(--mg-surface-2);
+      border: 1px solid var(--mg-line);
+      font-size: 0.76rem;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--mg-soft);
+    }
+
+    .mg-step-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 260ms var(--mg-ease);
+    }
+
+    .mg-step.is-open .mg-step-panel { max-height: 220px; }
+
+    .mg-step-panel-inner {
+      padding: 0 22px 22px 96px;
+      max-width: 74ch;
+    }
+
+    .mg-step-panel-inner p {
+      margin: 0;
+      color: var(--mg-muted);
+      font-size: 0.98rem;
+      line-height: 1.75;
+    }
+
+    .mg-faq {
+      padding-top: clamp(38px, 5vw, 62px);
+      padding-bottom: clamp(38px, 5vw, 62px);
+      border-bottom: 1px solid var(--mg-line);
+    }
+
+    .mg-faq-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
+      gap: clamp(18px, 3vw, 26px);
+      align-items: start;
+    }
+
+    .mg-faq-nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .mg-faq-question {
+      width: 100%;
+      border: 1px solid var(--mg-line);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.72);
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) 18px;
+      gap: 14px;
+      align-items: start;
+      text-align: left;
+      cursor: pointer;
+      color: inherit;
+      transition: border-color 180ms var(--mg-ease), background-color 180ms var(--mg-ease), transform 180ms var(--mg-ease);
+    }
+
+    .mg-faq-question:hover,
+    .mg-faq-question.is-active {
+      background: #ffffff;
+      border-color: rgba(17,17,17,0.18);
+    }
+
+    .mg-faq-question.is-active { transform: translateX(4px); }
+    .mg-faq-question:focus-visible { outline: 2px solid rgba(17,17,17,0.18); outline-offset: 2px; }
+
+    .mg-faq-number {
+      font-size: 0.76rem;
+      line-height: 1;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mg-soft);
+      font-weight: 700;
+      padding-top: 4px;
+    }
+
+    .mg-faq-text {
+      font-size: 1rem;
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+      font-weight: 590;
+      color: var(--mg-text);
+      text-wrap: pretty;
+    }
+
+    .mg-faq-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--mg-surface-3);
+      margin-top: 2px;
+      position: relative;
+    }
+
+    .mg-faq-dot::after {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: inherit;
+      background: rgba(17,17,17,0.24);
+    }
+
+    .mg-faq-question.is-active .mg-faq-dot::after { background: rgba(17,17,17,0.7); }
+
+    .mg-faq-detail {
+      border: 1px solid var(--mg-line);
+      border-radius: 30px;
+      background: rgba(255,255,255,0.78);
+      padding: clamp(22px, 4vw, 34px);
+      min-height: 100%;
+    }
+
+    .mg-faq-detail-label {
+      margin: 0 0 14px;
+      font-size: 0.75rem;
+      line-height: 1;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mg-soft);
+      font-weight: 700;
+    }
+
+    .mg-faq-detail-title {
+      margin: 0;
+      font-size: clamp(1.45rem, 2vw, 2.15rem);
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+      font-weight: 620;
+      max-width: 18ch;
+      text-wrap: balance;
+    }
+
+    .mg-faq-detail-body {
+      margin-top: 22px;
+      display: grid;
+      gap: 16px;
+      max-width: 66ch;
+    }
+
+    .mg-faq-detail-body p {
+      margin: 0;
+      color: var(--mg-muted);
+      font-size: 1rem;
+      line-height: 1.82;
+    }
+
+    .mg-cta {
+      padding-top: clamp(38px, 5vw, 60px);
+      padding-bottom: clamp(36px, 5vw, 58px);
+    }
+
+    .mg-cta-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: end;
+      border-radius: 30px;
+      border: 1px solid var(--mg-line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(246,246,242,0.92) 100%);
+      padding: clamp(24px, 4vw, 38px);
+    }
+
+    .mg-cta-title {
+      margin: 0;
+      font-size: clamp(1.7rem, 3vw, 3rem);
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+      font-weight: 620;
+      max-width: 14ch;
+    }
+
+    .mg-cta-copy {
+      margin: 14px 0 0;
+      max-width: 56ch;
+      color: var(--mg-muted);
+      line-height: 1.72;
+      font-size: 1rem;
+    }
+
+    .mg-cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      padding: 0 24px;
+      border-radius: 999px;
+      background: #111111;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 0.95rem;
+      letter-spacing: -0.015em;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: transform 180ms var(--mg-ease), opacity 180ms var(--mg-ease);
+    }
+
+    .mg-cta-button:hover { transform: translateY(-1px); opacity: 0.94; }
+
+    .mg-reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 500ms var(--mg-ease), transform 500ms var(--mg-ease);
+    }
+
+    .mg-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1100px) {
+      .mg-hero-grid,
+      .mg-nav-layout,
+      .mg-process-layout,
+      .mg-faq-layout,
+      .mg-section-head,
+      .mg-cta-shell { grid-template-columns: 1fr; }
+      .mg-process-rail { position: static; }
+    }
+
+    @media (max-width: 760px) {
+      .mg-block { padding: 14px 0; }
+      .mg-shell { width: min(100%, calc(100% - 16px)); border-radius: 28px; }
+      .mg-metrics,
+      .mg-signal { grid-template-columns: 1fr; }
+      .mg-orbit { min-height: 560px; }
+      .mg-step-button,
+      .mg-faq-question { grid-template-columns: 44px minmax(0, 1fr); }
+      .mg-step-status,
+      .mg-faq-dot { display: none; }
+      .mg-step-panel-inner { padding: 0 20px 20px 64px; }
+      .mg-tabs { max-width: none; }
+      .mg-node-ring { width: 92px; height: 92px; }
+      .mg-child { min-width: 102px; font-size: 0.8rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mg-block *, .mg-block *::before, .mg-block *::after {
+        animation: none !important;
+        transition-duration: 1ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+
+  <div class="mg-shell">
+    <header class="mg-hero mg-reveal">
+      <p class="mg-kicker">Garage configurator / system overview</p>
+      <div class="mg-hero-grid">
+        <div>
+          <h2 class="mg-title" id="mg-title">От первого запроса до сдачи — как одна управляемая система.</h2>
+        </div>
+        <div>
+          <p class="mg-lead">Блок собран как единый продуктовый сценарий: сначала клиент видит архитектуру решения, затем понимает, как выстроен инженерный процесс, и только после этого получает спокойные ответы на ключевые вопросы перед решением.</p>
+          <div class="mg-metrics" aria-label="Ключевые показатели сценария">
+            <div class="mg-metric">
+              <span class="mg-metric-value">06</span>
+              <span class="mg-metric-label">ключевых этапов маршрута проекта</span>
+            </div>
+            <div class="mg-metric">
+              <span class="mg-metric-value">12</span>
+              <span class="mg-metric-label">контрольных точек реализации и конструкции</span>
+            </div>
+            <div class="mg-metric">
+              <span class="mg-metric-value">08</span>
+              <span class="mg-metric-label">вопросов, снимающих сомнения до старта</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="mg-nav mg-reveal" aria-labelledby="mg-nav-title">
+      <div class="mg-section-head">
+        <div>
+          <p class="mg-section-kicker">Navigation</p>
+          <h3 class="mg-section-title" id="mg-nav-title">Управление системой проекта.</h3>
+        </div>
+        <p class="mg-section-copy">Вместо набора разрозненных экранов — единая карта маршрута. Нажмите на этап, чтобы увидеть его смысл, затем раскройте опорные точки внутри него.</p>
+      </div>
+      <div class="mg-nav-layout">
+        <div class="mg-orbit" data-mg-orbit>
+          <svg class="mg-orbit-svg" aria-hidden="true"></svg>
+          <div class="mg-orbit-nodes"></div>
+        </div>
+        <aside class="mg-nav-panel">
+          <section class="mg-panel">
+            <p class="mg-panel-label">Active stage</p>
+            <h4 class="mg-panel-title" data-mg-stage-title>Фиксация задачи</h4>
+            <p class="mg-panel-copy" data-mg-stage-copy>Проект начинается не со строительства, а с точной фиксации входных данных. Это создаёт базу для понятных сроков, цены и инженерных решений.</p>
+            <ul class="mg-panel-list" data-mg-stage-points></ul>
+          </section>
+          <section class="mg-panel">
+            <p class="mg-panel-label">Selected focus</p>
+            <h4 class="mg-panel-title" data-mg-child-title>Вводные зафиксированы</h4>
+            <p class="mg-panel-copy" data-mg-child-copy>Все дальнейшие решения строятся на подтверждённых параметрах участка, задачи и ограничений, а не на допущениях.</p>
+          </section>
+          <section class="mg-panel">
+            <p class="mg-panel-label">System signal</p>
+            <div class="mg-signal">
+              <div class="mg-signal-item">
+                <span class="mg-signal-label">Control</span>
+                <span class="mg-signal-value">Каждый шаг связан со следующим.</span>
+              </div>
+              <div class="mg-signal-item">
+                <span class="mg-signal-label">Clarity</span>
+                <span class="mg-signal-value">Клиент понимает, что уже подтверждено.</span>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <section class="mg-process mg-reveal" aria-labelledby="mg-process-title">
+      <div class="mg-section-head">
+        <div>
+          <p class="mg-section-kicker">Process</p>
+          <h3 class="mg-section-title" id="mg-process-title">Инженерная ясность без визуального шума.</h3>
+        </div>
+        <p class="mg-section-copy">Смысл этого экрана — показать, что результат обеспечивается не обещаниями, а дисциплиной процесса и конструктивной логикой.</p>
+      </div>
+      <div class="mg-process-layout">
+        <aside class="mg-process-rail">
+          <div class="mg-tabs" role="tablist" aria-label="Переключение между логикой реализации и конструкции">
+            <button class="mg-tab is-active" type="button" role="tab" aria-selected="true" data-mg-tab="process">Реализация</button>
+            <button class="mg-tab" type="button" role="tab" aria-selected="false" data-mg-tab="construction">Конструкция</button>
+          </div>
+          <div class="mg-process-summary">
+            <h4 class="mg-process-summary-title" data-mg-process-title>Реализация под контролем.</h4>
+            <p class="mg-process-summary-copy" data-mg-process-copy>Все вводные, ограничения, ответственность и последовательность действий закрепляются заранее. За счёт этого процесс не распадается на хаотичные решения по ходу проекта.</p>
+            <p class="mg-process-footer">Надёжный результат начинается задолго до монтажа.</p>
+          </div>
+        </aside>
+        <div class="mg-process-timeline" data-mg-steps></div>
+      </div>
+    </section>
+
+    <section class="mg-faq mg-reveal" aria-labelledby="mg-faq-title">
+      <div class="mg-section-head">
+        <div>
+          <p class="mg-section-kicker">Trust</p>
+          <h3 class="mg-section-title" id="mg-faq-title">Ответы, которые убирают напряжение перед решением.</h3>
+        </div>
+        <p class="mg-section-copy">FAQ встроен в общий сценарий: после обзора системы и объяснения процесса остаётся только закрыть конкретные сомнения о цене, сроках, ответственности и рисках.</p>
+      </div>
+      <div class="mg-faq-layout">
+        <div class="mg-faq-nav" role="tablist" aria-label="Часто задаваемые вопросы" data-mg-faq-nav></div>
+        <article class="mg-faq-detail" role="tabpanel" aria-live="polite">
+          <p class="mg-faq-detail-label">Key answer</p>
+          <h4 class="mg-faq-detail-title" data-mg-faq-title></h4>
+          <div class="mg-faq-detail-body" data-mg-faq-body></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="mg-cta mg-reveal" aria-labelledby="mg-cta-title">
+      <div class="mg-cta-shell">
+        <div>
+          <h3 class="mg-cta-title" id="mg-cta-title">Когда структура понятна, решение принимается спокойнее.</h3>
+          <p class="mg-cta-copy">Этот блок завершает сценарий не агрессивной продажей, а ощущением контроля: маршрут проекта виден, логика строительства объяснена, ключевые сомнения закрыты заранее.</p>
+        </div>
+        <a class="mg-cta-button" href="#rec760364129">Обсудить проект</a>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.currentScript ? document.currentScript.closest('.mg-block') : document.querySelector('.mg-block');
+      if (!root) return;
+
+      var navigationStages = [
+        {
+          number: '01',
+          title: 'Фиксация задачи',
+          description: 'Проект начинается не со строительства, а с точной фиксации входных данных. Это создаёт базу для понятных сроков, цены и инженерных решений.',
+          points: ['Параметры участка и задачи фиксируются заранее.', 'Ограничения попадают в систему до старта работ.', 'Следующий шаг строится только на подтверждённых вводных.'],
+          children: [
+            { label: 'Вводные', copy: 'Исходные данные, размеры, ограничения участка и пожелания клиента становятся общей базой для всего проекта.' },
+            { label: 'Замер', copy: 'Замер переводит разговор из предположений в точную геометрию и реальные условия площадки.' },
+            { label: 'Задача', copy: 'Формулировка задачи определяет не только объект, но и сценарий использования, нагрузки и комплектацию.' }
+          ]
+        },
+        {
+          number: '02',
+          title: 'Проектное решение',
+          description: 'Решение формируется не как шаблон, а как конфигурация под конкретный участок, ограничения, подъезд, рельеф и будущий режим эксплуатации.',
+          points: ['Учитываются реальные ограничения площадки.', 'Коммерческое предложение растёт из технической логики.', 'Цена связана с конфигурацией, а не с усреднением.'],
+          children: [
+            { label: 'Участок', copy: 'Геометрия и условия площадки влияют на схему, основание и организацию монтажа.' },
+            { label: 'Расчёт', copy: 'Проект переводится в систему параметров, по которым можно точно считать бюджет и сроки.' },
+            { label: 'Комплектация', copy: 'Состав решения определяется заранее, чтобы исключить случайные замены по ходу реализации.' }
+          ]
+        },
+        {
+          number: '03',
+          title: 'Ответственность',
+          description: 'За проект закрепляется понятный контур управления: клиент понимает, кто ведёт маршрут проекта и отвечает за результат на всём цикле.',
+          points: ['Один маршрут вместо дробления ответственности.', 'Контакты и статусы не теряются между этапами.', 'Решения согласуются через понятного ответственного.'],
+          children: [
+            { label: 'Контакт', copy: 'Клиент работает с понятной точкой входа, а не с набором случайных исполнителей.' },
+            { label: 'Статус', copy: 'У каждого этапа есть подтверждённое состояние: что уже зафиксировано, а что ожидает решения.' },
+            { label: 'Контроль', copy: 'Ответственность нужна, чтобы проект сохранял логику и темп на всём маршруте.' }
+          ]
+        },
+        {
+          number: '04',
+          title: 'Подготовка',
+          description: 'Этапы, сроки и последовательность задаются заранее. За счёт этого реализация ощущается как управляемая система, а не как импровизация на площадке.',
+          points: ['Последовательность работ определяется заранее.', 'Договор фиксирует сроки, состав и обязательства.', 'Клиент понимает, что будет происходить дальше.'],
+          children: [
+            { label: 'Договор', copy: 'Договор переводит обсуждение в систему обязательств с понятными условиями и сроками.' },
+            { label: 'График', copy: 'Календарь этапов строится на подтверждённых вводных, а не на обещании “на глаз”.' },
+            { label: 'Логистика', copy: 'Подготовка учитывает подъезд, материалы, доступ на участок и последовательность выездов.' }
+          ]
+        },
+        {
+          number: '05',
+          title: 'Сборка системы',
+          description: 'На этапе реализации критична дисциплина: геометрия, узлы, примыкания и последовательность проверки каждого шага перед следующим.',
+          points: ['Каркас собирается с контролем геометрии.', 'Узлы и соединения проверяются на соответствие расчётной логике.', 'Кровля и примыкания решаются как единая система.'],
+          children: [
+            { label: 'Каркас', copy: 'Точность сборки влияет на работу всех последующих элементов и общий ресурс конструкции.' },
+            { label: 'Узлы', copy: 'Критические соединения выполняются как инженерные точки надёжности, а не как компромисс на монтаже.' },
+            { label: 'Кровля', copy: 'Герметичность, примыкания и водоотвод проектируются заранее как часть общей системы.' }
+          ]
+        },
+        {
+          number: '06',
+          title: 'Проверка и сдача',
+          description: 'Финал — это не “завершили монтаж”, а подтверждение того, что объект соответствует проектной логике, ожиданиям клиента и договорным условиям.',
+          points: ['Каждый этап проверяется перед следующим.', 'Финальный контроль подтверждает соответствие решению.', 'Клиент получает понятный итог, а не просто завершённые работы.'],
+          children: [
+            { label: 'Контроль', copy: 'Промежуточные и финальные проверки удерживают качество и снижают риск накопленных ошибок.' },
+            { label: 'Сдача', copy: 'Передача объекта опирается на проверенное состояние системы, а не только на факт завершения работ.' },
+            { label: 'Результат', copy: 'Клиент видит прогнозируемый итог, потому что весь маршрут был связан с самого начала.' }
+          ]
+        }
+      ];
+
+      var processData = {
+        process: {
+          title: 'Реализация под контролем.',
+          copy: 'Все вводные, ограничения, ответственность и последовательность действий закрепляются заранее. За счёт этого процесс не распадается на хаотичные решения по ходу проекта.',
+          items: [
+            { number: '01', title: 'Задача и параметры участка фиксируются до начала работ', status: 'зафиксировано', description: 'Исходные вводные согласованы заранее и становятся базой для всего проекта.' },
+            { number: '02', title: 'Решение формируется с учётом участка и ограничений', status: 'учтено', description: 'План адаптируется под геометрию, подъезд, рельеф и реальные ограничения площадки.' },
+            { number: '03', title: 'Ответственный закреплён за проектом на всём цикле', status: 'закреплено', description: 'Клиент работает с понятным контактом, который ведёт проект от старта до сдачи.' },
+            { number: '04', title: 'Этапы и последовательность работ заданы заранее', status: 'задано', description: 'График собирается как управляемая система без случайных решений по ходу реализации.' },
+            { number: '05', title: 'Каждый этап проходит контроль перед следующим', status: 'проверяется', description: 'Промежуточные проверки позволяют держать качество и последовательность под контролем.' },
+            { number: '06', title: 'Условия, сроки и обязательства закреплены в договоре', status: 'в договоре', description: 'Ключевые параметры проекта формализованы и защищают обе стороны на всём цикле.' }
+          ]
+        },
+        construction: {
+          title: 'Конструкция по инженерной логике.',
+          copy: 'Надёжность собирается из расчёта, спецификации, точной геометрии и дисциплины исполнения. Так конструкция воспринимается не как набор деталей, а как цельная система.',
+          items: [
+            { number: '01', title: 'Конструкция рассчитывается под снеговую и ветровую нагрузку', status: 'по расчёту', description: 'Инженерная схема подбирается по расчётным воздействиям, а не по типовым допущениям.' },
+            { number: '02', title: 'Материалы задаются по инженерной спецификации', status: 'по спецификации', description: 'Состав системы фиксируется заранее и исключает произвольные замены по ходу работ.' },
+            { number: '03', title: 'Каркас собирается с контролем геометрии', status: 'геометрия', description: 'Точность сборки проверяется на ключевых этапах, чтобы система работала как единое целое.' },
+            { number: '04', title: 'Узлы и соединения выполнены под расчётные нагрузки', status: 'нагрузки', description: 'Критические точки решаются как инженерные узлы с понятной логикой надёжности.' },
+            { number: '05', title: 'Кровля и примыкания решены как часть системы', status: 'система', description: 'Герметичность, водоотвод и сопряжения закладываются в конструкцию, а не додумываются позже.' },
+            { number: '06', title: 'Готовый объект проходит проверку перед сдачей', status: 'перед сдачей', description: 'Финальный контроль подтверждает соответствие проектным решениям и ожиданиям клиента.' }
+          ]
+        }
+      };
+
+      var faqItems = [
+        {
+          number: '01',
+          question: 'Как формируется итоговая стоимость?',
+          answer: [
+            'Итоговая стоимость собирается из подтверждённых параметров проекта: размеров, конструктивной схемы, материалов, основания, комплектации и условий монтажа.',
+            'Сначала фиксируются вводные после контакта и замера, затем они переводятся в техническое задание и коммерческое предложение. Поэтому цена строится не на усреднённой оценке, а на реальной конфигурации объекта.',
+            'До старта работ клиент понимает, из чего состоит бюджет, какие решения в него входят и какие этапы зафиксированы в договоре.'
+          ]
+        },
+        {
+          number: '02', question: 'Могут ли появиться дополнительные платежи в процессе?',
+          answer: [
+            'Нет, если параметры проекта подтверждены до запуска работ и зафиксированы в договоре.',
+            'После замера и обсуждения собирается полное техническое задание, на основании которого рассчитывается состав решения. Именно это закрывает риск случайных доплат уже в процессе.',
+            'Если конфигурация меняется после согласования, это оформляется отдельно как новое решение. Поэтому клиент всегда понимает, за что платит и на каком этапе.'
+          ]
+        },
+        {
+          number: '03', question: 'Фиксируется ли цена в договоре?',
+          answer: [
+            'Да. После согласования состава работ, сроков и комплектации стоимость фиксируется в договоре.',
+            'Это переводит проект из предварительного обсуждения в управляемую систему обязательств, где зафиксированы объём, стоимость и порядок исполнения.',
+            'Такой подход защищает и клиента, и команду от разночтений по ходу реализации.'
+          ]
+        },
+        {
+          number: '04', question: 'Сколько времени занимает строительство?',
+          answer: [
+            'Срок зависит от размеров объекта, типа конструкции, основания, комплектации и условий площадки.',
+            'Срок не называется наугад: сначала измеряется участок, собирается задача и только после этого даётся реалистичный календарь по этапам — от подготовки до сдачи.',
+            'За счёт такой последовательности сроки становятся частью согласованного маршрута проекта, а не обещанием “на глаз”.'
+          ]
+        },
+        {
+          number: '05', question: 'Что происходит после замера?',
+          answer: [
+            'После замера все размеры, ограничения участка, подъезд и особенности площадки переходят в расчётный и проектный контур.',
+            'На этой базе формируется техническое задание, затем коммерческое предложение и логика следующего шага — проектирование или фиксация условий.',
+            'То есть замер не остаётся отдельным визитом, а сразу превращается в основу решения.'
+          ]
+        },
+        {
+          number: '06', question: 'Кто отвечает за результат?',
+          answer: [
+            'За проект отвечает команда, которая ведёт его как единую систему: от входных данных до сдачи объекта.',
+            'Ответственность не дробится между случайными исполнителями по этапам — именно поэтому маршрут проекта заранее собран и связан между собой.',
+            'Клиент понимает, кто ведёт процесс, на каком этапе находится проект и что подтверждено на текущий момент.'
+          ]
+        },
+        {
+          number: '07', question: 'Что если в процессе обнаружатся ограничения участка?',
+          answer: [
+            'Поэтому работа и начинается с выезда, замера и фиксации ограничений ещё до проектных решений.',
+            'Если на площадке есть перепад высот, сложный подъезд, ограничения по основанию или инженерные вводные, они должны попасть в проект до старта работ, а не после.',
+            'Если новые обстоятельства действительно проявляются позже, они разбираются как отдельная зафиксированная вводная, а не как хаотичная проблема на монтаже.'
+          ]
+        },
+        {
+          number: '08', question: 'Почему этот подход снижает риск ошибок?',
+          answer: [
+            'Потому что каждый следующий шаг опирается на подтверждённый предыдущий: вводные, расчёт, договор, подготовка, сборка и проверка.',
+            'Когда маршрут проекта собран как система, снижается вероятность ценовых сюрпризов, логистических сбоев и инженерных компромиссов на площадке.',
+            'Именно эта связность превращает строительство в предсказуемый продуктовый опыт для клиента.'
+          ]
+        }
+      ];
+
+      function renderNavigation() {
+        var orbit = root.querySelector('[data-mg-orbit]');
+        var nodesLayer = root.querySelector('.mg-orbit-nodes');
+        var svg = root.querySelector('.mg-orbit-svg');
+        var stageTitle = root.querySelector('[data-mg-stage-title]');
+        var stageCopy = root.querySelector('[data-mg-stage-copy]');
+        var stagePoints = root.querySelector('[data-mg-stage-points]');
+        var childTitle = root.querySelector('[data-mg-child-title]');
+        var childCopy = root.querySelector('[data-mg-child-copy]');
+        if (!orbit || !nodesLayer || !svg) return;
+
+        var activeStage = 0;
+        var activeChild = 0;
+        var positions = [
+          { x: 50, y: 15 },
+          { x: 77, y: 28 },
+          { x: 82, y: 56 },
+          { x: 58, y: 79 },
+          { x: 27, y: 73 },
+          { x: 18, y: 39 }
+        ];
+
+        function pointAt(centerX, centerY, radius, angleDeg) {
+          var angle = angleDeg * Math.PI / 180;
+          return { x: centerX + Math.cos(angle) * radius, y: centerY + Math.sin(angle) * radius };
+        }
+
+        function updateDetail() {
+          var stage = navigationStages[activeStage];
+          var child = stage.children[activeChild] || stage.children[0];
+          stageTitle.textContent = stage.title;
+          stageCopy.textContent = stage.description;
+          stagePoints.innerHTML = '';
+          stage.points.forEach(function (item) {
+            var li = document.createElement('li');
+            li.textContent = item;
+            stagePoints.appendChild(li);
+          });
+          childTitle.textContent = child.label;
+          childCopy.textContent = child.copy;
+        }
+
+        function renderOrbit() {
+          var rect = orbit.getBoundingClientRect();
+          var width = rect.width;
+          var height = rect.height;
+          nodesLayer.innerHTML = '';
+          svg.innerHTML = '';
+          svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+
+          positions.forEach(function (pos, index) {
+            var next = positions[(index + 1) % positions.length];
+            var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', String(width * pos.x / 100));
+            line.setAttribute('y1', String(height * pos.y / 100));
+            line.setAttribute('x2', String(width * next.x / 100));
+            line.setAttribute('y2', String(height * next.y / 100));
+            line.setAttribute('class', 'mg-orbit-line');
+            svg.appendChild(line);
+          });
+
+          navigationStages.forEach(function (stage, stageIndex) {
+            var pos = positions[stageIndex];
+            var centerX = width * pos.x / 100;
+            var centerY = height * pos.y / 100;
+            var node = document.createElement('button');
+            node.type = 'button';
+            node.className = 'mg-node' + (stageIndex === activeStage ? ' is-active' : '');
+            node.style.left = pos.x + '%';
+            node.style.top = pos.y + '%';
+            node.setAttribute('aria-label', 'Этап ' + stage.number + ': ' + stage.title);
+            node.innerHTML = '<span class="mg-node-ring"><span class="mg-node-core"><span class="mg-node-number">' + stage.number + '</span><span class="mg-node-label">' + stage.title + '</span></span></span>';
+            node.addEventListener('click', function () {
+              activeStage = stageIndex;
+              activeChild = 0;
+              updateDetail();
+              renderOrbit();
+            });
+            nodesLayer.appendChild(node);
+
+            var baseAngles = [-62, -6, 50];
+            stage.children.forEach(function (child, childIndex) {
+              var point = pointAt(centerX, centerY, Math.min(width, height) * 0.14, baseAngles[childIndex] + stageIndex * 9);
+              var childNode = document.createElement('button');
+              childNode.type = 'button';
+              childNode.className = 'mg-child' + (stageIndex === activeStage ? ' is-visible' : '') + (stageIndex === activeStage && childIndex === activeChild ? ' is-selected' : '');
+              childNode.style.left = point.x + 'px';
+              childNode.style.top = point.y + 'px';
+              childNode.textContent = child.label;
+              childNode.setAttribute('aria-label', child.label + '. ' + child.copy);
+              childNode.addEventListener('click', function (event) {
+                event.stopPropagation();
+                activeStage = stageIndex;
+                activeChild = childIndex;
+                updateDetail();
+                renderOrbit();
+              });
+              nodesLayer.appendChild(childNode);
+            });
+          });
+        }
+
+        updateDetail();
+        renderOrbit();
+        window.addEventListener('resize', renderOrbit);
+      }
+
+      function renderProcess() {
+        var tabs = Array.prototype.slice.call(root.querySelectorAll('.mg-tab'));
+        var titleNode = root.querySelector('[data-mg-process-title]');
+        var copyNode = root.querySelector('[data-mg-process-copy]');
+        var stepsNode = root.querySelector('[data-mg-steps]');
+        if (!tabs.length || !titleNode || !copyNode || !stepsNode) return;
+
+        var activeKey = 'process';
+
+        function createStep(item, index) {
+          var article = document.createElement('article');
+          article.className = 'mg-step' + (index === 0 ? ' is-open' : '');
+
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'mg-step-button';
+          button.setAttribute('aria-expanded', index === 0 ? 'true' : 'false');
+
+          button.innerHTML = '<span class="mg-step-number">' + item.number + '</span>' +
+            '<span class="mg-step-title">' + item.title + '</span>' +
+            '<span class="mg-step-status">' + item.status + '</span>';
+
+          var panel = document.createElement('div');
+          panel.className = 'mg-step-panel';
+          panel.innerHTML = '<div class="mg-step-panel-inner"><p>' + item.description + '</p></div>';
+
+          button.addEventListener('click', function () {
+            var isOpen = article.classList.contains('is-open');
+            Array.prototype.forEach.call(stepsNode.children, function (stepEl) {
+              stepEl.classList.remove('is-open');
+              var trigger = stepEl.querySelector('.mg-step-button');
+              if (trigger) trigger.setAttribute('aria-expanded', 'false');
+            });
+            if (!isOpen) {
+              article.classList.add('is-open');
+              button.setAttribute('aria-expanded', 'true');
+            }
+          });
+
+          article.appendChild(button);
+          article.appendChild(panel);
+          return article;
+        }
+
+        function renderKey(key) {
+          activeKey = key;
+          var group = processData[key];
+          titleNode.textContent = group.title;
+          copyNode.textContent = group.copy;
+          tabs.forEach(function (tab) {
+            var active = tab.getAttribute('data-mg-tab') === key;
+            tab.classList.toggle('is-active', active);
+            tab.setAttribute('aria-selected', active ? 'true' : 'false');
+          });
+          stepsNode.innerHTML = '';
+          group.items.forEach(function (item, index) {
+            stepsNode.appendChild(createStep(item, index));
+          });
+        }
+
+        tabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            renderKey(tab.getAttribute('data-mg-tab'));
+          });
+        });
+
+        renderKey(activeKey);
+      }
+
+      function renderFaq() {
+        var nav = root.querySelector('[data-mg-faq-nav]');
+        var title = root.querySelector('[data-mg-faq-title]');
+        var body = root.querySelector('[data-mg-faq-body]');
+        if (!nav || !title || !body) return;
+
+        var active = 0;
+
+        function setActive(index) {
+          active = index;
+          title.textContent = faqItems[index].question;
+          body.innerHTML = '';
+          faqItems[index].answer.forEach(function (paragraph) {
+            var p = document.createElement('p');
+            p.textContent = paragraph;
+            body.appendChild(p);
+          });
+          Array.prototype.forEach.call(nav.children, function (button, buttonIndex) {
+            button.classList.toggle('is-active', buttonIndex === index);
+            button.setAttribute('aria-selected', buttonIndex === index ? 'true' : 'false');
+          });
+        }
+
+        faqItems.forEach(function (item, index) {
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'mg-faq-question' + (index === 0 ? ' is-active' : '');
+          button.setAttribute('role', 'tab');
+          button.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+          button.innerHTML = '<span class="mg-faq-number">' + item.number + '</span>' +
+            '<span class="mg-faq-text">' + item.question + '</span>' +
+            '<span class="mg-faq-dot" aria-hidden="true"></span>';
+          button.addEventListener('click', function () { setActive(index); });
+          nav.appendChild(button);
+        });
+
+        setActive(active);
+      }
+
+      function initReveal() {
+        var items = Array.prototype.slice.call(root.querySelectorAll('.mg-reveal'));
+        if (!items.length) return;
+
+        if (!('IntersectionObserver' in window)) {
+          items.forEach(function (item) { item.classList.add('is-visible'); });
+          return;
+        }
+
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+        items.forEach(function (item) { observer.observe(item); });
+      }
+
+      renderNavigation();
+      renderProcess();
+      renderFaq();
+      initReveal();
+    })();
+  </script>
+</section>
