@@ -91,6 +91,13 @@
       function set(key, value){
         state[key] = Number(value||0);
         render();
+        document.dispatchEvent(new CustomEvent("mega:totalsChange", {
+          detail: {
+            materials: materialsTotal(),
+            labor: state.labor,
+            fullCost: total()
+          }
+        }));
       }
       function materialsTotal(){
         return state.frame + state.panels + state.dobory + state.extras + state.foundation;
@@ -215,6 +222,7 @@
         <button class="tabbtn" data-tab="extras" role="tab" aria-selected="false">Доп. опции</button>
         <button class="tabbtn" data-tab="foundation" role="tab" aria-selected="false">Фундамент</button>
         <button class="tabbtn" data-tab="labor" role="tab" aria-selected="false">Работы</button>
+        <button class="tabbtn" data-tab="pricing" role="tab" aria-selected="false">Цена / Прибыль</button>
         <button class="tabbtn" data-tab="summary" role="tab" aria-selected="false">Общая смета</button>
       </div>
       <div class="small" style="margin-top:10px">
@@ -1721,6 +1729,122 @@
     </section>
 
 
+    <!-- TAB: Цена / Прибыль -->
+    <section class="card section" id="tab_pricing" aria-label="Цена / Прибыль">
+      <div class="wrap">
+        <div class="card">
+          <h3>Цена / Прибыль</h3>
+          <div class="small">Управленческий слой поверх полной себестоимости. На материалы и работы не влияет.</div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Режим наценки</label>
+              <select id="pr_markupMode">
+                <option value="percent">Процент к полной себестоимости</option>
+                <option value="fixed">Фиксированная сумма в ₽</option>
+              </select>
+            </div>
+            <div>
+              <label id="pr_markupLabel">Наценка (%)</label>
+              <input id="pr_markupValue" type="number" min="0" step="1" value="0"/>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <button id="pr_reset" type="button">Сбросить (цена/прибыль)</button>
+          </div>
+        </div>
+
+        <div class="card" id="pr_out"></div>
+      </div>
+
+      <script>
+      (function(){
+        const LS_KEY = "mega_pricing_v1";
+        const el = (id)=> document.getElementById(id);
+        const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+
+        const state = { markupMode: "percent", markupValue: 0 };
+
+        function load(){
+          try{
+            const raw = localStorage.getItem(LS_KEY);
+            if(!raw) return;
+            const st = JSON.parse(raw)||{};
+            if(st.markupMode === "percent" || st.markupMode === "fixed") state.markupMode = st.markupMode;
+            if(Number.isFinite(Number(st.markupValue))) state.markupValue = Number(st.markupValue);
+          }catch(e){}
+        }
+        function save(){
+          try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+        }
+
+        function compute(){
+          const materialsTotal = window.MegaCalc ? Number(window.MegaCalc.materialsTotal()) : 0;
+          const laborTotal = window.MegaCalc ? Number(window.MegaCalc.state.labor||0) : 0;
+          const fullCost = materialsTotal + laborTotal;
+
+          const markupValue = Math.max(0, Number(state.markupValue)||0);
+          const salePrice = (state.markupMode === "percent")
+            ? (fullCost * (1 + markupValue / 100))
+            : (fullCost + markupValue);
+
+          const grossProfit = salePrice - fullCost;
+          const grossMarginPct = salePrice > 0 ? (grossProfit / salePrice * 100) : 0;
+
+          return { materialsTotal, laborTotal, fullCost, markupMode: state.markupMode, markupValue, salePrice, grossProfit, grossMarginPct };
+        }
+
+        function render(){
+          state.markupMode = el("pr_markupMode").value;
+          state.markupValue = Number(el("pr_markupValue").value || 0);
+          save();
+
+          const label = (state.markupMode === "percent") ? "Наценка (%)" : "Наценка (₽)";
+          el("pr_markupLabel").textContent = label;
+
+          const r = compute();
+          window.MegaPricingState = r;
+          el("pr_out").innerHTML =
+            '<h3>Итоги</h3>' +
+            '<div class="row"><span>Итого материалы</span><b>'+rub(r.materialsTotal)+' ₽</b></div>' +
+            '<div class="row"><span>Итого работы</span><b>'+rub(r.laborTotal)+' ₽</b></div>' +
+            '<div class="row"><span><b>Полная себестоимость</b></span><b>'+rub(r.fullCost)+' ₽</b></div>' +
+            '<hr>' +
+            '<div class="row"><span>Режим наценки</span><b>'+(r.markupMode==="percent"?"Процент":"Фиксированная сумма")+'</b></div>' +
+            '<div class="row"><span>Значение наценки</span><b>'+rub(r.markupValue)+(r.markupMode==="percent"?" %":" ₽")+'</b></div>' +
+            '<div class="row"><span><b>Коммерческая цена</b></span><b>'+rub(r.salePrice)+' ₽</b></div>' +
+            '<div class="row"><span>Валовая прибыль</span><b>'+rub(r.grossProfit)+' ₽</b></div>' +
+            '<div class="row"><span>Маржинальность</span><b>'+rub(r.grossMarginPct)+' %</b></div>';
+
+          document.dispatchEvent(new CustomEvent("mega:pricingChange", { detail: r }));
+        }
+
+        function bind(){
+          load();
+          el("pr_markupMode").value = state.markupMode;
+          el("pr_markupValue").value = state.markupValue;
+
+          el("pr_markupMode").addEventListener("change", render);
+          el("pr_markupValue").addEventListener("input", render);
+          el("pr_markupValue").addEventListener("change", render);
+          document.addEventListener("mega:totalsChange", render);
+
+          el("pr_reset").addEventListener("click", ()=>{
+            localStorage.removeItem(LS_KEY);
+            location.reload();
+          });
+
+          render();
+        }
+
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
+
 
     <!-- TAB: Общая смета -->
     <section class="card section" id="tab_summary" aria-label="Общая смета">
@@ -1756,6 +1880,11 @@
           <div class="row"><span><b>ИТОГО материалы</b></span><b id="sm_materials">0 ₽</b></div>
           <div class="row"><span><b>ИТОГО работы</b></span><b id="sm_labor">0 ₽</b></div>
           <div class="row"><span><b>ПОЛНАЯ СЕБЕСТОИМОСТЬ</b></span><b id="sm_grand">0 ₽</b></div>
+          <div class="row"><span>Режим наценки</span><b id="sm_markup_mode">—</b></div>
+          <div class="row"><span>Значение наценки</span><b id="sm_markup_value">0</b></div>
+          <div class="row"><span><b>Коммерческая цена</b></span><b id="sm_sale">0 ₽</b></div>
+          <div class="row"><span>Валовая прибыль</span><b id="sm_profit">0 ₽</b></div>
+          <div class="row"><span>Маржинальность</span><b id="sm_margin">0 %</b></div>
           <div class="small" id="sm_status" style="margin-top:8px"></div>
         </div>
       </div>
@@ -1765,6 +1894,9 @@
         const el = (id)=> document.getElementById(id);
         const fmt = (n)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:3}).format(Number(n||0));
         const money = (n)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(n||0)) + " ₽";
+        const state = {
+          pricing: { markupMode:"percent", markupValue:0, salePrice:0, grossProfit:0, grossMarginPct:0 }
+        };
 
         async function copyText(text){
           try{
@@ -1814,9 +1946,15 @@
           }
 
           const fullCost = materialsTotal + laborTotal;
+          if(window.MegaPricingState) state.pricing = window.MegaPricingState;
           el("sm_materials").textContent = money(materialsTotal);
           el("sm_labor").textContent = money(laborTotal);
           el("sm_grand").textContent = money(fullCost);
+          el("sm_markup_mode").textContent = state.pricing.markupMode === "fixed" ? "Фиксированная сумма" : "Процент";
+          el("sm_markup_value").textContent = fmt(state.pricing.markupValue) + (state.pricing.markupMode === "fixed" ? " ₽" : " %");
+          el("sm_sale").textContent = money(state.pricing.salePrice);
+          el("sm_profit").textContent = money(state.pricing.grossProfit);
+          el("sm_margin").textContent = fmt(state.pricing.grossMarginPct) + " %";
           el("sm_status").textContent = rows
             ? ("Строк в смете: " + rows)
             : "Пока нет позиций. Открой вкладки и внеси цены/параметры — смета заполнится автоматически.";
@@ -1828,6 +1966,11 @@
           });
           el("sm_copy_md").addEventListener("click", ()=>{
             if(window.MegaBill) copyText(window.MegaBill.buildMarkdown());
+          });
+          document.addEventListener("mega:pricingChange", (e)=>{
+            const d = e && e.detail ? e.detail : null;
+            if(d) state.pricing = d;
+            render();
           });
           document.addEventListener("mega:billChange", render);
           render();
