@@ -225,6 +225,7 @@
         <button class="tabbtn" data-tab="pricing" role="tab" aria-selected="false">Цена / Прибыль</button>
         <button class="tabbtn" data-tab="projects" role="tab" aria-selected="false">Проекты</button>
         <button class="tabbtn" data-tab="fact" role="tab" aria-selected="false">План-Факт</button>
+        <button class="tabbtn" data-tab="policy" role="tab" aria-selected="false">Ценовые пороги</button>
         <button class="tabbtn" data-tab="summary" role="tab" aria-selected="false">Общая смета</button>
       </div>
       <div class="small" style="margin-top:10px">
@@ -1794,7 +1795,8 @@
           foundation: "gc_foundation_v3",
           labor: "mega_labor_v1",
           pricing: "mega_pricing_v1",
-          fact: "mega_fact_v1"
+          fact: "mega_fact_v1",
+          pricePolicy: "mega_price_policy_v1"
         };
 
         const el = (id)=> document.getElementById(id);
@@ -1858,7 +1860,8 @@
             extras: readLS(SNAP_KEYS.extras),
             foundation: readLS(SNAP_KEYS.foundation),
             labor: readLS(SNAP_KEYS.labor),
-            pricing: readLS(SNAP_KEYS.pricing)
+            pricing: readLS(SNAP_KEYS.pricing),
+            pricePolicy: readLS(SNAP_KEYS.pricePolicy)
           };
         }
         function collectFact(){
@@ -1875,6 +1878,7 @@
           writeLS(SNAP_KEYS.foundation, snapshot && snapshot.foundation);
           writeLS(SNAP_KEYS.labor, snapshot && snapshot.labor);
           writeLS(SNAP_KEYS.pricing, snapshot && snapshot.pricing);
+          writeLS(SNAP_KEYS.pricePolicy, snapshot && snapshot.pricePolicy);
           writeLS(SNAP_KEYS.fact, null);
         }
         function restoreFact(fact){
@@ -2362,6 +2366,179 @@
           document.addEventListener("mega:totalsChange", render);
 
           el("pr_reset").addEventListener("click", ()=>{
+            localStorage.removeItem(LS_KEY);
+            location.reload();
+          });
+
+          render();
+        }
+
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
+
+    <!-- TAB: Ценовые пороги -->
+    <section class="card section" id="tab_policy" aria-label="Ценовые пороги">
+      <div class="wrap">
+        <div class="card">
+          <h3>Цена-решение / Ценовые пороги</h3>
+          <div class="small">Управленческий слой защиты цены: пол, цель, рекомендация и допустимый торг.</div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Режим риск-буфера</label>
+              <select id="pp_riskBufferMode">
+                <option value="percent">Процент от полной себестоимости</option>
+                <option value="fixed">Фиксированная сумма в ₽</option>
+              </select>
+            </div>
+            <div>
+              <label id="pp_riskBufferLabel">Риск-буфер (%)</label>
+              <input id="pp_riskBufferValue" type="number" min="0" step="1" value="0"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Минимальная прибыль (₽)</label>
+              <input id="pp_minProfitRub" type="number" min="0" step="100" value="0"/>
+            </div>
+            <div>
+              <label>Целевая прибыль (₽)</label>
+              <input id="pp_targetProfitRub" type="number" min="0" step="100" value="0"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Резерв под скидку (%)</label>
+              <input id="pp_discountReservePct" type="number" min="0" max="99.9" step="0.1" value="0"/>
+            </div>
+            <div style="display:flex;align-items:flex-end;justify-content:flex-end">
+              <button id="pp_reset" type="button">Сбросить (ценовые пороги)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="pp_out"></div>
+      </div>
+
+      <script>
+      (function(){
+        const LS_KEY = "mega_price_policy_v1";
+        const el = (id)=> document.getElementById(id);
+        const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+
+        const state = {
+          riskBufferMode: "percent",
+          riskBufferValue: 0,
+          minProfitRub: 0,
+          targetProfitRub: 0,
+          discountReservePct: 0
+        };
+
+        function load(){
+          try{
+            const raw = localStorage.getItem(LS_KEY);
+            if(!raw) return;
+            const st = JSON.parse(raw)||{};
+            if(st.riskBufferMode === "percent" || st.riskBufferMode === "fixed") state.riskBufferMode = st.riskBufferMode;
+            if(Number.isFinite(Number(st.riskBufferValue))) state.riskBufferValue = Number(st.riskBufferValue);
+            if(Number.isFinite(Number(st.minProfitRub))) state.minProfitRub = Number(st.minProfitRub);
+            if(Number.isFinite(Number(st.targetProfitRub))) state.targetProfitRub = Number(st.targetProfitRub);
+            if(Number.isFinite(Number(st.discountReservePct))) state.discountReservePct = Number(st.discountReservePct);
+          }catch(e){}
+        }
+
+        function save(){
+          try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+        }
+
+        function compute(){
+          const fullCost = window.MegaCalc ? Number(window.MegaCalc.total()) : 0;
+          const riskBufferValue = Math.max(0, Number(state.riskBufferValue)||0);
+          const minProfitRub = Math.max(0, Number(state.minProfitRub)||0);
+          const targetProfitRub = Math.max(0, Number(state.targetProfitRub)||0);
+          const discountReservePct = Math.max(0, Number(state.discountReservePct)||0);
+
+          const riskBufferRub = (state.riskBufferMode === "percent")
+            ? fullCost * (riskBufferValue / 100)
+            : riskBufferValue;
+
+          const protectedCost = fullCost + riskBufferRub;
+          const floorPrice = protectedCost + minProfitRub;
+          const targetPrice = protectedCost + targetProfitRub;
+          const recommendedPrice = discountReservePct < 100
+            ? targetPrice / (1 - discountReservePct / 100)
+            : targetPrice;
+          const maxDiscountRub = recommendedPrice - floorPrice;
+          const maxDiscountPct = recommendedPrice > 0 ? (maxDiscountRub / recommendedPrice * 100) : 0;
+
+          return {
+            fullCost,
+            riskBufferMode: state.riskBufferMode,
+            riskBufferValue,
+            riskBufferRub,
+            protectedCost,
+            minProfitRub,
+            targetProfitRub,
+            discountReservePct,
+            floorPrice,
+            targetPrice,
+            recommendedPrice,
+            maxDiscountRub,
+            maxDiscountPct
+          };
+        }
+
+        function render(){
+          state.riskBufferMode = el("pp_riskBufferMode").value;
+          state.riskBufferValue = Number(el("pp_riskBufferValue").value || 0);
+          state.minProfitRub = Number(el("pp_minProfitRub").value || 0);
+          state.targetProfitRub = Number(el("pp_targetProfitRub").value || 0);
+          state.discountReservePct = Number(el("pp_discountReservePct").value || 0);
+          save();
+
+          el("pp_riskBufferLabel").textContent = state.riskBufferMode === "percent" ? "Риск-буфер (%)" : "Риск-буфер (₽)";
+
+          const r = compute();
+          window.MegaPricePolicyState = r;
+
+          el("pp_out").innerHTML =
+            '<h3>Ценовые пороги</h3>' +
+            '<table class="tbl"><tbody>' +
+            `<tr><td>Полная себестоимость</td><td class="num mono"><b>${rub(r.fullCost)} ₽</b></td></tr>` +
+            `<tr><td>Риск-буфер</td><td class="num mono">${rub(r.riskBufferRub)} ₽</td></tr>` +
+            `<tr><td>Защищённая себестоимость</td><td class="num mono">${rub(r.protectedCost)} ₽</td></tr>` +
+            `<tr><td>Минимальная цена (пол)</td><td class="num mono"><b>${rub(r.floorPrice)} ₽</b></td></tr>` +
+            `<tr><td>Целевая цена</td><td class="num mono">${rub(r.targetPrice)} ₽</td></tr>` +
+            `<tr><td>Рекомендуемая цена</td><td class="num mono"><b>${rub(r.recommendedPrice)} ₽</b></td></tr>` +
+            `<tr><td>Максимальная скидка</td><td class="num mono">${rub(r.maxDiscountRub)} ₽</td></tr>` +
+            `<tr><td>Максимальная скидка, %</td><td class="num mono">${rub(r.maxDiscountPct)} %</td></tr>` +
+            '</tbody></table>';
+
+          document.dispatchEvent(new CustomEvent("mega:pricePolicyChange", { detail: r }));
+        }
+
+        function bind(){
+          load();
+          el("pp_riskBufferMode").value = state.riskBufferMode;
+          el("pp_riskBufferValue").value = state.riskBufferValue;
+          el("pp_minProfitRub").value = state.minProfitRub;
+          el("pp_targetProfitRub").value = state.targetProfitRub;
+          el("pp_discountReservePct").value = state.discountReservePct;
+
+          ["pp_riskBufferMode","pp_riskBufferValue","pp_minProfitRub","pp_targetProfitRub","pp_discountReservePct"].forEach(id=>{
+            const n = el(id);
+            n.addEventListener("input", render);
+            n.addEventListener("change", render);
+          });
+          document.addEventListener("mega:totalsChange", render);
+
+          el("pp_reset").addEventListener("click", ()=>{
             localStorage.removeItem(LS_KEY);
             location.reload();
           });
