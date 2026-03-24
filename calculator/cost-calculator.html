@@ -226,6 +226,7 @@
         <button class="tabbtn" data-tab="projects" role="tab" aria-selected="false">Проекты</button>
         <button class="tabbtn" data-tab="fact" role="tab" aria-selected="false">План-Факт</button>
         <button class="tabbtn" data-tab="policy" role="tab" aria-selected="false">Ценовые пороги</button>
+        <button class="tabbtn" data-tab="compare" role="tab" aria-selected="false">Сравнение</button>
         <button class="tabbtn" data-tab="summary" role="tab" aria-selected="false">Общая смета</button>
       </div>
       <div class="small" style="margin-top:10px">
@@ -2552,6 +2553,136 @@
       </script>
     </section>
 
+
+    <!-- TAB: Сравнение -->
+    <section class="card section" id="tab_compare" aria-label="Сравнение">
+      <div class="wrap">
+        <div class="card">
+          <h3>Версия против версии</h3>
+          <div class="small">Сравнение выполняется по snapshot данных проектов без перезагрузки текущего интерфейса.</div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Версия A (baseProjectId)</label>
+              <select id="cp_base"></select>
+            </div>
+            <div>
+              <label>Версия B (compareProjectId)</label>
+              <select id="cp_compare"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="cp_metrics"></div>
+        <div class="card" id="cp_sections"></div>
+        <div class="card" id="cp_diff"></div>
+      </div>
+
+      <script>
+      (function(){
+        const LS_PROJECTS = "mega_projects_v1";
+        const LS_CURRENT = "mega_projects_current_v1";
+        const el = (id)=> document.getElementById(id);
+        const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+        const num = (v)=> Number(v||0);
+
+        const DOBORY_ITEMS = [
+          {key:"1",name:"№1"},{key:"2",name:"№2"},{key:"3",name:"№3"},{key:"4",name:"№4"},{key:"5",name:"№5"},
+          {key:"6",name:"№6"},{key:"7",name:"№7"},{key:"8",name:"№8"},{key:"9",name:"№9"},{key:"10",name:"№10"},
+          {key:"11",name:"№11"},{key:"12",name:"№12"},{key:"13",name:"№13"},{key:"14",name:"№14"}
+        ];
+        const EXTRAS_ITEMS = [
+          {key:"gates", name:"Ворота"},
+          {key:"auto", name:"Автоматика для ворот"},
+          {key:"door", name:"Дверь"},
+          {key:"windows", name:"Окна"},
+          {key:"shelving", name:"Стеллажи"},
+          {key:"gutters", name:"Водостоки"},
+          {key:"electro", name:"Электрика и свет"}
+        ];
+        const FOUNDATION_ITEMS = [
+          {key:"concrete_m3",unit:"м³",qty:(m)=>m.V},{key:"truck_trip",unit:"рейс",qty:(m)=>m.trips},{key:"pump_shift",unit:"смена",qty:(m)=>m.needPump?1:0},
+          {key:"rebar_m",unit:"пог.м",qty:(m)=>m.rebarLen},{key:"chairs_pc",unit:"шт",qty:(m)=>m.S*m.chairsPerM2},{key:"tie_fix",unit:"фикс",qty:()=>1},
+          {key:"film_m2",unit:"м²",qty:(m)=>m.S*m.ov},{key:"geotext_m2",unit:"м²",qty:(m)=>m.S*m.ov},{key:"sand_m3",unit:"м³",qty:(m)=>m.S*m.sandThk},
+          {key:"gravel_m3",unit:"м³",qty:(m)=>m.S*m.gravThk},{key:"vibro_day",unit:"смена",qty:()=>1},{key:"formwork_m",unit:"пог.м",qty:(m)=>m.P},
+          {key:"form_lumber",unit:"пог.м",qty:(m)=>m.P},{key:"screws_fix",unit:"фикс",qty:()=>1},{key:"excav_m2",unit:"м²",qty:(m)=>m.needExcav?m.S:0}
+        ];
+
+        function loadProjects(){ try{ const arr = JSON.parse(localStorage.getItem(LS_PROJECTS)||"[]"); return Array.isArray(arr)?arr:[]; }catch(e){ return []; } }
+        function familyRoot(p){ return p && p.parentProjectId ? p.parentProjectId : (p && p.id); }
+        function deltaPct(base, d){ return num(base)!==0 ? (d/num(base)*100) : 0; }
+
+        function buildPlanFromSnapshot(snapshot){
+          const globals = window.EstimateEngine.computeGlobals((snapshot && snapshot.global) || {preset:"8", L:8});
+          const f = (snapshot && snapshot.frame) || {};
+          const frameRes = window.EstimateEngine.calcFrame(globals, {step:num(f.f_step),lines:num(f.f_lines),Fship:num(f.f_Fship),Mship:num(f.f_Mship),P6060:num(f.f_P6060),P8060:num(f.f_P8060),P8080:num(f.f_P8080),P100:num(f.f_P100),farm6:num(f.f_farm6),farm8:num(f.f_farm8),K6060:num(f.f_K6060),K80:num(f.f_K80),wire:num(f.f_wire),discs:num(f.f_discs),paint:num(f.f_paint),paintTools:num(f.f_painttools),paintPerFarm:num(f.f_paintPerFarm)});
+          const p = (snapshot && snapshot.panels) || {};
+          const panelsRes = window.EstimateEngine.calcPanels(globals, {wallPrice:num(p.p_wallPrice),roofPrice:num(p.p_roofPrice),ship:num(p.p_ship),H:num(p.p_H),eave:num(p.p_eave),roofBW:num(p.p_roofBW),slopes:num(p.p_slopes),pScrewWall:num(p.p_pScrewWall),pScrewRoof:num(p.p_pScrewRoof),screwWastePct:num(p.p_screwWastePct),screwRoundTo:num(p.p_screwRoundTo),foamPrice:num(p.p_foamPrice),sealPrice:num(p.p_sealPrice)});
+          const d = (snapshot && snapshot.dobory) || {};
+          const dp = d.params || {};
+          const doboryRes = window.EstimateEngine.calcDobory(globals, {eave:num(dp.d_eave),wastePct:num(dp.d_wastePct),gates:num(dp.d_gates),doors:num(dp.d_doors),windows:num(dp.d_windows),prices:d.prices||{},items:DOBORY_ITEMS});
+          const extrasRes = window.EstimateEngine.calcExtras(globals, {items:EXTRAS_ITEMS,state:(snapshot&&snapshot.extras)||{}});
+          const foundationRes = window.EstimateEngine.calcFoundation(globals, Object.assign({items:FOUNDATION_ITEMS}, (snapshot&&snapshot.foundation)||{}));
+          const laborState = (snapshot && snapshot.labor) || {};
+          const laborTotal = Object.keys(laborState).reduce((a,k)=>a+num(laborState[k]),0);
+          const sectionTotals = {frame:num(frameRes.total),panels:num(panelsRes.total),dobory:num(doboryRes.total),extras:num(extrasRes.total),foundation:num(foundationRes.total),labor:laborTotal};
+          const materialsTotal = sectionTotals.frame+sectionTotals.panels+sectionTotals.dobory+sectionTotals.extras+sectionTotals.foundation;
+          const fullCost = materialsTotal + laborTotal;
+          return {sectionTotals,materialsTotal,laborTotal,fullCost};
+        }
+        function buildPricingFromSnapshot(fullCost,snapshot){
+          const st = (snapshot&&snapshot.pricing)||{}; const mode = st.markupMode==="fixed"?"fixed":"percent"; const v=Math.max(0,num(st.markupValue));
+          const salePrice = mode==="percent" ? fullCost*(1+v/100) : fullCost+v; const grossProfit=salePrice-fullCost; const grossMarginPct=salePrice>0?(grossProfit/salePrice*100):0;
+          return {salePrice,grossProfit,grossMarginPct};
+        }
+        function buildPolicyFromSnapshot(fullCost,snapshot){
+          const st = (snapshot&&snapshot.pricePolicy)||{}; const mode = st.riskBufferMode==="fixed"?"fixed":"percent"; const rv=Math.max(0,num(st.riskBufferValue));
+          const minP=Math.max(0,num(st.minProfitRub)); const tarP=Math.max(0,num(st.targetProfitRub)); const disc=Math.max(0,num(st.discountReservePct));
+          const risk=mode==="percent"?fullCost*(rv/100):rv; const prot=fullCost+risk; const floor=prot+minP; const target=prot+tarP; const rec=disc<100?target/(1-disc/100):target;
+          return {floorPrice:floor,targetPrice:target,recommendedPrice:rec};
+        }
+        function flatten(obj,prefix,out){
+          if(obj===null||obj===undefined){ out[prefix]=obj; return; }
+          if(typeof obj!=="object"||Array.isArray(obj)){ out[prefix]=obj; return; }
+          const keys=Object.keys(obj); if(keys.length===0){ out[prefix]="{}"; return; }
+          keys.forEach(k=>flatten(obj[k], prefix?prefix+"."+k:k, out));
+        }
+        function diffSnapshots(a,b){
+          const A={},B={}; flatten(a||{}, "", A); flatten(b||{}, "", B);
+          return Array.from(new Set([...Object.keys(A),...Object.keys(B)])).sort().filter(k=>JSON.stringify(A[k])!==JSON.stringify(B[k])).map(k=>({path:k,a:A[k],b:B[k]}));
+        }
+
+        function render(){
+          const projects = loadProjects();
+          const A = projects.find(p=>p.id===el("cp_base").value);
+          const B = projects.find(p=>p.id===el("cp_compare").value);
+          if(!A||!B){ el("cp_metrics").innerHTML='<div class="small">Выбери две версии.</div>'; el("cp_sections").innerHTML=''; el("cp_diff").innerHTML=''; return; }
+
+          const planA=buildPlanFromSnapshot(A.snapshot||{}), planB=buildPlanFromSnapshot(B.snapshot||{});
+          const prA=buildPricingFromSnapshot(planA.fullCost,A.snapshot||{}), prB=buildPricingFromSnapshot(planB.fullCost,B.snapshot||{});
+          const polA=buildPolicyFromSnapshot(planA.fullCost,A.snapshot||{}), polB=buildPolicyFromSnapshot(planB.fullCost,B.snapshot||{});
+          const metrics=[["Материалы",planA.materialsTotal,planB.materialsTotal],["Работы",planA.laborTotal,planB.laborTotal],["Полная себестоимость",planA.fullCost,planB.fullCost],["Цена продажи",prA.salePrice,prB.salePrice],["Валовая прибыль",prA.grossProfit,prB.grossProfit],["Маржинальность, %",prA.grossMarginPct,prB.grossMarginPct],["Минимальная цена",polA.floorPrice,polB.floorPrice],["Целевая цена",polA.targetPrice,polB.targetPrice],["Рекомендуемая цена",polA.recommendedPrice,polB.recommendedPrice]];
+          el("cp_metrics").innerHTML='<h3>Ключевые метрики</h3><table class="tbl"><thead><tr><th>Показатель</th><th class="num">A</th><th class="num">B</th><th class="num">Δ ₽</th><th class="num">Δ %</th></tr></thead><tbody>' + metrics.map(m=>{const d=num(m[2])-num(m[1]); return `<tr><td>${m[0]}</td><td class="num mono">${rub(m[1])}</td><td class="num mono">${rub(m[2])}</td><td class="num mono">${rub(d)}</td><td class="num mono">${rub(deltaPct(m[1],d))} %</td></tr>`;}).join('') + '</tbody></table>';
+          const sNames={frame:"Каркас",panels:"Панели",dobory:"Доборы",extras:"Допы",foundation:"Фундамент",labor:"Работы"};
+          el("cp_sections").innerHTML='<h3>Секции сметы</h3><table class="tbl"><thead><tr><th>Раздел</th><th class="num">A</th><th class="num">B</th><th class="num">Δ ₽</th><th class="num">Δ %</th></tr></thead><tbody>' + Object.keys(sNames).map(k=>{const av=num(planA.sectionTotals[k]), bv=num(planB.sectionTotals[k]), d=bv-av; return `<tr><td>${sNames[k]}</td><td class="num mono">${rub(av)}</td><td class="num mono">${rub(bv)}</td><td class="num mono">${rub(d)}</td><td class="num mono">${rub(deltaPct(av,d))} %</td></tr>`;}).join('') + '</tbody></table>';
+          const aSnap={global:A.snapshot&&A.snapshot.global,frame:A.snapshot&&A.snapshot.frame,panels:A.snapshot&&A.snapshot.panels,dobory:A.snapshot&&A.snapshot.dobory,extras:A.snapshot&&A.snapshot.extras,foundation:A.snapshot&&A.snapshot.foundation,labor:A.snapshot&&A.snapshot.labor,pricing:A.snapshot&&A.snapshot.pricing,pricePolicy:A.snapshot&&A.snapshot.pricePolicy};
+          const bSnap={global:B.snapshot&&B.snapshot.global,frame:B.snapshot&&B.snapshot.frame,panels:B.snapshot&&B.snapshot.panels,dobory:B.snapshot&&B.snapshot.dobory,extras:B.snapshot&&B.snapshot.extras,foundation:B.snapshot&&B.snapshot.foundation,labor:B.snapshot&&B.snapshot.labor,pricing:B.snapshot&&B.snapshot.pricing,pricePolicy:B.snapshot&&B.snapshot.pricePolicy};
+          const diffRows = diffSnapshots(aSnap,bSnap).map(r=>`<tr><td>${r.path}</td><td class="mono">${String(r.a)}</td><td class="mono">${String(r.b)}</td></tr>`).join('');
+          el("cp_diff").innerHTML='<h3>Что изменилось во входных данных</h3><table class="tbl"><thead><tr><th>Path</th><th>A</th><th>B</th></tr></thead><tbody>'+(diffRows||'<tr><td colspan="3" class="small">Различий нет.</td></tr>')+'</tbody></table>';
+        }
+
+        function buildSelectors(){
+          const projects = loadProjects().sort((a,b)=> String(b.meta&&b.meta.updatedAt||"").localeCompare(String(a.meta&&a.meta.updatedAt||"")));
+          const base = el("cp_base"), cmp = el("cp_compare"); base.innerHTML=""; cmp.innerHTML="";
+          projects.forEach(p=>{ const label=`${(p.meta&&p.meta.projectName)||"Без названия"} | v${p.version}`; const o1=document.createElement("option");o1.value=p.id;o1.textContent=label;base.appendChild(o1); const o2=document.createElement("option");o2.value=p.id;o2.textContent=label;cmp.appendChild(o2); });
+          if(projects.length>0){ const currentId = localStorage.getItem(LS_CURRENT)||projects[0].id; base.value=currentId; const current=projects.find(p=>p.id===currentId)||projects[0]; const sibling=projects.find(p=>p.id!==current.id && familyRoot(p)===familyRoot(current)); cmp.value=(sibling&&sibling.id)||(projects.find(p=>p.id!==current.id)||current).id; }
+        }
+
+        function bind(){ buildSelectors(); el("cp_base").addEventListener("change", render); el("cp_compare").addEventListener("change", render); render(); }
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind); else bind();
+      })();
+      </script>
+    </section>
 
 
     <!-- TAB: Общая смета -->
