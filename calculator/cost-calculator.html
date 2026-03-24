@@ -223,6 +223,7 @@
         <button class="tabbtn" data-tab="foundation" role="tab" aria-selected="false">Фундамент</button>
         <button class="tabbtn" data-tab="labor" role="tab" aria-selected="false">Работы</button>
         <button class="tabbtn" data-tab="pricing" role="tab" aria-selected="false">Цена / Прибыль</button>
+        <button class="tabbtn" data-tab="projects" role="tab" aria-selected="false">Проекты</button>
         <button class="tabbtn" data-tab="summary" role="tab" aria-selected="false">Общая смета</button>
       </div>
       <div class="small" style="margin-top:10px">
@@ -1720,6 +1721,338 @@
           });
 
           calc();
+        }
+
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
+
+    <!-- TAB: Проекты -->
+    <section class="card section" id="tab_projects" aria-label="Проекты">
+      <div class="wrap">
+        <div class="card">
+          <h3>Проекты и версии смет</h3>
+          <div class="small">Сохраняет полный snapshot текущего состояния калькулятора в localStorage.</div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Название проекта</label>
+              <input id="pj_projectName" type="text" placeholder="Например: Гараж 8×10"/>
+            </div>
+            <div>
+              <label>Заказчик</label>
+              <input id="pj_customerName" type="text" placeholder="ФИО / компания"/>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <label>Комментарий</label>
+            <input id="pj_projectComment" type="text" placeholder="Примечание к смете"/>
+          </div>
+
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button id="pj_save" type="button">Сохранить проект</button>
+            <button id="pj_save_version" type="button">Сохранить как новую версию</button>
+          </div>
+
+          <div class="small" id="pj_status" style="margin-top:10px"></div>
+        </div>
+
+        <div class="card">
+          <h3>Сохранённые проекты</h3>
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th style="width:24%">Проект</th>
+                <th style="width:18%">Клиент</th>
+                <th style="width:8%">Версия</th>
+                <th style="width:18%">Обновлён</th>
+                <th style="width:32%">Действия</th>
+              </tr>
+            </thead>
+            <tbody id="pj_rows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <script>
+      (function(){
+        const LS_PROJECTS = "mega_projects_v1";
+        const LS_CURRENT = "mega_projects_current_v1";
+
+        const SNAP_KEYS = {
+          global: "mega_global_v1",
+          frame: "mega_frame_v3",
+          panels: "mega_panels_v1",
+          doboryPrices: "trim_calc_prices_v1",
+          doboryParams: "mega_dobory_params_v1",
+          extras: "extras_config_v1",
+          foundation: "gc_foundation_v3",
+          labor: "mega_labor_v1",
+          pricing: "mega_pricing_v1"
+        };
+
+        const el = (id)=> document.getElementById(id);
+
+        function nowIso(){ return new Date().toISOString(); }
+        function fmtDate(iso){
+          if(!iso) return "—";
+          const d = new Date(iso);
+          if(Number.isNaN(d.getTime())) return "—";
+          return d.toLocaleString("ru-RU");
+        }
+        function uid(){
+          return "prj_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,7);
+        }
+
+        function loadProjects(){
+          try{
+            const raw = localStorage.getItem(LS_PROJECTS);
+            if(!raw) return [];
+            const arr = JSON.parse(raw);
+            return Array.isArray(arr) ? arr : [];
+          }catch(e){ return []; }
+        }
+        function saveProjects(arr){
+          try{ localStorage.setItem(LS_PROJECTS, JSON.stringify(arr)); }catch(e){}
+        }
+
+        function getCurrentId(){
+          try{ return localStorage.getItem(LS_CURRENT) || ""; }catch(e){ return ""; }
+        }
+        function setCurrentId(id){
+          try{
+            if(id) localStorage.setItem(LS_CURRENT, id);
+            else localStorage.removeItem(LS_CURRENT);
+          }catch(e){}
+        }
+
+        function readLS(key){
+          try{
+            const raw = localStorage.getItem(key);
+            if(raw == null) return null;
+            try{ return JSON.parse(raw); }catch(e){ return raw; }
+          }catch(e){ return null; }
+        }
+        function writeLS(key, value){
+          try{
+            if(value === null || value === undefined) localStorage.removeItem(key);
+            else localStorage.setItem(key, JSON.stringify(value));
+          }catch(e){}
+        }
+
+        function collectSnapshot(){
+          return {
+            global: readLS(SNAP_KEYS.global),
+            frame: readLS(SNAP_KEYS.frame),
+            panels: readLS(SNAP_KEYS.panels),
+            dobory: {
+              prices: readLS(SNAP_KEYS.doboryPrices),
+              params: readLS(SNAP_KEYS.doboryParams)
+            },
+            extras: readLS(SNAP_KEYS.extras),
+            foundation: readLS(SNAP_KEYS.foundation),
+            labor: readLS(SNAP_KEYS.labor),
+            pricing: readLS(SNAP_KEYS.pricing)
+          };
+        }
+
+        function restoreSnapshot(snapshot){
+          writeLS(SNAP_KEYS.global, snapshot && snapshot.global);
+          writeLS(SNAP_KEYS.frame, snapshot && snapshot.frame);
+          writeLS(SNAP_KEYS.panels, snapshot && snapshot.panels);
+          writeLS(SNAP_KEYS.doboryPrices, snapshot && snapshot.dobory && snapshot.dobory.prices);
+          writeLS(SNAP_KEYS.doboryParams, snapshot && snapshot.dobory && snapshot.dobory.params);
+          writeLS(SNAP_KEYS.extras, snapshot && snapshot.extras);
+          writeLS(SNAP_KEYS.foundation, snapshot && snapshot.foundation);
+          writeLS(SNAP_KEYS.labor, snapshot && snapshot.labor);
+          writeLS(SNAP_KEYS.pricing, snapshot && snapshot.pricing);
+        }
+
+        function readMetaFromForm(){
+          return {
+            projectName: (el("pj_projectName").value || "").trim(),
+            customerName: (el("pj_customerName").value || "").trim(),
+            projectComment: (el("pj_projectComment").value || "").trim()
+          };
+        }
+        function fillMeta(meta){
+          el("pj_projectName").value = (meta && meta.projectName) || "";
+          el("pj_customerName").value = (meta && meta.customerName) || "";
+          el("pj_projectComment").value = (meta && meta.projectComment) || "";
+        }
+
+        function familyRootId(project){
+          return (project && project.parentProjectId) ? project.parentProjectId : (project && project.id);
+        }
+
+        function saveProject(){
+          const projects = loadProjects();
+          const currentId = getCurrentId();
+          const meta = readMetaFromForm();
+          const t = nowIso();
+          const snapshot = collectSnapshot();
+
+          const idx = projects.findIndex(p=>p.id===currentId);
+          if(idx >= 0){
+            const prev = projects[idx];
+            projects[idx] = {
+              ...prev,
+              meta: {
+                ...prev.meta,
+                projectName: meta.projectName,
+                customerName: meta.customerName,
+                projectComment: meta.projectComment,
+                updatedAt: t
+              },
+              snapshot
+            };
+            saveProjects(projects);
+            el("pj_status").textContent = "Проект обновлён.";
+            renderList();
+            return;
+          }
+
+          const id = uid();
+          const rec = {
+            id,
+            parentProjectId: null,
+            version: 1,
+            meta: {
+              projectName: meta.projectName || "Без названия",
+              customerName: meta.customerName || "",
+              projectComment: meta.projectComment || "",
+              createdAt: t,
+              updatedAt: t
+            },
+            snapshot
+          };
+          projects.push(rec);
+          saveProjects(projects);
+          setCurrentId(id);
+          el("pj_status").textContent = "Проект сохранён.";
+          renderList();
+        }
+
+        function saveAsNewVersion(){
+          const projects = loadProjects();
+          const currentId = getCurrentId();
+          const base = projects.find(p=>p.id===currentId) || null;
+          if(!base){
+            saveProject();
+            return;
+          }
+          const meta = readMetaFromForm();
+          const t = nowIso();
+          const snapshot = collectSnapshot();
+
+          const rootId = familyRootId(base);
+          const maxV = projects
+            .filter(p=> familyRootId(p) === rootId)
+            .reduce((m,p)=> Math.max(m, Number(p.version)||1), 0);
+
+          const id = uid();
+          const rec = {
+            id,
+            parentProjectId: rootId,
+            version: maxV + 1,
+            meta: {
+              projectName: meta.projectName || (base && base.meta && base.meta.projectName) || "Без названия",
+              customerName: meta.customerName || (base && base.meta && base.meta.customerName) || "",
+              projectComment: meta.projectComment || (base && base.meta && base.meta.projectComment) || "",
+              createdAt: t,
+              updatedAt: t
+            },
+            snapshot
+          };
+          projects.push(rec);
+          saveProjects(projects);
+          setCurrentId(id);
+          el("pj_status").textContent = "Создана новая версия проекта.";
+          renderList();
+        }
+
+        function openProject(id){
+          const projects = loadProjects();
+          const p = projects.find(x=>x.id===id);
+          if(!p) return;
+          restoreSnapshot(p.snapshot || {});
+          setCurrentId(p.id);
+          location.reload();
+        }
+
+        function deleteProject(id){
+          const projects = loadProjects();
+          const next = projects.filter(p=>p.id!==id);
+          saveProjects(next);
+          if(getCurrentId() === id) setCurrentId("");
+          el("pj_status").textContent = "Проект удалён.";
+          renderList();
+        }
+
+        function exportProject(id){
+          const projects = loadProjects();
+          const p = projects.find(x=>x.id===id);
+          if(!p) return;
+          const text = JSON.stringify(p, null, 2);
+          const blob = new Blob([text], {type:"application/json;charset=utf-8"});
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = `${(p.meta && p.meta.projectName ? p.meta.projectName : "project").replace(/[\\/:*?\"<>|]/g,'_')}_v${p.version}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(a.href);
+        }
+
+        function renderList(){
+          const projects = loadProjects().sort((a,b)=> String(b.meta && b.meta.updatedAt || "").localeCompare(String(a.meta && a.meta.updatedAt || "")));
+          const currentId = getCurrentId();
+
+          const current = projects.find(p=>p.id===currentId);
+          fillMeta(current && current.meta ? current.meta : null);
+
+          const tb = el("pj_rows");
+          tb.innerHTML = "";
+          if(projects.length === 0){
+            tb.innerHTML = `<tr><td colspan="5" class="small">Сохранённых проектов пока нет.</td></tr>`;
+            return;
+          }
+
+          projects.forEach((p)=>{
+            const tr = document.createElement("tr");
+            const mark = (p.id === currentId) ? " <span class=\"pill\">текущий</span>" : "";
+            tr.innerHTML = `
+              <td><b>${(p.meta && p.meta.projectName) || "Без названия"}</b>${mark}</td>
+              <td>${(p.meta && p.meta.customerName) || ""}</td>
+              <td class="mono">v${Number(p.version)||1}</td>
+              <td class="mono">${fmtDate(p.meta && p.meta.updatedAt)}</td>
+              <td>
+                <button type="button" data-open="${p.id}">Открыть</button>
+                <button type="button" data-export="${p.id}">Экспорт JSON</button>
+                <button type="button" data-del="${p.id}">Удалить</button>
+              </td>
+            `;
+            tb.appendChild(tr);
+          });
+        }
+
+        function bind(){
+          el("pj_save").addEventListener("click", saveProject);
+          el("pj_save_version").addEventListener("click", saveAsNewVersion);
+
+          document.addEventListener("click", (e)=>{
+            const t = e.target;
+            if(!t || !t.dataset) return;
+            if(t.dataset.open) openProject(t.dataset.open);
+            if(t.dataset.export) exportProject(t.dataset.export);
+            if(t.dataset.del) deleteProject(t.dataset.del);
+          });
+
+          renderList();
         }
 
         if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
