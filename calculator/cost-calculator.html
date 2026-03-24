@@ -224,6 +224,7 @@
         <button class="tabbtn" data-tab="labor" role="tab" aria-selected="false">Работы</button>
         <button class="tabbtn" data-tab="pricing" role="tab" aria-selected="false">Цена / Прибыль</button>
         <button class="tabbtn" data-tab="projects" role="tab" aria-selected="false">Проекты</button>
+        <button class="tabbtn" data-tab="fact" role="tab" aria-selected="false">План-Факт</button>
         <button class="tabbtn" data-tab="summary" role="tab" aria-selected="false">Общая смета</button>
       </div>
       <div class="small" style="margin-top:10px">
@@ -1792,7 +1793,8 @@
           extras: "extras_config_v1",
           foundation: "gc_foundation_v3",
           labor: "mega_labor_v1",
-          pricing: "mega_pricing_v1"
+          pricing: "mega_pricing_v1",
+          fact: "mega_fact_v1"
         };
 
         const el = (id)=> document.getElementById(id);
@@ -1859,6 +1861,9 @@
             pricing: readLS(SNAP_KEYS.pricing)
           };
         }
+        function collectFact(){
+          return readLS(SNAP_KEYS.fact);
+        }
 
         function restoreSnapshot(snapshot){
           writeLS(SNAP_KEYS.global, snapshot && snapshot.global);
@@ -1870,6 +1875,10 @@
           writeLS(SNAP_KEYS.foundation, snapshot && snapshot.foundation);
           writeLS(SNAP_KEYS.labor, snapshot && snapshot.labor);
           writeLS(SNAP_KEYS.pricing, snapshot && snapshot.pricing);
+          writeLS(SNAP_KEYS.fact, null);
+        }
+        function restoreFact(fact){
+          writeLS(SNAP_KEYS.fact, fact);
         }
 
         function readMetaFromForm(){
@@ -1895,6 +1904,7 @@
           const meta = readMetaFromForm();
           const t = nowIso();
           const snapshot = collectSnapshot();
+          const fact = collectFact();
 
           const idx = projects.findIndex(p=>p.id===currentId);
           if(idx >= 0){
@@ -1908,7 +1918,8 @@
                 projectComment: meta.projectComment,
                 updatedAt: t
               },
-              snapshot
+              snapshot,
+              fact
             };
             saveProjects(projects);
             el("pj_status").textContent = "Проект обновлён.";
@@ -1928,7 +1939,8 @@
               createdAt: t,
               updatedAt: t
             },
-            snapshot
+            snapshot,
+            fact
           };
           projects.push(rec);
           saveProjects(projects);
@@ -1948,6 +1960,7 @@
           const meta = readMetaFromForm();
           const t = nowIso();
           const snapshot = collectSnapshot();
+          const fact = collectFact();
 
           const rootId = familyRootId(base);
           const maxV = projects
@@ -1966,7 +1979,8 @@
               createdAt: t,
               updatedAt: t
             },
-            snapshot
+            snapshot,
+            fact
           };
           projects.push(rec);
           saveProjects(projects);
@@ -1980,6 +1994,7 @@
           const p = projects.find(x=>x.id===id);
           if(!p) return;
           restoreSnapshot(p.snapshot || {});
+          restoreFact(p.fact || null);
           setCurrentId(p.id);
           location.reload();
         }
@@ -2053,6 +2068,189 @@
           });
 
           renderList();
+        }
+
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
+
+    <!-- TAB: План-Факт -->
+    <section class="card section" id="tab_fact" aria-label="План-Факт">
+      <div class="wrap">
+        <div class="card">
+          <h3>Факт по проекту</h3>
+          <div class="small">Фактические данные хранятся отдельно от плановой модели и не влияют на расчёты плановой сметы.</div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Факт материалы (₽)</label>
+              <input id="fa_actualMaterials" type="number" min="0" step="100" value="0"/>
+            </div>
+            <div>
+              <label>Факт работы (₽)</label>
+              <input id="fa_actualLabor" type="number" min="0" step="100" value="0"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Прочие факт-затраты (₽)</label>
+              <input id="fa_actualOtherCosts" type="number" min="0" step="100" value="0"/>
+            </div>
+            <div>
+              <label>Факт выручка / цена продажи (₽)</label>
+              <input id="fa_actualSalePrice" type="number" min="0" step="100" value="0"/>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Факт: количество людей в бригаде</label>
+              <input id="fa_actualCrewCount" type="number" min="0" step="1" value="0"/>
+            </div>
+            <div>
+              <label>Факт: дней на объекте</label>
+              <input id="fa_actualDays" type="number" min="0" step="1" value="0"/>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <label>Комментарий по факту</label>
+            <input id="fa_actualComment" type="text" placeholder="Что повлияло на отклонения"/>
+          </div>
+
+          <div style="margin-top:12px">
+            <button id="fa_reset" type="button">Сбросить (факт)</button>
+          </div>
+        </div>
+
+        <div class="card" id="fa_out"></div>
+      </div>
+
+      <script>
+      (function(){
+        const LS_KEY = "mega_fact_v1";
+        const el = (id)=> document.getElementById(id);
+        const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+
+        const keys = [
+          "fa_actualMaterials","fa_actualLabor","fa_actualOtherCosts","fa_actualSalePrice",
+          "fa_actualCrewCount","fa_actualDays","fa_actualComment"
+        ];
+
+        function loadState(){
+          try{
+            const raw = localStorage.getItem(LS_KEY);
+            if(!raw) return {};
+            return JSON.parse(raw) || {};
+          }catch(e){ return {}; }
+        }
+        function saveState(st){
+          try{ localStorage.setItem(LS_KEY, JSON.stringify(st)); }catch(e){}
+        }
+
+        function pullPlan(){
+          const materials = window.MegaCalc ? Number(window.MegaCalc.materialsTotal()) : 0;
+          const labor = window.MegaCalc ? Number(window.MegaCalc.state.labor||0) : 0;
+          const fullCost = materials + labor;
+
+          let salePrice = 0, grossProfit = 0, grossMarginPct = 0;
+          if(window.MegaPricingState){
+            salePrice = Number(window.MegaPricingState.salePrice||0);
+            grossProfit = Number(window.MegaPricingState.grossProfit||0);
+            grossMarginPct = Number(window.MegaPricingState.grossMarginPct||0);
+          }else{
+            const pr = (function(){
+              try{ return JSON.parse(localStorage.getItem("mega_pricing_v1")||"{}"); }catch(e){ return {}; }
+            })();
+            const mode = (pr.markupMode === "fixed") ? "fixed" : "percent";
+            const value = Math.max(0, Number(pr.markupValue)||0);
+            salePrice = mode === "percent" ? fullCost * (1 + value/100) : fullCost + value;
+            grossProfit = salePrice - fullCost;
+            grossMarginPct = salePrice > 0 ? (grossProfit / salePrice * 100) : 0;
+          }
+
+          return { materials, labor, fullCost, salePrice, grossProfit, grossMarginPct };
+        }
+
+        function deltaPct(plan, delta){
+          const p = Number(plan||0);
+          return p !== 0 ? (delta / p * 100) : 0;
+        }
+
+        function recalc(){
+          const st = {};
+          keys.forEach(k=>{
+            const node = el(k);
+            if(!node) return;
+            st[k] = (k === "fa_actualComment") ? (node.value || "") : Number(node.value || 0);
+          });
+          st.updatedAt = new Date().toISOString();
+          saveState(st);
+          window.MegaFactState = st;
+
+          const actualFullCost = Number(st.fa_actualMaterials||0) + Number(st.fa_actualLabor||0) + Number(st.fa_actualOtherCosts||0);
+          const actualGrossProfit = Number(st.fa_actualSalePrice||0) - actualFullCost;
+          const actualGrossMarginPct = Number(st.fa_actualSalePrice||0) > 0 ? (actualGrossProfit / Number(st.fa_actualSalePrice||0) * 100) : 0;
+
+          const plan = pullPlan();
+          const cmp = [
+            {name:"Материалы", plan:plan.materials, fact:Number(st.fa_actualMaterials||0)},
+            {name:"Работы", plan:plan.labor, fact:Number(st.fa_actualLabor||0)},
+            {name:"Полная себестоимость", plan:plan.fullCost, fact:actualFullCost},
+            {name:"Цена продажи", plan:plan.salePrice, fact:Number(st.fa_actualSalePrice||0)},
+            {name:"Валовая прибыль", plan:plan.grossProfit, fact:actualGrossProfit}
+          ];
+
+          const rows = cmp.map(r=>{
+            const d = r.fact - r.plan;
+            const p = deltaPct(r.plan, d);
+            return `<tr>
+              <td>${r.name}</td>
+              <td class="num mono">${rub(r.plan)} ₽</td>
+              <td class="num mono">${rub(r.fact)} ₽</td>
+              <td class="num mono">${rub(d)} ₽</td>
+              <td class="num mono">${rub(p)} %</td>
+            </tr>`;
+          }).join("");
+
+          el("fa_out").innerHTML =
+            '<h3>Факт: итоги</h3>' +
+            '<div class="row"><span><b>Фактическая полная себестоимость</b></span><b>'+rub(actualFullCost)+' ₽</b></div>' +
+            '<div class="row"><span>Фактическая валовая прибыль</span><b>'+rub(actualGrossProfit)+' ₽</b></div>' +
+            '<div class="row"><span>Фактическая маржинальность</span><b>'+rub(actualGrossMarginPct)+' %</b></div>' +
+            '<div class="row"><span>Бригада (факт)</span><b>'+rub(st.fa_actualCrewCount||0)+' чел</b></div>' +
+            '<div class="row"><span>Срок (факт)</span><b>'+rub(st.fa_actualDays||0)+' дн</b></div>' +
+            '<hr>' +
+            '<h3>План vs Факт</h3>' +
+            '<table class="tbl"><thead><tr><th>Показатель</th><th class="num">План</th><th class="num">Факт</th><th class="num">Отклонение ₽</th><th class="num">Отклонение %</th></tr></thead><tbody>' +
+            rows +
+            '</tbody></table>' +
+            (st.fa_actualComment ? '<div class="small" style="margin-top:10px"><b>Комментарий:</b> '+String(st.fa_actualComment)+'</div>' : '');
+        }
+
+        function bind(){
+          const st = loadState();
+          keys.forEach(k=>{
+            const node = el(k);
+            if(!node) return;
+            node.value = (st[k] !== undefined && st[k] !== null) ? st[k] : (k==="fa_actualComment" ? "" : 0);
+            node.addEventListener("input", recalc);
+            node.addEventListener("change", recalc);
+          });
+
+          document.addEventListener("mega:totalsChange", recalc);
+          document.addEventListener("mega:pricingChange", recalc);
+
+          el("fa_reset").addEventListener("click", ()=>{
+            localStorage.removeItem(LS_KEY);
+            location.reload();
+          });
+
+          recalc();
         }
 
         if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
