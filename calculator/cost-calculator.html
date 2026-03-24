@@ -86,14 +86,17 @@
 
     // Агрегатор итогов
     window.MegaCalc = (function(){
-      const state = { frame:0, panels:0, dobory:0, extras:0, foundation:0 };
+      const state = { frame:0, panels:0, dobory:0, extras:0, foundation:0, labor:0 };
       const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
       function set(key, value){
         state[key] = Number(value||0);
         render();
       }
-      function total(){
+      function materialsTotal(){
         return state.frame + state.panels + state.dobory + state.extras + state.foundation;
+      }
+      function total(){
+        return materialsTotal() + state.labor;
       }
       function render(){
         const el = document.getElementById('mega_summary');
@@ -104,11 +107,14 @@
           '<div class="row"><span>Доборы</span><b>'+rub(state.dobory)+' ₽</b></div>' +
           '<div class="row"><span>Доп. опции (штучные)</span><b>'+rub(state.extras)+' ₽</b></div>' +
           '<div class="row"><span>Фундамент (плита 250 мм)</span><b>'+rub(state.foundation)+' ₽</b></div>' +
+          '<div class="row"><span>Работы (ручной ввод)</span><b>'+rub(state.labor)+' ₽</b></div>' +
           '<hr>' +
-          '<div class="row"><span><b>ИТОГО</b></span><b>'+rub(total())+' ₽</b></div>' +
+          '<div class="row"><span><b>ИТОГО материалы</b></span><b>'+rub(materialsTotal())+' ₽</b></div>' +
+          '<div class="row"><span><b>ИТОГО работы</b></span><b>'+rub(state.labor)+' ₽</b></div>' +
+          '<div class="row"><span><b>ПОЛНАЯ СЕБЕСТОИМОСТЬ</b></span><b>'+rub(total())+' ₽</b></div>' +
           '<div class="small">Все суммы обновляются автоматически из вкладок.</div>';
       }
-      return { set, render, state };
+      return { set, render, state, materialsTotal, total };
     })();
 
     // ===== MegaBill: единый реестр позиций для общей сметы =====
@@ -208,6 +214,7 @@
         <button class="tabbtn" data-tab="dobory" role="tab" aria-selected="false">Доборы</button>
         <button class="tabbtn" data-tab="extras" role="tab" aria-selected="false">Доп. опции</button>
         <button class="tabbtn" data-tab="foundation" role="tab" aria-selected="false">Фундамент</button>
+        <button class="tabbtn" data-tab="labor" role="tab" aria-selected="false">Работы</button>
         <button class="tabbtn" data-tab="summary" role="tab" aria-selected="false">Общая смета</button>
       </div>
       <div class="small" style="margin-top:10px">
@@ -1595,6 +1602,125 @@
 </section>
 
 
+    <!-- TAB: Работы -->
+    <section class="card section" id="tab_labor" aria-label="Работы">
+      <div class="wrap">
+        <div class="card">
+          <h3>Работы (ручной слой)</h3>
+          <div class="small">Материалы не изменяются. Введи суммы работ вручную в ₽.</div>
+          <table class="tbl" style="margin-top:10px">
+            <thead>
+              <tr>
+                <th style="width:52px">#</th>
+                <th>Блок работ</th>
+                <th style="width:220px">Сумма (₽)</th>
+              </tr>
+            </thead>
+            <tbody id="lb_rows"></tbody>
+          </table>
+          <div style="margin-top:12px; display:flex; gap:10px; align-items:center;">
+            <button id="lb_reset" type="button">Сбросить (работы)</button>
+            <span class="small">Сбросит сохранённые суммы ручных работ.</span>
+          </div>
+        </div>
+        <div class="card" id="lb_out"></div>
+      </div>
+
+      <script>
+      (function(){
+        const LS_KEY = "mega_labor_v1";
+        const ITEMS = [
+          {key:"frameInstall", name:"Монтаж каркаса"},
+          {key:"panelsInstall", name:"Монтаж панелей"},
+          {key:"doboryInstall", name:"Монтаж доборов"},
+          {key:"foundationWork", name:"Работы по фундаменту"},
+          {key:"otherWork", name:"Прочие работы"}
+        ];
+
+        function el(id){ return document.getElementById(id); }
+        function rub(x){ return new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0)); }
+
+        function loadState(){
+          try{
+            const raw = localStorage.getItem(LS_KEY);
+            if(!raw) return {};
+            return JSON.parse(raw) || {};
+          }catch(e){ return {}; }
+        }
+
+        function saveState(st){
+          try{ localStorage.setItem(LS_KEY, JSON.stringify(st)); }catch(e){}
+        }
+
+        function buildTable(){
+          const st = loadState();
+          const tb = el("lb_rows");
+          tb.innerHTML = "";
+          ITEMS.forEach((it, idx)=>{
+            const sum = Number(st[it.key] || 0);
+            const tr = document.createElement("tr");
+            tr.innerHTML =
+              `<td class="mono">${idx+1}</td>
+               <td>${it.name}</td>
+               <td><input type="number" id="lb_${it.key}" value="${sum}" step="100" min="0"></td>`;
+            tb.appendChild(tr);
+          });
+        }
+
+        function readState(){
+          const st = {};
+          ITEMS.forEach(it=>{
+            st[it.key] = Number(el("lb_"+it.key).value || 0);
+          });
+          return st;
+        }
+
+        function calc(){
+          const st = readState();
+          saveState(st);
+
+          let laborTotal = 0;
+          const itemsBill = [];
+          ITEMS.forEach(it=>{
+            const sum = Number(st[it.key] || 0);
+            laborTotal += sum;
+            if(sum <= 0) return;
+            itemsBill.push({name:it.name, unit:"фикс", qty:1, price:sum, sum:sum});
+          });
+
+          el("lb_out").innerHTML =
+            `<h3>Итог по работам</h3>
+             <div class="row"><span><b>ИТОГО работы</b></span><b class="mono">${rub(laborTotal)} ₽</b></div>`;
+
+          if(window.MegaCalc) window.MegaCalc.set("labor", laborTotal);
+          if(window.MegaBill){
+            window.MegaBill.setSection("labor", { title:"Работы", items: itemsBill });
+          }
+        }
+
+        function bind(){
+          buildTable();
+
+          document.addEventListener("input", (e)=>{
+            if(!e.target || !e.target.id) return;
+            if(e.target.id.startsWith("lb_")) calc();
+          });
+
+          el("lb_reset").addEventListener("click", ()=>{
+            localStorage.removeItem(LS_KEY);
+            location.reload();
+          });
+
+          calc();
+        }
+
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
+
 
     <!-- TAB: Общая смета -->
     <section class="card section" id="tab_summary" aria-label="Общая смета">
@@ -1627,7 +1753,9 @@
             <tbody id="sm_rows"></tbody>
           </table>
           <hr>
-          <div class="row"><span><b>ИТОГО смета</b></span><b id="sm_grand">0 ₽</b></div>
+          <div class="row"><span><b>ИТОГО материалы</b></span><b id="sm_materials">0 ₽</b></div>
+          <div class="row"><span><b>ИТОГО работы</b></span><b id="sm_labor">0 ₽</b></div>
+          <div class="row"><span><b>ПОЛНАЯ СЕБЕСТОИМОСТЬ</b></span><b id="sm_grand">0 ₽</b></div>
           <div class="small" id="sm_status" style="margin-top:8px"></div>
         </div>
       </div>
@@ -1657,7 +1785,8 @@
           const tb = el("sm_rows");
           tb.innerHTML = "";
           const store = window.MegaBill ? window.MegaBill.getAll() : {};
-          let grand = 0;
+          let materialsTotal = 0;
+          let laborTotal = 0;
           let rows = 0;
 
           for(const k of Object.keys(store)){
@@ -1667,7 +1796,8 @@
             for(const it of sec.items){
               if(!it || !it.name) continue;
               const sum = Number(it.sum)||0;
-              grand += sum;
+              if(k === "labor") laborTotal += sum;
+              else materialsTotal += sum;
               rows += 1;
 
               const tr = document.createElement("tr");
@@ -1683,7 +1813,10 @@
             }
           }
 
-          el("sm_grand").textContent = money(grand);
+          const fullCost = materialsTotal + laborTotal;
+          el("sm_materials").textContent = money(materialsTotal);
+          el("sm_labor").textContent = money(laborTotal);
+          el("sm_grand").textContent = money(fullCost);
           el("sm_status").textContent = rows
             ? ("Строк в смете: " + rows)
             : "Пока нет позиций. Открой вкладки и внеси цены/параметры — смета заполнится автоматически.";
