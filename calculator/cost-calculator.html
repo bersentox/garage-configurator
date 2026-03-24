@@ -195,6 +195,7 @@
     })();
 
   </script>
+  <script src="./estimate-engine.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -424,30 +425,30 @@
           el("f_showW").textContent = preset + " м";
           el("f_showL").textContent = rub(L) + " м";
 
-          const step = num("f_step");
-          const LINES = Math.max(0, Math.floor(num("f_lines")));
+          const result = window.EstimateEngine.calcFrame(
+            window.EstimateEngine.computeGlobals({ preset, L }),
+            {
+              step: num("f_step"),
+              lines: num("f_lines"),
+              Fship: num("f_Fship"),
+              Mship: num("f_Mship"),
+              P6060: num("f_P6060"),
+              P8060: num("f_P8060"),
+              P8080: num("f_P8080"),
+              P100: num("f_P100"),
+              farm6: num("f_farm6"),
+              farm8: num("f_farm8"),
+              K6060: num("f_K6060"),
+              K80: num("f_K80"),
+              wire: num("f_wire"),
+              discs: num("f_discs"),
+              paint: num("f_paint"),
+              paintTools: num("f_painttools"),
+              paintPerFarm: num("f_paintPerFarm")
+            }
+          );
 
-          const Fship = num("f_Fship");
-          const Mship = num("f_Mship");
-
-          const P6060 = num("f_P6060");
-          const P8060 = num("f_P8060");
-          const P8080 = num("f_P8080");
-          const P100  = num("f_P100");
-
-          const FarmPrice6 = num("f_farm6");
-          const FarmPrice8 = num("f_farm8");
-
-          const K6060 = num("f_K6060");
-          const K80   = num("f_K80");
-
-          const wire = num("f_wire");
-          const discs = num("f_discs");
-          const paint = num("f_paint");
-          const paintTools = num("f_painttools");
-          const paintPerFarm = num("f_paintPerFarm");
-
-          if(!(L>0) || !(step>0)){
+          if(!result.ok){
             el("f_rows").innerHTML = '<tr><td colspan="5" class="small">Проверь L и шаг.</td></tr>';
             el("f_total").textContent = "0 ₽";
             el("f_hint").textContent = "—";
@@ -455,105 +456,10 @@
             return;
           }
 
-          // N ферм/рам (внутренняя логика)
-          const N = ceilDiv(L, step) + 1;
-          const Nmid = Math.max(0, N - 2);
+          const N = result.derived.N;
+          const Nmid = result.derived.Nmid;
           el("f_hint").textContent = `N ферм/шагов = ${N} (промежуточных ${Nmid})`;
-
-          // прогоны 60×60 (чистые метры)
-          const M_runs_6060 = LINES * L;
-
-          // метры рам по типам (чистые)
-          let M6060_frames = 0, M8060_frames = 0, M8080_frames = 0, M100_frames = 0;
-          let M_weld = 0; // для расходников (без ферм)
-
-          if (preset === "6") {
-            const H = 2.38, Gw = 3.0;
-
-            const M_first_8080 = 2 * H;
-            const M_first_8060 = (2*H + Gw);
-            const M_first_6060 = (4*1.24) + (2*2.32);
-
-            const M_last_8080  = 2 * H;
-            const M_last_6060  = 5.64;
-
-            const M_mid_8080   = 2 * H;
-
-            M6060_frames += (M_first_6060 + M_last_6060);
-            M8080_frames += (M_first_8080 + M_last_8080) + (Nmid * M_mid_8080);
-            M8060_frames += M_first_8060;
-
-            M_weld = M_runs_6060 +
-              (M_first_6060 + M_first_8080) +
-              (M_last_6060  + M_last_8080) +
-              (Nmid * (M_mid_8080));
-          } else {
-            const H = 2.36, Gw = 3.0;
-
-            const M_first_100  = 2 * H;
-            const M_first_8060 = (4*H + 2*Gw);
-            const M_first_6060 = (4*0.47) + (2*0.54) + (1*1.10) + (2*H);
-
-            const M_last_100   = 2 * H;
-            const M_last_6060  = (7.8 + 2.3);
-
-            const M_mid_100    = 2 * H;
-
-            M6060_frames += (M_first_6060 + M_last_6060);
-            M8060_frames += M_first_8060;
-            M100_frames  += (M_first_100 + M_last_100) + (Nmid * M_mid_100);
-
-            M_weld = M_runs_6060 +
-              (M_first_6060 + M_first_100) +
-              (M_last_6060  + M_last_100) +
-              (Nmid * (M_mid_100));
-          }
-
-          // чистые метры по типам (рамы + прогоны)
-          const M6060 = M6060_frames + M_runs_6060;
-          const M8060 = M8060_frames;
-          const M8080 = M8080_frames;
-          const M100  = M100_frames;
-
-          // закупочные метры с отходом
-          const Buy6060 = M6060 * K6060;
-          const Buy8060 = M8060 * K80;
-          const Buy8080 = M8080 * K80;
-          const Buy100  = M100  * K80;
-
-          // стоимость труб
-          const Cost6060 = Buy6060 * P6060;
-          const Cost8060 = Buy8060 * P8060;
-          const Cost8080 = Buy8080 * P8080;
-          const Cost100  = Buy100  * P100;
-
-          const CostPipes = Cost6060 + Cost8060 + Cost8080 + Cost100;
-
-          // фермы
-          const FarmPrice = (preset === "6") ? FarmPrice6 : FarmPrice8;
-          const CostFarms = (N * FarmPrice) + Fship;
-
-          // расходники
-          const CostWire  = M_weld * wire;
-          const CostDiscs = M_weld * discs;
-          const CostPaint = (M_weld * paint) + (N * paintPerFarm) + paintTools;
-          const CostConsum = CostWire + CostDiscs + CostPaint;
-
-          const Total = CostPipes + CostFarms + Mship + CostConsum;
-
-          const rows = [
-            {name:"Труба 60×60", m:M6060, buy:Buy6060, price:P6060, sum:Cost6060},
-            {name:"Труба 80×60", m:M8060, buy:Buy8060, price:P8060, sum:Cost8060},
-            {name:"Труба 80×80", m:M8080, buy:Buy8080, price:P8080, sum:Cost8080},
-            {name:"Труба 100×100", m:M100,  buy:Buy100,  price:P100,  sum:Cost100},
-            {name:"ИТОГО трубы", isTotal:true, sum:CostPipes},
-            {name:"Фермы (покупные) + доставка ферм", m:`N=${N}`, sum:CostFarms},
-            {name:"Доставка металла (профиль/труба)", sum:Mship},
-            {name:"Расходники: проволока", m:mfmt(M_weld)+" м", sum:CostWire},
-            {name:"Расходники: диски", m:mfmt(M_weld)+" м", sum:CostDiscs},
-            {name:"Расходники: грунт/эмаль + инструменты + (₽/ферма)", sum:CostPaint},
-            {name:"ИТОГО расходники", isTotal:true, sum:CostConsum},
-          ];
+          const rows = result.rows;
 
           const tb = el("f_rows");
           tb.innerHTML = "";
@@ -561,30 +467,19 @@
             const tr = document.createElement("tr");
             tr.innerHTML =
               `<td>${r.isTotal ? "<b>"+r.name+"</b>" : r.name}</td>
-               <td class="num mono">${r.m===undefined ? "" : (typeof r.m==="string" ? r.m : mfmt(r.m))}</td>
+               <td class="num mono">${r.m===undefined ? "" : (typeof r.m==="string" ? r.m : (r.mUnit ? mfmt(r.m)+" "+r.mUnit : mfmt(r.m)))}</td>
                <td class="num mono">${r.buy===undefined ? "" : mfmt(r.buy)}</td>
                <td class="num mono">${r.price===undefined ? "" : rub(r.price)}</td>
                <td class="num mono"><b>${rub(r.sum)} ₽</b></td>`;
             tb.appendChild(tr);
           });
 
-          el("f_total").textContent = rub(Total) + " ₽";
-          el("f_note").textContent = `Сварочный метраж (для проволоки/дисков/покраски), без ферм: ${mfmt(M_weld)} м.`;
+          el("f_total").textContent = rub(result.total) + " ₽";
+          el("f_note").textContent = `Сварочный метраж (для проволоки/дисков/покраски), без ферм: ${mfmt(result.derived.M_weld)} м.`;
 
-          if(window.MegaCalc) window.MegaCalc.set("frame", Total);
+          if(window.MegaCalc) window.MegaCalc.set("frame", result.total);
           if(window.MegaBill){
-            const itemsBill = [];
-            itemsBill.push({name:"Труба 60×60 (закуп)", unit:"м", qty:Buy6060, price:P6060, sum:Cost6060});
-            itemsBill.push({name:"Труба 80×60 (закуп)", unit:"м", qty:Buy8060, price:P8060, sum:Cost8060});
-            itemsBill.push({name:"Труба 80×80 (закуп)", unit:"м", qty:Buy8080, price:P8080, sum:Cost8080});
-            itemsBill.push({name:"Труба 100×100 (закуп)", unit:"м", qty:Buy100,  price:P100,  sum:Cost100});
-            itemsBill.push({name:"Фермы (покупные)", unit:"шт", qty:N, price:FarmPrice, sum:(N*FarmPrice)});
-            itemsBill.push({name:"Доставка ферм", unit:"фикс", qty:1, price:Fship, sum:Fship});
-            itemsBill.push({name:"Доставка металла (профиль/труба)", unit:"фикс", qty:1, price:Mship, sum:Mship});
-            itemsBill.push({name:"Сварочная проволока", unit:"фикс", qty:1, price:CostWire, sum:CostWire});
-            itemsBill.push({name:"Отрезные диски", unit:"фикс", qty:1, price:CostDiscs, sum:CostDiscs});
-            itemsBill.push({name:"Грунт/эмаль + инструменты", unit:"фикс", qty:1, price:CostPaint, sum:CostPaint});
-            window.MegaBill.setSection("frame", { title:"Металлокаркас", items: itemsBill });
+            window.MegaBill.setSection("frame", { title:"Металлокаркас", items: result.billItems });
           }
 
         }
@@ -777,49 +672,32 @@
           el("p_showW").textContent = preset + " м";
           el("p_showL").textContent = rub(L) + " м";
 
-          var wallPrice = num('p_wallPrice');
-          var roofPrice = num('p_roofPrice');
-          var ship = num('p_ship');
-          var H = num('p_H');
-          var eave = num('p_eave');
-          var roofBW = num('p_roofBW');
-          var slopes = Math.min(2, Math.max(1, Math.round(num('p_slopes'))));
+          var result = window.EstimateEngine.calcPanels(
+            window.EstimateEngine.computeGlobals({ preset, L }),
+            {
+              wallPrice: num('p_wallPrice'),
+              roofPrice: num('p_roofPrice'),
+              ship: num('p_ship'),
+              H: num('p_H'),
+              eave: num('p_eave'),
+              roofBW: num('p_roofBW'),
+              slopes: num('p_slopes'),
+              pScrewWall: num('p_pScrewWall'),
+              pScrewRoof: num('p_pScrewRoof'),
+              screwWastePct: num('p_screwWastePct'),
+              screwRoundTo: num('p_screwRoundTo'),
+              foamPrice: num('p_foamPrice'),
+              sealPrice: num('p_sealPrice')
+            }
+          );
 
-          var pScrewWall = num('p_pScrewWall');
-          var pScrewRoof = num('p_pScrewRoof');
-          var screwWastePct = num('p_screwWastePct');
-          var screwRoundTo = num('p_screwRoundTo');
-
-          var foamPrice = num('p_foamPrice');
-          var sealPrice = num('p_sealPrice');
-
-          if(!(L>0) || !(H>0) || !(roofBW>0)){
+          if(!result.ok && !result.isOutOfRange){
             el('p_out').innerHTML = '<div class="small" style="color:#8a4b00">Проверь входные значения (L, H, ширина панели).</div>';
             if(window.MegaCalc) window.MegaCalc.set('panels', 0);
             return;
           }
 
-          var S = (preset==='6') ? S6 : S8;
-          var AFB = (preset==='6') ? AFB6 : AFB8;
-          var CWallScrews = (preset==='6') ? CWallScrews6 : CWallScrews8;
-
-          // стены
-          var Aside = 2 * L * H;
-          var Awalls = Aside + AFB;
-
-          // кровля
-          var Lroof = L + 2*eave;
-          var Nroof = ceil(Lroof / roofBW);
-          var RoofPanels = slopes * Nroof;
-          var Aroof = RoofPanels * roofBW * S;
-
-          var CostWallsPanels = Awalls * wallPrice;
-          var CostRoofPanels = Aroof * roofPrice;
-          var CostPanels = CostWallsPanels + CostRoofPanels;
-
-          // боковые панели (шт)
-          var Prow = panelsPerRowSide(L);
-          if (Prow === null){
+          if (result.isOutOfRange){
             el('p_out').innerHTML =
               '<div class="small" style="color:#8a4b00">Длина L=' + rub(L) + ' м &gt; 16 м. В этом калькуляторе боковые панели/саморезы считаются только до 16 м.</div>';
             el('p_hint').textContent = '—';
@@ -827,80 +705,49 @@
             return;
           }
 
-          var SidePanelsTotal = 4 * Prow;
-          var SideJointsTotal = 4 * (Prow - 1);
-
-          // саморезы
-          var ScrewsRoof_base = RoofPanels * 6;
-          var ScrewsSide_base = SidePanelsTotal * 6;
-          var ScrewsWall_base = CWallScrews + ScrewsSide_base;
-
-          var kWaste = 1 + (screwWastePct/100);
-          var ScrewsWall_with = roundUpTo(ceil(ScrewsWall_base * kWaste), screwRoundTo);
-          var ScrewsRoof_with = roundUpTo(ceil(ScrewsRoof_base * kWaste), screwRoundTo);
-
-          var CostScrewWall = ScrewsWall_with * pScrewWall;
-          var CostScrewRoof = ScrewsRoof_with * pScrewRoof;
-          var CostScrews = CostScrewWall + CostScrewRoof;
-
-          // пена + герметик
-          var Qfoam = ceil(6 + L);
-          var Qseal = ceil(6 + L);
-          var CostFoam = Qfoam * foamPrice;
-          var CostSeal = Qseal * sealPrice;
-          var CostChem = CostFoam + CostSeal;
-
-          var Total = CostPanels + CostScrews + CostChem + ship;
+          var d = result.derived;
 
           el('p_hint').textContent =
-            'Кровля: рядов=' + Nroof + ', панелей=' + RoofPanels +
-            ' | Боковые: панелей/ряд=' + Prow + ', боковых панелей=' + SidePanelsTotal;
+            'Кровля: рядов=' + d.Nroof + ', панелей=' + d.RoofPanels +
+            ' | Боковые: панелей/ряд=' + d.Prow + ', боковых панелей=' + d.SidePanelsTotal;
 
           el('p_out').innerHTML =
             '<h3>Панели (по площади)</h3>' +
-            '<div class="row"><span>Площадь стен</span><b>' + rub(Awalls) + ' м²</b></div>' +
-            '<div class="row"><span>Площадь кровли</span><b>' + rub(Aroof) + ' м²</b></div>' +
-            '<div class="row"><span>Стоимость стеновых панелей</span><b>' + rub(CostWallsPanels) + ' ₽</b></div>' +
-            '<div class="row"><span>Стоимость кровельных панелей</span><b>' + rub(CostRoofPanels) + ' ₽</b></div>' +
-            '<div class="row"><span><b>Итого панели</b></span><b>' + rub(CostPanels) + ' ₽</b></div>' +
-            '<div class="row"><span>Доставка панелей</span><b>' + rub(ship) + ' ₽</b></div>' +
+            '<div class="row"><span>Площадь стен</span><b>' + rub(d.Awalls) + ' м²</b></div>' +
+            '<div class="row"><span>Площадь кровли</span><b>' + rub(d.Aroof) + ' м²</b></div>' +
+            '<div class="row"><span>Стоимость стеновых панелей</span><b>' + rub(d.CostWallsPanels) + ' ₽</b></div>' +
+            '<div class="row"><span>Стоимость кровельных панелей</span><b>' + rub(d.CostRoofPanels) + ' ₽</b></div>' +
+            '<div class="row"><span><b>Итого панели</b></span><b>' + rub(d.CostPanels) + ' ₽</b></div>' +
+            '<div class="row"><span>Доставка панелей</span><b>' + rub(d.ship) + ' ₽</b></div>' +
             '<hr>' +
             '<h3>Боковые панели (в штуках)</h3>' +
-            '<div class="row"><span>Панелей по длине на 1 ряд одной стороны</span><b>' + pcs0(Prow) + ' шт</b></div>' +
-            '<div class="row"><span>Боковых панелей на гараж</span><b>' + pcs0(SidePanelsTotal) + ' шт</b></div>' +
-            '<div class="row"><span>Стыков по длине на гараж</span><b>' + pcs0(SideJointsTotal) + ' шт</b></div>' +
+            '<div class="row"><span>Панелей по длине на 1 ряд одной стороны</span><b>' + pcs0(d.Prow) + ' шт</b></div>' +
+            '<div class="row"><span>Боковых панелей на гараж</span><b>' + pcs0(d.SidePanelsTotal) + ' шт</b></div>' +
+            '<div class="row"><span>Стыков по длине на гараж</span><b>' + pcs0(d.SideJointsTotal) + ' шт</b></div>' +
             '<hr>' +
             '<h3>Саморезы (с запасом)</h3>' +
-            '<div class="row"><span>Стеновые базово (без запаса)</span><b>' + pcs0(ScrewsWall_base) + ' шт</b></div>' +
-            '<div class="row"><span>Кровельные базово (без запаса)</span><b>' + pcs0(ScrewsRoof_base) + ' шт</b></div>' +
-            '<div class="row"><span>Запас</span><b>' + rub(screwWastePct) + '%</b></div>' +
-            '<div class="row"><span>Округление</span><b>до ' + pcs0(screwRoundTo) + ' шт</b></div>' +
-            '<div class="row"><span><b>Стеновые 6.3×135</b></span><b>' + pcs0(ScrewsWall_with) + ' шт</b></div>' +
-            '<div class="row"><span>Стоимость стеновых саморезов</span><b>' + rub(CostScrewWall) + ' ₽</b></div>' +
-            '<div class="row"><span><b>Кровельные 6.3×175</b></span><b>' + pcs0(ScrewsRoof_with) + ' шт</b></div>' +
-            '<div class="row"><span>Стоимость кровельных саморезов</span><b>' + rub(CostScrewRoof) + ' ₽</b></div>' +
-            '<div class="row"><span><b>Итого саморезы</b></span><b>' + rub(CostScrews) + ' ₽</b></div>' +
+            '<div class="row"><span>Стеновые базово (без запаса)</span><b>' + pcs0(d.ScrewsWall_base) + ' шт</b></div>' +
+            '<div class="row"><span>Кровельные базово (без запаса)</span><b>' + pcs0(d.ScrewsRoof_base) + ' шт</b></div>' +
+            '<div class="row"><span>Запас</span><b>' + rub(d.screwWastePct) + '%</b></div>' +
+            '<div class="row"><span>Округление</span><b>до ' + pcs0(d.screwRoundTo) + ' шт</b></div>' +
+            '<div class="row"><span><b>Стеновые 6.3×135</b></span><b>' + pcs0(d.ScrewsWall_with) + ' шт</b></div>' +
+            '<div class="row"><span>Стоимость стеновых саморезов</span><b>' + rub(d.CostScrewWall) + ' ₽</b></div>' +
+            '<div class="row"><span><b>Кровельные 6.3×175</b></span><b>' + pcs0(d.ScrewsRoof_with) + ' шт</b></div>' +
+            '<div class="row"><span>Стоимость кровельных саморезов</span><b>' + rub(d.CostScrewRoof) + ' ₽</b></div>' +
+            '<div class="row"><span><b>Итого саморезы</b></span><b>' + rub(d.CostScrews) + ' ₽</b></div>' +
             '<hr>' +
             '<h3>Пена и герметик</h3>' +
-            '<div class="row"><span>Количество (Q = CEILING(6 + L))</span><b>' + pcs0(Qfoam) + ' шт</b></div>' +
-            '<div class="row"><span>Пена</span><b>' + rub(CostFoam) + ' ₽</b></div>' +
-            '<div class="row"><span>Герметик</span><b>' + rub(CostSeal) + ' ₽</b></div>' +
-            '<div class="row"><span><b>Итого пена+герметик</b></span><b>' + rub(CostChem) + ' ₽</b></div>' +
+            '<div class="row"><span>Количество (Q = CEILING(6 + L))</span><b>' + pcs0(d.Qfoam) + ' шт</b></div>' +
+            '<div class="row"><span>Пена</span><b>' + rub(d.CostFoam) + ' ₽</b></div>' +
+            '<div class="row"><span>Герметик</span><b>' + rub(d.CostSeal) + ' ₽</b></div>' +
+            '<div class="row"><span><b>Итого пена+герметик</b></span><b>' + rub(d.CostChem) + ' ₽</b></div>' +
             '<hr>' +
             '<h3>Итог</h3>' +
-            '<div class="row"><span><b>Панели + саморезы + пена/герметик + доставка</b></span><b>' + rub(Total) + ' ₽</b></div>';
+            '<div class="row"><span><b>Панели + саморезы + пена/герметик + доставка</b></span><b>' + rub(result.total) + ' ₽</b></div>';
 
-          if(window.MegaCalc) window.MegaCalc.set('panels', Total);
+          if(window.MegaCalc) window.MegaCalc.set('panels', result.total);
           if(window.MegaBill){
-            const itemsBill = [];
-            itemsBill.push({name:"Стеновые панели", unit:"м²", qty:Awalls, price:wallPrice, sum:CostWallsPanels});
-            itemsBill.push({name:"Кровельные панели", unit:"м²", qty:Aroof, price:roofPrice, sum:CostRoofPanels});
-            itemsBill.push({name:"Саморезы стеновые 6.3×135", unit:"шт", qty:ScrewsWall_with, price:pScrewWall, sum:CostScrewWall});
-            itemsBill.push({name:"Саморезы кровельные 6.3×175", unit:"шт", qty:ScrewsRoof_with, price:pScrewRoof, sum:CostScrewRoof});
-            itemsBill.push({name:"Пена", unit:"шт", qty:Qfoam, price:foamPrice, sum:CostFoam});
-            itemsBill.push({name:"Герметик", unit:"шт", qty:Qseal, price:sealPrice, sum:CostSeal});
-            itemsBill.push({name:"Доставка панелей", unit:"фикс", qty:1, price:ship, sum:ship});
-            window.MegaBill.setSection("panels", { title:"Сэндвич-панели", items: itemsBill });
+            window.MegaBill.setSection("panels", { title:"Сэндвич-панели", items: result.billItems });
           }
 
         }
@@ -1130,52 +977,33 @@
 
           const eave = num("d_eave");
           const wastePct = num("d_wastePct");
-
           const gates = Math.max(0, Math.round(num("d_gates")));
           const doors = Math.max(0, Math.round(num("d_doors")));
           const windows = Math.max(0, Math.round(num("d_windows")));
 
-          if(!(L>0)){
+          const prices = readPrices();
+          savePrices(prices);
+
+          const result = window.EstimateEngine.calcDobory(
+            window.EstimateEngine.computeGlobals({ preset, L }),
+            { eave, wastePct, gates, doors, windows, prices, items: ITEMS }
+          );
+
+          if(!result.ok){
             el("d_out").innerHTML = `<div class="small" style="color:#8a4b00">Проверь длину L.</div>`;
             if(window.MegaCalc) window.MegaCalc.set('dobory', 0);
             return;
           }
 
-          const prices = readPrices();
-          savePrices(prices);
-
-          const Lroof = L + 2*eave;
-          const kWaste = 1 + wastePct/100;
-
-          const C = constLengths(preset, gates, doors, windows);
-          const V = variableLengths(L, Lroof);
-
-          const lens = {};
-          Object.keys(C).forEach(k=> lens[k] = (lens[k]||0) + C[k]);
-          Object.keys(V).forEach(k=> lens[k] = (lens[k]||0) + V[k]);
-
-          Object.keys(lens).forEach(k=> lens[k] = lens[k] * kWaste);
-
-          let totalLen = 0;
-          let totalCost = 0;
-
           let rows = "";
-          ITEMS.forEach(it=>{
-            const len = lens[it.key] || 0;
-            const p = prices[it.key] || 0;
-            const cost = len * p;
-            if(len <= 0 && p <= 0) return;
-
-            totalLen += len;
-            totalCost += cost;
-
+          result.rows.forEach(it=>{
             rows += `
               <tr>
                 <td class="mono">${it.key}</td>
                 <td>${it.name}</td>
-                <td class="mono num">${rub(len)}</td>
-                <td class="mono num">${rub(p)}</td>
-                <td class="mono num"><b>${rub(cost)}</b></td>
+                <td class="mono num">${rub(it.len)}</td>
+                <td class="mono num">${rub(it.p)}</td>
+                <td class="mono num"><b>${rub(it.cost)}</b></td>
               </tr>`;
           });
 
@@ -1183,12 +1011,12 @@
             rows = `<tr><td colspan="5" class="small">Введи цены (₽/м) — расчёт появится.</td></tr>`;
           }
 
-          el("d_hint").textContent = `Lroof=${rub(Lroof)} м, запас=${rub(wastePct)}%, ворота=${gates}, двери=${doors}, окна=${windows}`;
+          el("d_hint").textContent = `Lroof=${rub(result.derived.Lroof)} м, запас=${rub(wastePct)}%, ворота=${gates}, двери=${doors}, окна=${windows}`;
 
           el("d_out").innerHTML = `
             <h3>Результат</h3>
-            <div class="row"><span>Суммарная длина доборов (с запасом)</span><b>${rub(totalLen)} м</b></div>
-            <div class="row"><span>Итого стоимость доборов</span><b>${rub(totalCost)} ₽</b></div>
+            <div class="row"><span>Суммарная длина доборов (с запасом)</span><b>${rub(result.derived.totalLen)} м</b></div>
+            <div class="row"><span>Итого стоимость доборов</span><b>${rub(result.total)} ₽</b></div>
             <hr>
             <table class="tbl">
               <thead>
@@ -1204,9 +1032,9 @@
                 ${rows}
                 <tr>
                   <td colspan="2"><b>ИТОГО</b></td>
-                  <td class="mono num"><b>${rub(totalLen)}</b></td>
+                  <td class="mono num"><b>${rub(result.derived.totalLen)}</b></td>
                   <td></td>
-                  <td class="mono num"><b>${rub(totalCost)}</b></td>
+                  <td class="mono num"><b>${rub(result.total)}</b></td>
                 </tr>
               </tbody>
             </table>
@@ -1216,16 +1044,9 @@
             </div>
           `;
 
-          if(window.MegaCalc) window.MegaCalc.set('dobory', totalCost);
+          if(window.MegaCalc) window.MegaCalc.set('dobory', result.total);
           if(window.MegaBill){
-            const itemsBill = [];
-            ITEMS.forEach(it=>{
-              const len = lens[it.key] || 0;
-              const p = prices[it.key] || 0;
-              if(len<=0 && p<=0) return;
-              itemsBill.push({name:it.name, unit:"м", qty:len, price:p, sum:(len*p)});
-            });
-            window.MegaBill.setSection("dobory", { title:"Доборы", items: itemsBill });
+            window.MegaBill.setSection("dobory", { title:"Доборы", items: result.billItems });
           }
 
         }
@@ -1353,31 +1174,22 @@
         function calc(){
           const st = readStateFromInputs();
           saveState(st);
+          const result = window.EstimateEngine.calcExtras(
+            window.EstimateEngine.computeGlobals(window.MegaGlobal.get()),
+            { items: ITEMS, state: st }
+          );
 
-          let total = 0;
-
-          ITEMS.forEach(it=>{
-            const p = st[it.key].price || 0;
-            const q = st[it.key].qty || 0;
-            const sum = p * q;
-            total += sum;
-            el("xs_"+it.key).textContent = rub(sum);
+          result.rows.forEach(it=>{
+            el("xs_"+it.key).textContent = rub(it.sum);
           });
 
           el("x_out").innerHTML =
             `<h3>Итог по доп. опциям</h3>
-             <div class="row"><span>Сумма доп. опций</span><b class="mono">${rub(total)} ₽</b></div>`;
+             <div class="row"><span>Сумма доп. опций</span><b class="mono">${rub(result.total)} ₽</b></div>`;
 
-          if(window.MegaCalc) window.MegaCalc.set('extras', total);
+          if(window.MegaCalc) window.MegaCalc.set('extras', result.total);
           if(window.MegaBill){
-            const itemsBill = [];
-            ITEMS.forEach(it=>{
-              const p = st[it.key].price || 0;
-              const q = st[it.key].qty || 0;
-              if(q<=0 && p<=0) return;
-              itemsBill.push({name:it.name, unit:"шт", qty:q, price:p, sum:(p*q)});
-            });
-            window.MegaBill.setSection("extras", { title:"Доп. опции", items: itemsBill });
+            window.MegaBill.setSection("extras", { title:"Доп. опции", items: result.billItems });
           }
 
         }
@@ -1698,45 +1510,37 @@
     el("fd_showW").textContent = g.preset + " м";
     el("fd_showL").textContent = fmt(g.L) + " м";
 
-    const m = metrics();
+    const result = window.EstimateEngine.calcFoundation(
+      window.EstimateEngine.computeGlobals(g),
+      { needPump: state.needPump, needExcav: state.needExcav, norms: state.norms, prices: state.prices, items }
+    );
+    const m = result.derived;
 
     el("fd_outS").textContent = round(m.S,2);
     el("fd_outP").textContent = round(m.P,2);
     el("fd_outV").textContent = round(m.V,3);
 
-    let grand = 0;
+    for(const row of result.rows){
+      const q = Number(row.qty) || 0;
+      const sum = Number(row.sum) || 0;
 
-    for(const it of items){
-      const q = Number(it.qty(m)) || 0;
-      const price = Number(state.prices[it.key]) || 0;
-      const sum = q * price;
-      grand += sum;
-
-      const tr = el("fd_rows").querySelector(`tr[data-key="${it.key}"]`);
+      const tr = el("fd_rows").querySelector(`tr[data-key="${row.key}"]`);
       if(!tr) continue;
 
       tr.querySelector('[data-col="qty"]').textContent =
-        (it.unit === "фикс" || it.unit === "смена" || it.unit === "рейс") ? round(q,0) : round(q,3);
+        (row.unit === "фикс" || row.unit === "смена" || row.unit === "рейс") ? round(q,0) : round(q,3);
 
       tr.querySelector('[data-col="sum"]').textContent = money(sum);
 
       tr.style.opacity = (q === 0) ? "0.45" : "1";
     }
 
-    el("fd_grand").textContent = money(grand);
+    el("fd_grand").textContent = money(result.total);
 
-    if(window.MegaCalc) window.MegaCalc.set("foundation", grand);
-          if(window.MegaBill){
-            const itemsBill = [];
-            for(const it of items){
-              const q = Number(it.qty(m)) || 0;
-              const price = Number(state.prices[it.key]) || 0;
-              const sum = q * price;
-              if(q<=0 && price<=0) continue;
-              itemsBill.push({name:it.name, unit:it.unit, qty:q, price, sum});
-            }
-            window.MegaBill.setSection("foundation", { title:"Фундамент", items: itemsBill });
-          }
+    if(window.MegaCalc) window.MegaCalc.set("foundation", result.total);
+    if(window.MegaBill){
+      window.MegaBill.setSection("foundation", { title:"Фундамент", items: result.billItems });
+    }
 
   }
 
