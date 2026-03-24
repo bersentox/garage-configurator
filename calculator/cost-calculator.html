@@ -9,8 +9,9 @@
       --bg:#f6f7f9; --card:#fff; --text:#1f2933; --muted:#5b6676; --border:#e4e8ee;
       --radius:14px; --shadow:0 10px 30px rgba(0,0,0,.06);
     }
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:16px;background:var(--bg);color:var(--text)}
-    .wrap{max-width:1060px;margin:0 auto}
+    html,body{margin:0;padding:0;background:transparent}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:transparent;color:var(--text)}
+    .wrap{max-width:1280px;margin:0 auto;padding:12px;box-sizing:border-box}
     .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
     .tabs{display:flex;gap:8px;flex-wrap:wrap}
     .tabbtn{padding:10px 12px;border-radius:999px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:14px}
@@ -2866,6 +2867,57 @@
       // первичная инициализация
       window.MegaCalc && window.MegaCalc.render();
       window.MegaGlobal && window.MegaGlobal.broadcast();
+    })();
+  </script>
+
+  <script>
+    (function(){
+      const MSG_TYPE = "mega-calculator-height";
+      let lastHeight = 0;
+
+      function getDocHeight(){
+        const de = document.documentElement;
+        const b = document.body;
+        return Math.max(
+          de ? de.scrollHeight : 0,
+          de ? de.offsetHeight : 0,
+          b ? b.scrollHeight : 0,
+          b ? b.offsetHeight : 0
+        );
+      }
+
+      function postHeight(force){
+        const h = Math.max(1, Math.ceil(getDocHeight()));
+        if(!force && h === lastHeight) return;
+        lastHeight = h;
+        try{
+          window.parent && window.parent.postMessage({ type: MSG_TYPE, height: h }, "*");
+        }catch(e){}
+      }
+
+      function scheduleChecks(){
+        [0, 80, 180, 350, 700, 1200].forEach(ms=> setTimeout(()=>postHeight(false), ms));
+      }
+
+      function bind(){
+        postHeight(true);
+        scheduleChecks();
+
+        window.addEventListener("load", ()=>{ postHeight(true); scheduleChecks(); });
+        window.addEventListener("resize", ()=>{ postHeight(false); scheduleChecks(); });
+        window.addEventListener("orientationchange", ()=>{ postHeight(false); scheduleChecks(); });
+
+        document.addEventListener("click", ()=> setTimeout(()=>postHeight(false), 0));
+        document.addEventListener("input", ()=> setTimeout(()=>postHeight(false), 0));
+        document.addEventListener("change", ()=> setTimeout(()=>postHeight(false), 0));
+
+        const ro = new ResizeObserver(()=> postHeight(false));
+        if(document.documentElement) ro.observe(document.documentElement);
+        if(document.body) ro.observe(document.body);
+      }
+
+      if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+      else bind();
     })();
   </script>
 </body>
