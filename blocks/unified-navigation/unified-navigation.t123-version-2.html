@@ -278,28 +278,28 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: var(--unified-navigation-child-size);
-  height: var(--unified-navigation-child-size);
-  margin-left: calc(var(--unified-navigation-child-size) / -2);
-  margin-top: calc(var(--unified-navigation-child-size) / -2);
-  border-radius: 50%;
-  border: 1px solid rgba(128, 160, 205, 0.22);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 250, 255, 0.95));
-  box-shadow: var(--unified-navigation-child-shadow);
+  min-width: 72px;
+  width: auto;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
   color: var(--unified-navigation-text);
-  display: grid;
-  place-items: center;
-  padding: 8px;
-  font-size: 0.7rem;
-  line-height: 1.08;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  font-size: 13px;
+  line-height: 1;
   font-weight: 680;
   letter-spacing: -0.02em;
   text-align: center;
-  text-wrap: balance;
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  transform: translate3d(0, 0, 0) scale(0.62);
+  transform: translate3d(-50%, -50%, 0) scale(0.62);
   transition:
     transform 380ms var(--unified-navigation-ease),
     opacity 220ms ease,
@@ -308,7 +308,7 @@
 }
 
 .unified-navigation__child.is-pressed {
-  transform: translate3d(var(--child-x), var(--child-y), 0) scale(0.94);
+  transform: translate3d(calc(-50% + var(--child-x)), calc(-50% + var(--child-y)), 0) scale(0.94);
 }
 
 .unified-navigation__child:hover {
@@ -319,7 +319,7 @@
 .unified-navigation__node.is-active .unified-navigation__child {
   opacity: 1;
   pointer-events: auto;
-  transform: translate3d(var(--child-x), var(--child-y), 0) scale(1);
+  transform: translate3d(calc(-50% + var(--child-x)), calc(-50% + var(--child-y)), 0) scale(1);
   border-color: rgba(92, 141, 215, 0.28);
 }
 
@@ -439,7 +439,10 @@
   }
 
   .unified-navigation__child {
-    font-size: 0.64rem;
+    min-width: 64px;
+    height: 34px;
+    padding: 0 12px;
+    font-size: 12px;
   }
 }
 
@@ -476,8 +479,10 @@
   }
 
   .unified-navigation__child {
-    padding: 6px;
-    font-size: 0.54rem;
+    min-width: 56px;
+    height: 32px;
+    padding: 0 10px;
+    font-size: 11px;
   }
 
   .unified-navigation__bottom {
@@ -576,20 +581,20 @@
 
   var CLUSTER_TEMPLATES = {
     right3: [
-      { x: 74, y: -62 },
-      { x: 112, y: 0 },
-      { x: 80, y: 68 }
+      { x: 88, y: -72 },
+      { x: 136, y: 0 },
+      { x: 96, y: 76 }
     ],
     left3: [
-      { x: -74, y: -62 },
-      { x: -112, y: 0 },
-      { x: -80, y: 68 }
+      { x: -88, y: -72 },
+      { x: -136, y: 0 },
+      { x: -96, y: 76 }
     ],
     cross4: [
-      { x: 0, y: -106 },
-      { x: 106, y: 0 },
-      { x: 0, y: 106 },
-      { x: -106, y: 0 }
+      { x: 0, y: -124 },
+      { x: 142, y: 0 },
+      { x: 0, y: 124 },
+      { x: -142, y: 0 }
     ]
   };
 
