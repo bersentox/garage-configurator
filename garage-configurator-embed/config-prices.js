@@ -8,8 +8,8 @@ window.CONFIG_PRICES = {
   // Доплаты за планировку
   LAYOUT_SURCHARGE: {
     classic: 0,
-    storage: 135000,
-    utility: 240000
+    storage: 100000,
+    utility: 100000
   },
 
   // Доплаты за тип крыши
@@ -21,10 +21,10 @@ window.CONFIG_PRICES = {
 
   // Цены дополнительных элементов
   ELEMENT_PRICE: {
-    shelves: 45000,
-    partition: 90000,
-    door: 32000,
-    window: 18000
+    shelves: 100000,
+    partition: 100000,
+    door: 35000,
+    window: 15000
   },
 
   // Ставка за квадратный метр по фундаменту
@@ -37,10 +37,10 @@ window.CONFIG_PRICES = {
 
   // Цены дополнительных опций
   OPTIONS_PRICE: {
-    gateAutomation: 110000,
-    interiorElectricity: 150000,
-    exteriorLighting: 70000,
-    ventilation: 60000,
-    gutters: 50000
+    gateAutomation: 25000,
+    interiorElectricity: 60000,
+    exteriorLighting: 15000,
+    ventilation: 6000,
+    gutters: 25000
   }
 };
