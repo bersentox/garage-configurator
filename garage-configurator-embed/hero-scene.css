@@ -329,7 +329,7 @@
   appearance: none;
   -webkit-appearance: none;
   position: absolute;
-  bottom: clamp(110px, 8vh, 120px);
+  bottom: clamp(220px, 8vh, 120px);
   left: 50%;
   transform: translateX(-50%);
   z-index: 50;
