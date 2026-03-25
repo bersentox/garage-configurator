@@ -32,9 +32,7 @@
   --unified-navigation-child-size: 52px;
   --unified-navigation-tooltip-width: 188px;
 
-  background:
-    radial-gradient(circle at top left, rgba(82, 146, 255, 0.08), transparent 28%),
-    linear-gradient(180deg, #f8fbff 0%, #f4f7fb 100%);
+  background: #f5f8fc;
   padding: 72px 0 64px;
   color: var(--unified-navigation-text);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -46,6 +44,7 @@
 }
 
 .unified-navigation__shell {
+  position: relative;
   width: min(1240px, calc(100% - 40px));
   margin: 0 auto;
   padding: 28px 28px 20px;
@@ -57,11 +56,21 @@
 }
 
 .unified-navigation__intro {
-  position: relative;
+  position: absolute;
+  left: 56px;
+  top: 48px;
+  width: 300px;
   z-index: 2;
-  max-width: clamp(760px, 72vw, 920px);
-  margin: 0 auto 44px;
-  text-align: center;
+  margin: 0;
+}
+
+.unified-navigation__message {
+  position: absolute;
+  left: 56px;
+  top: 420px;
+  width: 320px;
+  margin: 0;
+  z-index: 2;
 }
 
 .unified-navigation__eyebrow {
@@ -74,10 +83,11 @@
 
 .unified-navigation__title {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.35rem);
-  line-height: 0.95;
+  font-size: 56px;
+  line-height: 0.92;
   font-weight: 720;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.04em;
+  max-width: 300px;
   text-wrap: balance;
 }
 
@@ -87,12 +97,46 @@
   line-height: 1.55;
   color: var(--unified-navigation-muted);
   text-wrap: balance;
+  max-width: 360px;
+}
+
+.unified-navigation__benefits {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: 360px;
+}
+
+.unified-navigation__benefit {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.unified-navigation__benefit:last-child {
+  margin-bottom: 0;
+}
+
+.unified-navigation__benefit-title {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.25;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.unified-navigation__benefit-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  opacity: 0.7;
 }
 
 .unified-navigation__diagram {
   position: relative;
   min-height: 760px;
   margin-top: 0;
+  padding-left: 0;
   border-radius: 28px;
   isolation: isolate;
   overflow: visible;
@@ -103,7 +147,10 @@
 .unified-navigation__nodes,
 .unified-navigation__tooltip-layer {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 33%;
 }
 
 .unified-navigation__grid {
@@ -234,28 +281,28 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: var(--unified-navigation-child-size);
-  height: var(--unified-navigation-child-size);
-  margin-left: calc(var(--unified-navigation-child-size) / -2);
-  margin-top: calc(var(--unified-navigation-child-size) / -2);
-  border-radius: 50%;
-  border: 1px solid rgba(128, 160, 205, 0.22);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 250, 255, 0.95));
-  box-shadow: var(--unified-navigation-child-shadow);
+  min-width: 72px;
+  width: auto;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
   color: var(--unified-navigation-text);
-  display: grid;
-  place-items: center;
-  padding: 8px;
-  font-size: 0.7rem;
-  line-height: 1.08;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1;
   font-weight: 680;
   letter-spacing: -0.02em;
   text-align: center;
-  text-wrap: balance;
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  transform: translate3d(0, 0, 0) scale(0.62);
+  transform: translate3d(-50%, -50%, 0) scale(0.62);
   transition:
     transform 380ms var(--unified-navigation-ease),
     opacity 220ms ease,
@@ -264,7 +311,7 @@
 }
 
 .unified-navigation__child.is-pressed {
-  transform: translate3d(var(--child-x), var(--child-y), 0) scale(0.94);
+  transform: translate3d(calc(-50% + var(--child-x)), calc(-50% + var(--child-y)), 0) scale(0.94);
 }
 
 .unified-navigation__child:hover {
@@ -275,7 +322,7 @@
 .unified-navigation__node.is-active .unified-navigation__child {
   opacity: 1;
   pointer-events: auto;
-  transform: translate3d(var(--child-x), var(--child-y), 0) scale(1);
+  transform: translate3d(calc(-50% + var(--child-x)), calc(-50% + var(--child-y)), 0) scale(1);
   border-color: rgba(92, 141, 215, 0.28);
 }
 
@@ -291,7 +338,7 @@
   overflow: visible;
   opacity: 0;
   pointer-events: none;
-  transform: translate3d(0, 8px, 0) scale(0.96);
+  transform: translate3d(24px, 8px, 0) scale(0.96);
   transition:
     opacity 180ms ease,
     transform 180ms var(--unified-navigation-ease);
@@ -329,7 +376,7 @@
 
 .unified-navigation__tooltip.is-visible {
   opacity: 1;
-  transform: translate3d(0, 0, 0) scale(1);
+  transform: translate3d(24px, 0, 0) scale(1);
 }
 
 .unified-navigation__child.is-tooltip-open {
@@ -340,8 +387,8 @@
 .unified-navigation__bottom {
   position: relative;
   z-index: 2;
-  margin: 12px 0 0 auto;
-  max-width: 520px;
+  width: 420px;
+  margin: 40px auto 0;
   padding: 12px 20px;
   border-radius: 999px;
   border: 1px solid rgba(186, 205, 229, 0.8);
@@ -366,13 +413,32 @@
   }
 
   .unified-navigation__intro {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
     max-width: 100%;
-    margin-bottom: 36px;
+    margin-bottom: 16px;
+  }
+
+  .unified-navigation__message {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    margin-bottom: 20px;
   }
 
   .unified-navigation__diagram {
     min-height: 900px;
     margin-top: 24px;
+  }
+
+  .unified-navigation__grid,
+  .unified-navigation__edges,
+  .unified-navigation__nodes,
+  .unified-navigation__tooltip-layer {
+    inset: 0;
   }
 
   .unified-navigation__stage-label {
@@ -382,7 +448,7 @@
   }
 
   .unified-navigation__child {
-    font-size: 0.64rem;
+    min-width: 64px;
   }
 }
 
@@ -419,11 +485,14 @@
   }
 
   .unified-navigation__child {
-    padding: 6px;
-    font-size: 0.54rem;
+    min-width: 56px;
+    height: 32px;
+    padding: 0 10px;
+    font-size: 11px;
   }
 
   .unified-navigation__bottom {
+    width: 100%;
     margin-top: 20px;
     border-radius: 20px;
   }
@@ -436,10 +505,27 @@
       <h2 id="unified-navigation-title" class="unified-navigation__title">
         Весь путь проекта —<br />от контакта до сдачи
       </h2>
+    </header>
+
+    <div class="unified-navigation__message">
       <p class="unified-navigation__subtitle">
         Схема этапов с радиальным раскрытием. Нажмите на кружок для подробностей.
       </p>
-    </header>
+      <ul class="unified-navigation__benefits" aria-label="Преимущества схемы">
+        <li class="unified-navigation__benefit">
+          <p class="unified-navigation__benefit-title">Прозрачные этапы</p>
+          <p class="unified-navigation__benefit-text">Каждый шаг согласован заранее. Без скрытых переходов и пауз.</p>
+        </li>
+        <li class="unified-navigation__benefit">
+          <p class="unified-navigation__benefit-title">Быстрая детализация</p>
+          <p class="unified-navigation__benefit-text">Открывайте узел и сразу видьте действия команды на этапе.</p>
+        </li>
+        <li class="unified-navigation__benefit">
+          <p class="unified-navigation__benefit-title">Контроль результата</p>
+          <p class="unified-navigation__benefit-text">Путь от контакта до сдачи читается как единая система.</p>
+        </li>
+      </ul>
+    </div>
 
     <div class="unified-navigation__diagram" data-unified-navigation-diagram>
       <div class="unified-navigation__grid" aria-hidden="true"></div>
@@ -471,50 +557,60 @@
 
   var SCENE_LAYOUT = {
     desktop: {
-      contact: { x: 14, y: 28 },
-      visit: { x: 32, y: 16 },
-      brief: { x: 49, y: 26 },
-      design: { x: 37, y: 43 },
-      contract: { x: 61, y: 43 },
-      build: { x: 73, y: 59 },
-      delivery: { x: 79, y: 77 }
+      contact: { x: 18, y: 24 },
+      visit: { x: 36, y: 15 },
+      brief: { x: 53, y: 25 },
+      design: { x: 42, y: 43 },
+      contract: { x: 66, y: 43 },
+      build: { x: 79, y: 60 },
+      delivery: { x: 86, y: 78 }
     },
     tablet: {
-      contact: { x: 16, y: 24 },
-      visit: { x: 32, y: 16 },
-      brief: { x: 52, y: 25 },
-      design: { x: 33, y: 43 },
-      contract: { x: 61, y: 43 },
-      build: { x: 68, y: 61 },
-      delivery: { x: 72, y: 79 }
+      contact: { x: 17, y: 22 },
+      visit: { x: 35, y: 15 },
+      brief: { x: 54, y: 25 },
+      design: { x: 43, y: 44 },
+      contract: { x: 67, y: 44 },
+      build: { x: 79, y: 62 },
+      delivery: { x: 86, y: 80 }
     },
     mobile: {
-      contact: { x: 20, y: 16 },
-      visit: { x: 57, y: 11 },
-      brief: { x: 57, y: 24 },
-      design: { x: 28, y: 39 },
-      contract: { x: 64, y: 42 },
-      build: { x: 44, y: 63 },
-      delivery: { x: 71, y: 82 }
+      contact: { x: 23, y: 16 },
+      visit: { x: 49, y: 11 },
+      brief: { x: 64, y: 24 },
+      design: { x: 40, y: 41 },
+      contract: { x: 68, y: 42 },
+      build: { x: 56, y: 63 },
+      delivery: { x: 79, y: 82 }
     }
   };
 
   var CLUSTER_TEMPLATES = {
     right3: [
-      { x: 74, y: -62 },
-      { x: 112, y: 0 },
-      { x: 80, y: 68 }
+      { x: 88, y: -72 },
+      { x: 136, y: 0 },
+      { x: 96, y: 76 }
     ],
     left3: [
-      { x: -74, y: -62 },
-      { x: -112, y: 0 },
-      { x: -80, y: 68 }
+      { x: -88, y: -72 },
+      { x: -136, y: 0 },
+      { x: -96, y: 76 }
+    ],
+    leftCompact3: [
+      { x: -64, y: -56 },
+      { x: -102, y: 0 },
+      { x: -64, y: 56 }
+    ],
+    rightCompact3: [
+      { x: 64, y: -56 },
+      { x: 102, y: 0 },
+      { x: 72, y: 58 }
     ],
     cross4: [
-      { x: 0, y: -106 },
-      { x: 106, y: 0 },
-      { x: 0, y: 106 },
-      { x: -106, y: 0 }
+      { x: 0, y: -124 },
+      { x: 142, y: 0 },
+      { x: 0, y: 124 },
+      { x: -142, y: 0 }
     ]
   };
 
@@ -562,7 +658,7 @@
       key: 'contact',
       number: '01',
       title: 'Контакт',
-      cluster: 'left3',
+      cluster: 'right3',
       children: [
         {
           label: 'звонок',
@@ -588,7 +684,7 @@
       key: 'visit',
       number: '02',
       title: 'Визит',
-      cluster: 'left3',
+      cluster: 'right3',
       children: [
         {
           label: 'замер',
@@ -640,7 +736,7 @@
       key: 'design',
       number: '04',
       title: 'Проектирование',
-      cluster: 'left3',
+      cluster: 'rightCompact3',
       children: [
         {
           label: 'проект',
@@ -650,8 +746,8 @@
         },
         {
           label: 'правки',
-          tooltipCorner: 'top-right',
-          tooltipOrbitAngle: 180,
+          tooltipCorner: 'top-left',
+          tooltipOrbitAngle: 0,
           tooltipDistance: 10
         },
         {
@@ -1182,6 +1278,10 @@
   });
 
   render();
+  setActiveStage('design');
+  activeTooltipKey = 'design:правки';
+  activeTooltipTrigger = nodesLayer.querySelector('[data-tooltip-key="design:правки"]');
+  syncState();
 })();
   </script>
 </section>
