@@ -573,6 +573,15 @@
   pointer-events: none;
   z-index: -1;
 }
-.garage-background {
-  display: none;
+.garage-scene {
+  background: radial-gradient(
+    ellipse at center,
+    #3a4350 0%,
+    #2b313a 60%,
+    #1f242b 100%
+  );
+}
+
+.garage-interior {
+  filter: contrast(1.06) saturate(1.08);
 }
