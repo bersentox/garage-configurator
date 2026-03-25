@@ -32,9 +32,7 @@
   --unified-navigation-child-size: 52px;
   --unified-navigation-tooltip-width: 188px;
 
-  background:
-    radial-gradient(circle at top left, rgba(82, 146, 255, 0.08), transparent 28%),
-    linear-gradient(180deg, #f8fbff 0%, #f4f7fb 100%);
+  background: #f5f8fc;
   padding: 72px 0 64px;
   color: var(--unified-navigation-text);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -46,6 +44,7 @@
 }
 
 .unified-navigation__shell {
+  position: relative;
   width: min(1240px, calc(100% - 40px));
   margin: 0 auto;
   padding: 28px 28px 20px;
@@ -57,11 +56,21 @@
 }
 
 .unified-navigation__intro {
-  position: relative;
+  position: absolute;
+  left: 72px;
+  top: 56px;
+  width: 360px;
   z-index: 2;
-  max-width: clamp(760px, 72vw, 920px);
-  margin: 0 auto 44px;
-  text-align: center;
+  margin: 0;
+}
+
+.unified-navigation__message {
+  position: absolute;
+  left: 72px;
+  top: 360px;
+  width: 360px;
+  margin: 0;
+  z-index: 2;
 }
 
 .unified-navigation__eyebrow {
@@ -74,10 +83,11 @@
 
 .unified-navigation__title {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.35rem);
-  line-height: 0.95;
+  font-size: 56px;
+  line-height: 0.92;
   font-weight: 720;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.04em;
+  max-width: 360px;
   text-wrap: balance;
 }
 
@@ -87,12 +97,46 @@
   line-height: 1.55;
   color: var(--unified-navigation-muted);
   text-wrap: balance;
+  max-width: 360px;
+}
+
+.unified-navigation__benefits {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: 360px;
+}
+
+.unified-navigation__benefit {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.unified-navigation__benefit:last-child {
+  margin-bottom: 0;
+}
+
+.unified-navigation__benefit-title {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.25;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.unified-navigation__benefit-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  opacity: 0.7;
 }
 
 .unified-navigation__diagram {
   position: relative;
   min-height: 760px;
   margin-top: 0;
+  padding-left: 260px;
   border-radius: 28px;
   isolation: isolate;
   overflow: visible;
@@ -291,7 +335,7 @@
   overflow: visible;
   opacity: 0;
   pointer-events: none;
-  transform: translate3d(0, 8px, 0) scale(0.96);
+  transform: translate3d(24px, 8px, 0) scale(0.96);
   transition:
     opacity 180ms ease,
     transform 180ms var(--unified-navigation-ease);
@@ -329,7 +373,7 @@
 
 .unified-navigation__tooltip.is-visible {
   opacity: 1;
-  transform: translate3d(0, 0, 0) scale(1);
+  transform: translate3d(24px, 0, 0) scale(1);
 }
 
 .unified-navigation__child.is-tooltip-open {
@@ -340,8 +384,8 @@
 .unified-navigation__bottom {
   position: relative;
   z-index: 2;
-  margin: 12px 0 0 auto;
-  max-width: 520px;
+  width: 520px;
+  margin: 48px auto 0;
   padding: 12px 20px;
   border-radius: 999px;
   border: 1px solid rgba(186, 205, 229, 0.8);
@@ -366,13 +410,26 @@
   }
 
   .unified-navigation__intro {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
     max-width: 100%;
-    margin-bottom: 36px;
+    margin-bottom: 16px;
+  }
+
+  .unified-navigation__message {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    margin-bottom: 20px;
   }
 
   .unified-navigation__diagram {
     min-height: 900px;
     margin-top: 24px;
+    padding-left: 0;
   }
 
   .unified-navigation__stage-label {
@@ -424,6 +481,7 @@
   }
 
   .unified-navigation__bottom {
+    width: 100%;
     margin-top: 20px;
     border-radius: 20px;
   }
@@ -436,10 +494,27 @@
       <h2 id="unified-navigation-title" class="unified-navigation__title">
         Весь путь проекта —<br />от контакта до сдачи
       </h2>
+    </header>
+
+    <div class="unified-navigation__message">
       <p class="unified-navigation__subtitle">
         Схема этапов с радиальным раскрытием. Нажмите на кружок для подробностей.
       </p>
-    </header>
+      <ul class="unified-navigation__benefits" aria-label="Преимущества схемы">
+        <li class="unified-navigation__benefit">
+          <p class="unified-navigation__benefit-title">Прозрачные этапы</p>
+          <p class="unified-navigation__benefit-text">Каждый шаг фиксируется заранее — без «серых зон» в процессе.</p>
+        </li>
+        <li class="unified-navigation__benefit">
+          <p class="unified-navigation__benefit-title">Быстрая детализация</p>
+          <p class="unified-navigation__benefit-text">Раскрывайте узлы схемы и сразу видьте конкретные действия команды.</p>
+        </li>
+        <li class="unified-navigation__benefit">
+          <p class="unified-navigation__benefit-title">Контроль результата</p>
+          <p class="unified-navigation__benefit-text">От первого контакта до сдачи путь читается как единая система.</p>
+        </li>
+      </ul>
+    </div>
 
     <div class="unified-navigation__diagram" data-unified-navigation-diagram>
       <div class="unified-navigation__grid" aria-hidden="true"></div>
