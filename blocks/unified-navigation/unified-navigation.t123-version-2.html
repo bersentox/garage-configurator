@@ -57,18 +57,18 @@
 
 .unified-navigation__intro {
   position: absolute;
-  left: 72px;
-  top: 56px;
-  width: 360px;
+  left: 56px;
+  top: 48px;
+  width: 300px;
   z-index: 2;
   margin: 0;
 }
 
 .unified-navigation__message {
   position: absolute;
-  left: 72px;
-  top: 360px;
-  width: 360px;
+  left: 56px;
+  top: 420px;
+  width: 320px;
   margin: 0;
   z-index: 2;
 }
@@ -87,7 +87,7 @@
   line-height: 0.92;
   font-weight: 720;
   letter-spacing: -0.04em;
-  max-width: 360px;
+  max-width: 300px;
   text-wrap: balance;
 }
 
@@ -136,7 +136,7 @@
   position: relative;
   min-height: 760px;
   margin-top: 0;
-  padding-left: 260px;
+  padding-left: 0;
   border-radius: 28px;
   isolation: isolate;
   overflow: visible;
@@ -147,7 +147,10 @@
 .unified-navigation__nodes,
 .unified-navigation__tooltip-layer {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 33%;
 }
 
 .unified-navigation__grid {
@@ -280,8 +283,8 @@
   top: 50%;
   min-width: 72px;
   width: auto;
-  height: 36px;
-  padding: 0 14px;
+  height: 34px;
+  padding: 0 12px;
   border-radius: 999px;
   border: 1px solid rgba(15, 23, 42, 0.08);
   background: rgba(255, 255, 255, 0.96);
@@ -291,7 +294,7 @@
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1;
   font-weight: 680;
   letter-spacing: -0.02em;
@@ -384,8 +387,8 @@
 .unified-navigation__bottom {
   position: relative;
   z-index: 2;
-  width: 520px;
-  margin: 48px auto 0;
+  width: 420px;
+  margin: 40px auto 0;
   padding: 12px 20px;
   border-radius: 999px;
   border: 1px solid rgba(186, 205, 229, 0.8);
@@ -432,6 +435,13 @@
     padding-left: 0;
   }
 
+  .unified-navigation__grid,
+  .unified-navigation__edges,
+  .unified-navigation__nodes,
+  .unified-navigation__tooltip-layer {
+    inset: 0;
+  }
+
   .unified-navigation__stage-label {
     max-width: 76px;
     min-height: 32px;
@@ -440,9 +450,6 @@
 
   .unified-navigation__child {
     min-width: 64px;
-    height: 34px;
-    padding: 0 12px;
-    font-size: 12px;
   }
 }
 
@@ -508,15 +515,15 @@
       <ul class="unified-navigation__benefits" aria-label="Преимущества схемы">
         <li class="unified-navigation__benefit">
           <p class="unified-navigation__benefit-title">Прозрачные этапы</p>
-          <p class="unified-navigation__benefit-text">Каждый шаг фиксируется заранее — без «серых зон» в процессе.</p>
+          <p class="unified-navigation__benefit-text">Каждый шаг согласован заранее. Без скрытых переходов и пауз.</p>
         </li>
         <li class="unified-navigation__benefit">
           <p class="unified-navigation__benefit-title">Быстрая детализация</p>
-          <p class="unified-navigation__benefit-text">Раскрывайте узлы схемы и сразу видьте конкретные действия команды.</p>
+          <p class="unified-navigation__benefit-text">Открывайте узел и сразу видьте действия команды на этапе.</p>
         </li>
         <li class="unified-navigation__benefit">
           <p class="unified-navigation__benefit-title">Контроль результата</p>
-          <p class="unified-navigation__benefit-text">От первого контакта до сдачи путь читается как единая система.</p>
+          <p class="unified-navigation__benefit-text">Путь от контакта до сдачи читается как единая система.</p>
         </li>
       </ul>
     </div>
@@ -551,31 +558,31 @@
 
   var SCENE_LAYOUT = {
     desktop: {
-      contact: { x: 14, y: 28 },
-      visit: { x: 32, y: 16 },
-      brief: { x: 49, y: 26 },
-      design: { x: 37, y: 43 },
-      contract: { x: 61, y: 43 },
-      build: { x: 73, y: 59 },
-      delivery: { x: 79, y: 77 }
+      contact: { x: 18, y: 24 },
+      visit: { x: 36, y: 15 },
+      brief: { x: 53, y: 25 },
+      design: { x: 42, y: 43 },
+      contract: { x: 66, y: 43 },
+      build: { x: 79, y: 60 },
+      delivery: { x: 86, y: 78 }
     },
     tablet: {
-      contact: { x: 16, y: 24 },
-      visit: { x: 32, y: 16 },
-      brief: { x: 52, y: 25 },
-      design: { x: 33, y: 43 },
-      contract: { x: 61, y: 43 },
-      build: { x: 68, y: 61 },
-      delivery: { x: 72, y: 79 }
+      contact: { x: 17, y: 22 },
+      visit: { x: 35, y: 15 },
+      brief: { x: 54, y: 25 },
+      design: { x: 43, y: 44 },
+      contract: { x: 67, y: 44 },
+      build: { x: 79, y: 62 },
+      delivery: { x: 86, y: 80 }
     },
     mobile: {
-      contact: { x: 20, y: 16 },
-      visit: { x: 57, y: 11 },
-      brief: { x: 57, y: 24 },
-      design: { x: 28, y: 39 },
-      contract: { x: 64, y: 42 },
-      build: { x: 44, y: 63 },
-      delivery: { x: 71, y: 82 }
+      contact: { x: 23, y: 16 },
+      visit: { x: 49, y: 11 },
+      brief: { x: 64, y: 24 },
+      design: { x: 40, y: 41 },
+      contract: { x: 68, y: 42 },
+      build: { x: 56, y: 63 },
+      delivery: { x: 79, y: 82 }
     }
   };
 
@@ -589,6 +596,16 @@
       { x: -88, y: -72 },
       { x: -136, y: 0 },
       { x: -96, y: 76 }
+    ],
+    leftCompact3: [
+      { x: -64, y: -56 },
+      { x: -102, y: 0 },
+      { x: -64, y: 56 }
+    ],
+    rightCompact3: [
+      { x: 64, y: -56 },
+      { x: 102, y: 0 },
+      { x: 72, y: 58 }
     ],
     cross4: [
       { x: 0, y: -124 },
@@ -642,7 +659,7 @@
       key: 'contact',
       number: '01',
       title: 'Контакт',
-      cluster: 'left3',
+      cluster: 'right3',
       children: [
         {
           label: 'звонок',
@@ -668,7 +685,7 @@
       key: 'visit',
       number: '02',
       title: 'Визит',
-      cluster: 'left3',
+      cluster: 'right3',
       children: [
         {
           label: 'замер',
@@ -720,7 +737,7 @@
       key: 'design',
       number: '04',
       title: 'Проектирование',
-      cluster: 'left3',
+      cluster: 'rightCompact3',
       children: [
         {
           label: 'проект',
@@ -730,8 +747,8 @@
         },
         {
           label: 'правки',
-          tooltipCorner: 'top-right',
-          tooltipOrbitAngle: 180,
+          tooltipCorner: 'top-left',
+          tooltipOrbitAngle: 0,
           tooltipDistance: 10
         },
         {
@@ -1262,6 +1279,10 @@
   });
 
   render();
+  setActiveStage('design');
+  activeTooltipKey = 'design:правки';
+  activeTooltipTrigger = nodesLayer.querySelector('[data-tooltip-key="design:правки"]');
+  syncState();
 })();
   </script>
 </section>
