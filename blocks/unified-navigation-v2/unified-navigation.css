@@ -18,6 +18,15 @@
   box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+  background: var(--process-bg);
+}
+
+main {
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) clamp(2.5rem, 5vw, 4rem);
+}
+
 .process-nav {
   width: min(1180px, 100%);
   margin-inline: auto;
@@ -220,4 +229,12 @@
     margin-top: 1.6rem;
     width: 100%;
   }
+}
+
+.process-nav__error {
+  color: #c2410c;
+  padding: 1rem;
+  background: #fff7ed;
+  border-radius: 12px;
+  border: 1px solid #fdba74;
 }
