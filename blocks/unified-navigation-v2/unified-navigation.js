@@ -174,6 +174,8 @@
   ]
 };
 
+  const STAGE_TRANSITION_MS = 240;
+
   const getRoot = () => document.querySelector('[data-process-nav]') || document.querySelector('.process-nav');
 
   const clampIndex = (value, max) => {
@@ -183,6 +185,8 @@
 
     return Math.min(Math.max(value, 0), max - 1);
   };
+
+  const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
 
   const normalizeData = (data) => {
     if (!data || !Array.isArray(data.stages)) {
@@ -216,10 +220,33 @@
     const state = {
       activeStageIndex: 0,
       expandedStepIndex: 0,
-      data
+      data,
+      isStageSwitching: false
     };
 
-    const render = () => {
+    const updateBranchAnchor = () => {
+      if (window.matchMedia('(max-width: 960px)').matches) {
+        branchEl.style.setProperty('--branch-offset', '0px');
+        return;
+      }
+
+      const activeStageEl = timelineEl.querySelector(`[data-stage-index="${state.activeStageIndex}"]`);
+
+      if (!activeStageEl) {
+        return;
+      }
+
+      const timelineRect = timelineEl.getBoundingClientRect();
+      const stageRect = activeStageEl.getBoundingClientRect();
+      const stageCenterX = stageRect.left - timelineRect.left + stageRect.width / 2;
+      const branchWidth = branchEl.getBoundingClientRect().width;
+      const maxOffset = Math.max(timelineEl.clientWidth - branchWidth, 0);
+      const offset = clampIndex(stageCenterX - branchWidth / 2, maxOffset + 1);
+
+      branchEl.style.setProperty('--branch-offset', `${offset}px`);
+    };
+
+    const render = ({ entering = false } = {}) => {
       const activeStage = state.data.stages[state.activeStageIndex];
       const safeExpandedIndex = clampIndex(state.expandedStepIndex, activeStage.steps.length);
 
@@ -248,12 +275,13 @@
         .join('');
 
       branchEl.id = 'process-branch';
+      branchEl.classList.toggle('is-entering', entering);
       branchEl.innerHTML = activeStage.steps
         .map((step, index) => {
           const expandedClass = index === safeExpandedIndex ? ' is-expanded' : '';
 
           return `
-            <article class="process-step${expandedClass}">
+            <article class="process-step${expandedClass}" style="--step-index:${index};">
               <button
                 type="button"
                 class="process-step__trigger"
@@ -273,6 +301,31 @@
           `;
         })
         .join('');
+
+      window.requestAnimationFrame(updateBranchAnchor);
+
+      if (entering) {
+        window.setTimeout(() => {
+          branchEl.classList.remove('is-entering');
+        }, 420);
+      }
+    };
+
+    const switchStage = async (nextStageIndex) => {
+      if (state.isStageSwitching || nextStageIndex === state.activeStageIndex) {
+        return;
+      }
+
+      state.isStageSwitching = true;
+      branchEl.classList.add('is-collapsing');
+      await wait(STAGE_TRANSITION_MS);
+
+      state.activeStageIndex = nextStageIndex;
+      state.expandedStepIndex = 0;
+      render({ entering: true });
+
+      branchEl.classList.remove('is-collapsing');
+      state.isStageSwitching = false;
     };
 
     timelineEl.addEventListener('click', (event) => {
@@ -284,17 +337,15 @@
 
       const nextStageIndex = Number.parseInt(trigger.dataset.stageIndex, 10);
 
-      if (!Number.isNaN(nextStageIndex) && nextStageIndex !== state.activeStageIndex) {
-        state.activeStageIndex = nextStageIndex;
-        state.expandedStepIndex = 0;
-        render();
+      if (!Number.isNaN(nextStageIndex)) {
+        switchStage(nextStageIndex);
       }
     });
 
     branchEl.addEventListener('click', (event) => {
       const trigger = event.target.closest('[data-step-index]');
 
-      if (!trigger) {
+      if (!trigger || state.isStageSwitching) {
         return;
       }
 
@@ -306,7 +357,9 @@
       }
     });
 
-    render();
+    window.addEventListener('resize', updateBranchAnchor);
+
+    render({ entering: true });
   };
 
   const loadData = async () => {
