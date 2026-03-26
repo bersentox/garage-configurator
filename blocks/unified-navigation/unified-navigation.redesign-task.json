@@ -1,0 +1,65 @@
+{
+  "task": "Redesign unified navigation from radial child-circles with tooltips into a horizontal hierarchical stepper.",
+  "goal": "Top row = horizontal main stage pills. Click a main stage to reveal 3-4 vertical child pills below it. Click a child pill to expand that same pill into a detail card with title and description.",
+  "dataSource": {
+    "file": "blocks/unified-navigation/unified-navigation.content.json",
+    "use": {
+      "mainStages": ["stage.number", "stage.title"],
+      "childSteps": ["step.number", "step.title"],
+      "expandedCard": ["step.detailTitle", "step.detailText"]
+    },
+    "ignore": [
+      "stage.description",
+      "stage.branchTitle",
+      "stage.branchText",
+      "step.label"
+    ]
+  },
+  "behavior": {
+    "defaultActiveStage": 0,
+    "defaultActiveStep": 0,
+    "rules": [
+      "Only one main stage can be active at a time.",
+      "Only one child step can be expanded at a time.",
+      "When switching main stage, close previous branch and auto-open first child step of the new stage.",
+      "Expanded child step is not a tooltip; it becomes a larger card in place."
+    ]
+  },
+  "layout": {
+    "desktop": [
+      "Main stages arranged in one horizontal row.",
+      "Child steps appear vertically below active main stage.",
+      "Expanded child becomes a card below/in place within the child stack."
+    ],
+    "mobile": [
+      "Allow horizontal scroll for main stage row if needed.",
+      "Preserve vertical child stack and readable expanded card."
+    ]
+  },
+  "visualRules": [
+    "No radial layout.",
+    "No orbit positioning.",
+    "No tooltip clouds.",
+    "No tooltip tails.",
+    "No floating child circles around parent nodes.",
+    "Use pill-shaped ovals for main and child items.",
+    "Active main stage should be visually emphasized.",
+    "Expanded child should animate smoothly via height/padding/opacity/transform."
+  ],
+  "expectedClasses": [
+    "process-nav",
+    "process-nav__timeline",
+    "process-nav__branch",
+    "process-stage",
+    "process-step",
+    "process-step__detail",
+    "is-active",
+    "is-expanded"
+  ],
+  "notes": [
+    "Do not change the source content JSON structure.",
+    "Do not invent new text.",
+    "Keep implementation isolated inside blocks/unified-navigation.",
+    "Remove dead radial/tooltip CSS and JS related to old behavior."
+  ]
+}
