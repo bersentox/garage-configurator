@@ -174,7 +174,8 @@
   ]
 };
 
-  const STAGE_TRANSITION_MS = 240;
+  const STAGE_CLOSE_MS = 190;
+  const BRANCH_ENTER_CLEAR_MS = 380;
 
   const getRoot = () => document.querySelector('[data-process-nav]') || document.querySelector('.process-nav');
 
@@ -241,19 +242,13 @@
       const stageCenterX = stageRect.left - timelineRect.left + stageRect.width / 2;
       const branchWidth = branchEl.getBoundingClientRect().width;
       const maxOffset = Math.max(timelineEl.clientWidth - branchWidth, 0);
-      const offset = clampIndex(stageCenterX - branchWidth / 2, maxOffset + 1);
+      const offset = Math.max(0, Math.min(stageCenterX - branchWidth / 2, maxOffset));
 
       branchEl.style.setProperty('--branch-offset', `${offset}px`);
     };
 
-    const render = ({ entering = false } = {}) => {
-      const activeStage = state.data.stages[state.activeStageIndex];
-      const safeExpandedIndex = clampIndex(state.expandedStepIndex, activeStage.steps.length);
-
-      titleEl.textContent = state.data.title;
-      subtitleEl.textContent = state.data.subtitle;
+    const renderTimeline = () => {
       timelineEl.style.setProperty('--stage-count', String(state.data.stages.length));
-
       timelineEl.innerHTML = state.data.stages
         .map((stage, index) => {
           const activeClass = index === state.activeStageIndex ? ' is-active' : '';
@@ -273,7 +268,55 @@
           `;
         })
         .join('');
+    };
 
+    const setExpandedStep = (nextStepIndex) => {
+      const currentExpanded = branchEl.querySelector('.process-step.is-expanded');
+      const nextExpanded = branchEl.querySelector(`.process-step[data-step-index="${nextStepIndex}"]`);
+
+      if (!nextExpanded || currentExpanded === nextExpanded) {
+        return;
+      }
+
+      if (currentExpanded) {
+        currentExpanded.classList.remove('is-expanded');
+        const currentTrigger = currentExpanded.querySelector('.process-step__trigger');
+
+        if (currentTrigger) {
+          currentTrigger.setAttribute('aria-expanded', 'false');
+        }
+      }
+
+      nextExpanded.classList.add('is-expanded');
+      const nextTrigger = nextExpanded.querySelector('.process-step__trigger');
+
+      if (nextTrigger) {
+        nextTrigger.setAttribute('aria-expanded', 'true');
+      }
+
+      state.expandedStepIndex = nextStepIndex;
+    };
+
+    const collapseExpandedStep = () => {
+      const currentExpanded = branchEl.querySelector('.process-step.is-expanded');
+
+      if (!currentExpanded) {
+        return;
+      }
+
+      currentExpanded.classList.remove('is-expanded');
+      const trigger = currentExpanded.querySelector('.process-step__trigger');
+
+      if (trigger) {
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    };
+
+    const renderBranch = ({ entering = false } = {}) => {
+      const activeStage = state.data.stages[state.activeStageIndex];
+      const safeExpandedIndex = clampIndex(state.expandedStepIndex, activeStage.steps.length);
+
+      state.expandedStepIndex = safeExpandedIndex;
       branchEl.id = 'process-branch';
       branchEl.classList.toggle('is-entering', entering);
       branchEl.innerHTML = activeStage.steps
@@ -281,7 +324,7 @@
           const expandedClass = index === safeExpandedIndex ? ' is-expanded' : '';
 
           return `
-            <article class="process-step${expandedClass}" style="--step-index:${index};">
+            <article class="process-step${expandedClass}" data-step-index="${index}" style="--step-index:${index};">
               <button
                 type="button"
                 class="process-step__trigger"
@@ -307,8 +350,13 @@
       if (entering) {
         window.setTimeout(() => {
           branchEl.classList.remove('is-entering');
-        }, 420);
+        }, BRANCH_ENTER_CLEAR_MS);
       }
+    };
+
+    const renderHeader = () => {
+      titleEl.textContent = state.data.title;
+      subtitleEl.textContent = state.data.subtitle;
     };
 
     const switchStage = async (nextStageIndex) => {
@@ -317,14 +365,16 @@
       }
 
       state.isStageSwitching = true;
-      branchEl.classList.add('is-collapsing');
-      await wait(STAGE_TRANSITION_MS);
+      collapseExpandedStep();
+      branchEl.classList.add('is-closing');
+      await wait(STAGE_CLOSE_MS);
 
       state.activeStageIndex = nextStageIndex;
       state.expandedStepIndex = 0;
-      render({ entering: true });
+      renderTimeline();
+      renderBranch({ entering: true });
 
-      branchEl.classList.remove('is-collapsing');
+      branchEl.classList.remove('is-closing');
       state.isStageSwitching = false;
     };
 
@@ -352,14 +402,15 @@
       const nextStepIndex = Number.parseInt(trigger.dataset.stepIndex, 10);
 
       if (!Number.isNaN(nextStepIndex) && nextStepIndex !== state.expandedStepIndex) {
-        state.expandedStepIndex = nextStepIndex;
-        render();
+        setExpandedStep(nextStepIndex);
       }
     });
 
     window.addEventListener('resize', updateBranchAnchor);
 
-    render({ entering: true });
+    renderHeader();
+    renderTimeline();
+    renderBranch({ entering: true });
   };
 
   const loadData = async () => {
