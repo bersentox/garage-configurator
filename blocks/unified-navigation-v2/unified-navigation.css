@@ -33,6 +33,7 @@ main {
   padding: clamp(1.5rem, 3vw, 2.5rem);
   color: var(--text-primary);
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow-anchor: none;
 }
 
 .process-nav__header {
@@ -128,7 +129,8 @@ main {
   margin-top: 1.7rem;
   transform: translateX(var(--branch-offset));
   transform-origin: top center;
-  transition: opacity 220ms ease;
+  transition: opacity 220ms ease, min-height 260ms var(--ease-premium);
+  overflow-anchor: none;
 }
 
 .process-nav__branch::before {

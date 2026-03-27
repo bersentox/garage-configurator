@@ -367,7 +367,8 @@
       }
 
       state.isStageSwitching = true;
-      collapseExpandedStep();
+      const previousBranchHeight = branchEl.getBoundingClientRect().height;
+      branchEl.style.minHeight = `${previousBranchHeight}px`;
       branchEl.classList.add('is-closing');
       await wait(STAGE_CLOSE_MS);
 
@@ -375,6 +376,12 @@
       state.expandedStepIndex = 0;
       renderTimeline();
       renderBranch({ entering: true });
+
+      const nextBranchHeight = branchEl.getBoundingClientRect().height;
+      branchEl.style.minHeight = `${Math.max(previousBranchHeight, nextBranchHeight)}px`;
+      window.setTimeout(() => {
+        branchEl.style.minHeight = '';
+      }, BRANCH_ENTER_CLEAR_MS);
 
       branchEl.classList.remove('is-closing');
       state.isStageSwitching = false;
