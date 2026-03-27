@@ -123,10 +123,11 @@ main {
 }
 
 .process-nav__branch {
+  --branch-offset: 0px;
   position: relative;
   width: min(380px, 100%);
   margin-top: 1.7rem;
-  margin-inline: auto;
+  transform: translateX(var(--branch-offset));
   transition: opacity 220ms ease, min-height 260ms var(--ease-premium);
   overflow-anchor: none;
 }
@@ -304,6 +305,7 @@ main {
     width: 100%;
     max-width: none;
     margin-top: 1.45rem;
+    transform: none;
   }
 
   .process-nav__branch::before {

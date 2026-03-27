@@ -225,6 +225,28 @@
       isStageSwitching: false
     };
 
+    const updateBranchAnchor = () => {
+      if (window.matchMedia('(max-width: 960px)').matches) {
+        branchEl.style.setProperty('--branch-offset', '0px');
+        return;
+      }
+
+      const activeStageEl = timelineEl.querySelector(`[data-stage-index="${state.activeStageIndex}"]`);
+
+      if (!activeStageEl) {
+        return;
+      }
+
+      const timelineRect = timelineEl.getBoundingClientRect();
+      const stageRect = activeStageEl.getBoundingClientRect();
+      const stageCenterX = stageRect.left - timelineRect.left + stageRect.width / 2;
+      const branchWidth = branchEl.getBoundingClientRect().width;
+      const maxOffset = Math.max(timelineEl.clientWidth - branchWidth, 0);
+      const offset = Math.max(0, Math.min(stageCenterX - branchWidth / 2, maxOffset));
+
+      branchEl.style.setProperty('--branch-offset', `${offset}px`);
+    };
+
     const renderTimeline = () => {
       timelineEl.style.setProperty('--stage-count', String(state.data.stages.length));
       timelineEl.innerHTML = state.data.stages
@@ -323,8 +345,10 @@
         })
         .join('');
 
+      updateBranchAnchor();
+
       if (entering) {
-        // Anchor is applied first; reveal starts after placement so no horizontal drift is visible.
+        // Branch is pre-positioned under the active stage; reveal starts after placement.
         branchEl.classList.add('is-entering');
         window.setTimeout(() => {
           branchEl.classList.remove('is-entering');
@@ -362,6 +386,8 @@
       branchEl.classList.remove('is-closing');
       state.isStageSwitching = false;
     };
+
+    window.addEventListener('resize', updateBranchAnchor);
 
     timelineEl.addEventListener('click', (event) => {
       const trigger = event.target.closest('[data-stage-index]');
