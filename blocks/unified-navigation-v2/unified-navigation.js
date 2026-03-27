@@ -174,8 +174,8 @@
   ]
 };
 
-  const STAGE_CLOSE_MS = 190;
-  const BRANCH_ENTER_CLEAR_MS = 380;
+  const STAGE_CLOSE_MS = 260;
+  const BRANCH_ENTER_CLEAR_MS = 520;
 
   const getRoot = () => document.querySelector('[data-process-nav]') || document.querySelector('.process-nav');
 

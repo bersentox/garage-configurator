@@ -159,7 +159,7 @@ main {
   background: var(--surface);
   margin-bottom: 0.9rem;
   transform-origin: top center;
-  transition: border-color 220ms var(--ease-premium), border-radius 220ms var(--ease-premium), box-shadow 220ms var(--ease-premium), background-color 220ms var(--ease-premium), transform 220ms var(--ease-premium);
+  transition: border-color 260ms var(--ease-premium), border-radius 260ms var(--ease-premium), box-shadow 260ms var(--ease-premium), background-color 260ms var(--ease-premium), transform 260ms var(--ease-premium);
 }
 
 .process-step__trigger {
@@ -171,7 +171,7 @@ main {
   width: 100%;
   padding: 0.68rem 0.95rem;
   cursor: pointer;
-  transition: padding 200ms var(--ease-premium);
+  transition: padding 260ms var(--ease-premium);
 }
 
 .process-step__number {
@@ -198,7 +198,7 @@ main {
   overflow: hidden;
   padding: 0 1.25rem;
   transform: translateY(-0.5rem) scale(0.99);
-  transition: max-height 220ms var(--ease-premium), opacity 180ms ease, padding 220ms var(--ease-premium), transform 220ms var(--ease-premium);
+  transition: max-height 260ms var(--ease-premium), opacity 240ms ease, padding 260ms var(--ease-premium), transform 260ms var(--ease-premium);
 }
 
 .process-step__detail-title {
@@ -222,11 +222,13 @@ main {
   box-shadow: var(--shadow-soft);
   background: var(--surface-strong);
   transform: translateY(0);
+  transition-duration: 320ms, 320ms, 320ms, 320ms, 320ms;
 }
 
 .process-step.is-expanded .process-step__trigger {
   padding-top: 0.82rem;
   padding-bottom: 0.78rem;
+  transition-duration: 320ms;
 }
 
 .process-step.is-expanded .process-step__number {
@@ -239,6 +241,7 @@ main {
   opacity: 1;
   padding: 0.35rem 1.25rem 1.25rem;
   transform: translateY(0) scale(1);
+  transition-duration: 320ms, 240ms, 320ms, 320ms;
 }
 
 .process-nav__branch.is-entering {
@@ -252,9 +255,9 @@ main {
 
 .process-nav__branch.is-entering .process-step {
   opacity: 0;
-  transform: translateY(-12px) scale(0.985);
-  animation: step-drop 340ms var(--ease-premium) forwards;
-  animation-delay: calc(var(--step-index, 0) * 46ms);
+  transform: translateY(-20px) scale(0.97);
+  animation: step-drop 420ms var(--ease-premium) forwards;
+  animation-delay: calc(var(--step-index, 0) * 70ms);
 }
 
 @keyframes step-drop {
