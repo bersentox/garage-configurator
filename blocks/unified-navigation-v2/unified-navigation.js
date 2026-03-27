@@ -174,7 +174,7 @@
   ]
 };
 
-  const STAGE_CLOSE_MS = 260;
+  const STAGE_CLOSE_MS = 140;
   const BRANCH_ENTER_CLEAR_MS = 520;
 
   const getRoot = () => document.querySelector('[data-process-nav]') || document.querySelector('.process-nav');
@@ -186,8 +186,6 @@
 
     return Math.min(Math.max(value, 0), max - 1);
   };
-
-  const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
 
   const normalizeData = (data) => {
     if (!data || !Array.isArray(data.stages)) {
@@ -360,33 +358,32 @@
       subtitleEl.textContent = state.data.subtitle;
     };
 
-    const switchStage = async (nextStageIndex) => {
-      if (state.isStageSwitching || nextStageIndex === state.activeStageIndex) {
-        return;
-      }
+  const switchStage = (nextStageIndex) => {
+    if (state.isStageSwitching || nextStageIndex === state.activeStageIndex) return;
 
-      state.isStageSwitching = true;
-      const previousBranchHeight = branchEl.getBoundingClientRect().height;
-      branchEl.style.minHeight = `${previousBranchHeight}px`;
-      branchEl.classList.add('is-closing');
-      await wait(STAGE_CLOSE_MS);
+    state.isStageSwitching = true;
+    const previousBranchHeight = branchEl.getBoundingClientRect().height;
+    branchEl.style.minHeight = `${previousBranchHeight}px`;
+    branchEl.classList.add('is-closing');
 
-      state.activeStageIndex = nextStageIndex;
-      state.expandedStepIndex = 0;
-      renderTimeline();
-      renderBranch({ entering: true });
+    // Immediate click feedback: active stage updates immediately.
+    state.activeStageIndex = nextStageIndex;
+    state.expandedStepIndex = 0;
+    renderTimeline();
+    renderBranch({ entering: true });
 
-      const nextBranchHeight = branchEl.getBoundingClientRect().height;
-      branchEl.style.minHeight = `${Math.max(previousBranchHeight, nextBranchHeight)}px`;
-      window.setTimeout(() => {
-        branchEl.style.minHeight = '';
-      }, BRANCH_ENTER_CLEAR_MS);
+    const nextBranchHeight = branchEl.getBoundingClientRect().height;
+    branchEl.style.minHeight = `${Math.max(previousBranchHeight, nextBranchHeight)}px`;
 
+    window.setTimeout(() => {
       branchEl.classList.remove('is-closing');
       state.isStageSwitching = false;
-    };
+    }, STAGE_CLOSE_MS);
 
-    window.addEventListener('resize', updateBranchAnchor);
+    window.setTimeout(() => {
+      branchEl.style.minHeight = '';
+    }, BRANCH_ENTER_CLEAR_MS);
+  };
 
     timelineEl.addEventListener('click', (event) => {
       const trigger = event.target.closest('[data-stage-index]');
@@ -415,6 +412,8 @@
         setExpandedStep(nextStepIndex);
       }
     });
+
+    window.addEventListener('resize', updateBranchAnchor);
 
     renderHeader();
     renderTimeline();
