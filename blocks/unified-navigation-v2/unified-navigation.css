@@ -186,14 +186,6 @@ main {
   transition: max-height 260ms var(--ease-premium), opacity 240ms ease, padding 260ms var(--ease-premium), transform 260ms var(--ease-premium);
 }
 
-.process-step__detail-title {
-  margin: 0;
-  padding-top: 0.7rem;
-  border-top: 1px solid #dbe5f4;
-  font-size: 1.08rem;
-  font-weight: 650;
-  line-height: 1.28;
-}
 
 .process-step__detail-text {
   margin: 0.72rem 0 0;

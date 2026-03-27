@@ -337,7 +337,6 @@
                 </span>
               </button>
               <div class="process-step__detail">
-                <h3 class="process-step__detail-title">${step.detailTitle}</h3>
                 <p class="process-step__detail-text">${step.detailText}</p>
               </div>
             </article>
