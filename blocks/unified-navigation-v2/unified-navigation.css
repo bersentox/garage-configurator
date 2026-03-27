@@ -132,24 +132,8 @@ main {
   overflow-anchor: none;
 }
 
-.process-nav__branch::before {
-  content: '';
-  position: absolute;
-  left: 2rem;
-  top: -1.55rem;
-  height: 1.55rem;
-  border-left: 1px solid var(--line);
-  transform-origin: top;
-  transition: transform 220ms var(--ease-premium), opacity 220ms ease;
-}
-
 .process-nav__branch.is-closing {
   opacity: 0.45;
-}
-
-.process-nav__branch.is-closing::before {
-  transform: scaleY(0.55);
-  opacity: 0.5;
 }
 
 .process-step {
@@ -249,11 +233,6 @@ main {
   opacity: 0.82;
 }
 
-.process-nav__branch.is-entering::before {
-  transform: scaleY(0.18);
-  opacity: 0.3;
-}
-
 .process-nav__branch.is-entering .process-step {
   opacity: 0;
   transform: translateY(-20px) scale(0.97);
@@ -308,7 +287,4 @@ main {
     transform: none;
   }
 
-  .process-nav__branch::before {
-    left: 1.65rem;
-  }
 }
