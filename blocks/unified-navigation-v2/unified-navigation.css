@@ -128,7 +128,7 @@ main {
   margin-top: 1.7rem;
   transform: translateX(var(--branch-offset));
   transform-origin: top center;
-  transition: transform 340ms var(--ease-premium), opacity 220ms ease;
+  transition: opacity 220ms ease;
 }
 
 .process-nav__branch::before {

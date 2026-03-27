@@ -318,7 +318,7 @@
 
       state.expandedStepIndex = safeExpandedIndex;
       branchEl.id = 'process-branch';
-      branchEl.classList.toggle('is-entering', entering);
+      branchEl.classList.remove('is-entering');
       branchEl.innerHTML = activeStage.steps
         .map((step, index) => {
           const expandedClass = index === safeExpandedIndex ? ' is-expanded' : '';
@@ -345,9 +345,11 @@
         })
         .join('');
 
-      window.requestAnimationFrame(updateBranchAnchor);
+      updateBranchAnchor();
 
       if (entering) {
+        // Anchor is applied first; reveal starts after placement so no horizontal drift is visible.
+        branchEl.classList.add('is-entering');
         window.setTimeout(() => {
           branchEl.classList.remove('is-entering');
         }, BRANCH_ENTER_CLEAR_MS);
