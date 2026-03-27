@@ -225,28 +225,6 @@
       isStageSwitching: false
     };
 
-    const updateBranchAnchor = () => {
-      if (window.matchMedia('(max-width: 960px)').matches) {
-        branchEl.style.setProperty('--branch-offset', '0px');
-        return;
-      }
-
-      const activeStageEl = timelineEl.querySelector(`[data-stage-index="${state.activeStageIndex}"]`);
-
-      if (!activeStageEl) {
-        return;
-      }
-
-      const timelineRect = timelineEl.getBoundingClientRect();
-      const stageRect = activeStageEl.getBoundingClientRect();
-      const stageCenterX = stageRect.left - timelineRect.left + stageRect.width / 2;
-      const branchWidth = branchEl.getBoundingClientRect().width;
-      const maxOffset = Math.max(timelineEl.clientWidth - branchWidth, 0);
-      const offset = Math.max(0, Math.min(stageCenterX - branchWidth / 2, maxOffset));
-
-      branchEl.style.setProperty('--branch-offset', `${offset}px`);
-    };
-
     const renderTimeline = () => {
       timelineEl.style.setProperty('--stage-count', String(state.data.stages.length));
       timelineEl.innerHTML = state.data.stages
@@ -345,8 +323,6 @@
         })
         .join('');
 
-      updateBranchAnchor();
-
       if (entering) {
         // Anchor is applied first; reveal starts after placement so no horizontal drift is visible.
         branchEl.classList.add('is-entering');
@@ -414,8 +390,6 @@
         setExpandedStep(nextStepIndex);
       }
     });
-
-    window.addEventListener('resize', updateBranchAnchor);
 
     renderHeader();
     renderTimeline();
