@@ -59,10 +59,10 @@ body {
 
 .icv2__title {
   margin: 0;
-  font-size: clamp(2rem, 3.9vw, 3.4rem);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-weight: 650;
+  font-size: clamp(1.72rem, 3.15vw, 2.68rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 620;
   text-wrap: balance;
 }
 
@@ -141,9 +141,9 @@ body {
   cursor: pointer;
   padding: 18px 20px;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: start;
-  gap: 12px;
+  gap: 14px;
   color: inherit;
   font: inherit;
 }
@@ -173,40 +173,12 @@ body {
 
 .icv2-card__support {
   margin: 7px 0 0;
-  color: #5e7490;
-  font-size: 0.92rem;
-  line-height: 1.5;
-  letter-spacing: -0.005em;
+  color: #475f7f;
+  font-size: 0.97rem;
+  line-height: 1.52;
+  letter-spacing: -0.003em;
+  font-weight: 545;
   text-wrap: pretty;
-}
-
-.icv2-card__chevron {
-  width: 28px;
-  height: 28px;
-  margin-top: 1px;
-  border-radius: 999px;
-  background: #f3f7fc;
-  position: relative;
-  transition:
-    transform 260ms var(--icv2-ease),
-    background-color 260ms var(--icv2-ease);
-}
-
-.icv2-card__chevron::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  width: 7px;
-  height: 7px;
-  margin: auto;
-  border-right: 1.5px solid #5a7495;
-  border-bottom: 1.5px solid #5a7495;
-  transform: rotate(45deg) translateY(-1px);
-}
-
-.icv2-card.is-open .icv2-card__chevron {
-  transform: rotate(180deg);
-  background: #e9f2fd;
 }
 
 .icv2-card__panel {
@@ -259,12 +231,13 @@ body {
   }
 
   .icv2__title {
-    font-size: clamp(1.8rem, 9vw, 2.45rem);
+    font-size: clamp(1.62rem, 7.3vw, 2.18rem);
+    line-height: 1.1;
   }
 
   .icv2-card__trigger {
-    grid-template-columns: auto minmax(0, 1fr) 24px;
-    gap: 10px;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 11px;
     padding: 16px 16px;
   }
 
@@ -273,7 +246,7 @@ body {
   }
 
   .icv2-card__support {
-    font-size: 0.88rem;
+    font-size: 0.91rem;
   }
 
   .icv2-card__body {
@@ -284,7 +257,6 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .icv2-card,
-  .icv2-card__chevron,
   .icv2-card__panel,
   .icv2-card__body {
     transition: none;

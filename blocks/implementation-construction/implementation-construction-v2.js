@@ -51,7 +51,6 @@
           <h4 class="icv2-card__title">${title}</h4>
           <p class="icv2-card__support">${support}</p>
         </span>
-        <span class="icv2-card__chevron" aria-hidden="true"></span>
       </button>
       <div class="icv2-card__panel" id="${panelId}" role="region" aria-label="${title}">
         <div class="icv2-card__body">
@@ -130,11 +129,6 @@
       stack.appendChild(entry.card);
       cardRegistry[columnKey].push(entry);
     });
-
-    const firstEntry = cardRegistry[columnKey][0];
-    if (!firstEntry) return;
-
-    firstEntry.open();
   });
 
   window.addEventListener('resize', function () {
