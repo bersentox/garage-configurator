@@ -5,783 +5,324 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Implementation Construction T123 Embed</title>
   <style>
-.implementation-construction {
-  --implementation-construction-page-bg: #f6f8fb;
-  --implementation-construction-panel-bg: linear-gradient(180deg, #eef2f7 0%, #e9eef5 100%);
-  --implementation-construction-surface-bg: #ffffff;
-  --implementation-construction-border: rgba(15, 23, 42, 0.06);
-  --implementation-construction-border-soft: rgba(15, 23, 42, 0.045);
-  --implementation-construction-text: #0f172a;
-  --implementation-construction-text-strong: #0b1220;
-  --implementation-construction-text-muted: rgba(15, 23, 42, 0.58);
-  --implementation-construction-meta-text: rgba(30, 58, 138, 0.92);
-  --implementation-construction-meta-bg: rgba(30, 58, 138, 0.08);
-  --implementation-construction-hover-fill: rgba(15, 23, 42, 0.018);
-  --implementation-construction-open-fill: rgba(30, 58, 138, 0.03);
-  --implementation-construction-panel-shadow:
-    0 18px 42px rgba(15, 23, 42, 0.05),
-    0 3px 10px rgba(15, 23, 42, 0.02);
-  --implementation-construction-row-shadow:
-    0 8px 18px rgba(15, 23, 42, 0.035),
-    0 1px 3px rgba(15, 23, 42, 0.03);
-  --implementation-construction-radius-panel: 24px;
-  --implementation-construction-radius-surface: 18px;
-  --implementation-construction-radius-row: 14px;
-  --implementation-construction-duration-fast: 150ms;
-  --implementation-construction-duration-base: 180ms;
-  --implementation-construction-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    .icb-implementation-construction {
+      --ic-bg: #f4f6f8;
+      --ic-panel-bg: #ffffff;
+      --ic-card-bg: #ffffff;
+      --ic-text: #111827;
+      --ic-muted: rgba(17, 24, 39, 0.68);
+      --ic-point: rgba(17, 24, 39, 0.78);
+      --ic-border: rgba(17, 24, 39, 0.08);
+      --ic-column-border: rgba(17, 24, 39, 0.07);
+      --ic-shadow-column: 0 18px 44px rgba(15, 23, 42, 0.06), 0 2px 8px rgba(15, 23, 42, 0.03);
+      --ic-shadow-card: 0 10px 28px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
+      --ic-shadow-card-hover: 0 14px 34px rgba(15, 23, 42, 0.08), 0 3px 8px rgba(15, 23, 42, 0.04);
 
-  background: var(--implementation-construction-page-bg);
-  color: var(--implementation-construction-text);
-  padding: 82px 0 90px;
-}
+      background: var(--ic-bg);
+      color: var(--ic-text);
+      padding: 88px 0 94px;
+      width: 100%;
+      position: relative;
+      isolation: isolate;
+    }
 
-.implementation-construction__inner {
-  width: min(1160px, calc(100% - 48px));
-  margin: 0 auto;
-}
+    .icb-implementation-construction,
+    .icb-implementation-construction *,
+    .icb-implementation-construction *::before,
+    .icb-implementation-construction *::after {
+      box-sizing: border-box;
+    }
 
-.implementation-construction__header {
-  max-width: 760px;
-  margin: 0 auto 30px;
-  text-align: center;
-}
+    .icb-implementation-construction h2,
+    .icb-implementation-construction h3,
+    .icb-implementation-construction h4,
+    .icb-implementation-construction p,
+    .icb-implementation-construction ul,
+    .icb-implementation-construction li {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font: inherit;
+      vertical-align: baseline;
+    }
 
-.implementation-construction__title {
-  margin: 0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
- font-size: clamp(1.8rem, 3.2vw, 2.6rem);
-  line-height: 1.02;
-  font-weight: 640;
-  letter-spacing: -0.05em;
-  color: var(--implementation-construction-text-strong);
-  text-wrap: balance;
-}
+    .icb-implementation-construction ul {
+      list-style: disc;
+    }
 
-.implementation-construction__subtitle {
-  margin: 14px auto 0;
-  max-width: 720px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  font-weight: 520;
-  letter-spacing: -0.012em;
-  color: rgba(15, 23, 42, 0.68);
-  text-wrap: balance;
-}
+    .icb-implementation-construction__inner {
+      width: min(1160px, calc(100% - 48px));
+      margin: 0 auto;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
-.implementation-construction__layout {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-  align-items: start;
-}
+    .icb-implementation-construction__header {
+      max-width: 900px;
+      margin: 0 auto 42px;
+      text-align: center;
+    }
 
-.implementation-construction__column {
-  background: var(--implementation-construction-panel-bg);
-  border: 1px solid rgba(15, 23, 42, 0.05);
-  border-radius: var(--implementation-construction-radius-panel);
-  box-shadow: var(--implementation-construction-panel-shadow);
-  padding: 16px;
-}
+    .icb-implementation-construction__title {
+      font-size: clamp(2rem, 3.8vw, 3.15rem);
+      line-height: 1.07;
+      font-weight: 620;
+      letter-spacing: -0.04em;
+      color: #0f172a;
+      text-wrap: balance;
+    }
 
-.implementation-construction__column-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 4px 6px 12px;
-}
+    .icb-implementation-construction__subtitle {
+      margin-top: 20px;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: clamp(1rem, 1.5vw, 1.18rem);
+      line-height: 1.58;
+      font-weight: 460;
+      letter-spacing: -0.012em;
+      color: var(--ic-muted);
+      text-wrap: balance;
+    }
 
-.implementation-construction__column-title {
-  margin: 0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 1.3rem;
-  line-height: 1.15;
-  font-weight: 670;
-  letter-spacing: -0.03em;
-  color: var(--implementation-construction-text-strong);
-}
+    .icb-implementation-construction__layout {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
 
-.implementation-construction__surface {
-  background: transparent;
-  border: 0;
-  border-radius: var(--implementation-construction-radius-surface);
-  overflow: visible;
-  display: grid;
-  gap: 10px;
-}
+    .icb-implementation-construction__column {
+      background: var(--ic-panel-bg);
+      border: 1px solid var(--ic-column-border);
+      border-radius: 24px;
+      box-shadow: var(--ic-shadow-column);
+      padding: 26px;
+    }
 
-.implementation-construction__item {
-  position: relative;
-  background: var(--implementation-construction-surface-bg);
-  border: 1px solid var(--implementation-construction-border-soft);
-  border-radius: var(--implementation-construction-radius-row);
-  box-shadow: var(--implementation-construction-row-shadow);
-  transition:
-    background-color var(--implementation-construction-duration-fast) var(--implementation-construction-ease),
-    border-color var(--implementation-construction-duration-fast) var(--implementation-construction-ease),
-    box-shadow var(--implementation-construction-duration-fast) var(--implementation-construction-ease),
-    transform var(--implementation-construction-duration-fast) var(--implementation-construction-ease);
-}
+    .icb-implementation-construction__column-title {
+      font-size: clamp(1.45rem, 2vw, 1.72rem);
+      line-height: 1.15;
+      font-weight: 620;
+      letter-spacing: -0.025em;
+      color: #0f172a;
+    }
 
-.implementation-construction__item:hover {
-  background: #ffffff;
-  border-color: var(--implementation-construction-border);
-  transform: translateY(-1px);
-}
+    .icb-implementation-construction__cards {
+      margin-top: 20px;
+      display: grid;
+      gap: 16px;
+    }
 
-.implementation-construction__item.is-open {
-  background: linear-gradient(180deg, #ffffff 0%, #fcfcff 100%);
-  border-color: rgba(30, 58, 138, 0.14);
-  box-shadow:
-    0 12px 24px rgba(15, 23, 42, 0.04),
-    0 2px 8px rgba(30, 58, 138, 0.05);
-}
+    .icb-implementation-construction__card {
+      background: var(--ic-card-bg);
+      border: 1px solid var(--ic-border);
+      border-radius: 18px;
+      box-shadow: var(--ic-shadow-card);
+      padding: 24px 22px;
+      transition: transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease;
+    }
 
-.implementation-construction__heading {
-  margin: 0;
-}
+    .icb-implementation-construction__card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(17, 24, 39, 0.13);
+      box-shadow: var(--ic-shadow-card-hover);
+    }
 
-.implementation-construction__trigger {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) 28px;
-  gap: 14px;
-  align-items: start;
-  padding: 14px 16px;
-  border: 0;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-}
+    .icb-implementation-construction__card-title {
+      font-size: clamp(1.08rem, 1.45vw, 1.28rem);
+      line-height: 1.32;
+      font-weight: 605;
+      letter-spacing: -0.016em;
+      color: #0f172a;
+      text-wrap: pretty;
+    }
 
-.implementation-construction__trigger:focus-visible {
-  outline: 3px solid rgba(30, 58, 138, 0.18);
-  outline-offset: -3px;
-  border-radius: var(--implementation-construction-radius-row);
-}
+    .icb-implementation-construction__points {
+      margin-top: 14px;
+      padding-left: 1.05rem;
+      display: grid;
+      gap: 10px;
+    }
 
-.implementation-construction__number {
-  display: inline-flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  padding-top: 4px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 0.72rem;
-  line-height: 1;
-  font-weight: 720;
-  letter-spacing: 0.18em;
-  color: rgba(30, 58, 138, 0.82);
-  font-variant-numeric: tabular-nums;
-}
+    .icb-implementation-construction__points li {
+      font-size: 0.97rem;
+      line-height: 1.56;
+      font-weight: 430;
+      letter-spacing: -0.008em;
+      color: var(--ic-point);
+      text-wrap: pretty;
+    }
 
-.implementation-construction__copy {
-  min-width: 0;
-}
+    .icb-implementation-construction__footer {
+      margin-top: 34px;
+      text-align: center;
+      font-size: clamp(1rem, 1.25vw, 1.08rem);
+      line-height: 1.65;
+      font-weight: 500;
+      letter-spacing: -0.011em;
+      color: rgba(17, 24, 39, 0.74);
+      text-wrap: balance;
+    }
 
-.implementation-construction__topline {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
-  align-items: start;
-}
+    @media (max-width: 1024px) {
+      .icb-implementation-construction {
+        padding: 76px 0 82px;
+      }
 
-.implementation-construction__item-title {
-  display: block;
-  margin: 0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 0.98rem;
-  line-height: 1.42;
-  font-weight: 610;
-  letter-spacing: -0.016em;
-  color: var(--implementation-construction-text-strong);
-  text-wrap: pretty;
-}
+      .icb-implementation-construction__inner {
+        width: min(980px, calc(100% - 34px));
+      }
 
-.implementation-construction__meta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 24px;
-  padding: 0 8px;
-  border-radius: 999px;
-  background: var(--implementation-construction-meta-bg);
-  border: 1px solid rgba(30, 58, 138, 0.1);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 0.74rem;
-  line-height: 1;
-  font-weight: 590;
-  letter-spacing: -0.008em;
-  color: var(--implementation-construction-meta-text);
-  white-space: nowrap;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
+      .icb-implementation-construction__layout {
+        gap: 18px;
+      }
 
-.implementation-construction__chevron {
-  position: relative;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.04);
-  transition:
-    transform var(--implementation-construction-duration-base) var(--implementation-construction-ease),
-    background-color var(--implementation-construction-duration-fast) var(--implementation-construction-ease);
-}
+      .icb-implementation-construction__column {
+        padding: 22px;
+      }
+    }
 
-.implementation-construction__item:hover .implementation-construction__chevron {
-  background: rgba(15, 23, 42, 0.07);
-}
+    @media (max-width: 820px) {
+      .icb-implementation-construction {
+        padding: 66px 0 74px;
+      }
 
-.implementation-construction__chevron::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  width: 6px;
-  height: 6px;
-  margin: auto;
-  border-right: 1.6px solid rgba(15, 23, 42, 0.56);
-  border-bottom: 1.6px solid rgba(15, 23, 42, 0.56);
-  transform: rotate(45deg);
-  top: 8px;
-}
+      .icb-implementation-construction__layout {
+        grid-template-columns: 1fr;
+      }
 
-.implementation-construction__item.is-open .implementation-construction__chevron {
-  transform: rotate(180deg);
-  background: rgba(30, 58, 138, 0.12);
-}
+      .icb-implementation-construction__header {
+        margin-bottom: 32px;
+      }
+    }
 
-.implementation-construction__item.is-open .implementation-construction__chevron::before {
-  border-right-color: rgba(30, 58, 138, 0.9);
-  border-bottom-color: rgba(30, 58, 138, 0.9);
-}
+    @media (max-width: 560px) {
+      .icb-implementation-construction__inner {
+        width: calc(100% - 22px);
+      }
 
-.implementation-construction__panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows var(--implementation-construction-duration-base) var(--implementation-construction-ease);
-}
+      .icb-implementation-construction__title {
+        font-size: clamp(1.72rem, 8.2vw, 2.34rem);
+      }
 
-.implementation-construction__item.is-open .implementation-construction__panel {
-  grid-template-rows: 1fr;
-}
+      .icb-implementation-construction__subtitle {
+        font-size: 0.97rem;
+      }
 
-.implementation-construction__panel-inner {
-  overflow: hidden;
-}
+      .icb-implementation-construction__column {
+        border-radius: 20px;
+        padding: 18px;
+      }
 
-.implementation-construction__panel-content {
-  padding: 0 16px 14px 64px;
-}
+      .icb-implementation-construction__cards {
+        margin-top: 16px;
+        gap: 12px;
+      }
 
-.implementation-construction__description {
-  margin: 0;
-  max-width: 44ch;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 0.91rem;
-  line-height: 1.63;
-  font-weight: 430;
-  letter-spacing: -0.006em;
-  color: rgba(15, 23, 42, 0.72);
-  text-wrap: pretty;
-}
+      .icb-implementation-construction__card {
+        border-radius: 16px;
+        padding: 18px 16px;
+      }
 
-.implementation-construction__footer {
-  margin: 28px 0 0;
-  text-align: center;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 0.99rem;
-  line-height: 1.7;
-  font-weight: 520;
-  letter-spacing: -0.008em;
-  color: rgba(15, 23, 42, 0.65);
-}
+      .icb-implementation-construction__points {
+        margin-top: 12px;
+        gap: 8px;
+      }
 
-@media (max-width: 980px) {
-  .implementation-construction {
-    padding: 74px 0 82px;
-  }
+      .icb-implementation-construction__points li {
+        font-size: 0.93rem;
+        line-height: 1.48;
+      }
+    }
 
-  .implementation-construction__inner {
-    width: min(920px, calc(100% - 36px));
-  }
-
-  .implementation-construction__layout {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-}
-
-@media (max-width: 640px) {
-  .implementation-construction {
-    padding: 62px 0 70px;
-  }
-
-  .implementation-construction__inner {
-    width: calc(100% - 24px);
-  }
-
-  .implementation-construction__header {
-    margin-bottom: 26px;
-  }
-
-  .implementation-construction__title {
-    font-size: clamp(1.9rem, 9vw, 2.7rem);
-    line-height: 1.03;
-  }
-
-  .implementation-construction__subtitle {
-    font-size: 0.98rem;
-  }
-
-  .implementation-construction__column {
-    padding: 12px;
-    border-radius: 20px;
-  }
-
-  .implementation-construction__column-title {
-    font-size: 1.22rem;
-  }
-
-  .implementation-construction__surface {
-    gap: 8px;
-  }
-
-  .implementation-construction__trigger {
-    grid-template-columns: 28px minmax(0, 1fr) 26px;
-    gap: 10px;
-    padding: 13px 14px;
-  }
-
-  .implementation-construction__topline {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .implementation-construction__item-title {
-    font-size: 0.95rem;
-  }
-
-  .implementation-construction__meta {
-    width: fit-content;
-  }
-
-  .implementation-construction__panel-content {
-    padding: 0 14px 14px 52px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .implementation-construction__item,
-  .implementation-construction__chevron,
-  .implementation-construction__panel {
-    transition: none;
-  }
-}
-
-
-.implementation-construction,
-.implementation-construction *,
-.implementation-construction *::before,
-.implementation-construction *::after {
-  box-sizing: border-box;
-}
-
-.implementation-construction button {
-  appearance: none;
-  -webkit-appearance: none;
-  border-radius: 0;
-  font: inherit;
-  line-height: inherit;
-  color: inherit;
-}
-
-.implementation-construction__copy {
-  min-width: 0;
-  overflow: hidden;
-}
-
-.implementation-construction__topline {
-  min-width: 0;
-}
-
-.implementation-construction__item-title {
-  min-width: 0;
-}
-
-.implementation-construction__chevron {
-  flex-shrink: 0;
-}
-
+    @media (prefers-reduced-motion: reduce) {
+      .icb-implementation-construction__card {
+        transition: none;
+      }
+    }
   </style>
 </head>
 <body>
-<section class="implementation-construction" aria-labelledby="implementation-construction-title">
-    <div class="implementation-construction__inner">
-      <header class="implementation-construction__header">
-        <h2 id="implementation-construction-title" class="implementation-construction__title">
-          Вы инвестируете не в гараж — а в управляемый результат
+  <section class="icb-implementation-construction" aria-labelledby="icb-implementation-construction-title">
+    <div class="icb-implementation-construction__inner">
+      <header class="icb-implementation-construction__header">
+        <h2 id="icb-implementation-construction-title" class="icb-implementation-construction__title">
+          Вы инвестируете не в гараж —<br />
+          а в результат, который не разваливается на мелочах
         </h2>
-        <p class="implementation-construction__subtitle">
-          Процесс под контролем. Конструкция просчитана. Результат предсказуем.
+        <p class="icb-implementation-construction__subtitle">
+          Надёжность начинается не после монтажа,<br />
+          а с того, как ведут проект и как собрана сама система.
         </p>
       </header>
 
-      <div
-        class="implementation-construction__layout"
-        role="group"
-        aria-label="Системы контроля проекта и конструкции"
-      >
-        <section
-          class="implementation-construction__column implementation-construction__column--process"
-          aria-labelledby="implementation-construction-column-process-title"
-        >
-          <div class="implementation-construction__column-head">
-            <h3
-              id="implementation-construction-column-process-title"
-              class="implementation-construction__column-title"
-            >
-              Реализация
-            </h3>
-          </div>
+      <div class="icb-implementation-construction__layout" role="group" aria-label="Реализация и конструкция">
+        <section class="icb-implementation-construction__column" aria-labelledby="icb-column-process-title">
+          <h3 id="icb-column-process-title" class="icb-implementation-construction__column-title">Реализация</h3>
 
-          <div
-            class="implementation-construction__surface implementation-construction__surface--process"
-            data-implementation-construction-surface="process"
-            data-implementation-construction-accordion
-          ></div>
+          <div class="icb-implementation-construction__cards">
+            <article class="icb-implementation-construction__card">
+              <h4 class="icb-implementation-construction__card-title">Контроль с самого начала</h4>
+              <ul class="icb-implementation-construction__points">
+                <li>Исходные условия фиксируются до старта</li>
+                <li>Решение подбирается под конкретный участок</li>
+              </ul>
+            </article>
+
+            <article class="icb-implementation-construction__card">
+              <h4 class="icb-implementation-construction__card-title">Ответственность и управляемость</h4>
+              <ul class="icb-implementation-construction__points">
+                <li>Проект закреплён за конкретным ответственным</li>
+                <li>Этапы заданы заранее</li>
+              </ul>
+            </article>
+
+            <article class="icb-implementation-construction__card">
+              <h4 class="icb-implementation-construction__card-title">Последовательный контроль результата</h4>
+              <ul class="icb-implementation-construction__points">
+                <li>Каждый следующий этап начинается после проверки предыдущего</li>
+                <li>Сроки, условия и обязательства закреплены заранее</li>
+              </ul>
+            </article>
+          </div>
         </section>
 
-        <section
-          class="implementation-construction__column implementation-construction__column--construction"
-          aria-labelledby="implementation-construction-column-construction-title"
-        >
-          <div class="implementation-construction__column-head">
-            <h3
-              id="implementation-construction-column-construction-title"
-              class="implementation-construction__column-title"
-            >
-              Конструкция
-            </h3>
-          </div>
+        <section class="icb-implementation-construction__column" aria-labelledby="icb-column-construction-title">
+          <h3 id="icb-column-construction-title" class="icb-implementation-construction__column-title">Конструкция</h3>
 
-          <div
-            class="implementation-construction__surface implementation-construction__surface--construction"
-            data-implementation-construction-surface="construction"
-            data-implementation-construction-accordion
-          ></div>
+          <div class="icb-implementation-construction__cards">
+            <article class="icb-implementation-construction__card">
+              <h4 class="icb-implementation-construction__card-title">Конструкция под реальные нагрузки</h4>
+              <ul class="icb-implementation-construction__points">
+                <li>Подбор идёт под снег, ветер и региональные условия</li>
+                <li>Материалы задаются системой, а не по случаю</li>
+              </ul>
+            </article>
+
+            <article class="icb-implementation-construction__card">
+              <h4 class="icb-implementation-construction__card-title">Точность и узлы</h4>
+              <ul class="icb-implementation-construction__points">
+                <li>Геометрия контролируется на сборке</li>
+                <li>Узлы решены как инженерные точки</li>
+              </ul>
+            </article>
+
+            <article class="icb-implementation-construction__card">
+              <h4 class="icb-implementation-construction__card-title">Завершённая система</h4>
+              <ul class="icb-implementation-construction__points">
+                <li>Кровля, примыкания и водоотвод собраны в одну логику</li>
+                <li>Перед сдачей объект проходит финальную проверку</li>
+              </ul>
+            </article>
+          </div>
         </section>
       </div>
 
-      <p class="implementation-construction__footer" data-implementation-construction-footer></p>
-
-      <script type="application/json" id="implementation-construction-data">
-{
-  "title": "Реализация и конструкция под контролем",
-  "sections": [
-    {
-      "title": "Реализация",
-      "items": [
-        {
-          "number": "01",
-          "title": "Задача и параметры участка фиксируются до начала работ",
-          "status": "зафиксировано",
-          "description": "Исходные вводные согласованы заранее и становятся базой для всего проекта."
-        },
-        {
-          "number": "02",
-          "title": "Решение формируется с учётом участка и ограничений",
-          "status": "учтено",
-          "description": "План адаптируется под геометрию, подъезд, рельеф и реальные ограничения площадки."
-        },
-        {
-          "number": "03",
-          "title": "Ответственный закреплён за проектом на всём цикле",
-          "status": "закреплено",
-          "description": "Клиент работает с понятным контактом, который ведёт проект от старта до сдачи."
-        },
-        {
-          "number": "04",
-          "title": "Этапы и последовательность работ заданы заранее",
-          "status": "задано",
-          "description": "График собирается как управляемая система без случайных решений по ходу реализации."
-        },
-        {
-          "number": "05",
-          "title": "Каждый этап проходит контроль перед следующим",
-          "status": "проверяется",
-          "description": "Промежуточные проверки позволяют держать качество и последовательность под контролем."
-        },
-        {
-          "number": "06",
-          "title": "Условия, сроки и обязательства закреплены в договоре",
-          "status": "в договоре",
-          "description": "Ключевые параметры проекта формализованы и защищают обе стороны на всём цикле."
-        }
-      ]
-    },
-    {
-      "title": "Конструкция",
-      "items": [
-        {
-          "number": "01",
-          "title": "Конструкция рассчитывается под снеговую и ветровую нагрузку",
-          "status": "по расчёту",
-          "description": "Инженерная схема подбирается по расчётным воздействиям, а не по типовым допущениям."
-        },
-        {
-          "number": "02",
-          "title": "Материалы задаются по инженерной спецификации",
-          "status": "по спецификации",
-          "description": "Состав системы фиксируется заранее и исключает произвольные замены по ходу работ."
-        },
-        {
-          "number": "03",
-          "title": "Каркас собирается с контролем геометрии",
-          "status": "геометрия",
-          "description": "Точность сборки проверяется на ключевых этапах, чтобы система работала как единое целое."
-        },
-        {
-          "number": "04",
-          "title": "Узлы и соединения выполнены под расчётные нагрузки",
-          "status": "нагрузки",
-          "description": "Критические точки решаются как инженерные узлы с понятной логикой надёжности."
-        },
-        {
-          "number": "05",
-          "title": "Кровля и примыкания решены как часть системы",
-          "status": "система",
-          "description": "Герметичность, водоотвод и сопряжения закладываются в конструкцию, а не додумываются позже."
-        },
-        {
-          "number": "06",
-          "title": "Готовый объект проходит проверку перед сдачей",
-          "status": "перед сдачей",
-          "description": "Финальный контроль подтверждает соответствие проектным решениям и ожиданиям клиента."
-        }
-      ]
-    }
-  ],
-  "footer": "Надёжный результат начинается задолго до монтажа."
-}
-
-      </script>
+      <p class="icb-implementation-construction__footer">
+        Надёжный результат начинается не на монтаже.<br />
+        Он начинается в том, как принимаются решения до первого самореза.
+      </p>
     </div>
   </section>
-
-  <script>
-(function () {
-  const root = document.querySelector('.implementation-construction');
-
-  if (!root) {
-    return;
-  }
-
-  const processSurface = root.querySelector('[data-implementation-construction-surface="process"]');
-  const constructionSurface = root.querySelector('[data-implementation-construction-surface="construction"]');
-  const footerNode = root.querySelector('[data-implementation-construction-footer]');
-
-
-  function normalizeSectionKey(value) {
-    return String(value || '')
-      .trim()
-      .toLowerCase();
-  }
-
-  function resolveSectionGroup(sections) {
-    const result = {
-      process: null,
-      construction: null,
-      footer: ''
-    };
-
-    sections.forEach((section) => {
-      const key = normalizeSectionKey(section.section || section.slug || section.key || section.id || section.title);
-
-      if (!result.process && (key.includes('реал') || key.includes('process') || key.includes('implementation'))) {
-        result.process = section;
-        return;
-      }
-
-      if (!result.construction && (key.includes('констр') || key.includes('construction'))) {
-        result.construction = section;
-        return;
-      }
-
-      if (!result.footer && (key.includes('footer') || key.includes('итог') || key.includes('result'))) {
-        result.footer = section.text || section.content || section.description || '';
-      }
-    });
-
-    if (!result.process && sections[0]) {
-      result.process = sections[0];
-    }
-
-    if (!result.construction && sections[1]) {
-      result.construction = sections[1];
-    }
-
-    if (!result.footer) {
-      const footerCandidate = sections.find((section) => section.footer || section.text || section.content);
-      result.footer =
-        (footerCandidate && (footerCandidate.footer || footerCandidate.text || footerCandidate.content)) || '';
-    }
-
-    return result;
-  }
-
-  function getItems(section) {
-    if (!section) {
-      return [];
-    }
-
-    if (Array.isArray(section.items)) {
-      return section.items;
-    }
-
-    if (Array.isArray(section.points)) {
-      return section.points;
-    }
-
-    if (Array.isArray(section.entries)) {
-      return section.entries;
-    }
-
-    return [];
-  }
-
-  function createItem(itemData, columnKey, itemIndex) {
-    const item = document.createElement('article');
-    item.className = 'implementation-construction__item';
-
-    const heading = document.createElement('h4');
-    heading.className = 'implementation-construction__heading';
-
-    const trigger = document.createElement('button');
-    trigger.className = 'implementation-construction__trigger';
-    trigger.type = 'button';
-
-    const triggerId = `implementation-construction-${columnKey}-trigger-${itemIndex}`;
-    const panelId = `implementation-construction-${columnKey}-panel-${itemIndex}`;
-
-    trigger.id = triggerId;
-    trigger.setAttribute('aria-expanded', 'false');
-    trigger.setAttribute('aria-controls', panelId);
-
-    const number = document.createElement('span');
-    number.className = 'implementation-construction__number';
-    number.textContent = String(itemData.number || itemIndex + 1).padStart(2, '0');
-
-    const copy = document.createElement('span');
-    copy.className = 'implementation-construction__copy';
-
-    const top = document.createElement('span');
-    top.className = 'implementation-construction__topline';
-
-    const title = document.createElement('span');
-    title.className = 'implementation-construction__item-title';
-    title.textContent = itemData.title || '';
-
-    top.appendChild(title);
-
-    if (itemData.status) {
-      const meta = document.createElement('span');
-      meta.className = 'implementation-construction__meta';
-      meta.textContent = itemData.status;
-      top.appendChild(meta);
-    }
-
-    copy.appendChild(top);
-
-    const chevron = document.createElement('span');
-    chevron.className = 'implementation-construction__chevron';
-    chevron.setAttribute('aria-hidden', 'true');
-
-    trigger.appendChild(number);
-    trigger.appendChild(copy);
-    trigger.appendChild(chevron);
-    heading.appendChild(trigger);
-
-    const panel = document.createElement('div');
-    panel.className = 'implementation-construction__panel';
-    panel.id = panelId;
-    panel.hidden = true;
-    panel.setAttribute('aria-labelledby', triggerId);
-
-    const panelInner = document.createElement('div');
-    panelInner.className = 'implementation-construction__panel-inner';
-
-    const panelContent = document.createElement('div');
-    panelContent.className = 'implementation-construction__panel-content';
-
-    const description = document.createElement('p');
-    description.className = 'implementation-construction__description';
-    description.textContent = itemData.description || '';
-
-    panelContent.appendChild(description);
-    panelInner.appendChild(panelContent);
-    panel.appendChild(panelInner);
-
-    trigger.addEventListener('click', function () {
-      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
-      const nextOpenState = !isOpen;
-      trigger.setAttribute('aria-expanded', String(nextOpenState));
-      item.classList.toggle('is-open', nextOpenState);
-      panel.hidden = !nextOpenState;
-    });
-
-    item.appendChild(heading);
-    item.appendChild(panel);
-
-    return item;
-  }
-
-  function renderSection(surface, section, columnKey) {
-    surface.innerHTML = '';
-
-    getItems(section).forEach((itemData, itemIndex) => {
-      surface.appendChild(createItem(itemData, columnKey, itemIndex));
-    });
-  }
-
-  function getEmbeddedData() {
-    const dataNode = root.querySelector('#implementation-construction-data');
-
-    if (!dataNode) {
-      throw new Error('Embedded data node not found');
-    }
-
-    return JSON.parse(dataNode.textContent || '{}');
-  }
-
-  function init() {
-    try {
-      const data = getEmbeddedData();
-      const sections = Array.isArray(data.sections) ? data.sections : [];
-      const resolved = resolveSectionGroup(sections);
-
-      renderSection(processSurface, resolved.process, 'process');
-      renderSection(constructionSurface, resolved.construction, 'construction');
-
-      if (footerNode) {
-        footerNode.textContent =
-          data.footer ||
-          resolved.footer ||
-          'Надёжный результат начинается задолго до монтажа.';
-      }
-    } catch (error) {
-      console.error('[implementation-construction] render failed', error);
-
-      if (footerNode) {
-        footerNode.textContent = 'Надёжный результат начинается задолго до монтажа.';
-      }
-    }
-  }
-
-  init();
-})();
-
-  </script>
 </body>
 </html>
