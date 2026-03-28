@@ -50,37 +50,38 @@
     const panel = card.querySelector('.icv2-card__panel');
     const body = card.querySelector('.icv2-card__body');
 
+    function setExpandedState(isOpen) {
+      card.classList.toggle('is-open', isOpen);
+      trigger.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    function animateHeight(from, to) {
+      panel.style.height = `${from}px`;
+      // Force style/layout flush so the next write is animated consistently.
+      // eslint-disable-next-line no-unused-expressions
+      panel.offsetHeight;
+      panel.style.height = `${to}px`;
+    }
+
     function openCard() {
-      card.classList.add('is-open');
-      trigger.setAttribute('aria-expanded', 'true');
-      panel.style.height = `${body.scrollHeight}px`;
+      const startHeight = panel.getBoundingClientRect().height;
+      setExpandedState(true);
+      const targetHeight = body.scrollHeight;
+      animateHeight(startHeight, targetHeight);
     }
 
     function closeCard() {
-      card.classList.remove('is-open');
-      trigger.setAttribute('aria-expanded', 'false');
-      panel.style.height = `${panel.scrollHeight}px`;
-      requestAnimationFrame(() => {
-        panel.style.height = '0px';
-      });
+      const startHeight = panel.getBoundingClientRect().height || body.scrollHeight;
+      setExpandedState(false);
+      animateHeight(startHeight, 0);
     }
 
     trigger.addEventListener('click', function () {
       const isOpen = card.classList.contains('is-open');
 
       cardRegistry[columnKey].forEach(function (entry) {
-        if (entry !== card && entry.classList.contains('is-open')) {
-          const entryTrigger = entry.querySelector('.icv2-card__trigger');
-          const entryPanel = entry.querySelector('.icv2-card__panel');
-          const entryBody = entry.querySelector('.icv2-card__body');
-
-          entry.classList.remove('is-open');
-          entryTrigger.setAttribute('aria-expanded', 'false');
-          entryPanel.style.height = `${entryPanel.scrollHeight}px`;
-          requestAnimationFrame(function () {
-            entryPanel.style.height = '0px';
-          });
-          if (!entryBody) return;
+        if (entry.card !== card && entry.card.classList.contains('is-open')) {
+          entry.close();
         }
       });
 
@@ -98,7 +99,11 @@
       }
     });
 
-    return card;
+    return {
+      card,
+      open: openCard,
+      close: closeCard
+    };
   }
 
   ['implementation', 'construction'].forEach(function (columnKey) {
@@ -107,32 +112,22 @@
     if (!stack || items.length === 0) return;
 
     items.forEach(function (item, index) {
-      const card = createCard(item, columnKey, index);
-      stack.appendChild(card);
-      cardRegistry[columnKey].push(card);
+      const entry = createCard(item, columnKey, index);
+      stack.appendChild(entry.card);
+      cardRegistry[columnKey].push(entry);
     });
 
-    const firstCard = cardRegistry[columnKey][0];
-    if (!firstCard) return;
+    const firstEntry = cardRegistry[columnKey][0];
+    if (!firstEntry) return;
 
-    firstCard.classList.add('is-open');
-    const firstTrigger = firstCard.querySelector('.icv2-card__trigger');
-    const firstPanel = firstCard.querySelector('.icv2-card__panel');
-    const firstBody = firstCard.querySelector('.icv2-card__body');
-
-    firstTrigger.setAttribute('aria-expanded', 'true');
-    firstPanel.style.height = `${firstBody.scrollHeight}px`;
-
-    requestAnimationFrame(function () {
-      firstPanel.style.height = 'auto';
-    });
+    firstEntry.open();
   });
 
   window.addEventListener('resize', function () {
     ['implementation', 'construction'].forEach(function (columnKey) {
-      cardRegistry[columnKey].forEach(function (card) {
-        if (!card.classList.contains('is-open')) return;
-        const panel = card.querySelector('.icv2-card__panel');
+      cardRegistry[columnKey].forEach(function (entry) {
+        if (!entry.card.classList.contains('is-open')) return;
+        const panel = entry.card.querySelector('.icv2-card__panel');
         panel.style.height = 'auto';
       });
     });

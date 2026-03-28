@@ -212,23 +212,22 @@ body {
 .icv2-card__panel {
   height: 0;
   overflow: hidden;
+  will-change: height;
   transition: height 340ms var(--icv2-ease);
 }
 
 .icv2-card__body {
   opacity: 0;
   transform: translateY(-4px);
-  padding: 0 20px 0 58px;
+  padding: 0 20px 20px 58px;
   transition:
-    opacity 240ms ease,
-    transform 240ms var(--icv2-ease),
-    padding-bottom 340ms var(--icv2-ease);
+    opacity 220ms ease,
+    transform 260ms var(--icv2-ease);
 }
 
 .icv2-card.is-open .icv2-card__body {
   opacity: 1;
   transform: translateY(0);
-  padding-bottom: 20px;
 }
 
 .icv2-card__description {
@@ -278,12 +277,9 @@ body {
   }
 
   .icv2-card__body {
-    padding: 0 16px 0 44px;
+    padding: 0 16px 16px 44px;
   }
 
-  .icv2-card.is-open .icv2-card__body {
-    padding-bottom: 16px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
