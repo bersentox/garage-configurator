@@ -59,10 +59,10 @@ body {
 
 .icv2__title {
   margin: 0;
-  font-size: clamp(1.68rem, 3vw, 2.5rem);
-  line-height: 1.04;
-  letter-spacing: -0.04em;
-  font-weight: 640;
+  font-size: clamp(1.72rem, 3.15vw, 2.68rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 620;
   text-wrap: balance;
 }
 
@@ -71,15 +71,12 @@ body {
 }
 
 .title-line--light {
-  display: block;
-  font-weight: 560;
-  color: rgba(15, 23, 42, 0.88);
+  font-weight: 500;
+  color: rgba(15, 23, 42, 0.7);
 }
 
 .title-line--strong {
-  display: block;
-  margin-top: 0.06em;
-  font-weight: 680;
+  font-weight: 650;
   color: #0b1220;
 }
 
