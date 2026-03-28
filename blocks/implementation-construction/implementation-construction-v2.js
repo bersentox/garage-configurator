@@ -42,7 +42,7 @@
 
     const title = escapeHtml(item.title || '');
     const support = escapeHtml(item.support || '').replace(/\n/g, '<br>');
-    const description = escapeHtml(item.description || '');
+    const description = escapeHtml(item.description || '').replace(/\n{2,}/g, '<br><br>');
 
     card.innerHTML = `
       <button class="icv2-card__trigger" type="button" aria-expanded="false" aria-controls="${panelId}">
