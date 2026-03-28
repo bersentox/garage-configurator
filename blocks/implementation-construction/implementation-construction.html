@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Implementation Construction T123 Embed — refined</title>
+  <style>
+.implementation-construction {
+  --implementation-construction-page-bg:
+    radial-gradient(1200px 600px at 50% -10%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 60%),
+    linear-gradient(180deg, #f3f6fa 0%, #eef2f7 100%);
+  --implementation-construction-panel-bg: rgba(255, 255, 255, 0.58);
+  --implementation-construction-panel-bg-strong: rgba(255, 255, 255, 0.72);
+  --implementation-construction-surface-bg: rgba(255, 255, 255, 0.92);
+  --implementation-construction-surface-open: #ffffff;
+  --implementation-construction-border: rgba(15, 23, 42, 0.10);
+  --implementation-construction-border-soft: rgba(15, 23, 42, 0.06);
+  --implementation-construction-text: #172033;
+  --implementation-construction-text-strong: #0b1220;
+  --implementation-construction-text-muted: rgba(15, 23, 42, 0.64);
+  --implementation-construction-accent: #1e3a8a;
+  --implementation-construction-accent-soft: rgba(30, 58, 138, 0.08);
+  --implementation-construction-process-accent: #0f172a;
+  --implementation-construction-construction-accent: #9a5b1a;
+  --implementation-construction-panel-shadow:
+    0 22px 56px rgba(15, 23, 42, 0.06),
+    0 4px 14px rgba(15, 23, 42, 0.03);
+  --implementation-construction-row-shadow:
+    0 10px 28px rgba(15, 23, 42, 0.05),
+    0 1px 4px rgba(15, 23, 42, 0.03);
+  --implementation-construction-row-shadow-open:
+    0 20px 44px rgba(15, 23, 42, 0.10),
+    0 4px 12px rgba(15, 23, 42, 0.04);
+  --implementation-construction-radius-panel: 28px;
+  --implementation-construction-radius-surface: 22px;
+  --implementation-construction-radius-row: 18px;
+  --implementation-construction-duration-fast: 180ms;
+  --implementation-construction-duration-base: 240ms;
+  --implementation-construction-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  background: var(--implementation-construction-page-bg);
+  color: var(--implementation-construction-text);
+  padding: 20px 0 40px;
+}
+
+.implementation-construction__inner {
+  width: min(1200px, calc(100% - 52px));
+  margin: 0 auto;
+}
+
+.implementation-construction__header {
+  max-width: 860px;
+  margin: 0 auto 38px;
+  text-align: center;
+}
+
+.implementation-construction__title {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(2.2rem, 4.1vw, 3.55rem);
+  line-height: 0.97;
+  font-weight: 690;
+  letter-spacing: -0.062em;
+  color: var(--implementation-construction-text-strong);
+  text-wrap: balance;
+}
+
+.implementation-construction__subtitle {
+  margin: 18px auto 0;
+  max-width: 760px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(1.04rem, 1.55vw, 1.22rem);
+  line-height: 1.58;
+  font-weight: 510;
+  letter-spacing: -0.014em;
+  color: rgba(15, 23, 42, 0.72);
+  text-wrap: balance;
+}
+
+.implementation-construction__layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.implementation-construction__column {
+  position: relative;
+  background: var(--implementation-construction-panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: var(--implementation-construction-radius-panel);
+  box-shadow: var(--implementation-construction-panel-shadow);
+  padding: 20px;
+  overflow: hidden;
+}
+
+.implementation-construction__column::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0.08) 100%);
+  pointer-events: none;
+}
+
+.implementation-construction__column-head,
+.implementation-construction__surface {
+  position: relative;
+  z-index: 1;
+}
+
+.implementation-construction__column-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  padding: 2px 2px 14px;
+}
+
+.implementation-construction__column-title {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.42rem;
+  line-height: 1.1;
+  font-weight: 680;
+  letter-spacing: -0.034em;
+  color: var(--implementation-construction-text-strong);
+}
+
+.implementation-construction__column-note {
+  margin: 0;
+  max-width: 50ch;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.93rem;
+  line-height: 1.55;
+  font-weight: 500;
+  letter-spacing: -0.009em;
+  color: rgba(15, 23, 42, 0.60);
+}
+
+.implementation-construction__surface {
+  background: transparent;
+  border: 0;
+  border-radius: var(--implementation-construction-radius-surface);
+  overflow: visible;
+  display: grid;
+  gap: 14px;
+}
+
+.implementation-construction__item {
+  position: relative;
+  background: var(--implementation-construction-surface-bg);
+  border: 1px solid var(--implementation-construction-border-soft);
+  border-radius: var(--implementation-construction-radius-row);
+  box-shadow: var(--implementation-construction-row-shadow);
+  transition:
+    background-color var(--implementation-construction-duration-fast) var(--implementation-construction-ease),
+    border-color var(--implementation-construction-duration-fast) var(--implementation-construction-ease),
+    box-shadow var(--implementation-construction-duration-fast) var(--implementation-construction-ease),
+    transform var(--implementation-construction-duration-fast) var(--implementation-construction-ease);
+}
+
+.implementation-construction__item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 3px;
+  border-radius: 999px;
+  background: transparent;
+  transition:
+    background-color var(--implementation-construction-duration-fast) var(--implementation-construction-ease),
+    opacity var(--implementation-construction-duration-fast) var(--implementation-construction-ease);
+  opacity: 0;
+}
+
+.implementation-construction__column--process .implementation-construction__item.is-open::before {
+  background: var(--implementation-construction-process-accent);
+  opacity: 1;
+}
+
+.implementation-construction__column--construction .implementation-construction__item.is-open::before {
+  background: var(--implementation-construction-construction-accent);
+  opacity: 1;
+}
+
+.implementation-construction__item:hover {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.10);
+  transform: translateY(-2px);
+}
+
+.implementation-construction__item.is-open {
+  background: var(--implementation-construction-surface-open);
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow: var(--implementation-construction-row-shadow-open);
+}
+
+.implementation-construction__heading {
+  margin: 0;
+}
+
+.implementation-construction__trigger {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 32px;
+  gap: 16px;
+  align-items: start;
+  padding: 20px 20px 18px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.implementation-construction__trigger:focus-visible {
+  outline: 3px solid rgba(30, 58, 138, 0.18);
+  outline-offset: -3px;
+  border-radius: var(--implementation-construction-radius-row);
+}
+
+.implementation-construction__number {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: 5px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  line-height: 1;
+  font-weight: 760;
+  letter-spacing: 0.20em;
+  color: rgba(15, 23, 42, 0.42);
+  font-variant-numeric: tabular-nums;
+}
+
+.implementation-construction__copy {
+  min-width: 0;
+}
+
+.implementation-construction__topline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  min-width: 0;
+}
+
+.implementation-construction__item-title {
+  display: block;
+  margin: 0;
+  min-width: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.08rem;
+  line-height: 1.42;
+  font-weight: 655;
+  letter-spacing: -0.020em;
+  color: var(--implementation-construction-text-strong);
+  text-wrap: pretty;
+}
+
+.implementation-construction__lead {
+  display: block;
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.90rem;
+  line-height: 1.55;
+  font-weight: 520;
+  letter-spacing: -0.008em;
+  color: rgba(15, 23, 42, 0.58);
+  text-wrap: pretty;
+}
+
+.implementation-construction__meta {
+  display: none;
+}
+
+.implementation-construction__chevron {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.045);
+  transition:
+    transform var(--implementation-construction-duration-base) var(--implementation-construction-ease),
+    background-color var(--implementation-construction-duration-fast) var(--implementation-construction-ease);
+  flex-shrink: 0;
+}
+
+.implementation-construction__item:hover .implementation-construction__chevron {
+  background: rgba(15, 23, 42, 0.075);
+}
+
+.implementation-construction__chevron::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 7px;
+  height: 7px;
+  margin: auto;
+  border-right: 1.7px solid rgba(15, 23, 42, 0.62);
+  border-bottom: 1.7px solid rgba(15, 23, 42, 0.62);
+  transform: rotate(45deg);
+  top: 8px;
+}
+
+.implementation-construction__item.is-open .implementation-construction__chevron {
+  transform: rotate(180deg);
+  background: rgba(15, 23, 42, 0.09);
+}
+
+.implementation-construction__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--implementation-construction-duration-base) var(--implementation-construction-ease);
+}
+
+.implementation-construction__item.is-open .implementation-construction__panel {
+  grid-template-rows: 1fr;
+}
+
+.implementation-construction__panel-inner {
+  overflow: hidden;
+}
+
+.implementation-construction__panel-content {
+  padding: 0 20px 20px 74px;
+}
+
+.implementation-construction__description {
+  margin: 0;
+  max-width: none;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.72;
+  font-weight: 470;
+  letter-spacing: -0.006em;
+  color: rgba(15, 23, 42, 0.76);
+  text-wrap: pretty;
+}
+
+.implementation-construction__footer {
+  margin: 34px auto 0;
+  max-width: 820px;
+  text-align: center;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  font-weight: 540;
+  letter-spacing: -0.010em;
+  color: rgba(15, 23, 42, 0.68);
+  text-wrap: balance;
+}
+
+@media (max-width: 980px) {
+  .implementation-construction {
+    padding: 80px 0 88px;
+  }
+
+  .implementation-construction__inner {
+    width: min(960px, calc(100% - 36px));
+  }
+
+  .implementation-construction__layout {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .implementation-construction__header {
+    margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 640px) {
+  .implementation-construction {
+    padding: 66px 0 74px;
+  }
+
+  .implementation-construction__inner {
+    width: calc(100% - 22px);
+  }
+
+  .implementation-construction__title {
+    font-size: clamp(1.9rem, 9vw, 2.7rem);
+    line-height: 1.01;
+  }
+
+  .implementation-construction__subtitle {
+    font-size: 0.98rem;
+  }
+
+  .implementation-construction__column {
+    padding: 14px;
+    border-radius: 22px;
+  }
+
+  .implementation-construction__column-title {
+    font-size: 1.28rem;
+  }
+
+  .implementation-construction__column-note {
+    font-size: 0.9rem;
+  }
+
+  .implementation-construction__surface {
+    gap: 10px;
+  }
+
+  .implementation-construction__trigger {
+    grid-template-columns: 30px minmax(0, 1fr) 28px;
+    gap: 12px;
+    padding: 16px 15px 15px;
+  }
+
+  .implementation-construction__item-title {
+    font-size: 0.99rem;
+  }
+
+  .implementation-construction__lead {
+    font-size: 0.86rem;
+  }
+
+  .implementation-construction__panel-content {
+    padding: 0 15px 16px 57px;
+  }
+
+  .implementation-construction__description {
+    font-size: 0.91rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .implementation-construction__item,
+  .implementation-construction__chevron,
+  .implementation-construction__panel {
+    transition: none;
+  }
+}
+
+.implementation-construction,
+.implementation-construction *,
+.implementation-construction *::before,
+.implementation-construction *::after {
+  box-sizing: border-box;
+}
+
+.implementation-construction button {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+  </style>
+</head>
+<body>
+<section class="implementation-construction" aria-labelledby="implementation-construction-title">
+  <div class="implementation-construction__inner">
+    <header class="implementation-construction__header">
+      <h2 id="implementation-construction-title" class="implementation-construction__title">
+        Вы инвестируете не в гараж — а в результат, который не разваливается на мелочах
+      </h2>
+      <p class="implementation-construction__subtitle">
+        Надёжность начинается не с красивой картинки после монтажа, а с того, как ведут проект и как собрана сама система.
+      </p>
+    </header>
+
+    <div
+      class="implementation-construction__layout"
+      role="group"
+      aria-label="Реализация проекта и конструктивная надёжность"
+    >
+      <section
+        class="implementation-construction__column implementation-construction__column--process"
+        aria-labelledby="implementation-construction-column-process-title"
+      >
+        <div class="implementation-construction__column-head">
+          <h3
+            id="implementation-construction-column-process-title"
+            class="implementation-construction__column-title"
+          >
+            Реализация
+          </h3>
+          <p class="implementation-construction__column-note">
+            Всё, что связано с людьми, организацией и тем, насколько проект вообще удерживается в руках.
+          </p>
+        </div>
+
+        <div
+          class="implementation-construction__surface implementation-construction__surface--process"
+          data-implementation-construction-surface="process"
+          data-implementation-construction-accordion
+        ></div>
+      </section>
+
+      <section
+        class="implementation-construction__column implementation-construction__column--construction"
+        aria-labelledby="implementation-construction-column-construction-title"
+      >
+        <div class="implementation-construction__column-head">
+          <h3
+            id="implementation-construction-column-construction-title"
+            class="implementation-construction__column-title"
+          >
+            Конструкция
+          </h3>
+          <p class="implementation-construction__column-note">
+            Всё, что отвечает за прочность, геометрию, узлы и то, как объект поведёт себя в реальной эксплуатации.
+          </p>
+        </div>
+
+        <div
+          class="implementation-construction__surface implementation-construction__surface--construction"
+          data-implementation-construction-surface="construction"
+          data-implementation-construction-accordion
+        ></div>
+      </section>
+    </div>
+
+    <p class="implementation-construction__footer" data-implementation-construction-footer></p>
+
+    <script type="application/json" id="implementation-construction-data">
+{
+  "sections": [
+    {
+      "title": "Реализация",
+      "items": [
+        {
+          "number": "01",
+          "title": "Исходные условия фиксируются до старта",
+          "lead": "Участок, задачи, ограничения и сценарий использования не остаются «на словах».",
+          "description": "До начала работ проект собирается на понятных вводных: что нужно разместить, как будет использоваться гараж, где ограничения участка, какой подъезд, рельеф, вода, отступы и привязки. Это убирает типовую ситуацию, когда половина решений появляется уже на монтаже и начинает тянуть за собой переделки."
+        },
+        {
+          "number": "02",
+          "title": "Решение подбирается под конкретный участок",
+          "lead": "Не шаблон переносится на площадку, а площадка задаёт логику решения.",
+          "description": "Габариты, въезд, уклон, ориентация, соседние строения и реальные условия участка влияют на компоновку ещё до производства. За счёт этого проект не выглядит правильным только на экране, а нормально встаёт на местности без случайных компромиссов."
+        },
+        {
+          "number": "03",
+          "title": "Проект закреплён за конкретным ответственным",
+          "lead": "Есть один понятный контур управления вместо цепочки «спросите у другого».",
+          "description": "Когда за проектом закреплён ответственный, решения не расползаются между менеджером, бригадой и «кем-то на производстве». Клиенту не приходится собирать картину по кускам. Есть человек, который держит контекст, сроки, договорённости и переход между этапами."
+        },
+        {
+          "number": "04",
+          "title": "Этапы заданы заранее, а не рождаются по ходу",
+          "lead": "Последовательность работ должна быть собрана до выхода на участок.",
+          "description": "Нормальный монтаж — это не набор импровизаций. Когда этапы, последовательность и узкие места продуманы заранее, снижается риск накладок, простоя, конфликтов между смежными операциями и решений в духе «сейчас как-нибудь сделаем, потом додумаем»."
+        },
+        {
+          "number": "05",
+          "title": "Каждый следующий этап начинается после проверки предыдущего",
+          "lead": "Качество удерживается не обещанием, а последовательным контролем.",
+          "description": "На практике большинство проблем появляется не в финале, а сильно раньше — когда ошибка одного этапа прячется под следующим. Поэтому промежуточная проверка важнее красивой сдачи в самом конце: она позволяет поймать отклонение тогда, когда его ещё можно исправить без потери качества и времени."
+        },
+        {
+          "number": "06",
+          "title": "Сроки, условия и обязательства закреплены заранее",
+          "lead": "Ключевые параметры проекта не должны зависеть от памяти или настроения.",
+          "description": "Когда сроки, состав работ, обязательства сторон и рамки результата зафиксированы, у проекта появляется нормальный контур ответственности. Это защищает не только клиента, но и сам процесс: меньше двусмысленности, меньше размытых обещаний, меньше пространства для хаоса."
+        }
+      ]
+    },
+    {
+      "title": "Конструкция",
+      "items": [
+        {
+          "number": "01",
+          "title": "Конструкция подбирается под реальные нагрузки",
+          "lead": "Снег, ветер и региональные условия — это база, а не «дополнительная опция».",
+          "description": "Надёжность начинается с расчётной логики. Когда каркас и схема работы конструкции завязаны на реальные снеговые и ветровые воздействия, объект не существует только в рекламной логике «вроде должно стоять». Он рассчитан на среду, в которой будет стоять годами."
+        },
+        {
+          "number": "02",
+          "title": "Материалы задаются по системе, а не по случаю",
+          "lead": "Состав объекта должен быть понятен до выхода в производство.",
+          "description": "Если материалы и элементы не заданы заранее, они начинают меняться по пути: где-то «подобрали аналог», где-то упростили узел, где-то заменили то, что было в голове. Инженерная спецификация нужна именно затем, чтобы объект собирался как система, а не как набор приблизительно подходящих частей."
+        },
+        {
+          "number": "03",
+          "title": "Геометрия держится под контролем на сборке",
+          "lead": "Точная посадка элементов важнее, чем кажется на первых метрах монтажа.",
+          "description": "Гараж может выглядеть собранным и при этом уже иметь накопленные ошибки по осям, диагоналям и сопряжениям. Потом это вылезает в воротах, примыканиях, кровле, нагрузке на узлы и общем ощущении «что-то всё время работает не так». Поэтому геометрия — не эстетика, а основа корректной работы всей системы."
+        },
+        {
+          "number": "04",
+          "title": "Узлы и соединения решены как инженерные точки",
+          "lead": "Критические места не должны оставаться «на усмотрение монтажника».",
+          "description": "Именно узлы чаще всего определяют, сколько проживёт объект и как он будет переносить нагрузку, вибрацию, температурные циклы и эксплуатацию. Когда соединения продуманы заранее и выполнены под свою задачу, конструкция работает как единое целое, а не как набор деталей, соединённых по месту."
+        },
+        {
+          "number": "05",
+          "title": "Кровля, примыкания и водоотвод собраны в одну логику",
+          "lead": "Вода почти всегда находит самое слабое место быстрее хозяина.",
+          "description": "Проблемы с влагой часто начинаются не из-за одного «плохого элемента», а из-за того, что кровля, примыкания, стыки и отвод воды никто не собрал в единую систему. Когда эти решения увязаны между собой сразу, объект остаётся сухим и спокойным в эксплуатации, а не требует постоянных мелких доработок."
+        },
+        {
+          "number": "06",
+          "title": "Перед сдачей объект проходит финальную проверку",
+          "lead": "Результат должен быть подтверждён, а не просто показан.",
+          "description": "Финальная проверка нужна не для галочки. Это момент, когда проект сверяется с тем, что было задумано и обещано: по геометрии, узлам, сопряжениям, функциональности и общему качеству исполнения. Только после этого объект действительно можно считать завершённым."
+        }
+      ]
+    }
+  ],
+  "footer": "Надёжный результат начинается не на монтаже. Он начинается в том, как принимаются решения до первого самореза."
+}
+    </script>
+  </div>
+</section>
+
+<script>
+(function () {
+  const root = document.querySelector('.implementation-construction');
+
+  if (!root) {
+    return;
+  }
+
+  const processSurface = root.querySelector('[data-implementation-construction-surface="process"]');
+  const constructionSurface = root.querySelector('[data-implementation-construction-surface="construction"]');
+  const footerNode = root.querySelector('[data-implementation-construction-footer]');
+
+  function normalizeSectionKey(value) {
+    return String(value || '')
+      .trim()
+      .toLowerCase();
+  }
+
+  function resolveSectionGroup(sections) {
+    const result = {
+      process: null,
+      construction: null,
+      footer: ''
+    };
+
+    sections.forEach((section) => {
+      const key = normalizeSectionKey(section.section || section.slug || section.key || section.id || section.title);
+
+      if (!result.process && (key.includes('реал') || key.includes('process') || key.includes('implementation'))) {
+        result.process = section;
+        return;
+      }
+
+      if (!result.construction && (key.includes('констр') || key.includes('construction'))) {
+        result.construction = section;
+        return;
+      }
+
+      if (!result.footer && (key.includes('footer') || key.includes('итог') || key.includes('result'))) {
+        result.footer = section.text || section.content || section.description || '';
+      }
+    });
+
+    if (!result.process && sections[0]) {
+      result.process = sections[0];
+    }
+
+    if (!result.construction && sections[1]) {
+      result.construction = sections[1];
+    }
+
+    if (!result.footer) {
+      const footerCandidate = sections.find((section) => section.footer || section.text || section.content);
+      result.footer =
+        (footerCandidate && (footerCandidate.footer || footerCandidate.text || footerCandidate.content)) || '';
+    }
+
+    return result;
+  }
+
+  function getItems(section) {
+    if (!section) {
+      return [];
+    }
+
+    if (Array.isArray(section.items)) {
+      return section.items;
+    }
+
+    if (Array.isArray(section.points)) {
+      return section.points;
+    }
+
+    if (Array.isArray(section.entries)) {
+      return section.entries;
+    }
+
+    return [];
+  }
+
+  function createItem(itemData, columnKey, itemIndex) {
+    const item = document.createElement('article');
+    item.className = 'implementation-construction__item';
+
+    const heading = document.createElement('h4');
+    heading.className = 'implementation-construction__heading';
+
+    const trigger = document.createElement('button');
+    trigger.className = 'implementation-construction__trigger';
+    trigger.type = 'button';
+
+    const triggerId = `implementation-construction-${columnKey}-trigger-${itemIndex}`;
+    const panelId = `implementation-construction-${columnKey}-panel-${itemIndex}`;
+
+    trigger.id = triggerId;
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.setAttribute('aria-controls', panelId);
+
+    const number = document.createElement('span');
+    number.className = 'implementation-construction__number';
+    number.textContent = String(itemData.number || itemIndex + 1).padStart(2, '0');
+
+    const copy = document.createElement('span');
+    copy.className = 'implementation-construction__copy';
+
+    const top = document.createElement('span');
+    top.className = 'implementation-construction__topline';
+
+    const title = document.createElement('span');
+    title.className = 'implementation-construction__item-title';
+    title.textContent = itemData.title || '';
+
+    top.appendChild(title);
+
+    if (itemData.lead) {
+      const lead = document.createElement('span');
+      lead.className = 'implementation-construction__lead';
+      lead.textContent = itemData.lead;
+      top.appendChild(lead);
+    }
+
+    if (itemData.status) {
+      const meta = document.createElement('span');
+      meta.className = 'implementation-construction__meta';
+      meta.textContent = itemData.status;
+      top.appendChild(meta);
+    }
+
+    copy.appendChild(top);
+
+    const chevron = document.createElement('span');
+    chevron.className = 'implementation-construction__chevron';
+    chevron.setAttribute('aria-hidden', 'true');
+
+    trigger.appendChild(number);
+    trigger.appendChild(copy);
+    trigger.appendChild(chevron);
+    heading.appendChild(trigger);
+
+    const panel = document.createElement('div');
+    panel.className = 'implementation-construction__panel';
+    panel.id = panelId;
+    panel.hidden = true;
+    panel.setAttribute('aria-labelledby', triggerId);
+
+    const panelInner = document.createElement('div');
+    panelInner.className = 'implementation-construction__panel-inner';
+
+    const panelContent = document.createElement('div');
+    panelContent.className = 'implementation-construction__panel-content';
+
+    const description = document.createElement('p');
+    description.className = 'implementation-construction__description';
+    description.textContent = itemData.description || '';
+
+    panelContent.appendChild(description);
+    panelInner.appendChild(panelContent);
+    panel.appendChild(panelInner);
+
+    trigger.addEventListener('click', function () {
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      const nextOpenState = !isOpen;
+      trigger.setAttribute('aria-expanded', String(nextOpenState));
+      item.classList.toggle('is-open', nextOpenState);
+      panel.hidden = !nextOpenState;
+    });
+
+    item.appendChild(heading);
+    item.appendChild(panel);
+
+    return item;
+  }
+
+  function renderSection(surface, section, columnKey) {
+    surface.innerHTML = '';
+
+    getItems(section).forEach((itemData, itemIndex) => {
+      surface.appendChild(createItem(itemData, columnKey, itemIndex));
+    });
+  }
+
+  function getEmbeddedData() {
+    const dataNode = root.querySelector('#implementation-construction-data');
+
+    if (!dataNode) {
+      throw new Error('Embedded data node not found');
+    }
+
+    return JSON.parse(dataNode.textContent || '{}');
+  }
+
+  function init() {
+    try {
+      const data = getEmbeddedData();
+      const sections = Array.isArray(data.sections) ? data.sections : [];
+      const resolved = resolveSectionGroup(sections);
+
+      renderSection(processSurface, resolved.process, 'process');
+      renderSection(constructionSurface, resolved.construction, 'construction');
+
+      if (footerNode) {
+        footerNode.textContent =
+          data.footer ||
+          resolved.footer ||
+          'Надёжный результат начинается до монтажа.';
+      }
+    } catch (error) {
+      console.error('[implementation-construction] render failed', error);
+
+      if (footerNode) {
+        footerNode.textContent = 'Надёжный результат начинается до монтажа.';
+      }
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
