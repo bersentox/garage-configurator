@@ -1,19 +1,17 @@
 .implementation-construction {
-  --ic-bg: #f4f6f8;
-  --ic-panel-bg: #ffffff;
-  --ic-card-bg: #ffffff;
-  --ic-text: #111827;
-  --ic-muted: rgba(17, 24, 39, 0.68);
-  --ic-point: rgba(17, 24, 39, 0.78);
-  --ic-border: rgba(17, 24, 39, 0.08);
-  --ic-column-border: rgba(17, 24, 39, 0.07);
-  --ic-shadow-column: 0 18px 44px rgba(15, 23, 42, 0.06), 0 2px 8px rgba(15, 23, 42, 0.03);
-  --ic-shadow-card: 0 10px 28px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
-  --ic-shadow-card-hover: 0 14px 34px rgba(15, 23, 42, 0.08), 0 3px 8px rgba(15, 23, 42, 0.04);
+  --ic-bg: #f3f4f2;
+  --ic-surface: #f7f8f6;
+  --ic-text: #171c22;
+  --ic-muted: rgba(23, 28, 34, 0.68);
+  --ic-soft: rgba(23, 28, 34, 0.54);
+  --ic-line: rgba(23, 28, 34, 0.14);
+  --ic-card-border: rgba(23, 28, 34, 0.12);
+  --ic-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), 0 12px 28px rgba(13, 20, 28, 0.06);
+  --ic-shadow-hover: 0 1px 0 rgba(255, 255, 255, 0.85), 0 18px 34px rgba(13, 20, 28, 0.1);
 
-  background: var(--ic-bg);
+  background: linear-gradient(180deg, #f2f3f1 0%, #f5f6f3 100%);
   color: var(--ic-text);
-  padding: 88px 0 94px;
+  padding: 84px 0 92px;
 }
 
 .implementation-construction,
@@ -24,155 +22,162 @@
 }
 
 .implementation-construction__inner {
-  width: min(1160px, calc(100% - 48px));
+  width: min(1140px, calc(100% - 56px));
   margin: 0 auto;
 }
 
 .implementation-construction__header {
-  max-width: 900px;
-  margin: 0 auto 42px;
-  text-align: center;
+  max-width: 780px;
+  margin-bottom: 44px;
 }
 
 .implementation-construction__title {
   margin: 0;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: clamp(2rem, 3.8vw, 3.15rem);
-  line-height: 1.07;
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  line-height: 1.08;
   font-weight: 620;
-  letter-spacing: -0.04em;
-  color: #0f172a;
+  letter-spacing: -0.03em;
   text-wrap: balance;
 }
 
 .implementation-construction__subtitle {
-  margin: 20px auto 0;
-  max-width: 760px;
+  margin: 18px 0 0;
+  max-width: 680px;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: clamp(1rem, 1.5vw, 1.18rem);
-  line-height: 1.58;
-  font-weight: 460;
-  letter-spacing: -0.012em;
+  font-size: clamp(1rem, 1.35vw, 1.12rem);
+  line-height: 1.56;
+  font-weight: 430;
+  letter-spacing: -0.01em;
   color: var(--ic-muted);
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 
-.implementation-construction__layout {
+.implementation-construction__columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-  align-items: start;
+  gap: clamp(20px, 3vw, 44px);
 }
 
-.implementation-construction__column {
-  background: var(--ic-panel-bg);
-  border: 1px solid var(--ic-column-border);
-  border-radius: 24px;
-  box-shadow: var(--ic-shadow-column);
-  padding: 26px;
+.implementation-construction__track {
+  min-width: 0;
 }
 
-.implementation-construction__column-title {
+.implementation-construction__label {
   margin: 0;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: clamp(1.45rem, 2vw, 1.72rem);
-  line-height: 1.15;
-  font-weight: 620;
-  letter-spacing: -0.025em;
-  color: #0f172a;
+  font-size: 0.75rem;
+  line-height: 1;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  color: rgba(23, 28, 34, 0.62);
+}
+
+.implementation-construction__track-title {
+  margin: 14px 0 0;
+  max-width: 34ch;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(1.3rem, 1.85vw, 1.58rem);
+  line-height: 1.26;
+  font-weight: 580;
+  letter-spacing: -0.02em;
+  color: #11161d;
+  text-wrap: pretty;
 }
 
 .implementation-construction__cards {
-  margin-top: 20px;
+  margin-top: 24px;
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .implementation-construction__card {
-  background: var(--ic-card-bg);
-  border: 1px solid var(--ic-border);
-  border-radius: 18px;
-  box-shadow: var(--ic-shadow-card);
-  padding: 24px 22px;
-  transition: transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease;
+  position: relative;
+  display: grid;
+  gap: 10px;
+  background: linear-gradient(180deg, #f8f9f7 0%, #f5f6f4 100%);
+  border: 1px solid var(--ic-card-border);
+  border-radius: 14px;
+  padding: 22px 22px 20px;
+  box-shadow: var(--ic-shadow);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.implementation-construction__card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18px;
+  bottom: 18px;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(23, 28, 34, 0.28), rgba(23, 28, 34, 0.07));
 }
 
 .implementation-construction__card:hover {
   transform: translateY(-2px);
-  border-color: rgba(17, 24, 39, 0.13);
-  box-shadow: var(--ic-shadow-card-hover);
+  border-color: rgba(23, 28, 34, 0.2);
+  box-shadow: var(--ic-shadow-hover);
+}
+
+.implementation-construction__index {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  line-height: 1;
+  font-weight: 620;
+  letter-spacing: 0.14em;
+  color: rgba(23, 28, 34, 0.48);
+  text-transform: uppercase;
 }
 
 .implementation-construction__card-title {
   margin: 0;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: clamp(1.08rem, 1.45vw, 1.28rem);
-  line-height: 1.32;
-  font-weight: 605;
-  letter-spacing: -0.016em;
-  color: #0f172a;
+  font-size: clamp(1.04rem, 1.35vw, 1.2rem);
+  line-height: 1.28;
+  font-weight: 590;
+  letter-spacing: -0.014em;
+  color: #161b22;
   text-wrap: pretty;
 }
 
-.implementation-construction__points {
-  margin: 14px 0 0;
-  padding-left: 1.05rem;
-  display: grid;
-  gap: 10px;
-}
-
-.implementation-construction__points li {
+.implementation-construction__line {
   margin: 0;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 0.97rem;
-  line-height: 1.56;
+  font-size: 0.95rem;
+  line-height: 1.48;
   font-weight: 430;
-  letter-spacing: -0.008em;
-  color: var(--ic-point);
+  letter-spacing: -0.004em;
+  color: var(--ic-soft);
   text-wrap: pretty;
 }
 
-.implementation-construction__footer {
-  margin: 34px 0 0;
-  text-align: center;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: clamp(1rem, 1.25vw, 1.08rem);
-  line-height: 1.65;
-  font-weight: 500;
-  letter-spacing: -0.011em;
-  color: rgba(17, 24, 39, 0.74);
-  text-wrap: balance;
-}
-
-@media (max-width: 1024px) {
+@media (max-width: 980px) {
   .implementation-construction {
-    padding: 76px 0 82px;
+    padding: 74px 0 82px;
   }
 
   .implementation-construction__inner {
-    width: min(980px, calc(100% - 34px));
+    width: min(1040px, calc(100% - 36px));
   }
 
-  .implementation-construction__layout {
-    gap: 18px;
-  }
-
-  .implementation-construction__column {
-    padding: 22px;
+  .implementation-construction__header {
+    margin-bottom: 34px;
   }
 }
 
 @media (max-width: 820px) {
   .implementation-construction {
-    padding: 66px 0 74px;
+    padding: 64px 0 70px;
   }
 
-  .implementation-construction__layout {
+  .implementation-construction__columns {
     grid-template-columns: 1fr;
+    gap: 30px;
   }
 
-  .implementation-construction__header {
-    margin-bottom: 32px;
+  .implementation-construction__cards {
+    margin-top: 20px;
   }
 }
 
@@ -182,36 +187,33 @@
   }
 
   .implementation-construction__title {
-    font-size: clamp(1.72rem, 8.2vw, 2.34rem);
+    font-size: clamp(1.62rem, 8.3vw, 2.12rem);
+    line-height: 1.12;
   }
 
   .implementation-construction__subtitle {
-    font-size: 0.97rem;
+    margin-top: 14px;
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
 
-  .implementation-construction__column {
-    border-radius: 20px;
-    padding: 18px;
-  }
-
-  .implementation-construction__cards {
-    margin-top: 16px;
-    gap: 12px;
+  .implementation-construction__track-title {
+    font-size: clamp(1.14rem, 5.2vw, 1.3rem);
   }
 
   .implementation-construction__card {
-    border-radius: 16px;
-    padding: 18px 16px;
-  }
-
-  .implementation-construction__points {
-    margin-top: 12px;
+    border-radius: 12px;
+    padding: 18px 16px 16px;
     gap: 8px;
   }
 
-  .implementation-construction__points li {
-    font-size: 0.93rem;
-    line-height: 1.48;
+  .implementation-construction__card::before {
+    top: 14px;
+    bottom: 14px;
+  }
+
+  .implementation-construction__line {
+    font-size: 0.92rem;
   }
 }
 
