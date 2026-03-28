@@ -53,7 +53,7 @@ body {
 
 .icv2__header {
   max-width: 920px;
-  margin: 0 auto clamp(28px, 4vw, 40px);
+  margin: 0 auto clamp(20px, 3vw, 26px);
   text-align: center;
 }
 
@@ -64,6 +64,20 @@ body {
   letter-spacing: -0.03em;
   font-weight: 620;
   text-wrap: balance;
+}
+
+.title-line {
+  display: block;
+}
+
+.title-line--light {
+  font-weight: 500;
+  color: rgba(15, 23, 42, 0.7);
+}
+
+.title-line--strong {
+  font-weight: 650;
+  color: #0b1220;
 }
 
 .icv2__subtitle {
