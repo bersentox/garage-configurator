@@ -23,6 +23,16 @@
     construction: []
   };
 
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function createCard(item, columnKey, index) {
     const card = document.createElement('article');
     card.className = 'icv2-card';
@@ -30,18 +40,22 @@
     const cardId = `icv2-${columnKey}-${index + 1}`;
     const panelId = `${cardId}-panel`;
 
+    const title = escapeHtml(item.title || '');
+    const support = escapeHtml(item.support || '').replace(/\n/g, '<br>');
+    const description = escapeHtml(item.description || '');
+
     card.innerHTML = `
       <button class="icv2-card__trigger" type="button" aria-expanded="false" aria-controls="${panelId}">
-        <span class="icv2-card__number">${item.number}</span>
+        <span class="icv2-card__number">${escapeHtml(item.number || '')}</span>
         <span class="icv2-card__copy">
-          <h4 class="icv2-card__title">${item.title}</h4>
-          <p class="icv2-card__support">${item.support}</p>
+          <h4 class="icv2-card__title">${title}</h4>
+          <p class="icv2-card__support">${support}</p>
         </span>
         <span class="icv2-card__chevron" aria-hidden="true"></span>
       </button>
-      <div class="icv2-card__panel" id="${panelId}" role="region" aria-label="${item.title}">
+      <div class="icv2-card__panel" id="${panelId}" role="region" aria-label="${title}">
         <div class="icv2-card__body">
-          <p class="icv2-card__description">${item.description}</p>
+          <p class="icv2-card__description">${description}</p>
         </div>
       </div>
     `;
