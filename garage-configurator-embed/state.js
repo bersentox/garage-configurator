@@ -1,18 +1,19 @@
 const COLOR_PRESETS = {
   graphite: {
+    wall: "#6a7280",
+    roof: "#2b313a",
+    trim: "#0f172a",
+    gate: "#5b6573",
+    interiorWall: "#cfd4dc"
+},
+  grey: {
   wall: "#737373",
   roof: "#636363",
   trim: "#6b6b6b",
   gate: "#878787",
   interiorWall: "#d5dbe4"
-},
-  grey: {
-    wall: "#a3a3a3",
-    roof: "#6b6b6b",
-    trim: "#8a8a8a",
-    gate: "#8f8f8f",
-    interiorWall: "#e5e7eb"
   },
+
   sand: {
     wall: "#d8c3a5",
     roof: "#8b7355",
@@ -35,10 +36,10 @@ const COLOR_PRESETS = {
     interiorWall: "#efe3d6"
   },
   industrial: {
-    wall: "#6a7280",
-    roof: "#2b313a",
-    trim: "#0f172a",
-    gate: "#5b6573",
+    wall: "#ffffff",
+    roof: "#7a7a7a",
+    trim: "##bfbfbf",
+    gate: "#969696",
     interiorWall: "#cfd4dc"
   }
 };
