@@ -487,8 +487,22 @@
   align-items: center;
   gap: 12px;
   z-index: 15;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease,
+    visibility 0.22s ease;
 }
-.sticky-bar.is-hidden { display: none; }
+
+.sticky-bar.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(10px);
+}
 .price { margin: 0; font-size: 24px; font-weight: 300; white-space: nowrap; }
 .price-meta { margin: 2px 0 0; color: #cbd5e1; font-size: 13px; }
 
