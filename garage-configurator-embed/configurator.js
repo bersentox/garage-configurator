@@ -283,13 +283,17 @@ export function mountConfigurator({ state, root }) {
     });
   });
 
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      stickyBar.classList.toggle("is-hidden", entry.isIntersecting);
-    },
-    { threshold: 0.2 }
-  );
-  observer.observe(finalCta);
+ const observer = new IntersectionObserver(
+  ([entry]) => {
+    stickyBar.classList.toggle("is-hidden", entry.isIntersecting);
+  },
+  {
+    threshold: 0,
+    rootMargin: "0px 0px -80px 0px"
+  }
+);
+
+observer.observe(finalCta);
 
   render();
 
