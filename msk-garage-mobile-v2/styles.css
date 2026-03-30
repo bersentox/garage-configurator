@@ -1,6 +1,6 @@
 :root {
   color-scheme: dark;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Inter Tight", "Roboto Condensed", "Arial Narrow", Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   --text-main: #eef3f7;
   --text-soft: #9ea8b5;
   --card-bg: linear-gradient(180deg, rgba(24, 30, 37, 0.9), rgba(16, 20, 26, 0.88));
@@ -72,20 +72,23 @@ h1 {
   margin: 0;
   font-size: clamp(1.4rem, 5.5vw, 2.1rem);
   line-height: 1.14;
-  letter-spacing: 0.01em;
-  font-weight: 520;
+  letter-spacing: 0.015em;
+  font-weight: 560;
   text-wrap: balance;
   opacity: 0;
   transform: translateY(4px);
+  color: #edf3fb;
+  text-shadow: 0 0 16px rgba(145, 173, 201, 0.14);
 }
 
 .subtitle {
   margin: 0.45rem 0 0;
-  color: var(--text-soft);
+  color: #a8b5c5;
   font-size: 0.9rem;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   opacity: 0;
   transform: translateY(4px);
+  text-shadow: 0 0 10px rgba(130, 154, 178, 0.12);
 }
 
 .bottom-layer {
