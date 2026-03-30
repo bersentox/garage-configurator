@@ -1,0 +1,117 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  --text-primary: #f6f7fb;
+  --text-secondary: #c8cce0;
+  --panel-bg: rgba(12, 14, 20, 0.52);
+  --panel-border: rgba(255, 255, 255, 0.16);
+  --btn-bg: rgba(22, 26, 36, 0.8);
+  --btn-active: #f6f7fb;
+  --btn-active-text: #11131b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: #090b11;
+}
+
+body {
+  overflow: hidden;
+}
+
+.app {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  isolation: isolate;
+}
+
+.scene-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.scene-layer canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.top-layer,
+.bottom-layer {
+  position: relative;
+  z-index: 1;
+  margin-inline: clamp(1rem, 4vw, 1.5rem);
+  backdrop-filter: blur(6px);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 1rem;
+}
+
+.top-layer {
+  margin-top: max(1rem, env(safe-area-inset-top));
+  padding: 0.875rem 1rem;
+  max-width: min(94vw, 28rem);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0.25rem 0 0;
+  color: var(--text-primary);
+  font-size: clamp(1.25rem, 5vw, 2rem);
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.bottom-layer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  padding: 0.875rem;
+}
+
+.choices-title {
+  margin: 0 0 0.65rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.choice-list {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.15rem;
+  scrollbar-width: thin;
+}
+
+.choice {
+  border: 1px solid var(--panel-border);
+  background: var(--btn-bg);
+  color: var(--text-primary);
+  border-radius: 999px;
+  padding: 0.65rem 0.95rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.choice.active {
+  background: var(--btn-active);
+  color: var(--btn-active-text);
+  border-color: transparent;
+}
