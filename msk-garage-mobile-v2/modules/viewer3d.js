@@ -6,16 +6,16 @@ export class Viewer3D {
     this.container = container;
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x0b0d10);
 
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 250);
-    this.cameraStart = new THREE.Vector3(0, 2.18, 6.9);
-    this.cameraEnd = new THREE.Vector3(0, 1.95, 6.12);
+    this.cameraStart = new THREE.Vector3(0, 2.05, 5.95);
+    this.cameraEnd = new THREE.Vector3(0, 1.86, 5.32);
     this.camera.position.copy(this.cameraStart);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.setClearColor(0x000000, 0);
     this.container.append(this.renderer.domElement);
 
     this.loader = new GLTFLoader();
@@ -59,7 +59,7 @@ export class Viewer3D {
 
     this.groundGlow = new THREE.Mesh(geometry, material);
     this.groundGlow.rotation.x = -Math.PI / 2;
-    this.groundGlow.position.set(0, -1.08, 0.2);
+    this.groundGlow.position.set(0, -1.12, 0.15);
     this.scene.add(this.groundGlow);
   }
 
@@ -71,9 +71,9 @@ export class Viewer3D {
     }
 
     this.currentModel = gltf.scene;
-    this.currentModel.position.set(0, -0.95, -0.08);
+    this.currentModel.position.set(0, -1.08, 0);
     this.currentModel.rotation.set(0, -0.34, 0);
-    this.currentModel.scale.setScalar(1.24);
+    this.currentModel.scale.setScalar(1.34);
     this.scene.add(this.currentModel);
   }
 
@@ -88,6 +88,7 @@ export class Viewer3D {
     const easedWake = 1 - Math.pow(1 - this.wakeT, 3);
 
     this.camera.position.lerpVectors(this.cameraStart, this.cameraEnd, easedWake);
+    this.camera.lookAt(0, -0.35, 0);
 
     this.hemi.intensity = 0.34 + easedWake * 0.5;
     this.key.intensity = 0.28 + easedWake * 0.72;

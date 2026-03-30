@@ -167,6 +167,22 @@ h1 {
   animation: choices-in 180ms ease-out forwards;
 }
 
+.app.intro-done h1 {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 0 0);
+}
+
+.app.intro-done .subtitle {
+  opacity: 0.95;
+  transform: none;
+}
+
+.app.intro-done .bottom-layer {
+  opacity: 1;
+  transform: none;
+}
+
 @keyframes scan-pass {
   from {
     transform: translateX(0);
