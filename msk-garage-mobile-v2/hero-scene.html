@@ -1,9 +1,26 @@
-<div class="hero">
-  <img class="scene" src="images/scene/front.webp" />
-  
-  <div class="gate-wrap">
-    <img class="gate" src="images/scene/gate.webp" />
-  </div>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MSK Garage Mobile V2</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="hero" id="hero">
+    <img class="scene" src="./images/scene/front.webp" alt="" />
+    <div class="gate-wrap">
+      <img class="gate" src="./images/scene/gate.webp" alt="" />
+    </div>
 
-  <button class="open-btn">Открыть</button>
-</div>
+    <div class="hero-copy">
+      <p class="hero-kicker">Москва и область</p>
+      <h1>Соберите гараж и узнайте цену</h1>
+    </div>
+
+    <button class="open-btn" id="openBtn" type="button">Открыть</button>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
