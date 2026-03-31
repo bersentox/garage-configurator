@@ -1,0 +1,40 @@
+.hero {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.scene {
+  width: 100%;
+  display: block;
+}
+
+/* контейнер ворот */
+.gate-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* сами ворота */
+.gate {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(.2,.8,.2,1);
+}
+
+/* состояние открытия */
+.hero.open .gate {
+  transform: translateY(-100%);
+}
+
+/* кнопка */
+.open-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
