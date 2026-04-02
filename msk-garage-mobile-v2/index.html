@@ -16,16 +16,22 @@
       </div>
     </div>
 
-    <audio id="garageGateSound" preload="auto">
-      <source src="./audio/gate-opening.mp3" type="audio/mpeg" />
-    </audio>
+    <div class="hero-header">
+      <img class="hero-logo" src="../images/garages/scene/logo11.webp" alt="logo" />
+    </div>
 
-    <div class="hero-copy">
+    <div class="hero-text">
       <p class="hero-kicker">МОСКВА И ОБЛАСТЬ</p>
       <h1>Соберите гараж и узнайте цену</h1>
     </div>
 
-    <button class="open-btn" id="openBtn" type="button">Открыть</button>
+    <button class="remote-btn" id="openBtn" type="button" aria-pressed="false">
+      <span class="remote-dot"></span>
+    </button>
+
+    <audio id="garageGateSound" preload="auto">
+      <source src="./audio/gate-opening.mp3" type="audio/mpeg" />
+    </audio>
   </main>
 
   <script type="module" src="./app.js"></script>
