@@ -70,74 +70,117 @@ body {
   transform: translateY(-28%);
 }
 
-.hero-header {
+.scene-brand {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  left: 50%;
+  top: 14%;
+  transform: translateX(-50%);
   z-index: 3;
+  text-align: center;
+  color: #d6ab5f;
+  pointer-events: none;
 }
 
-.hero-logo {
-  height: 28px;
-  opacity: 0.9;
+.scene-logo {
+  width: 44px;
+  height: 44px;
+  display: block;
+  margin: 0 auto 10px;
+  object-fit: contain;
 }
 
-.hero-text {
-  position: absolute;
-  top: 70px;
-  left: 20px;
-  right: 20px;
-  z-index: 3;
-  color: #fff;
-}
-
-.hero-kicker {
-  margin: 0 0 10px;
-  font-size: 12px;
+.scene-brand-title {
+  font-size: clamp(20px, 3.8vw, 28px);
+  font-weight: 700;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.7;
+  line-height: 1;
+
+  text-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.45),
+    0 0 8px rgba(255, 210, 140, 0.45),
+    0 0 18px rgba(255, 190, 110, 0.25);
 }
 
-.hero-text h1 {
-  margin: 0;
-  max-width: 6ch;
-  font-size: clamp(28px, 8vw, 44px);
-  line-height: 1.05;
-  font-weight: 600;
+.scene-brand-subtitle {
+  margin-top: 8px;
+  font-size: clamp(10px, 1.9vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  color: rgba(255, 210, 140, 0.92);
 }
 
-.remote-btn {
+.scene-instruction {
   position: absolute;
   bottom: 30px;
   left: 50%;
+  top: 47.5%;
   transform: translateX(-50%);
   z-index: 3;
+  width: min(72%, 320px);
+  text-align: center;
+  color: rgba(235, 242, 250, 0.82);
+  font-size: clamp(12px, 2.4vw, 18px);
+  font-weight: 500;
+  line-height: 1.35;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
 
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  border: none;
-
-  background: radial-gradient(circle at 30% 30%, #2b3a55, #0b0f1a);
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.6),
-    inset 0 2px 6px rgba(255, 255, 255, 0.1);
-
+.scene-remote {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  transform: translateX(-50%);
+  z-index: 4;
+  width: 54px;
+  height: 86px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   cursor: pointer;
 }
 
-.remote-dot {
-  position: absolute;
-  inset: 50%;
-  width: 10px;
-  height: 10px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: #7fd0ff;
-  box-shadow: 0 0 12px rgba(127, 208, 255, 0.8);
+.scene-remote-body {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #0f1622 0%, #0a0f18 100%);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, .45),
+    inset 0 1px 2px rgba(255, 255, 255, .08),
+    inset 0 -1px 2px rgba(0, 0, 0, .35);
+  border: 1px solid rgba(255, 255, 255, .08);
 }
 
-.remote-btn:active {
-  transform: translateX(-50%) scale(0.96);
+.scene-remote-light {
+  position: absolute;
+  left: 50%;
+  top: 28%;
+  width: 18px;
+  height: 18px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #cffff0 0%, #7ef3b1 40%, #43c97a 72%, #2f8f58 100%);
+  box-shadow:
+    0 0 18px rgba(126, 243, 177, .65),
+    0 0 36px rgba(126, 243, 177, .28);
+}
+
+.scene-remote-mark {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  width: 10px;
+  height: 10px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #e49a43 0%, #8a4c14 100%);
+  opacity: .95;
+}
+
+.scene-remote:active {
+  transform: translateX(-50%) scale(.97);
 }

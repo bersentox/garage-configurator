@@ -16,22 +16,26 @@
       </div>
     </div>
 
-    <div class="hero-header">
-      <img class="hero-logo" src="../images/garages/scene/logo11.webp" alt="logo" />
-    </div>
-
-    <div class="hero-text">
-      <p class="hero-kicker">МОСКВА И ОБЛАСТЬ</p>
-      <h1>Соберите гараж и узнайте цену</h1>
-    </div>
-
-    <button class="remote-btn" id="openBtn" type="button" aria-pressed="false">
-      <span class="remote-dot"></span>
-    </button>
-
     <audio id="garageGateSound" preload="auto">
       <source src="./audio/gate-opening.mp3" type="audio/mpeg" />
     </audio>
+
+    <div class="scene-brand">
+      <img class="scene-logo" src="../images/garages/scene/logo11.webp" alt="MSK Garage" />
+      <div class="scene-brand-title">MSK-GARAGE</div>
+      <div class="scene-brand-subtitle">ГАРАЖИ ИЗ СЭНДВИЧ-ПАНЕЛЕЙ</div>
+    </div>
+
+    <div class="scene-instruction">
+      Чтобы собрать свой гараж — нажмите на пульт
+    </div>
+
+    <button class="scene-remote" id="openBtn" type="button" aria-pressed="false">
+      <span class="scene-remote-body">
+        <span class="scene-remote-light"></span>
+        <span class="scene-remote-mark"></span>
+      </span>
+    </button>
   </main>
 
   <script type="module" src="./app.js"></script>
