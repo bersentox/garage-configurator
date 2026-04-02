@@ -9,12 +9,19 @@
 <body>
   <main class="hero" id="hero">
     <img class="scene" src="./images/scene/front.webp" alt="" />
-    <div class="gate-wrap">
-      <img class="gate" src="./images/scene/gate.webp" alt="" />
+
+    <div class="gate-mask">
+      <div class="gate-content">
+        <img class="gate-overlay" src="./images/scene/gate.webp" alt="" />
+      </div>
     </div>
 
+    <audio id="garageGateSound" preload="auto">
+      <source src="./audio/gate-opening.mp3" type="audio/mpeg" />
+    </audio>
+
     <div class="hero-copy">
-      <p class="hero-kicker">Москва и область</p>
+      <p class="hero-kicker">МОСКВА И ОБЛАСТЬ</p>
       <h1>Соберите гараж и узнайте цену</h1>
     </div>
 
