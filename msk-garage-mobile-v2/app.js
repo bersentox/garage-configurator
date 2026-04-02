@@ -1,6 +1,10 @@
-const hero = document.getElementById("hero");
-const openBtn = document.getElementById("openBtn");
+const hero = document.getElementById('hero');
+const openBtn = document.getElementById('openBtn');
 
-openBtn.addEventListener("click", () => {
-  hero.classList.toggle("open");
-});
+if (hero && openBtn) {
+  openBtn.addEventListener('click', () => {
+    hero.classList.remove('open');
+    void hero.offsetWidth;
+    hero.classList.add('open');
+  });
+}
