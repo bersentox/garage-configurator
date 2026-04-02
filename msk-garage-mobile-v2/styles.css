@@ -27,8 +27,7 @@ body {
   background: #0a0d12;
 }
 
-.scene,
-.gate-overlay {
+.scene {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -38,22 +37,37 @@ body {
   object-position: center center;
 }
 
-.gate-overlay {
+.gate-mask {
+  position: absolute;
+  inset: 0;
   z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+  clip-path: inset(35.4% 19.8% 43.1% 19.8%);
+}
+
+.gate-content {
+  position: absolute;
+  inset: 0;
+  transform: translateY(0);
+  transition: transform 5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
   pointer-events: none;
 }
 
-.hero.open .gate-overlay {
-  animation: gateOpen 1.35s cubic-bezier(.22,.8,.2,1) forwards;
+.gate-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
+  pointer-events: none;
 }
 
-@keyframes gateOpen {
-  from {
-    clip-path: inset(0 0 0 0);
-  }
-  to {
-    clip-path: inset(100% 0 0 0);
-  }
+.hero.open .gate-content {
+  transform: translateY(-28%);
 }
 
 .hero-copy {
