@@ -9,16 +9,29 @@
 <body>
   <main class="hero" id="hero">
     <img class="scene" src="./images/scene/front.webp" alt="" />
-    <div class="gate-wrap">
-      <img class="gate" src="./images/scene/gate.webp" alt="" />
+
+    <div class="gate-mask">
+      <div class="gate-content">
+        <img class="gate-overlay" src="./images/scene/gate.webp" alt="" />
+      </div>
     </div>
 
-    <div class="hero-copy">
-      <p class="hero-kicker">Москва и область</p>
+    <div class="hero-header">
+      <img class="hero-logo" src="../images/garages/scene/logo11.webp" alt="logo" />
+    </div>
+
+    <div class="hero-text">
+      <p class="hero-kicker">МОСКВА И ОБЛАСТЬ</p>
       <h1>Соберите гараж и узнайте цену</h1>
     </div>
 
-    <button class="open-btn" id="openBtn" type="button">Открыть</button>
+    <button class="remote-btn" id="openBtn" type="button" aria-pressed="false">
+      <span class="remote-dot"></span>
+    </button>
+
+    <audio id="garageGateSound" preload="auto">
+      <source src="./audio/gate-opening.mp3" type="audio/mpeg" />
+    </audio>
   </main>
 
   <script type="module" src="./app.js"></script>
