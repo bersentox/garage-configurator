@@ -43,7 +43,7 @@ body {
   z-index: 2;
   overflow: hidden;
   pointer-events: none;
-  clip-path: inset(36.4% 19.8% 42.1% 19.8%);
+  clip-path: inset(39.4% 19.8% 39.1% 19.8%);
 }
 
 .gate-content {
