@@ -43,7 +43,7 @@ body {
   z-index: 2;
   overflow: hidden;
   pointer-events: none;
-  clip-path: inset(37.4% 19.8% 41.1% 19.8%);
+  clip-path: inset(37.0% 19.8% 41.5% 19.8%);
 }
 
 .gate-content {
@@ -67,7 +67,7 @@ body {
 }
 
 .hero.open .gate-content {
-  transform: translateY(-28%);
+  transform: translateY(-14%);
 }
 
 .hero-copy {
