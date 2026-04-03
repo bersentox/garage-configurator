@@ -39,7 +39,7 @@ body {
 
 .hero.pushing .scene-visual,
 .hero.choice .scene-visual {
-  transform: translateZ(0) scale(1.085);
+  transform: translateZ(0) scale(1.16);
 }
 
 .scene {
@@ -58,7 +58,7 @@ body {
   z-index: 2;
   overflow: hidden;
   pointer-events: none;
-  clip-path: inset(35.4% 19.8% 43.1% 19.8%);
+  clip-path: inset(37.4% 19.8% 41.1% 19.8%);
 }
 
 .gate-content {
@@ -82,7 +82,7 @@ body {
 }
 
 .hero.open .gate-content {
-  transform: translateY(-28%);
+  transform: translateY(-14%);
 }
 
 .scene-brand {
@@ -127,6 +127,7 @@ body {
 
 .scene-instruction {
   position: absolute;
+  bottom: 30px;
   left: 50%;
   top: 47.5%;
   transform: translateX(-50%);
