@@ -43,7 +43,7 @@ body {
   z-index: 2;
   overflow: hidden;
   pointer-events: none;
-  clip-path: inset(35.4% 19.8% 43.1% 19.8%);
+  clip-path: inset(37.4% 19.8% 41.1% 19.8%);
 }
 
 .gate-content {
@@ -73,7 +73,7 @@ body {
 .scene-brand {
   position: absolute;
   left: 50%;
-  top: 14%;
+  top: 17.5%;
   transform: translateX(-50%);
   z-index: 3;
   text-align: center;
@@ -82,15 +82,15 @@ body {
 }
 
 .scene-logo {
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   display: block;
   margin: 0 auto 10px;
   object-fit: contain;
 }
 
 .scene-brand-title {
-  font-size: clamp(20px, 3.8vw, 28px);
+  font-size: clamp(18px, 3.2vw, 20px);
   font-weight: 700;
   letter-spacing: 0.08em;
   line-height: 1;
@@ -130,8 +130,8 @@ body {
 .scene-remote {
   position: absolute;
   left: 50%;
-  top: 58%;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translateX(-30%);
   transform-origin: center center;
   z-index: 4;
   width: 54px;
