@@ -7,12 +7,14 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <main class="hero" id="hero">
-    <img class="scene" src="./images/scene/front.webp" alt="" />
+  <main class="hero idle" id="hero">
+    <div class="scene-visual">
+      <img class="scene" src="./images/scene/front.webp" alt="" />
 
-    <div class="gate-mask">
-      <div class="gate-content">
-        <img class="gate-overlay" src="./images/scene/gate.webp" alt="" />
+      <div class="gate-mask">
+        <div class="gate-content">
+          <img class="gate-overlay" src="./images/scene/gate.webp" alt="" />
+        </div>
       </div>
     </div>
 
@@ -26,7 +28,7 @@
       <div class="scene-brand-subtitle">ГАРАЖИ ИЗ СЭНДВИЧ-ПАНЕЛЕЙ</div>
     </div>
 
-    <div class="scene-instruction">
+    <div class="scene-instruction" id="sceneInstruction">
       Чтобы собрать свой гараж — нажмите на пульт
     </div>
 
@@ -36,6 +38,11 @@
         <span class="scene-remote-mark"></span>
       </span>
     </button>
+
+    <div class="scene-choice" id="sceneChoice" aria-hidden="true">
+      <button class="scene-choice-btn" type="button" data-garage-option="one" data-width-option="1">На 1 машину</button>
+      <button class="scene-choice-btn" type="button" data-garage-option="two" data-width-option="2">На 2 машины</button>
+    </div>
   </main>
 
   <script type="module" src="./app.js"></script>

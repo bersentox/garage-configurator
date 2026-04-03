@@ -1,10 +1,18 @@
 const hero = document.getElementById('hero');
 const openBtn = document.getElementById('openBtn');
 const garageGateSound = document.getElementById('garageGateSound');
+const sceneChoice = document.getElementById('sceneChoice');
+
+const PUSH_DELAY_MS = 520;
+const CHOICE_DELAY_MS = 4600;
 
 if (hero && openBtn) {
+  let timers = [];
+
   openBtn.addEventListener('click', () => {
-    const isOpen = hero.classList.contains('open');
+    if (hero.classList.contains('opening') || hero.classList.contains('pushing') || hero.classList.contains('choice')) {
+      return;
+    }
 
     if (garageGateSound) {
       garageGateSound.currentTime = 0;
@@ -12,8 +20,30 @@ if (hero && openBtn) {
       garageGateSound.play().catch(() => {});
     }
 
-    hero.classList.toggle('open');
+    timers.forEach((timerId) => clearTimeout(timerId));
+    timers = [];
 
-    openBtn.setAttribute('aria-pressed', String(!isOpen));
+    hero.classList.remove('idle');
+    hero.classList.add('open', 'opening');
+    openBtn.setAttribute('aria-pressed', 'true');
+
+    if (sceneChoice) {
+      sceneChoice.setAttribute('aria-hidden', 'true');
+    }
+
+    timers.push(setTimeout(() => {
+      hero.classList.add('pushing');
+    }, PUSH_DELAY_MS));
+
+    timers.push(setTimeout(() => {
+      hero.classList.remove('opening', 'pushing');
+      hero.classList.add('choice');
+      openBtn.setAttribute('aria-hidden', 'true');
+      openBtn.setAttribute('tabindex', '-1');
+
+      if (sceneChoice) {
+        sceneChoice.setAttribute('aria-hidden', 'false');
+      }
+    }, CHOICE_DELAY_MS));
   });
 }
