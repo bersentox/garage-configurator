@@ -43,7 +43,7 @@ body {
   z-index: 2;
   overflow: hidden;
   pointer-events: none;
-  clip-path: inset(36.6% 19.8% 41.9% 19.8%);
+  clip-path: inset(36.1% 19.8% 42.4% 19.8%);
 }
 
 .gate-content {
@@ -73,8 +73,8 @@ body {
 .scene-brand {
   position: absolute;
   left: 50%;
-  top: 14%;
-  transform: translateX(-30%);
+  top: 16.2%;
+  transform: translateX(-50%);
   z-index: 3;
   text-align: center;
   color: #d6ab5f;
