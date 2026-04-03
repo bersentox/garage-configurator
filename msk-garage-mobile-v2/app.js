@@ -4,7 +4,7 @@ const garageGateSound = document.getElementById('garageGateSound');
 const sceneChoice = document.getElementById('sceneChoice');
 
 const PUSH_DELAY_MS = 520;
-const SHOW_CHOICE_DELAY_MS = 1300;
+const SHOW_CHOICE_DELAY_MS = 2600;
 const CHOICE_DELAY_MS = 4600;
 
 if (hero && openBtn) {
