@@ -73,7 +73,7 @@ body {
 .scene-brand {
   position: absolute;
   left: 50%;
-  top: 23.2%;
+  top: 22.2%;
   transform: translateX(-50%);
   z-index: 3;
   text-align: center;
@@ -82,8 +82,8 @@ body {
 }
 
 .scene-logo {
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   display: block;
   margin: 0 auto 10px;
   object-fit: contain;
