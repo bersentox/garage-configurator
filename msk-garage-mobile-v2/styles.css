@@ -3,7 +3,7 @@
 }
 
 * {
-  box-sizing: bordАer-box;
+  box-sizing: border-box;
 }
 
 html,
@@ -74,7 +74,7 @@ body {
   position: absolute;
   left: 50%;
   top: 14%;
-  transform: translateX(-50%);
+  transform: translateX(-30%);
   z-index: 3;
   text-align: center;
   color: #d6ab5f;
@@ -131,7 +131,7 @@ body {
   position: absolute;
   left: 50%;
   top: 58%;
-  transform: translateX(-50%);
+  transform: translateX(-65%);
   z-index: 4;
   width: 54px;
   height: 86px;
