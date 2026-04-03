@@ -73,7 +73,7 @@ body {
 .scene-brand {
   position: absolute;
   left: 50%;
-  top: 17.5%;
+  top: 19.5%;
   transform: translateX(-50%);
   z-index: 3;
   text-align: center;
