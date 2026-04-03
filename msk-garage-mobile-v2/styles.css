@@ -112,6 +112,7 @@ body {
 
 .scene-instruction {
   position: absolute;
+  bottom: 30px;
   left: 50%;
   top: 47.5%;
   transform: translateX(-50%);
