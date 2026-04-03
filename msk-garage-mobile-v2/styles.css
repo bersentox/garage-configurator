@@ -232,8 +232,9 @@ body {
   border: 0;
 }
 
-.hero.choice .scene-remote {
+.hero.show-choice .scene-remote {
   opacity: 0;
+  transform: translateX(-50%) scale(0.94);
   pointer-events: none;
 }
 
