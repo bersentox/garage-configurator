@@ -3,7 +3,8 @@ const openBtn = document.getElementById('openBtn');
 const garageGateSound = document.getElementById('garageGateSound');
 const sceneChoice = document.getElementById('sceneChoice');
 
-const PUSH_DELAY_MS = 50;
+const PUSH_DELAY_MS = 520;
+const SHOW_CHOICE_DELAY_MS = 1300;
 const CHOICE_DELAY_MS = 4600;
 
 if (hero && openBtn) {
@@ -36,14 +37,18 @@ if (hero && openBtn) {
     }, PUSH_DELAY_MS));
 
     timers.push(setTimeout(() => {
-      hero.classList.remove('opening', 'pushing');
-      hero.classList.add('choice');
-      openBtn.setAttribute('aria-hidden', 'true');
-      openBtn.setAttribute('tabindex', '-1');
+      hero.classList.add('show-choice');
 
       if (sceneChoice) {
         sceneChoice.setAttribute('aria-hidden', 'false');
       }
+    }, SHOW_CHOICE_DELAY_MS));
+
+    timers.push(setTimeout(() => {
+      hero.classList.remove('opening', 'pushing');
+      hero.classList.add('choice');
+      openBtn.setAttribute('aria-hidden', 'true');
+      openBtn.setAttribute('tabindex', '-1');
     }, CHOICE_DELAY_MS));
   });
 }
