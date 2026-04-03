@@ -130,8 +130,8 @@ body {
 .scene-remote {
   position: absolute;
   left: 50%;
-  top: 58%;
-  transform: translateX(-65%);
+  top: 48%;
+  transform: translateX(-35%);
   z-index: 4;
   width: 54px;
   height: 86px;
