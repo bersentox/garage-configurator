@@ -82,7 +82,7 @@ body {
 }
 
 .hero.open .gate-content {
-  transform: translateY(-28%);
+  transform: translateY(-14%);
 }
 
 .scene-brand {
