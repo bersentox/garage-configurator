@@ -3,7 +3,7 @@ const openBtn = document.getElementById('openBtn');
 const garageGateSound = document.getElementById('garageGateSound');
 const sceneChoice = document.getElementById('sceneChoice');
 
-const PUSH_DELAY_MS = 520;
+const PUSH_DELAY_MS = 50;
 const CHOICE_DELAY_MS = 4600;
 
 if (hero && openBtn) {
