@@ -73,7 +73,7 @@ body {
 .scene-brand {
   position: absolute;
   left: 50%;
-  top: 16.2%;
+  top: 12.2%;
   transform: translateX(-50%);
   z-index: 3;
   text-align: center;
@@ -130,8 +130,8 @@ body {
 .scene-remote {
   position: absolute;
   left: 50%;
-  top: 48%;
-  transform: translateX(-35%);
+  top: 54%;
+  transform: translateX(-25%);
   z-index: 4;
   width: 54px;
   height: 86px;
