@@ -39,7 +39,7 @@ body {
 
 .hero.pushing .scene-visual,
 .hero.choice .scene-visual {
-  transform: translateZ(0) scale(1.16);
+  transform: translateZ(0) scale(1.15);
 }
 
 .scene {
