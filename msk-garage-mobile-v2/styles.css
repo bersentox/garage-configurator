@@ -90,7 +90,7 @@ body {
 }
 
 .scene-brand-title {
-  font-size: clamp(20px, 3.8vw, 28px);
+  font-size: clamp(16px, 2.6vw, 20px);
   font-weight: 700;
   letter-spacing: 0.08em;
   line-height: 1;
