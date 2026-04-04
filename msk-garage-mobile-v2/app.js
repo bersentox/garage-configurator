@@ -81,8 +81,10 @@ function createViewerBridge() {
     controls.enableDamping = true;
     controls.enablePan = false;
     controls.autoRotate = false;
-    controls.minDistance = 7;
-    controls.maxDistance = 18;
+    controls.minDistance = 5.5;
+    controls.maxDistance = 22;
+    controls.minPolarAngle = 0.78;
+    controls.maxPolarAngle = 1.36;
 
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0xdbe5e1, 0.8);
     const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
@@ -109,8 +111,29 @@ function createViewerBridge() {
     };
     animate();
 
-    runtime = { THREE, scene, camera, loader, setStatus, resize };
+    runtime = { THREE, scene, camera, controls, loader, setStatus, resize };
     return runtime;
+  }
+
+  function frameModelForMobile(viewer, model) {
+    const bounds = new viewer.THREE.Box3().setFromObject(model);
+    const size = bounds.getSize(new viewer.THREE.Vector3());
+    const maxHorizontal = Math.max(size.x, size.z);
+    const vertical = Math.max(size.y, 1);
+    const distance = Math.max(maxHorizontal * 1.3, vertical * 1.9, 7.4);
+    const eyeY = vertical * 0.5 + distance * 0.2;
+    const eyeX = distance * 0.82;
+    const eyeZ = distance * 1.03;
+
+    viewer.camera.position.set(eyeX, eyeY, eyeZ);
+    viewer.camera.near = 0.1;
+    viewer.camera.far = Math.max(120, distance * 18);
+    viewer.camera.updateProjectionMatrix();
+
+    viewer.controls.target.set(0, vertical * 0.35, 0);
+    viewer.controls.minDistance = distance * 0.72;
+    viewer.controls.maxDistance = distance * 1.34;
+    viewer.controls.update();
   }
 
   async function loadByState() {
@@ -145,6 +168,7 @@ function createViewerBridge() {
 
         activeModel = model;
         viewer.scene.add(model);
+        frameModelForMobile(viewer, model);
         setStatus(`Модель ${modelKey} загружена`);
       },
       undefined,
