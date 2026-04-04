@@ -349,6 +349,27 @@ body {
   line-height: 1.35;
 }
 
+.config-shell-color-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.config-shell-color-btn {
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #c8d4e5;
+  background: #fff;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.config-shell-color-btn[aria-pressed="true"] {
+  border-color: #94a6bf;
+  background: #edf3fb;
+}
+
 .config-shell-type-buttons,
 .config-shell-length-buttons {
   display: grid;

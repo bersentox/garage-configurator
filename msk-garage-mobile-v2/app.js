@@ -11,6 +11,7 @@ const typeButtonsRoot = document.getElementById('configTypeButtons');
 const typeButtons = typeButtonsRoot ? [...typeButtonsRoot.querySelectorAll('[data-type]')] : [];
 const lengthButtonsRoot = document.getElementById('configLengthButtons');
 const lengthButtons = lengthButtonsRoot ? [...lengthButtonsRoot.querySelectorAll('[data-length]')] : [];
+const colorButtons = [...document.querySelectorAll('.config-shell-color-btn')];
 const choiceButtons = sceneChoice ? [...sceneChoice.querySelectorAll('[data-garage-option]')] : [];
 
 const PUSH_DELAY_MS = 520;
@@ -24,10 +25,33 @@ const MODEL_BY_SIZE = {
   '8x8': '../models/garage_8x8.glb',
   '8x10': '../models/garage_8x10.glb'
 };
+const COLOR_PRESETS = {
+  sand: {
+    label: 'песочный',
+    wall: '#d1bc97',
+    roofTrim: '#8f7758',
+    gate: '#c7ad86'
+  },
+  graphite: {
+    label: 'графит',
+    wall: '#6a7280',
+    roofTrim: '#2d3540',
+    gate: '#5f6877'
+  },
+  chocolate: {
+    label: 'шоколадный',
+    wall: '#76523b',
+    roofTrim: '#3a281e',
+    gate: '#7f5a43'
+  }
+};
 const configuratorState = {
   type: 'single',
   width: 6,
-  length: 6
+  length: 6,
+  wallColorPreset: 'sand',
+  roofTrimColorPreset: 'graphite',
+  gateColorPreset: 'graphite'
 };
 
 function resolveModelKey(width, length) {
@@ -38,7 +62,10 @@ function resolveModelKey(width, length) {
 function updateSummaryLabel() {
   if (!configShellSummary) return;
   const typeLabel = configuratorState.type === 'double' ? 'Гараж на 2 машины' : 'Гараж на 1 машину';
-  configShellSummary.textContent = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м`;
+  const wallLabel = COLOR_PRESETS[configuratorState.wallColorPreset]?.label || '—';
+  const roofTrimLabel = COLOR_PRESETS[configuratorState.roofTrimColorPreset]?.label || '—';
+  const gateLabel = COLOR_PRESETS[configuratorState.gateColorPreset]?.label || '—';
+  configShellSummary.textContent = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м · стены: ${wallLabel} · крыша: ${roofTrimLabel} · ворота: ${gateLabel}`;
 }
 
 function updateLengthButtonState() {
@@ -55,9 +82,35 @@ function updateTypeButtonState() {
   });
 }
 
+function updateColorButtonState() {
+  colorButtons.forEach((button) => {
+    const group = button.dataset.colorGroup;
+    const preset = button.dataset.colorPreset;
+    const isActive = (
+      (group === 'wall' && preset === configuratorState.wallColorPreset) ||
+      (group === 'roofTrim' && preset === configuratorState.roofTrimColorPreset) ||
+      (group === 'gate' && preset === configuratorState.gateColorPreset)
+    );
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function getActiveColorSet() {
+  const wallPreset = COLOR_PRESETS[configuratorState.wallColorPreset] || COLOR_PRESETS.sand;
+  const roofTrimPreset = COLOR_PRESETS[configuratorState.roofTrimColorPreset] || COLOR_PRESETS.graphite;
+  const gatePreset = COLOR_PRESETS[configuratorState.gateColorPreset] || COLOR_PRESETS.graphite;
+  return {
+    wall: wallPreset.wall,
+    roofTrim: roofTrimPreset.roofTrim,
+    gate: gatePreset.gate
+  };
+}
+
 function createViewerBridge() {
   let runtime = null;
   let activeModel = null;
+  let activeParts = { wall: [], roofTrim: [], gate: [] };
+  let activeColorSet = getActiveColorSet();
   let latestLoadToken = 0;
 
   const setStatus = (message) => {
@@ -145,6 +198,66 @@ function createViewerBridge() {
     viewer.controls.update();
   }
 
+  function collectModelParts(viewer, model) {
+    const partMap = { wall: [], roofTrim: [], gate: [] };
+
+    model.traverse((node) => {
+      if (!node.isMesh) return;
+
+      const sourceName = `${node.name || ''} ${node.material?.name || ''}`.toLowerCase();
+
+      if (/gate|door|ворот/.test(sourceName)) {
+        partMap.gate.push(node);
+        return;
+      }
+
+      if (/roof|trim|fascia|frame|corner|крыш|кров|добор|обод|угол/.test(sourceName)) {
+        partMap.roofTrim.push(node);
+        return;
+      }
+
+      if (/wall|body|facade|fasad|стен/.test(sourceName)) {
+        partMap.wall.push(node);
+      }
+    });
+
+    if (!partMap.wall.length) {
+      model.traverse((node) => {
+        if (!node.isMesh) return;
+        if (partMap.gate.includes(node) || partMap.roofTrim.includes(node)) return;
+        partMap.wall.push(node);
+      });
+    }
+
+    return partMap;
+  }
+
+  function tintMesh(viewer, mesh, color) {
+    if (!mesh?.material || !color) return;
+
+    if (Array.isArray(mesh.material)) {
+      mesh.material = mesh.material.map((material) => {
+        const cloned = material.clone();
+        if (cloned.color) cloned.color.set(color);
+        return cloned;
+      });
+      return;
+    }
+
+    mesh.material = mesh.material.clone();
+    if (mesh.material.color) {
+      mesh.material.color.set(color);
+    }
+  }
+
+  function applyColors(viewer, colorSet = activeColorSet) {
+    activeColorSet = colorSet;
+
+    activeParts.wall.forEach((mesh) => tintMesh(viewer, mesh, colorSet.wall));
+    activeParts.roofTrim.forEach((mesh) => tintMesh(viewer, mesh, colorSet.roofTrim));
+    activeParts.gate.forEach((mesh) => tintMesh(viewer, mesh, colorSet.gate));
+  }
+
   async function loadByState() {
     const modelKey = resolveModelKey(configuratorState.width, configuratorState.length);
     if (!modelKey) {
@@ -177,6 +290,8 @@ function createViewerBridge() {
 
         activeModel = model;
         viewer.scene.add(model);
+        activeParts = collectModelParts(viewer, model);
+        applyColors(viewer, activeColorSet);
         frameModelForMobile(viewer, model);
         setStatus(`Модель ${modelKey} загружена`);
       },
@@ -188,7 +303,14 @@ function createViewerBridge() {
     );
   }
 
-  return { loadByState };
+  async function applyColorsByState() {
+    activeColorSet = getActiveColorSet();
+    const viewer = await ensureRuntime();
+    if (!viewer || !activeModel) return;
+    applyColors(viewer, activeColorSet);
+  }
+
+  return { loadByState, applyColorsByState };
 }
 
 const viewerBridge = createViewerBridge();
@@ -258,6 +380,7 @@ if (configShell && choiceButtons.length) {
 
       updateTypeButtonState();
       updateLengthButtonState();
+      updateColorButtonState();
       updateSummaryLabel();
 
       if (configShellPrice) {
@@ -302,6 +425,28 @@ if (lengthButtons.length) {
       updateLengthButtonState();
       updateSummaryLabel();
       await viewerBridge.loadByState();
+    });
+  });
+}
+
+if (colorButtons.length) {
+  colorButtons.forEach((button) => {
+    button.addEventListener('click', async () => {
+      const colorGroup = button.dataset.colorGroup;
+      const colorPreset = button.dataset.colorPreset;
+      if (!colorGroup || !colorPreset || !COLOR_PRESETS[colorPreset]) return;
+
+      if (colorGroup === 'wall') {
+        configuratorState.wallColorPreset = colorPreset;
+      } else if (colorGroup === 'roofTrim') {
+        configuratorState.roofTrimColorPreset = colorPreset;
+      } else if (colorGroup === 'gate') {
+        configuratorState.gateColorPreset = colorPreset;
+      }
+
+      updateColorButtonState();
+      updateSummaryLabel();
+      await viewerBridge.applyColorsByState();
     });
   });
 }
