@@ -295,7 +295,7 @@ body {
 
 .config-shell-viewport {
   position: relative;
-  min-height: 220px;
+  min-height: 280px;
   border-radius: 18px;
   border: 1px solid #d5dfec;
   background:
@@ -317,19 +317,22 @@ body {
   color: #405066;
 }
 
-.config-shell-viewport-title {
-  margin: 12px 0 6px;
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+.config-shell-viewport-subtitle {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.3;
+  text-align: center;
+  color: #506079;
 }
 
-.config-shell-viewport-subtitle {
-  margin: 0;
-  max-width: 330px;
-  font-size: 12px;
-  line-height: 1.4;
-  color: #506079;
+.config-shell-viewer {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: #f3f4f6;
+  overflow: hidden;
+  margin-top: 12px;
 }
 
 .config-shell-options {
@@ -360,6 +363,27 @@ body {
   color: #54657f;
   font-size: 13px;
   line-height: 1.35;
+}
+
+.config-shell-length-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.config-shell-length-btn {
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #c8d4e5;
+  background: #fff;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.config-shell-length-btn[aria-pressed="true"] {
+  border-color: #94a6bf;
+  background: #edf3fb;
 }
 
 .config-shell-bar {
