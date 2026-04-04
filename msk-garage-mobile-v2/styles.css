@@ -127,33 +127,38 @@ body {
 
 .scene-instruction {
   position: absolute;
-  bottom: 30px;
+  bottom: 70px;
   left: 50%;
-  top: 47.5%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(8px);
   z-index: 3;
-  width: min(72%, 320px);
+  width: min(78%, 260px);
   text-align: center;
-  color: rgba(235, 242, 250, 0.82);
-  font-size: clamp(12px, 2.4vw, 18px);
+  color: rgba(255, 255, 255, 0.76);
+  font-size: clamp(12px, 2.1vw, 13px);
   font-weight: 500;
-  line-height: 1.35;
+  line-height: 1.28;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.hero.idle .scene-instruction {
   opacity: 1;
-  transition: opacity 0.45s ease;
+  transform: translateX(-50%) translateY(0);
 }
 
 .hero.opening .scene-instruction,
 .hero.pushing .scene-instruction,
 .hero.choice .scene-instruction {
   opacity: 0;
+  transform: translateX(-50%) translateY(8px);
 }
 
 .scene-remote {
   position: absolute;
   left: 50%;
-  top: 58%;
+  bottom: 128px;
   transform: translateX(-50%);
   transform-origin: center center;
   z-index: 4;
