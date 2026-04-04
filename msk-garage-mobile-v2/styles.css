@@ -88,40 +88,40 @@ body {
 .scene-brand {
   position: absolute;
   left: 50%;
-  top: 14%;
+  top: 27%;
   transform: translateX(-50%);
   z-index: 3;
   text-align: center;
   color: #d6ab5f;
   pointer-events: none;
+  opacity: 0.92;
 }
 
 .scene-logo {
-  width: 44px;
-  height: 44px;
+  width: 26px;
+  height: 26px;
   display: block;
-  margin: 0 auto 10px;
+  margin: 0 auto 6px;
   object-fit: contain;
 }
 
 .scene-brand-title {
-  font-size: clamp(20px, 3.8vw, 28px);
+  font-size: clamp(12px, 2.05vw, 16px);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   line-height: 1;
 
   text-shadow:
-    0 2px 3px rgba(0, 0, 0, 0.45),
-    0 0 8px rgba(255, 210, 140, 0.45),
-    0 0 18px rgba(255, 190, 110, 0.25);
-}
+    0 1px 2px rgba(0,0,0,0.6),
+    0 0 6px rgba(255,210,140,0.35);
+ }
 
 .scene-brand-subtitle {
-  margin-top: 8px;
-  font-size: clamp(10px, 1.9vw, 13px);
+  margin-top: 4px;
+  font-size: clamp(8px, 1.35vw, 10px);
   font-weight: 500;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
   color: rgba(255, 210, 140, 0.92);
 }
 
