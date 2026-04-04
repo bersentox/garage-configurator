@@ -398,6 +398,49 @@ body {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.config-shell-foundation-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.config-shell-foundation-btn {
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #c8d4e5;
+  background: #fff;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.config-shell-foundation-btn[aria-pressed="true"] {
+  border-color: #94a6bf;
+  background: #edf3fb;
+}
+
+.config-shell-extras-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.config-shell-extra-btn {
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #d0d9e6;
+  background: #fff;
+  color: #314157;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.config-shell-extra-btn[aria-pressed="true"] {
+  border-color: #7a8ea9;
+  background: #e5edf8;
+  color: #1a283d;
+}
+
 .config-shell-bar {
   position: sticky;
   left: 0;

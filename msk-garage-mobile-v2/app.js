@@ -12,6 +12,10 @@ const typeButtons = typeButtonsRoot ? [...typeButtonsRoot.querySelectorAll('[dat
 const lengthButtonsRoot = document.getElementById('configLengthButtons');
 const lengthButtons = lengthButtonsRoot ? [...lengthButtonsRoot.querySelectorAll('[data-length]')] : [];
 const colorButtons = [...document.querySelectorAll('.config-shell-color-btn')];
+const foundationButtonsRoot = document.getElementById('foundationButtons');
+const foundationButtons = foundationButtonsRoot ? [...foundationButtonsRoot.querySelectorAll('[data-foundation]')] : [];
+const extrasButtonsRoot = document.getElementById('extrasButtons');
+const extrasButtons = extrasButtonsRoot ? [...extrasButtonsRoot.querySelectorAll('[data-extra]')] : [];
 const choiceButtons = sceneChoice ? [...sceneChoice.querySelectorAll('[data-garage-option]')] : [];
 
 const PUSH_DELAY_MS = 520;
@@ -62,7 +66,28 @@ const configuratorState = {
   length: 6,
   wallColorPreset: 'sand',
   roofTrimColorPreset: 'graphite',
-  gateColorPreset: 'graphite'
+  gateColorPreset: 'graphite',
+  foundation: 'none',
+  extras: {
+    automation: false,
+    electrics: false,
+    lighting: false,
+    ventilation: false,
+    drainage: false
+  }
+};
+const FOUNDATION_LABELS = {
+  none: 'без фундамента',
+  pile: 'свайный',
+  strip: 'ленточный',
+  slab: 'плита'
+};
+const EXTRA_LABELS = {
+  automation: 'автоматика',
+  electrics: 'электрика',
+  lighting: 'освещение',
+  ventilation: 'вентиляция',
+  drainage: 'водостоки'
 };
 
 function resolveModelKey(width, length) {
@@ -75,7 +100,12 @@ function updateSummaryLabel() {
   const typeLabel = configuratorState.type === 'double' ? 'Гараж на 2 машины' : 'Гараж на 1 машину';
   const wallLabel = WALL_COLOR_PRESETS[configuratorState.wallColorPreset]?.label || '—';
   const roofTrimLabel = ROOF_DETAIL_PRESETS[configuratorState.roofTrimColorPreset]?.label || '—';
-  configShellSummary.textContent = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м · стены: ${wallLabel} · крыша и детали: ${roofTrimLabel}`;
+  const foundationLabel = FOUNDATION_LABELS[configuratorState.foundation] || FOUNDATION_LABELS.none;
+  const extrasLabel = Object.entries(configuratorState.extras)
+    .filter(([, enabled]) => enabled)
+    .map(([key]) => EXTRA_LABELS[key])
+    .join(', ') || 'без доп. опций';
+  configShellSummary.textContent = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м · стены: ${wallLabel} · крыша и детали: ${roofTrimLabel} · фундамент: ${foundationLabel} · ${extrasLabel}`;
 }
 
 function updateLengthButtonState() {
@@ -113,6 +143,21 @@ function getActiveColorSet() {
     roofTrim: roofTrimPreset.roofTrim,
     gate: gatePreset.gate
   };
+}
+
+function updateFoundationButtonState() {
+  foundationButtons.forEach((button) => {
+    const isActive = button.dataset.foundation === configuratorState.foundation;
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function updateExtrasButtonState() {
+  extrasButtons.forEach((button) => {
+    const key = button.dataset.extra;
+    const isActive = Boolean(key && configuratorState.extras[key]);
+    button.setAttribute('aria-pressed', String(isActive));
+  });
 }
 
 function createViewerBridge() {
@@ -390,6 +435,8 @@ if (configShell && choiceButtons.length) {
       updateTypeButtonState();
       updateLengthButtonState();
       updateColorButtonState();
+      updateFoundationButtonState();
+      updateExtrasButtonState();
       updateSummaryLabel();
 
       if (configShellPrice) {
@@ -457,6 +504,32 @@ if (colorButtons.length) {
       updateColorButtonState();
       updateSummaryLabel();
       await viewerBridge.applyColorsByState();
+    });
+  });
+}
+
+if (foundationButtons.length) {
+  foundationButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const nextFoundation = button.dataset.foundation;
+      if (!nextFoundation || nextFoundation === configuratorState.foundation) return;
+
+      configuratorState.foundation = nextFoundation;
+      updateFoundationButtonState();
+      updateSummaryLabel();
+    });
+  });
+}
+
+if (extrasButtons.length) {
+  extrasButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const extraKey = button.dataset.extra;
+      if (!extraKey || !(extraKey in configuratorState.extras)) return;
+
+      configuratorState.extras[extraKey] = !configuratorState.extras[extraKey];
+      updateExtrasButtonState();
+      updateSummaryLabel();
     });
   });
 }

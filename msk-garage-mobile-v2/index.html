@@ -83,11 +83,22 @@
       </section>
       <section class="config-shell-group" data-config-group="foundation">
         <h2>Фундамент</h2>
-        <p>Базовые сценарии основания и их влияние на смету.</p>
+        <div class="config-shell-foundation-buttons" id="foundationButtons">
+          <button type="button" class="config-shell-foundation-btn" data-foundation="none" aria-pressed="true">Без фундамента</button>
+          <button type="button" class="config-shell-foundation-btn" data-foundation="pile" aria-pressed="false">Свайный</button>
+          <button type="button" class="config-shell-foundation-btn" data-foundation="strip" aria-pressed="false">Ленточный</button>
+          <button type="button" class="config-shell-foundation-btn" data-foundation="slab" aria-pressed="false">Плита</button>
+        </div>
       </section>
       <section class="config-shell-group" data-config-group="extra">
-        <h2>Дополнительно</h2>
-        <p>Ворота, электрика, вентиляция и дополнительные элементы.</p>
+        <h2>Оснащение</h2>
+        <div class="config-shell-extras-buttons" id="extrasButtons">
+          <button type="button" class="config-shell-extra-btn" data-extra="automation" aria-pressed="false">Автоматика ворот</button>
+          <button type="button" class="config-shell-extra-btn" data-extra="electrics" aria-pressed="false">Электрика</button>
+          <button type="button" class="config-shell-extra-btn" data-extra="lighting" aria-pressed="false">Освещение</button>
+          <button type="button" class="config-shell-extra-btn" data-extra="ventilation" aria-pressed="false">Вентиляция</button>
+          <button type="button" class="config-shell-extra-btn" data-extra="drainage" aria-pressed="false">Водостоки</button>
+        </div>
       </section>
     </div>
 
