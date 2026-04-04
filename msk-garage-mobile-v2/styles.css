@@ -286,53 +286,31 @@ body {
 
 .config-shell {
   width: 100%;
-  max-width: 540px;
-  margin: 0 auto;
-  padding: 14px 14px calc(102px + env(safe-area-inset-bottom));
+  max-width: none;
+  margin: 0;
+  padding: 0 0 calc(102px + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, #f3f6fb 0%, #e7edf7 100%);
   color: #111827;
 }
 
-.config-shell-viewport {
-  position: relative;
-  min-height: 280px;
-  border-radius: 18px;
-  border: 1px solid #d5dfec;
-  background:
-    radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.95) 0%, rgba(234, 241, 250, 0.96) 55%, rgba(218, 228, 241, 0.95) 100%);
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
-  padding: 18px 16px;
-  margin-bottom: 14px;
-}
-
-.config-shell-viewport-badge {
-  display: inline-flex;
-  padding: 4px 9px;
-  border-radius: 999px;
-  border: 1px solid #c1cfdf;
-  background: rgba(255, 255, 255, 0.7);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #405066;
-}
-
 .config-shell-viewport-subtitle {
-  margin: 10px 0 0;
+  margin: 8px 0 12px;
   font-size: 11px;
   line-height: 1.3;
   text-align: center;
   color: #506079;
+  padding: 0 14px;
 }
 
 .config-shell-viewer {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 14px;
-  border: 1px solid rgba(148, 163, 184, 0.45);
-  background: #f3f4f6;
+  height: 50svh;
+  min-height: 45svh;
+  max-height: 55svh;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
   overflow: hidden;
-  margin-top: 12px;
 }
 
 .config-shell-options {
@@ -340,7 +318,7 @@ body {
   gap: 10px;
   max-height: min(56svh, 560px);
   overflow: auto;
-  padding-right: 2px;
+  padding: 0 14px 2px;
 }
 
 .config-shell-group {
@@ -391,7 +369,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  margin-top: 12px;
+  margin: 12px 14px 0;
   padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
   border-radius: 14px;
   border: 1px solid #cad7e8;
