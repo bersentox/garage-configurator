@@ -349,12 +349,14 @@ body {
   line-height: 1.35;
 }
 
+.config-shell-type-buttons,
 .config-shell-length-buttons {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
+.config-shell-type-btn,
 .config-shell-length-btn {
   min-height: 42px;
   border-radius: 10px;
@@ -365,9 +367,14 @@ body {
   font-weight: 600;
 }
 
+.config-shell-type-btn[aria-pressed="true"],
 .config-shell-length-btn[aria-pressed="true"] {
   border-color: #94a6bf;
   background: #edf3fb;
+}
+
+.config-shell-length-buttons {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .config-shell-bar {

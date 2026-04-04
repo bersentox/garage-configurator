@@ -7,6 +7,8 @@ const configShellSummary = document.getElementById('configShellSummary');
 const configShellPrice = document.getElementById('configShellPrice');
 const configShellViewerStatus = document.getElementById('configShellViewerStatus');
 const garage3dViewer = document.getElementById('garage3dViewer');
+const typeButtonsRoot = document.getElementById('configTypeButtons');
+const typeButtons = typeButtonsRoot ? [...typeButtonsRoot.querySelectorAll('[data-type]')] : [];
 const lengthButtonsRoot = document.getElementById('configLengthButtons');
 const lengthButtons = lengthButtonsRoot ? [...lengthButtonsRoot.querySelectorAll('[data-length]')] : [];
 const choiceButtons = sceneChoice ? [...sceneChoice.querySelectorAll('[data-garage-option]')] : [];
@@ -42,6 +44,13 @@ function updateSummaryLabel() {
 function updateLengthButtonState() {
   lengthButtons.forEach((button) => {
     const isActive = Number(button.dataset.length) === configuratorState.length;
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function updateTypeButtonState() {
+  typeButtons.forEach((button) => {
+    const isActive = button.dataset.type === configuratorState.type;
     button.setAttribute('aria-pressed', String(isActive));
   });
 }
@@ -247,6 +256,7 @@ if (configShell && choiceButtons.length) {
         choiceButton.setAttribute('aria-pressed', String(choiceButton === button));
       });
 
+      updateTypeButtonState();
       updateLengthButtonState();
       updateSummaryLabel();
 
@@ -256,6 +266,28 @@ if (configShell && choiceButtons.length) {
 
       await viewerBridge.loadByState();
       configShell.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
+if (typeButtons.length) {
+  typeButtons.forEach((button) => {
+    button.addEventListener('click', async () => {
+      const nextType = button.dataset.type;
+      if (!nextType || nextType === configuratorState.type) return;
+
+      const isDouble = nextType === 'double';
+      configuratorState.type = isDouble ? 'double' : 'single';
+      configuratorState.width = isDouble ? 8 : 6;
+
+      updateTypeButtonState();
+      updateSummaryLabel();
+
+      if (configShellPrice) {
+        configShellPrice.textContent = isDouble ? 'от 2 290 000 ₽' : 'от 1 950 000 ₽';
+      }
+
+      await viewerBridge.loadByState();
     });
   });
 }
