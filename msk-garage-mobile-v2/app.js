@@ -25,24 +25,35 @@ const MODEL_BY_SIZE = {
   '8x8': '../models/garage_8x8.glb',
   '8x10': '../models/garage_8x10.glb'
 };
-const COLOR_PRESETS = {
+const WALL_COLOR_PRESETS = {
   sand: {
     label: 'песочный',
-    wall: '#d1bc97',
-    roofTrim: '#8f7758',
-    gate: '#c7ad86'
+    wall: '#d1bc97'
   },
   graphite: {
     label: 'графит',
-    wall: '#6a7280',
+    wall: '#6a7280'
+  },
+  grey: {
+    label: 'серый',
+    wall: '#8a919c'
+  }
+};
+const ROOF_DETAIL_PRESETS = {
+  graphite: {
+    label: 'графит',
     roofTrim: '#2d3540',
-    gate: '#5f6877'
+    gate: '#2d3540'
   },
   chocolate: {
     label: 'шоколадный',
-    wall: '#76523b',
-    roofTrim: '#3a281e',
-    gate: '#7f5a43'
+    roofTrim: '#4a3428',
+    gate: '#4a3428'
+  },
+  black: {
+    label: 'чёрный',
+    roofTrim: '#1a1a1a',
+    gate: '#1a1a1a'
   }
 };
 const configuratorState = {
@@ -62,10 +73,9 @@ function resolveModelKey(width, length) {
 function updateSummaryLabel() {
   if (!configShellSummary) return;
   const typeLabel = configuratorState.type === 'double' ? 'Гараж на 2 машины' : 'Гараж на 1 машину';
-  const wallLabel = COLOR_PRESETS[configuratorState.wallColorPreset]?.label || '—';
-  const roofTrimLabel = COLOR_PRESETS[configuratorState.roofTrimColorPreset]?.label || '—';
-  const gateLabel = COLOR_PRESETS[configuratorState.gateColorPreset]?.label || '—';
-  configShellSummary.textContent = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м · стены: ${wallLabel} · крыша: ${roofTrimLabel} · ворота: ${gateLabel}`;
+  const wallLabel = WALL_COLOR_PRESETS[configuratorState.wallColorPreset]?.label || '—';
+  const roofTrimLabel = ROOF_DETAIL_PRESETS[configuratorState.roofTrimColorPreset]?.label || '—';
+  configShellSummary.textContent = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м · стены: ${wallLabel} · крыша и детали: ${roofTrimLabel}`;
 }
 
 function updateLengthButtonState() {
@@ -88,17 +98,16 @@ function updateColorButtonState() {
     const preset = button.dataset.colorPreset;
     const isActive = (
       (group === 'wall' && preset === configuratorState.wallColorPreset) ||
-      (group === 'roofTrim' && preset === configuratorState.roofTrimColorPreset) ||
-      (group === 'gate' && preset === configuratorState.gateColorPreset)
+      (group === 'roofTrim' && preset === configuratorState.roofTrimColorPreset)
     );
     button.setAttribute('aria-pressed', String(isActive));
   });
 }
 
 function getActiveColorSet() {
-  const wallPreset = COLOR_PRESETS[configuratorState.wallColorPreset] || COLOR_PRESETS.sand;
-  const roofTrimPreset = COLOR_PRESETS[configuratorState.roofTrimColorPreset] || COLOR_PRESETS.graphite;
-  const gatePreset = COLOR_PRESETS[configuratorState.gateColorPreset] || COLOR_PRESETS.graphite;
+  const wallPreset = WALL_COLOR_PRESETS[configuratorState.wallColorPreset] || WALL_COLOR_PRESETS.sand;
+  const roofTrimPreset = ROOF_DETAIL_PRESETS[configuratorState.roofTrimColorPreset] || ROOF_DETAIL_PRESETS.graphite;
+  const gatePreset = ROOF_DETAIL_PRESETS[configuratorState.gateColorPreset] || roofTrimPreset;
   return {
     wall: wallPreset.wall,
     roofTrim: roofTrimPreset.roofTrim,
@@ -434,14 +443,15 @@ if (colorButtons.length) {
     button.addEventListener('click', async () => {
       const colorGroup = button.dataset.colorGroup;
       const colorPreset = button.dataset.colorPreset;
-      if (!colorGroup || !colorPreset || !COLOR_PRESETS[colorPreset]) return;
+      if (!colorGroup || !colorPreset) return;
 
-      if (colorGroup === 'wall') {
+      if (colorGroup === 'wall' && WALL_COLOR_PRESETS[colorPreset]) {
         configuratorState.wallColorPreset = colorPreset;
-      } else if (colorGroup === 'roofTrim') {
+      } else if (colorGroup === 'roofTrim' && ROOF_DETAIL_PRESETS[colorPreset]) {
         configuratorState.roofTrimColorPreset = colorPreset;
-      } else if (colorGroup === 'gate') {
         configuratorState.gateColorPreset = colorPreset;
+      } else {
+        return;
       }
 
       updateColorButtonState();
