@@ -5,6 +5,10 @@ const sceneChoice = document.getElementById('sceneChoice');
 const configShell = document.getElementById('configShell');
 const configShellSummary = document.getElementById('configShellSummary');
 const configShellPrice = document.getElementById('configShellPrice');
+const finalCtaPrice = document.getElementById('finalCtaPrice');
+const finalCtaSummary = document.getElementById('finalCtaSummary');
+const configBarCta = document.getElementById('configBarCta');
+const finalCtaScene = document.getElementById('finalCtaScene');
 const configShellViewerStatus = document.getElementById('configShellViewerStatus');
 const garage3dViewer = document.getElementById('garage3dViewer');
 const typeButtonsRoot = document.getElementById('configTypeButtons');
@@ -113,7 +117,6 @@ function resolveModelKey(width, length) {
 }
 
 function updateSummaryLabel() {
-  if (!configShellSummary) return;
   const typeLabel = configuratorState.type === 'double' ? 'Гараж на 2 машины' : 'Гараж на 1 машину';
   const wallLabel = WALL_COLOR_PRESETS[configuratorState.wallColorPreset]?.label || '—';
   const roofTrimLabel = ROOF_DETAIL_PRESETS[configuratorState.roofTrimColorPreset]?.label || '—';
@@ -122,7 +125,15 @@ function updateSummaryLabel() {
     .filter(([, enabled]) => enabled)
     .map(([key]) => EXTRA_LABELS[key])
     .join(', ') || 'без доп. опций';
-  configShellSummary.textContent = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м · стены: ${wallLabel} · крыша и детали: ${roofTrimLabel} · фундамент: ${foundationLabel} · ${extrasLabel}`;
+  const summaryText = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м · стены: ${wallLabel} · крыша и детали: ${roofTrimLabel} · фундамент: ${foundationLabel} · ${extrasLabel}`;
+
+  if (configShellSummary) {
+    configShellSummary.textContent = summaryText;
+  }
+
+  if (finalCtaSummary) {
+    finalCtaSummary.textContent = summaryText;
+  }
 }
 
 function calculateEstimatedPrice() {
@@ -140,8 +151,13 @@ function formatPrice(value) {
 }
 
 function updatePriceLabel() {
-  if (!configShellPrice) return;
-  configShellPrice.textContent = formatPrice(calculateEstimatedPrice());
+  const priceText = formatPrice(calculateEstimatedPrice());
+  if (configShellPrice) {
+    configShellPrice.textContent = priceText;
+  }
+  if (finalCtaPrice) {
+    finalCtaPrice.textContent = priceText;
+  }
 }
 
 function refreshBottomBar() {
@@ -564,5 +580,11 @@ if (extrasButtons.length) {
       updateExtrasButtonState();
       refreshBottomBar();
     });
+  });
+}
+
+if (configBarCta && finalCtaScene) {
+  configBarCta.addEventListener('click', () => {
+    finalCtaScene.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }
