@@ -3,6 +3,7 @@ const openBtn = document.getElementById('openBtn');
 const garageGateSound = document.getElementById('garageGateSound');
 const sceneChoice = document.getElementById('sceneChoice');
 const configShell = document.getElementById('configShell');
+const configShellOptions = document.getElementById('configShellOptions');
 const configShellBar = document.getElementById('configShellBar');
 const configShellSummary = document.getElementById('configShellSummary');
 const configShellPrice = document.getElementById('configShellPrice');
@@ -598,6 +599,7 @@ if (configShellBar && finalCtaScene) {
       configShellBar.classList.toggle('is-hidden', entry.isIntersecting);
     },
     {
+      root: configShellOptions || null,
       threshold: 0.35
     }
   );
