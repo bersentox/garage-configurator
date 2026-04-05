@@ -3,7 +3,7 @@ const openBtn = document.getElementById('openBtn');
 const garageGateSound = document.getElementById('garageGateSound');
 const sceneChoice = document.getElementById('sceneChoice');
 const configShell = document.getElementById('configShell');
-const configShellOptions = document.getElementById('configShellOptions');
+const configShellViewport = document.getElementById('configShellViewport');
 const configShellBar = document.getElementById('configShellBar');
 const configShellSummary = document.getElementById('configShellSummary');
 const configShellPrice = document.getElementById('configShellPrice');
@@ -167,6 +167,50 @@ function updatePriceLabel() {
 function refreshBottomBar() {
   updateSummaryLabel();
   updatePriceLabel();
+}
+
+function setupViewportStickyNormalization() {
+  if (!configShell || !configShellViewport) return;
+
+  let rafId = null;
+
+  const applyStickyTopOffset = () => {
+    const viewportTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
+    configShell.style.setProperty('--config-shell-sticky-top', `${Math.max(0, Math.round(viewportTop))}px`);
+  };
+
+  const normalizeStickyState = () => {
+    rafId = null;
+    const shellRect = configShell.getBoundingClientRect();
+    const viewportRect = configShellViewport.getBoundingClientRect();
+    const shouldStick = shellRect.top <= 0 && shellRect.bottom > viewportRect.height;
+    configShellViewport.classList.toggle('is-stuck', shouldStick);
+  };
+
+  const scheduleNormalization = () => {
+    if (rafId !== null) return;
+    rafId = window.requestAnimationFrame(normalizeStickyState);
+  };
+
+  applyStickyTopOffset();
+  normalizeStickyState();
+
+  window.addEventListener('scroll', scheduleNormalization, { passive: true });
+  window.addEventListener('resize', () => {
+    applyStickyTopOffset();
+    scheduleNormalization();
+  });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      applyStickyTopOffset();
+      scheduleNormalization();
+    });
+    window.visualViewport.addEventListener('scroll', () => {
+      applyStickyTopOffset();
+      scheduleNormalization();
+    });
+  }
 }
 
 function updateLengthButtonState() {
@@ -593,13 +637,15 @@ if (configBarCta && finalCtaScene) {
   });
 }
 
+setupViewportStickyNormalization();
+
 if (configShellBar && finalCtaScene) {
   const finalSceneObserver = new IntersectionObserver(
     ([entry]) => {
       configShellBar.classList.toggle('is-hidden', entry.isIntersecting);
     },
     {
-      root: configShellOptions || null,
+      root: null,
       threshold: 0.35
     }
   );
