@@ -349,6 +349,31 @@ body {
   line-height: 1.35;
 }
 
+.config-shell-info {
+  padding: 2px 4px 0;
+}
+
+.config-shell-info-text {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #5f7088;
+}
+
+.config-shell-info-link {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.25;
+  color: #365f95;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(54, 95, 149, 0.4);
+}
+
+.config-shell-info-link:active {
+  opacity: 0.8;
+}
+
 .config-shell-color-buttons {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
