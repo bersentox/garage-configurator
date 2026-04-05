@@ -353,6 +353,10 @@ body {
   padding: 2px 4px 0;
 }
 
+.config-shell-info-inline {
+  margin-top: 8px;
+}
+
 .config-shell-info-text {
   margin: 0;
   font-size: 12px;
@@ -372,6 +376,18 @@ body {
 
 .config-shell-info-link:active {
   opacity: 0.8;
+}
+
+.config-shell-color-subgroup + .config-shell-color-subgroup {
+  margin-top: 10px;
+}
+
+.config-shell-subtitle {
+  margin: 0 0 6px;
+  font-size: 13px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: #41516a;
 }
 
 .config-shell-color-buttons {
