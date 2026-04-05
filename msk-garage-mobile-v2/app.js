@@ -21,6 +21,23 @@ const choiceButtons = sceneChoice ? [...sceneChoice.querySelectorAll('[data-gara
 const PUSH_DELAY_MS = 520;
 const SHOW_CHOICE_DELAY_MS = 2000;
 const CHOICE_DELAY_MS = 4600;
+const RATE_PER_M2 = {
+  6: 54000,
+  8: 57000
+};
+const FOUNDATION_RATE_PER_M2 = {
+  none: 0,
+  pile: 6500,
+  strip: 5500,
+  slab: 4500
+};
+const EXTRA_PRICE = {
+  automation: 25000,
+  electrics: 60000,
+  lighting: 15000,
+  ventilation: 6000,
+  drainage: 25000
+};
 const MODEL_BY_SIZE = {
   '6x6': '../models/garage_6x6.glb',
   '6x8': '../models/garage_6x8.glb',
@@ -106,6 +123,30 @@ function updateSummaryLabel() {
     .map(([key]) => EXTRA_LABELS[key])
     .join(', ') || 'без доп. опций';
   configShellSummary.textContent = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м · стены: ${wallLabel} · крыша и детали: ${roofTrimLabel} · фундамент: ${foundationLabel} · ${extrasLabel}`;
+}
+
+function calculateEstimatedPrice() {
+  const ratePerM2 = RATE_PER_M2[configuratorState.width] || RATE_PER_M2[6];
+  const basePrice = configuratorState.width * configuratorState.length * ratePerM2;
+  const foundationRatePerM2 = FOUNDATION_RATE_PER_M2[configuratorState.foundation] ?? 0;
+  const foundationPrice = configuratorState.width * configuratorState.length * foundationRatePerM2;
+  const extrasPrice = Object.entries(configuratorState.extras)
+    .reduce((sum, [key, enabled]) => sum + (enabled ? (EXTRA_PRICE[key] || 0) : 0), 0);
+  return basePrice + foundationPrice + extrasPrice;
+}
+
+function formatPrice(value) {
+  return `от ${new Intl.NumberFormat('ru-RU').format(Math.round(value))} ₽`;
+}
+
+function updatePriceLabel() {
+  if (!configShellPrice) return;
+  configShellPrice.textContent = formatPrice(calculateEstimatedPrice());
+}
+
+function refreshBottomBar() {
+  updateSummaryLabel();
+  updatePriceLabel();
 }
 
 function updateLengthButtonState() {
@@ -437,11 +478,7 @@ if (configShell && choiceButtons.length) {
       updateColorButtonState();
       updateFoundationButtonState();
       updateExtrasButtonState();
-      updateSummaryLabel();
-
-      if (configShellPrice) {
-        configShellPrice.textContent = isDouble ? 'от 2 290 000 ₽' : 'от 1 950 000 ₽';
-      }
+      refreshBottomBar();
 
       await viewerBridge.loadByState();
       configShell.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -460,11 +497,7 @@ if (typeButtons.length) {
       configuratorState.width = isDouble ? 8 : 6;
 
       updateTypeButtonState();
-      updateSummaryLabel();
-
-      if (configShellPrice) {
-        configShellPrice.textContent = isDouble ? 'от 2 290 000 ₽' : 'от 1 950 000 ₽';
-      }
+      refreshBottomBar();
 
       await viewerBridge.loadByState();
     });
@@ -479,7 +512,7 @@ if (lengthButtons.length) {
 
       configuratorState.length = nextLength;
       updateLengthButtonState();
-      updateSummaryLabel();
+      refreshBottomBar();
       await viewerBridge.loadByState();
     });
   });
@@ -502,7 +535,7 @@ if (colorButtons.length) {
       }
 
       updateColorButtonState();
-      updateSummaryLabel();
+      refreshBottomBar();
       await viewerBridge.applyColorsByState();
     });
   });
@@ -516,7 +549,7 @@ if (foundationButtons.length) {
 
       configuratorState.foundation = nextFoundation;
       updateFoundationButtonState();
-      updateSummaryLabel();
+      refreshBottomBar();
     });
   });
 }
@@ -529,7 +562,7 @@ if (extrasButtons.length) {
 
       configuratorState.extras[extraKey] = !configuratorState.extras[extraKey];
       updateExtrasButtonState();
-      updateSummaryLabel();
+      refreshBottomBar();
     });
   });
 }
