@@ -3,6 +3,7 @@ const openBtn = document.getElementById('openBtn');
 const garageGateSound = document.getElementById('garageGateSound');
 const sceneChoice = document.getElementById('sceneChoice');
 const configShell = document.getElementById('configShell');
+const configShellBar = document.getElementById('configShellBar');
 const configShellSummary = document.getElementById('configShellSummary');
 const configShellPrice = document.getElementById('configShellPrice');
 const finalCtaPrice = document.getElementById('finalCtaPrice');
@@ -118,6 +119,7 @@ function resolveModelKey(width, length) {
 
 function updateSummaryLabel() {
   const typeLabel = configuratorState.type === 'double' ? 'Гараж на 2 машины' : 'Гараж на 1 машину';
+  const compactTypeLabel = configuratorState.type === 'double' ? '2 машины' : '1 машина';
   const wallLabel = WALL_COLOR_PRESETS[configuratorState.wallColorPreset]?.label || '—';
   const roofTrimLabel = ROOF_DETAIL_PRESETS[configuratorState.roofTrimColorPreset]?.label || '—';
   const foundationLabel = FOUNDATION_LABELS[configuratorState.foundation] || FOUNDATION_LABELS.none;
@@ -125,14 +127,15 @@ function updateSummaryLabel() {
     .filter(([, enabled]) => enabled)
     .map(([key]) => EXTRA_LABELS[key])
     .join(', ') || 'без доп. опций';
-  const summaryText = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м · стены: ${wallLabel} · крыша и детали: ${roofTrimLabel} · фундамент: ${foundationLabel} · ${extrasLabel}`;
+  const compactSummaryText = `${compactTypeLabel} · ${configuratorState.width}×${configuratorState.length} · ${wallLabel} / ${roofTrimLabel}`;
+  const finalSummaryText = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м · стены: ${wallLabel} · крыша и детали: ${roofTrimLabel} · фундамент: ${foundationLabel} · ${extrasLabel}`;
 
   if (configShellSummary) {
-    configShellSummary.textContent = summaryText;
+    configShellSummary.textContent = compactSummaryText;
   }
 
   if (finalCtaSummary) {
-    finalCtaSummary.textContent = summaryText;
+    finalCtaSummary.textContent = finalSummaryText;
   }
 }
 
@@ -587,4 +590,17 @@ if (configBarCta && finalCtaScene) {
   configBarCta.addEventListener('click', () => {
     finalCtaScene.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+}
+
+if (configShellBar && finalCtaScene) {
+  const finalSceneObserver = new IntersectionObserver(
+    ([entry]) => {
+      configShellBar.classList.toggle('is-hidden', entry.isIntersecting);
+    },
+    {
+      threshold: 0.35
+    }
+  );
+
+  finalSceneObserver.observe(finalCtaScene);
 }
