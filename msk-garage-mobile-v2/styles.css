@@ -304,8 +304,8 @@ body {
 
 .config-shell-viewer {
   width: 100%;
-  height: 40svh;
-  min-height: 210px;
+  height: 28svh;
+  min-height: 180px;
   max-height: 360px;
   border-radius: 0;
   border: 0;
