@@ -99,37 +99,17 @@ const configuratorState = {
     drainage: false
   }
 };
-const FOUNDATION_LABELS = {
-  none: 'без фундамента',
-  pile: 'свайный',
-  strip: 'ленточный',
-  slab: 'плита'
-};
-const EXTRA_LABELS = {
-  automation: 'автоматика',
-  electrics: 'электрика',
-  lighting: 'освещение',
-  ventilation: 'вентиляция',
-  drainage: 'водостоки'
-};
-
 function resolveModelKey(width, length) {
   const sizeKey = `${width}x${length}`;
   return MODEL_BY_SIZE[sizeKey] ? sizeKey : null;
 }
 
 function updateSummaryLabel() {
-  const typeLabel = configuratorState.type === 'double' ? 'Гараж на 2 машины' : 'Гараж на 1 машину';
   const compactTypeLabel = configuratorState.type === 'double' ? '2 машины' : '1 машина';
   const wallLabel = WALL_COLOR_PRESETS[configuratorState.wallColorPreset]?.label || '—';
   const roofTrimLabel = ROOF_DETAIL_PRESETS[configuratorState.roofTrimColorPreset]?.label || '—';
-  const foundationLabel = FOUNDATION_LABELS[configuratorState.foundation] || FOUNDATION_LABELS.none;
-  const extrasLabel = Object.entries(configuratorState.extras)
-    .filter(([, enabled]) => enabled)
-    .map(([key]) => EXTRA_LABELS[key])
-    .join(', ') || 'без доп. опций';
   const compactSummaryText = `${compactTypeLabel} · ${configuratorState.width}×${configuratorState.length} · ${wallLabel} / ${roofTrimLabel}`;
-  const finalSummaryText = `${typeLabel} · ${configuratorState.width} × ${configuratorState.length} м · стены: ${wallLabel} · крыша и детали: ${roofTrimLabel} · фундамент: ${foundationLabel} · ${extrasLabel}`;
+  const finalSummaryText = `${compactTypeLabel} · ${configuratorState.width}×${configuratorState.length} · ${wallLabel} / ${roofTrimLabel}`;
 
   if (configShellSummary) {
     configShellSummary.textContent = compactSummaryText;
