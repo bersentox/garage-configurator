@@ -301,11 +301,39 @@ function createViewerBridge() {
     controls.enableDamping = true;
     controls.enablePan = false;
     controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.35;
+    controls.autoRotateSpeed = 0.3;
     controls.minDistance = 5.5;
     controls.maxDistance = 22;
     controls.minPolarAngle = 0.78;
     controls.maxPolarAngle = 1.36;
+
+    const AUTO_ROTATE_RESUME_DELAY_MS = 2400;
+    let autoRotateResumeTimer = null;
+
+    const stopAutoRotate = () => {
+      controls.autoRotate = false;
+      if (autoRotateResumeTimer !== null) {
+        window.clearTimeout(autoRotateResumeTimer);
+        autoRotateResumeTimer = null;
+      }
+    };
+
+    const resumeAutoRotateWithDelay = () => {
+      if (autoRotateResumeTimer !== null) {
+        window.clearTimeout(autoRotateResumeTimer);
+      }
+      autoRotateResumeTimer = window.setTimeout(() => {
+        controls.autoRotate = true;
+        autoRotateResumeTimer = null;
+      }, AUTO_ROTATE_RESUME_DELAY_MS);
+    };
+
+    renderer.domElement.addEventListener('pointerdown', stopAutoRotate, { passive: true });
+    renderer.domElement.addEventListener('pointerup', resumeAutoRotateWithDelay, { passive: true });
+    renderer.domElement.addEventListener('pointercancel', resumeAutoRotateWithDelay, { passive: true });
+    renderer.domElement.addEventListener('touchstart', stopAutoRotate, { passive: true });
+    renderer.domElement.addEventListener('touchend', resumeAutoRotateWithDelay, { passive: true });
+    renderer.domElement.addEventListener('touchcancel', resumeAutoRotateWithDelay, { passive: true });
 
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0xdbe5e1, 0.8);
     const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
