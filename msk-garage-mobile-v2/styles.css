@@ -668,3 +668,16 @@ body {
   line-height: 1.35;
   color: rgba(171, 190, 222, 0.45);
 }
+
+#garage-mobile-v2-root a {
+  color: inherit;
+}
+
+#garage-mobile-v2-root .config-shell-info-link {
+  color: #365f95 !important;
+  border-bottom: 1px solid rgba(54, 95, 149, 0.4);
+}
+
+#garage-mobile-v2-root .config-shell-info-link:active {
+  opacity: 0.8;
+}
