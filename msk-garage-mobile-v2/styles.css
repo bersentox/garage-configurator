@@ -54,7 +54,7 @@
 #garage-mobile-v2-root .gate-content {
   position: absolute;
   inset: 0;
-  transform: translateY(0);
+  transform: translateY(-4px);
   transition: transform 5s cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
   pointer-events: none;
