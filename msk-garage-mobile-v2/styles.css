@@ -681,3 +681,22 @@ body {
 #garage-mobile-v2-root .config-shell-info-link:active {
   opacity: 0.8;
 }
+#garage-mobile-v2-root .config-shell-info-link,
+#garage-mobile-v2-root .config-shell-info-link:link,
+#garage-mobile-v2-root .config-shell-info-link:visited,
+#garage-mobile-v2-root .config-shell-info-link:hover,
+#garage-mobile-v2-root .config-shell-info-link:active,
+#garage-mobile-v2-root .config-shell-info a,
+#garage-mobile-v2-root .config-shell-info a:link,
+#garage-mobile-v2-root .config-shell-info a:visited,
+#garage-mobile-v2-root .config-shell-info a:hover,
+#garage-mobile-v2-root .config-shell-info a:active {
+  color: #365f95 !important;
+  -webkit-text-fill-color: #365f95 !important;
+  text-decoration-color: rgba(54, 95, 149, 0.4) !important;
+  border-bottom-color: rgba(54, 95, 149, 0.4) !important;
+}
+#garage-mobile-v2-root .config-shell-info-link {
+  text-decoration: none !important;
+  border-bottom: 1px solid rgba(54, 95, 149, 0.4) !important;
+}
