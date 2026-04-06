@@ -110,9 +110,9 @@
 }
 #garage-mobile-v2-root .scene-instruction {
   position: absolute;
-  bottom: 70px;
+  bottom: 202px;
   left: 50%;
-  transform: translateX(-50%) translateY(8px);
+  transform: translateX(-30%) translateY(8px);
   z-index: 3;
   width: min(78%, 260px);
   text-align: center;
@@ -138,8 +138,8 @@
 #garage-mobile-v2-root .scene-remote {
   position: absolute;
   left: 50%;
-  bottom: 128px;
-  transform: translateX(-50%);
+  bottom: 260px;
+  transform: translateX(-30%);
   transform-origin: center center;
   z-index: 4;
   width: 54px;
