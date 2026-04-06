@@ -112,7 +112,7 @@
   position: absolute;
   bottom: 182px;
   left: 50%;
-  transform: translateX(-15%) translateY(8px);
+  transform: translateX(-30%) translateY(8px);
   z-index: 3;
   width: min(78%, 260px);
   text-align: center;
@@ -127,13 +127,13 @@
 }
 #garage-mobile-v2-root .hero.idle .scene-instruction {
   opacity: 1;
-  transform: translateX(-15%) translateY(0);
+  transform: translateX(-30%) translateY(0);
 }
 #garage-mobile-v2-root .hero.opening .scene-instruction,
 #garage-mobile-v2-root .hero.pushing .scene-instruction,
 #garage-mobile-v2-root .hero.choice .scene-instruction {
   opacity: 0;
-  transform: translateX(-15%) translateY(8px);
+  transform: translateX(-30%) translateY(8px);
 }
 #garage-mobile-v2-root .scene-remote {
   position: absolute;
