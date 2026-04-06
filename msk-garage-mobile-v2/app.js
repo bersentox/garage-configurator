@@ -46,12 +46,12 @@ const EXTRA_PRICE = {
   drainage: 25000
 };
 const MODEL_BY_SIZE = {
-  '6x6': '../models/garage_6x6.glb',
-  '6x8': '../models/garage_6x8.glb',
-  '6x10': '../models/garage_6x10.glb',
-  '8x6': '../models/garage_8x6.glb',
-  '8x8': '../models/garage_8x8.glb',
-  '8x10': '../models/garage_8x10.glb'
+  '6x6': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_6x6.glb',
+  '6x8': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_6x8.glb',
+  '6x10': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_6x10.glb',
+  '8x6': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_8x6.glb',
+  '8x8': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_8x8.glb',
+  '8x10': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_8x10.glb'
 };
 const BUILD_TIMELINE_BY_SIZE = {
   '6x6': '7–10 дней',
