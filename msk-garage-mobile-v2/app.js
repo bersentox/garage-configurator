@@ -9,6 +9,7 @@ const configShellSummary = document.getElementById('configShellSummary');
 const configShellPrice = document.getElementById('configShellPrice');
 const finalCtaPrice = document.getElementById('finalCtaPrice');
 const finalCtaSummary = document.getElementById('finalCtaSummary');
+const finalCtaTimeline = document.getElementById('finalCtaTimeline');
 const configBarCta = document.getElementById('configBarCta');
 const finalCtaScene = document.getElementById('finalCtaScene');
 const configShellViewerStatus = document.getElementById('configShellViewerStatus');
@@ -51,6 +52,14 @@ const MODEL_BY_SIZE = {
   '8x6': '../models/garage_8x6.glb',
   '8x8': '../models/garage_8x8.glb',
   '8x10': '../models/garage_8x10.glb'
+};
+const BUILD_TIMELINE_BY_SIZE = {
+  '6x6': '7–10 дней',
+  '6x8': '8–12 дней',
+  '6x10': '10–14 дней',
+  '8x6': '8–12 дней',
+  '8x8': '10–14 дней',
+  '8x10': '12–16 дней'
 };
 const WALL_COLOR_PRESETS = {
   sand: {
@@ -104,6 +113,12 @@ function resolveModelKey(width, length) {
   return MODEL_BY_SIZE[sizeKey] ? sizeKey : null;
 }
 
+function getConstructionTimelineLabel(state) {
+  const sizeKey = `${state.width}x${state.length}`;
+  const timeline = BUILD_TIMELINE_BY_SIZE[sizeKey] || BUILD_TIMELINE_BY_SIZE['6x6'];
+  return `Средний срок строительства — ${timeline}`;
+}
+
 function updateSummaryLabel() {
   const compactTypeLabel = configuratorState.type === 'double' ? '2 машины' : '1 машина';
   const wallLabel = WALL_COLOR_PRESETS[configuratorState.wallColorPreset]?.label || '—';
@@ -117,6 +132,10 @@ function updateSummaryLabel() {
 
   if (finalCtaSummary) {
     finalCtaSummary.textContent = finalSummaryText;
+  }
+
+  if (finalCtaTimeline) {
+    finalCtaTimeline.textContent = getConstructionTimelineLabel(configuratorState);
   }
 }
 
