@@ -300,7 +300,8 @@ function createViewerBridge() {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.enablePan = false;
-    controls.autoRotate = false;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.35;
     controls.minDistance = 5.5;
     controls.maxDistance = 22;
     controls.minPolarAngle = 0.78;
