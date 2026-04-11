@@ -1,23 +1,18 @@
-:root {
+#garage-mobile-v2-root {
   color-scheme: dark;
 }
-
-* {
+#garage-mobile-v2-root * {
   box-sizing: border-box;
 }
-
-html,
-body {
+#garage-mobile-v2-root {
   margin: 0;
   background: #0a0d12;
 }
-
-body {
+#garage-mobile-v2-root {
   min-height: 100svh;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
-
-.hero {
+#garage-mobile-v2-root .hero {
   position: relative;
   width: 100%;
   max-width: 540px;
@@ -26,8 +21,7 @@ body {
   overflow: hidden;
   background: #0a0d12;
 }
-
-.scene-visual {
+#garage-mobile-v2-root .scene-visual {
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -36,13 +30,11 @@ body {
   transition: transform 3.6s cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
 }
-
-.hero.pushing .scene-visual,
-.hero.choice .scene-visual {
+#garage-mobile-v2-root .hero.pushing .scene-visual,
+#garage-mobile-v2-root .hero.choice .scene-visual {
   transform: translateZ(0) scale(1.15);
 }
-
-.scene {
+#garage-mobile-v2-root .scene {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -51,8 +43,7 @@ body {
   object-fit: cover;
   object-position: center center;
 }
-
-.gate-mask {
+#garage-mobile-v2-root .gate-mask {
   position: absolute;
   inset: 0;
   z-index: 2;
@@ -60,8 +51,7 @@ body {
   pointer-events: none;
   clip-path: inset(37.4% 19.8% 41.1% 19.8%);
 }
-
-.gate-content {
+#garage-mobile-v2-root .gate-content {
   position: absolute;
   inset: 0;
   transform: translateY(0);
@@ -69,8 +59,7 @@ body {
   will-change: transform;
   pointer-events: none;
 }
-
-.gate-overlay {
+#garage-mobile-v2-root .gate-overlay {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -80,12 +69,10 @@ body {
   object-position: center center;
   pointer-events: none;
 }
-
-.hero.open .gate-content {
+#garage-mobile-v2-root .hero.open .gate-content {
   transform: translateY(-14%);
 }
-
-.scene-brand {
+#garage-mobile-v2-root .scene-brand {
   position: absolute;
   left: 50%;
   top: 27%;
@@ -96,16 +83,14 @@ body {
   pointer-events: none;
   opacity: 0.92;
 }
-
-.scene-logo {
+#garage-mobile-v2-root .scene-logo {
   width: 26px;
   height: 26px;
   display: block;
   margin: 0 auto 6px;
   object-fit: contain;
 }
-
-.scene-brand-title {
+#garage-mobile-v2-root .scene-brand-title {
   font-size: clamp(12px, 2.05vw, 16px);
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -115,8 +100,7 @@ body {
     0 1px 2px rgba(0,0,0,0.6),
     0 0 6px rgba(255,210,140,0.35);
  }
-
-.scene-brand-subtitle {
+#garage-mobile-v2-root .scene-brand-subtitle {
   margin-top: 4px;
   font-size: clamp(8px, 1.35vw, 10px);
   font-weight: 500;
@@ -124,36 +108,37 @@ body {
   line-height: 1.15;
   color: rgba(255, 210, 140, 0.92);
 }
-
-.scene-instruction {
+#garage-mobile-v2-root .scene-instruction {
   position: absolute;
-  bottom: 30px;
+  bottom: 70px;
   left: 50%;
-  top: 47.5%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(8px);
   z-index: 3;
-  width: min(72%, 320px);
+  width: min(78%, 260px);
   text-align: center;
-  color: rgba(235, 242, 250, 0.82);
-  font-size: clamp(12px, 2.4vw, 18px);
+  color: rgba(255, 255, 255, 0.76);
+  font-size: clamp(12px, 2.1vw, 13px);
   font-weight: 500;
-  line-height: 1.35;
+  line-height: 1.28;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
   pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.45s ease;
-}
-
-.hero.opening .scene-instruction,
-.hero.pushing .scene-instruction,
-.hero.choice .scene-instruction {
   opacity: 0;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
-
-.scene-remote {
+#garage-mobile-v2-root .hero.idle .scene-instruction {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+#garage-mobile-v2-root .hero.opening .scene-instruction,
+#garage-mobile-v2-root .hero.pushing .scene-instruction,
+#garage-mobile-v2-root .hero.choice .scene-instruction {
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
+}
+#garage-mobile-v2-root .scene-remote {
   position: absolute;
   left: 50%;
-  top: 58%;
+  bottom: 128px;
   transform: translateX(-50%);
   transform-origin: center center;
   z-index: 4;
@@ -173,8 +158,7 @@ body {
   touch-action: manipulation;
   transition: transform 0.14s ease, opacity 0.35s ease;
 }
-
-.scene-remote-body {
+#garage-mobile-v2-root .scene-remote-body {
   position: relative;
   display: block;
   width: 100%;
@@ -191,8 +175,7 @@ body {
   -webkit-touch-callout: none;
   pointer-events: none;
 }
-
-.scene-remote-light {
+#garage-mobile-v2-root .scene-remote-light {
   position: absolute;
   left: 50%;
   top: 28%;
@@ -205,8 +188,7 @@ body {
     0 0 18px rgba(126, 243, 177, .65),
     0 0 36px rgba(126, 243, 177, .28);
 }
-
-.scene-remote-mark {
+#garage-mobile-v2-root .scene-remote-mark {
   position: absolute;
   left: 50%;
   bottom: 16px;
@@ -217,28 +199,23 @@ body {
   background: linear-gradient(180deg, #e49a43 0%, #8a4c14 100%);
   opacity: .95;
 }
-
-.scene-remote:active {
+#garage-mobile-v2-root .scene-remote:active {
   transform: translateX(-50%) scale(0.96);
 }
-
-.scene-remote:focus,
-.scene-remote:focus-visible {
+#garage-mobile-v2-root .scene-remote:focus,
+#garage-mobile-v2-root .scene-remote:focus-visible {
   outline: none;
   box-shadow: none;
 }
-
-.scene-remote::-moz-focus-inner {
+#garage-mobile-v2-root .scene-remote::-moz-focus-inner {
   border: 0;
 }
-
-.hero.show-choice .scene-remote {
+#garage-mobile-v2-root .hero.show-choice .scene-remote {
   opacity: 0;
   transform: translateX(-50%) scale(0.94);
   pointer-events: none;
 }
-
-.scene-choice {
+#garage-mobile-v2-root .scene-choice {
   position: absolute;
   left: 50%;
   top: 62%;
@@ -252,14 +229,12 @@ body {
   pointer-events: none;
   transition: opacity 0.45s ease, transform 0.45s ease;
 }
-
-.hero.show-choice .scene-choice {
+#garage-mobile-v2-root .hero.show-choice .scene-choice {
   opacity: 1;
   transform: translateX(-50%) translateY(0) scale(1);
   pointer-events: auto;
 }
-
-.scene-choice-btn {
+#garage-mobile-v2-root .scene-choice-btn {
   min-height: 54px;
   border-radius: 14px;
   border: 1px solid rgba(223, 192, 132, 0.36);
@@ -274,7 +249,350 @@ body {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
-
-.scene-choice-btn:active {
+#garage-mobile-v2-root .scene-choice-btn:active {
   transform: scale(0.985);
+}
+#garage-mobile-v2-root .config-shell {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 calc(102px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, #f3f6fb 0%, #e7edf7 100%);
+  color: #111827;
+}
+#garage-mobile-v2-root .config-shell-viewport {
+  position: sticky;
+  top: var(--config-shell-sticky-top, 0px);
+  z-index: 4;
+  padding-top: 1px;
+  background: linear-gradient(180deg, #f3f6fb 0%, #e7edf7 100%);
+}
+#garage-mobile-v2-root .config-shell-viewport-subtitle {
+  margin: 8px 0 12px;
+  font-size: 11px;
+  line-height: 1.3;
+  text-align: center;
+  color: #506079;
+  padding: 0 14px;
+}
+#garage-mobile-v2-root .config-shell-viewer {
+  width: 100%;
+  height: 40svh;
+  min-height: 210px;
+  max-height: 360px;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+}
+#garage-mobile-v2-root .config-shell-viewer canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+#garage-mobile-v2-root .config-shell-options {
+  display: grid;
+  gap: 10px;
+  padding: 0 14px 2px;
+}
+#garage-mobile-v2-root .config-shell-group {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #d6e0ed;
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+}
+#garage-mobile-v2-root .config-shell-group h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  line-height: 1.15;
+  font-weight: 700;
+}
+#garage-mobile-v2-root .config-shell-group p {
+  margin: 0;
+  color: #54657f;
+  font-size: 13px;
+  line-height: 1.35;
+}
+#garage-mobile-v2-root .config-shell-info {
+  padding: 2px 4px 0;
+}
+#garage-mobile-v2-root .config-shell-info-inline {
+  margin-top: 8px;
+}
+#garage-mobile-v2-root .config-shell-info-text {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #5f7088;
+}
+#garage-mobile-v2-root .config-shell-info-link {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.25;
+  color: #365f95;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(54, 95, 149, 0.4);
+}
+#garage-mobile-v2-root .config-shell-info-link:active {
+  opacity: 0.8;
+}
+#garage-mobile-v2-root .config-shell-color-subgroup + .config-shell-color-subgroup {
+  margin-top: 10px;
+}
+#garage-mobile-v2-root .config-shell-subtitle {
+  margin: 0 0 6px;
+  font-size: 13px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: #41516a;
+}
+#garage-mobile-v2-root .config-shell-color-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+#garage-mobile-v2-root .config-shell-color-btn {
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #c8d4e5;
+  background: #fff;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 600;
+}
+#garage-mobile-v2-root .config-shell-color-btn[aria-pressed="true"] {
+  border-color: #94a6bf;
+  background: #edf3fb;
+}
+#garage-mobile-v2-root .config-shell-type-buttons,
+#garage-mobile-v2-root .config-shell-length-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+#garage-mobile-v2-root .config-shell-type-btn,
+#garage-mobile-v2-root .config-shell-length-btn {
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #c8d4e5;
+  background: #fff;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
+}
+#garage-mobile-v2-root .config-shell-type-btn[aria-pressed="true"],
+#garage-mobile-v2-root .config-shell-length-btn[aria-pressed="true"] {
+  border-color: #94a6bf;
+  background: #edf3fb;
+}
+#garage-mobile-v2-root .config-shell-length-buttons {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+#garage-mobile-v2-root .config-shell-foundation-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+#garage-mobile-v2-root .config-shell-foundation-btn {
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #c8d4e5;
+  background: #fff;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 600;
+}
+#garage-mobile-v2-root .config-shell-foundation-btn[aria-pressed="true"] {
+  border-color: #94a6bf;
+  background: #edf3fb;
+}
+#garage-mobile-v2-root .config-shell-extras-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+#garage-mobile-v2-root .config-shell-extra-btn {
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #d0d9e6;
+  background: #fff;
+  color: #314157;
+  font-size: 13px;
+  font-weight: 600;
+}
+#garage-mobile-v2-root .config-shell-extra-btn[aria-pressed="true"] {
+  border-color: #7a8ea9;
+  background: #e5edf8;
+  color: #1a283d;
+}
+#garage-mobile-v2-root .config-shell-bar {
+  position: sticky;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 12px 14px 0;
+  padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  border-radius: 12px;
+  border: 1px solid #cad7e8;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+#garage-mobile-v2-root .config-shell-bar.is-hidden {
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+}
+#garage-mobile-v2-root .config-shell-bar-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: end;
+}
+#garage-mobile-v2-root .config-shell-bar-content {
+  min-width: 0;
+}
+#garage-mobile-v2-root .config-shell-bar-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+#garage-mobile-v2-root .config-shell-bar-label {
+  margin: 0;
+  font-size: 11px;
+  color: #4f607a;
+}
+#garage-mobile-v2-root .config-shell-bar-price {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+#garage-mobile-v2-root .config-shell-bar-summary {
+  margin: 3px 0 0;
+  font-size: 11px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #42526b;
+}
+#garage-mobile-v2-root .config-shell-bar-cta {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #f6a43a 0%, #e27b10 100%);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 8px 16px rgba(226, 123, 16, 0.3);
+}
+#garage-mobile-v2-root .config-shell-final {
+  margin: 18px 0 10px;
+  padding: 22px 14px 18px;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 18% 14%, rgba(80, 112, 176, 0.28) 0%, rgba(80, 112, 176, 0) 44%),
+    radial-gradient(circle at 86% 4%, rgba(57, 88, 147, 0.22) 0%, rgba(57, 88, 147, 0) 42%),
+    linear-gradient(158deg, #0f1727 0%, #0c1321 58%, #0a101b 100%);
+  border: 1px solid rgba(129, 154, 200, 0.24);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 24px rgba(8, 14, 28, 0.28);
+}
+#garage-mobile-v2-root .config-shell-final-card {
+  padding: 4px 4px 2px;
+  color: #eaf1ff;
+  text-align: left;
+}
+#garage-mobile-v2-root .config-shell-final-eyebrow {
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(176, 198, 233, 0.8);
+}
+#garage-mobile-v2-root .config-shell-final-title {
+  margin: 10px 0 0;
+  font-size: 27px;
+  line-height: 1.12;
+  font-weight: 620;
+  letter-spacing: -0.01em;
+  color: #f3f7ff;
+}
+#garage-mobile-v2-root .config-shell-final-text {
+  margin: 10px 0 0;
+  max-width: 30ch;
+  font-size: 13px;
+  line-height: 1.42;
+  color: rgba(196, 213, 239, 0.84);
+}
+#garage-mobile-v2-root .config-shell-final-price {
+  margin: 14px 0 0;
+  font-size: 27px;
+  line-height: 1.08;
+  font-weight: 640;
+  color: #f9fcff;
+}
+#garage-mobile-v2-root .config-shell-final-summary {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.3;
+  color: rgba(191, 209, 238, 0.9);
+  letter-spacing: 0.01em;
+}
+#garage-mobile-v2-root .config-shell-final-timeline {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.3;
+  color: rgba(186, 205, 236, 0.84);
+}
+#garage-mobile-v2-root .config-shell-final-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+#garage-mobile-v2-root .config-shell-final-link,
+#garage-mobile-v2-root .config-shell-final-link:hover,
+#garage-mobile-v2-root .config-shell-final-link:active {
+  color: rgba(120, 160, 220, 0.9);
+  text-decoration: none;
+  border-bottom: 0;
+}
+#garage-mobile-v2-root .config-shell-final-link:active {
+  opacity: 0.8;
+}
+#garage-mobile-v2-root .config-shell-final-btn {
+  min-height: 42px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+#garage-mobile-v2-root .config-shell-final-btn-primary {
+  background: linear-gradient(180deg, #f2a74a 0%, #df8420 100%);
+  color: #fff;
+  box-shadow: 0 8px 16px rgba(223, 132, 32, 0.28);
+}
+#garage-mobile-v2-root .config-shell-final-btn-secondary {
+  background: rgba(177, 197, 231, 0.08);
+  color: rgba(216, 230, 252, 0.9);
+  border: 1px solid rgba(158, 181, 220, 0.3);
+}
+#garage-mobile-v2-root .config-shell-final-note {
+  margin: 10px 0 0;
+  font-size: 10px;
+  line-height: 1.35;
+  color: rgba(171, 190, 222, 0.45);
 }
