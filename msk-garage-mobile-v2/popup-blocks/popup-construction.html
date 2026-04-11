@@ -99,15 +99,25 @@
       max-width: 36ch;
     }
 
-    .visual {
-      height: 128px;
+    .popup-visual {
+      position: relative;
       border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background:
-        radial-gradient(circle at 20% 35%, rgba(128, 166, 255, 0.24), transparent 50%),
-        radial-gradient(circle at 75% 70%, rgba(124, 217, 255, 0.18), transparent 52%),
-        linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 10px 24px rgba(3, 6, 12, 0.35);
+      overflow: hidden;
+      padding: 10px;
+      background: radial-gradient(
+        circle at center,
+        rgba(40, 60, 90, 0.4),
+        rgba(10, 15, 25, 0.9)
+      );
+    }
+
+    .popup-visual img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      opacity: 0.95;
     }
 
     .cards {
@@ -174,7 +184,9 @@
     </header>
 
     <section class="section" aria-hidden="true">
-      <div class="visual"></div>
+      <div class="popup-visual">
+        <img src="../images/garage-rend.webp" alt="Конструкция гаража">
+      </div>
     </section>
 
     <section class="section" aria-label="Принципы">
