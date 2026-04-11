@@ -37,8 +37,12 @@
       width: 100%;
       max-width: 700px;
       margin: 0 auto;
-      padding: 18px;
+      background: transparent;
+    }
+
+    .popup-shell {
       position: relative;
+      padding: 18px;
       border-radius: var(--radius-xl);
       background: linear-gradient(160deg, var(--bg-start), var(--bg-end));
       box-shadow: var(--shadow);
@@ -116,7 +120,6 @@
       height: auto;
       display: block;
       object-fit: contain;
-      mix-blend-mode: multiply;
       opacity: 0.95;
     }
 
@@ -176,69 +179,71 @@
 </head>
 <body>
   <article class="popup-construction" aria-label="Подробнее о конструкции">
-    <header class="section">
-      <p class="eyebrow">КОНСТРУКЦИЯ ГАРАЖА</p>
-      <h1>Почему конструкция важнее, чем просто размер</h1>
-      <p class="lead">Даже при одинаковой площади гаражи могут отличаться по ресурсу, удобству и стабильности.
-        Важно сразу выбрать надёжную базу под ваш реальный сценарий.</p>
-    </header>
+    <div class="popup-shell">
+      <header class="section">
+        <p class="eyebrow">КОНСТРУКЦИЯ ГАРАЖА</p>
+        <h1>Почему конструкция важнее, чем просто размер</h1>
+        <p class="lead">Даже при одинаковой площади гаражи могут отличаться по ресурсу, удобству и стабильности.
+          Важно сразу выбрать надёжную базу под ваш реальный сценарий.</p>
+      </header>
 
-    <section class="section" aria-hidden="true">
-      <div class="popup-visual">
-        <img src="../images/garage-rend.webp" alt="Конструкция гаража">
-      </div>
-    </section>
+      <section class="section" aria-hidden="true">
+        <div class="popup-visual">
+          <img src="https://bersentox.github.io/garage-configurator/msk-garage-mobile-v2/images/garage-rend.webp" alt="Конструкция гаража">
+        </div>
+      </section>
 
-    <section class="section" aria-label="Принципы">
-      <h2>Ключевые принципы</h2>
-      <div class="cards">
-        <article class="card">
-          <h3>Жёсткость конструкции</h3>
-          <p>Каркас должен уверенно держать геометрию при ветровых и снеговых нагрузках, без деформаций и перекосов.</p>
-        </article>
-        <article class="card">
-          <h3>Сэндвич-панели</h3>
-          <p>Панели дают теплоизоляцию, аккуратный внешний вид и стабильный микроклимат для техники и хранения.</p>
-        </article>
-        <article class="card">
-          <h3>Сценарий использования</h3>
-          <p>Конструкция подбирается под задачи: только парковка, мастерская или хранение с постоянным доступом.</p>
-        </article>
-      </div>
-    </section>
+      <section class="section" aria-label="Принципы">
+        <h2>Ключевые принципы</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Жёсткость конструкции</h3>
+            <p>Каркас должен уверенно держать геометрию при ветровых и снеговых нагрузках, без деформаций и перекосов.</p>
+          </article>
+          <article class="card">
+            <h3>Сэндвич-панели</h3>
+            <p>Панели дают теплоизоляцию, аккуратный внешний вид и стабильный микроклимат для техники и хранения.</p>
+          </article>
+          <article class="card">
+            <h3>Сценарий использования</h3>
+            <p>Конструкция подбирается под задачи: только парковка, мастерская или хранение с постоянным доступом.</p>
+          </article>
+        </div>
+      </section>
 
-    <section class="section" aria-label="Выбор длины">
-      <h2>Как выбрать длину</h2>
-      <div class="cards">
-        <article class="card">
-          <h3>6 м</h3>
-          <p>Компактный формат для базового использования и одного автомобиля без лишнего объёма.</p>
-        </article>
-        <article class="card">
-          <h3>8 м</h3>
-          <p>Универсальный вариант: больше свободы для хранения, обслуживания и ежедневного комфорта.</p>
-        </article>
-        <article class="card">
-          <h3>10 м</h3>
-          <p>Максимум функциональности: рабочая зона, крупное хранение и запас места под будущие задачи.</p>
-        </article>
-      </div>
-    </section>
+      <section class="section" aria-label="Выбор длины">
+        <h2>Как выбрать длину</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>6 м</h3>
+            <p>Компактный формат для базового использования и одного автомобиля без лишнего объёма.</p>
+          </article>
+          <article class="card">
+            <h3>8 м</h3>
+            <p>Универсальный вариант: больше свободы для хранения, обслуживания и ежедневного комфорта.</p>
+          </article>
+          <article class="card">
+            <h3>10 м</h3>
+            <p>Максимум функциональности: рабочая зона, крупное хранение и запас места под будущие задачи.</p>
+          </article>
+        </div>
+      </section>
 
-    <section class="section" aria-label="Преимущества">
-      <h2>Преимущества</h2>
-      <ul class="benefits">
-        <li>точная геометрия</li>
-        <li>аккуратная сборка</li>
-        <li>стабильность конструкции</li>
-        <li>удобство эксплуатации</li>
-        <li>долговечность</li>
-      </ul>
-    </section>
+      <section class="section" aria-label="Преимущества">
+        <h2>Преимущества</h2>
+        <ul class="benefits">
+          <li>точная геометрия</li>
+          <li>аккуратная сборка</li>
+          <li>стабильность конструкции</li>
+          <li>удобство эксплуатации</li>
+          <li>долговечность</li>
+        </ul>
+      </section>
 
-    <footer class="section">
-      <p class="footer-note">Грамотно выбранная конструкция экономит бюджет на дистанции и делает гараж действительно удобным в ежедневном использовании.</p>
-    </footer>
+      <footer class="section">
+        <p class="footer-note">Грамотно выбранная конструкция экономит бюджет на дистанции и делает гараж действительно удобным в ежедневном использовании.</p>
+      </footer>
+    </div>
   </article>
 </body>
 </html>
