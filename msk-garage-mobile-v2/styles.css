@@ -110,9 +110,9 @@
 }
 #garage-mobile-v2-root .scene-instruction {
   position: absolute;
-  bottom: 182px;
+  bottom: 70px;
   left: 50%;
-  transform: translateX(-40%) translateY(8px);
+  transform: translateX(-50%) translateY(8px);
   z-index: 3;
   width: min(78%, 260px);
   text-align: center;
@@ -127,19 +127,19 @@
 }
 #garage-mobile-v2-root .hero.idle .scene-instruction {
   opacity: 1;
-  transform: translateX(-40%) translateY(0);
+  transform: translateX(-50%) translateY(0);
 }
 #garage-mobile-v2-root .hero.opening .scene-instruction,
 #garage-mobile-v2-root .hero.pushing .scene-instruction,
 #garage-mobile-v2-root .hero.choice .scene-instruction {
   opacity: 0;
-  transform: translateX(-40%) translateY(8px);
+  transform: translateX(-50%) translateY(8px);
 }
 #garage-mobile-v2-root .scene-remote {
   position: absolute;
   left: 50%;
-  bottom: 240px;
-  transform: translateX(-15%);
+  bottom: 128px;
+  transform: translateX(-50%);
   transform-origin: center center;
   z-index: 4;
   width: 54px;
@@ -200,7 +200,7 @@
   opacity: .95;
 }
 #garage-mobile-v2-root .scene-remote:active {
-  transform: translateX(-15%) scale(0.96);
+  transform: translateX(-50%) scale(0.96);
 }
 #garage-mobile-v2-root .scene-remote:focus,
 #garage-mobile-v2-root .scene-remote:focus-visible {
