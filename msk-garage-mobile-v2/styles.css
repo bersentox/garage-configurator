@@ -560,6 +560,16 @@
   gap: 8px;
   margin-top: 16px;
 }
+#garage-mobile-v2-root .config-shell-final-link,
+#garage-mobile-v2-root .config-shell-final-link:hover,
+#garage-mobile-v2-root .config-shell-final-link:active {
+  color: rgba(120, 160, 220, 0.9);
+  text-decoration: none;
+  border-bottom: 0;
+}
+#garage-mobile-v2-root .config-shell-final-link:active {
+  opacity: 0.8;
+}
 #garage-mobile-v2-root .config-shell-final-btn {
   min-height: 42px;
   border-radius: 10px;
