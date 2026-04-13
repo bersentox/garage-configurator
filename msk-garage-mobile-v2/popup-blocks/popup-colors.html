@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Подробнее о цветах</title>
+  <style>
+    .popup-colors {
+      --bg-start: #0f1625;
+      --bg-end: #1d2336;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --text-main: #f3f7ff;
+      --text-soft: #c2cce0;
+      --text-muted: #9aa8c2;
+      --accent: #8eb1ff;
+      --radius-xl: 20px;
+      --radius-lg: 16px;
+      --radius-md: 14px;
+      --shadow: 0 18px 44px rgba(4, 8, 18, 0.42);
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      background: transparent;
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .popup-colors,
+    .popup-colors * {
+      box-sizing: border-box;
+    }
+
+    .popup-colors .popup-colors__shell {
+      position: relative;
+      padding: 18px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(160deg, var(--bg-start), var(--bg-end));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .popup-colors .popup-colors__section {
+      margin-top: 18px;
+    }
+
+    .popup-colors .popup-colors__section:first-child {
+      margin-top: 0;
+    }
+
+    .popup-colors .popup-colors__eyebrow {
+      margin: 0 0 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .popup-colors .popup-colors__title {
+      margin: 0;
+      font-size: clamp(25px, 7vw, 34px);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-wrap: balance;
+    }
+
+    .popup-colors .popup-colors__lead {
+      margin: 10px 0 0;
+      max-width: 38ch;
+      font-size: 15px;
+      line-height: 1.58;
+      color: var(--text-soft);
+    }
+
+    .popup-colors .popup-colors__section-title {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: #f8fbff;
+    }
+
+    .popup-colors .popup-colors__text {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.58;
+      color: var(--text-soft);
+    }
+
+    .popup-colors .popup-colors__card {
+      margin-top: 10px;
+      padding: 13px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+    }
+
+    .popup-colors .popup-colors__card:first-child {
+      margin-top: 0;
+    }
+
+    .popup-colors .popup-colors__card-title {
+      margin: 0 0 6px;
+      font-size: 17px;
+      line-height: 1.3;
+      color: #f1f6ff;
+    }
+
+    .popup-colors .popup-colors__gallery {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .popup-colors .popup-colors__swatch {
+      min-height: 198px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .popup-colors .color-swatch-image {
+      height: 94px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px;
+      font-size: 11px;
+      line-height: 1.35;
+      letter-spacing: 0.02em;
+      color: #d9e4fb;
+      background: linear-gradient(145deg, rgba(176, 191, 218, 0.2), rgba(64, 82, 112, 0.22));
+    }
+
+    .popup-colors .color-swatch-image.is-placeholder--1 { background: linear-gradient(145deg, rgba(90, 100, 128, 0.35), rgba(35, 44, 66, 0.5)); }
+    .popup-colors .color-swatch-image.is-placeholder--2 { background: linear-gradient(145deg, rgba(119, 130, 156, 0.32), rgba(43, 54, 79, 0.52)); }
+    .popup-colors .color-swatch-image.is-placeholder--3 { background: linear-gradient(145deg, rgba(133, 146, 175, 0.38), rgba(50, 61, 87, 0.55)); }
+    .popup-colors .color-swatch-image.is-placeholder--4 { background: linear-gradient(145deg, rgba(80, 92, 120, 0.34), rgba(30, 41, 64, 0.56)); }
+    .popup-colors .color-swatch-image.is-placeholder--5 { background: linear-gradient(145deg, rgba(164, 132, 86, 0.42), rgba(88, 64, 44, 0.48)); }
+    .popup-colors .color-swatch-image.is-placeholder--6 { background: linear-gradient(145deg, rgba(120, 92, 71, 0.44), rgba(65, 45, 34, 0.52)); }
+    .popup-colors .color-swatch-image.is-placeholder--7 { background: linear-gradient(145deg, rgba(132, 128, 121, 0.38), rgba(79, 74, 70, 0.5)); }
+    .popup-colors .color-swatch-image.is-placeholder--8 { background: linear-gradient(145deg, rgba(113, 108, 156, 0.42), rgba(60, 54, 96, 0.52)); }
+
+    .popup-colors .popup-colors__swatch-title {
+      margin: 10px 0 4px;
+      font-size: 14px;
+      line-height: 1.35;
+      color: #f0f5ff;
+    }
+
+    .popup-colors .popup-colors__swatch-caption {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text-soft);
+    }
+
+    .popup-colors .popup-colors__footnote {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(142, 177, 255, 0.32);
+      background: linear-gradient(160deg, rgba(142, 177, 255, 0.12), rgba(142, 177, 255, 0.04));
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #edf3ff;
+    }
+
+    .popup-colors .popup-colors__disclaimer {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <article class="popup-colors" aria-label="Подробнее о цветах">
+    <div class="popup-colors__shell">
+      <header class="popup-colors__section">
+        <p class="popup-colors__eyebrow">ЦВЕТА И ФАКТУРЫ</p>
+        <h1 class="popup-colors__title">Не только базовые цвета</h1>
+        <p class="popup-colors__lead">В конфигураторе показаны базовые варианты для быстрого подбора общего образа. Но в реальности доступны покрытия и фактуры, которые могут сделать гараж заметно выразительнее.</p>
+      </header>
+
+      <section class="popup-colors__section" aria-label="Вводный акцент">
+        <article class="popup-colors__card">
+          <h2 class="popup-colors__section-title">Цвет — это не просто оттенок</h2>
+          <p class="popup-colors__text">Разные покрытия дают разный визуальный эффект: от спокойной матовой поверхности до металлика, древесной текстуры или декоративной имитации натуральных материалов.</p>
+        </article>
+      </section>
+
+      <section class="popup-colors__section" aria-label="Типы покрытий">
+        <h2 class="popup-colors__section-title">Какие решения бывают</h2>
+        <article class="popup-colors__card">
+          <h3 class="popup-colors__card-title">Гладкие базовые цвета</h3>
+          <p class="popup-colors__text">Универсальная классика: аккуратный вид, который легко вписывается в большинство участков и фасадов.</p>
+        </article>
+        <article class="popup-colors__card">
+          <h3 class="popup-colors__card-title">Матовые покрытия</h3>
+          <p class="popup-colors__text">Визуально дороже и спокойнее: цвет выглядит глубже, а поверхность — более статусно и собранно.</p>
+        </article>
+        <article class="popup-colors__card">
+          <h3 class="popup-colors__card-title">Металлики</h3>
+          <p class="popup-colors__text">Более эффектная подача: покрытие “оживает” на свету и придаёт гаражу выразительный современный характер.</p>
+        </article>
+        <article class="popup-colors__card">
+          <h3 class="popup-colors__card-title">Текстурные покрытия</h3>
+          <p class="popup-colors__text">Имитации дерева, камня и других материалов для внешнего вида с “архитектурным” акцентом и ощущением премиальности.</p>
+        </article>
+      </section>
+
+      <section class="popup-colors__section" aria-label="Примеры покрытий">
+        <h2 class="popup-colors__section-title">Примеры покрытий</h2>
+        <p class="popup-colors__text">Ниже — примеры того, как покрытие меняет характер и восприятие гаража.</p>
+        <div class="popup-colors__gallery">
+          <article class="popup-colors__swatch">
+            <div class="color-swatch-image is-placeholder is-placeholder--1">Изображение покрытия</div>
+            <h3 class="popup-colors__swatch-title">Антрацит</h3>
+            <p class="popup-colors__swatch-caption">Графичный тёмный оттенок с уверенным современным характером</p>
+          </article>
+          <article class="popup-colors__swatch">
+            <div class="color-swatch-image is-placeholder is-placeholder--2">Изображение покрытия</div>
+            <h3 class="popup-colors__swatch-title">Графит</h3>
+            <p class="popup-colors__swatch-caption">Сдержанный глубокий тон, который легко сочетать с любыми деталями</p>
+          </article>
+          <article class="popup-colors__swatch">
+            <div class="color-swatch-image is-placeholder is-placeholder--3">Изображение покрытия</div>
+            <h3 class="popup-colors__swatch-title">Металлик</h3>
+            <p class="popup-colors__swatch-caption">Живое светоотражение и эффект “движения” оттенка в течение дня</p>
+          </article>
+          <article class="popup-colors__swatch">
+            <div class="color-swatch-image is-placeholder is-placeholder--4">Изображение покрытия</div>
+            <h3 class="popup-colors__swatch-title">Матовый тёмный</h3>
+            <p class="popup-colors__swatch-caption">Благородная матовая поверхность без лишнего блеска и шума</p>
+          </article>
+          <article class="popup-colors__swatch">
+            <div class="color-swatch-image is-placeholder is-placeholder--5">Изображение покрытия</div>
+            <h3 class="popup-colors__swatch-title">Золотой дуб</h3>
+            <p class="popup-colors__swatch-caption">Тёплая древесная фактура, добавляющая уют и “жилой” характер</p>
+          </article>
+          <article class="popup-colors__swatch">
+            <div class="color-swatch-image is-placeholder is-placeholder--6">Изображение покрытия</div>
+            <h3 class="popup-colors__swatch-title">Морёный дуб</h3>
+            <p class="popup-colors__swatch-caption">Насыщенная древесная глубина для более статусного и солидного образа</p>
+          </article>
+          <article class="popup-colors__swatch">
+            <div class="color-swatch-image is-placeholder is-placeholder--7">Изображение покрытия</div>
+            <h3 class="popup-colors__swatch-title">Камень / кирпич</h3>
+            <p class="popup-colors__swatch-caption">Выразительная имитация натуральной кладки с архитектурным акцентом</p>
+          </article>
+          <article class="popup-colors__swatch">
+            <div class="color-swatch-image is-placeholder is-placeholder--8">Изображение покрытия</div>
+            <h3 class="popup-colors__swatch-title">Нестандартный акцент</h3>
+            <p class="popup-colors__swatch-caption">Смелый персональный акцент для проекта с индивидуальным почерком</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="popup-colors__section" aria-label="Советы по выбору">
+        <h2 class="popup-colors__section-title">Как выбирать без ошибки</h2>
+        <article class="popup-colors__card">
+          <p class="popup-colors__text">Тёмные цвета выглядят строже и визуально дороже</p>
+        </article>
+        <article class="popup-colors__card">
+          <p class="popup-colors__text">Фактура добавляет глубину, которую не видно у обычной гладкой поверхности</p>
+        </article>
+        <article class="popup-colors__card">
+          <p class="popup-colors__text">Смотрите не только на сам цвет, но и на сочетание стен, крыши и деталей</p>
+        </article>
+      </section>
+
+      <footer class="popup-colors__section">
+        <p class="popup-colors__footnote">Если нужен нестандартный оттенок или декоративная фактура, подберём решение под стиль дома, участка и ваши практические задачи — по реальным каталогам производителя.</p>
+      </footer>
+
+      <section class="popup-colors__section" aria-label="Ограничение по отображению цвета">
+        <p class="popup-colors__disclaimer">Цвет и фактура на экране могут отличаться от реальных образцов. Для точного подбора мы ориентируемся на физические каталоги и образцы производителя.</p>
+      </section>
+    </div>
+  </article>
+</body>
+</html>
