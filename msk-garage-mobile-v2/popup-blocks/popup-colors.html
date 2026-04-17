@@ -126,29 +126,20 @@
     }
 
     .popup-colors .color-swatch-image {
-      height: 94px;
+      height: 108px;
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 8px;
-      font-size: 11px;
-      line-height: 1.35;
-      letter-spacing: 0.02em;
-      color: #d9e4fb;
-      background: linear-gradient(145deg, rgba(176, 191, 218, 0.2), rgba(64, 82, 112, 0.22));
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.04);
     }
 
-    .popup-colors .color-swatch-image.is-placeholder--1 { background: linear-gradient(145deg, rgba(90, 100, 128, 0.35), rgba(35, 44, 66, 0.5)); }
-    .popup-colors .color-swatch-image.is-placeholder--2 { background: linear-gradient(145deg, rgba(119, 130, 156, 0.32), rgba(43, 54, 79, 0.52)); }
-    .popup-colors .color-swatch-image.is-placeholder--3 { background: linear-gradient(145deg, rgba(133, 146, 175, 0.38), rgba(50, 61, 87, 0.55)); }
-    .popup-colors .color-swatch-image.is-placeholder--4 { background: linear-gradient(145deg, rgba(80, 92, 120, 0.34), rgba(30, 41, 64, 0.56)); }
-    .popup-colors .color-swatch-image.is-placeholder--5 { background: linear-gradient(145deg, rgba(164, 132, 86, 0.42), rgba(88, 64, 44, 0.48)); }
-    .popup-colors .color-swatch-image.is-placeholder--6 { background: linear-gradient(145deg, rgba(120, 92, 71, 0.44), rgba(65, 45, 34, 0.52)); }
-    .popup-colors .color-swatch-image.is-placeholder--7 { background: linear-gradient(145deg, rgba(132, 128, 121, 0.38), rgba(79, 74, 70, 0.5)); }
-    .popup-colors .color-swatch-image.is-placeholder--8 { background: linear-gradient(145deg, rgba(113, 108, 156, 0.42), rgba(60, 54, 96, 0.52)); }
+    .popup-colors .color-swatch-image img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center;
+    }
 
     .popup-colors .popup-colors__swatch-title {
       margin: 10px 0 4px;
@@ -224,44 +215,60 @@
         <p class="popup-colors__text">Ниже — примеры того, как покрытие меняет характер и восприятие гаража.</p>
         <div class="popup-colors__gallery">
           <article class="popup-colors__swatch">
-            <div class="color-swatch-image is-placeholder is-placeholder--1">Изображение покрытия</div>
+            <div class="color-swatch-image">
+              <img src="pics/ral-7016-anthracite.webp" alt="Антрацит">
+            </div>
             <h3 class="popup-colors__swatch-title">Антрацит</h3>
-            <p class="popup-colors__swatch-caption">Графичный тёмный оттенок с уверенным современным характером</p>
+            <p class="popup-colors__swatch-caption">Строгий современный тёмный тон с премиальным характером</p>
           </article>
           <article class="popup-colors__swatch">
-            <div class="color-swatch-image is-placeholder is-placeholder--2">Изображение покрытия</div>
-            <h3 class="popup-colors__swatch-title">Графит</h3>
-            <p class="popup-colors__swatch-caption">Сдержанный глубокий тон, который легко сочетать с любыми деталями</p>
+            <div class="color-swatch-image">
+              <img src="pics/ral-8004-terracotta.webp" alt="Терракотовый">
+            </div>
+            <h3 class="popup-colors__swatch-title">Терракотовый</h3>
+            <p class="popup-colors__swatch-caption">Тёплый архитектурный оттенок с более выразительным характером</p>
           </article>
           <article class="popup-colors__swatch">
-            <div class="color-swatch-image is-placeholder is-placeholder--3">Изображение покрытия</div>
-            <h3 class="popup-colors__swatch-title">Металлик</h3>
-            <p class="popup-colors__swatch-caption">Живое светоотражение и эффект “движения” оттенка в течение дня</p>
+            <div class="color-swatch-image">
+              <img src="pics/ecosteel-antique-oak.webp" alt="Античный дуб">
+            </div>
+            <h3 class="popup-colors__swatch-title">Античный дуб</h3>
+            <p class="popup-colors__swatch-caption">Декоративная древесная фактура с более сложным и дизайнерским видом</p>
           </article>
           <article class="popup-colors__swatch">
-            <div class="color-swatch-image is-placeholder is-placeholder--4">Изображение покрытия</div>
-            <h3 class="popup-colors__swatch-title">Матовый тёмный</h3>
-            <p class="popup-colors__swatch-caption">Благородная матовая поверхность без лишнего блеска и шума</p>
+            <div class="color-swatch-image">
+              <img src="pics/bleached-oak.webp" alt="Белёный дуб">
+            </div>
+            <h3 class="popup-colors__swatch-title">Белёный дуб</h3>
+            <p class="popup-colors__swatch-caption">Светлая древесная текстура для более мягкого и спокойного образа</p>
           </article>
           <article class="popup-colors__swatch">
-            <div class="color-swatch-image is-placeholder is-placeholder--5">Изображение покрытия</div>
-            <h3 class="popup-colors__swatch-title">Золотой дуб</h3>
-            <p class="popup-colors__swatch-caption">Тёплая древесная фактура, добавляющая уют и “жилой” характер</p>
-          </article>
-          <article class="popup-colors__swatch">
-            <div class="color-swatch-image is-placeholder is-placeholder--6">Изображение покрытия</div>
+            <div class="color-swatch-image">
+              <img src="pics/ecosteel-bog-oak.webp" alt="Морёный дуб">
+            </div>
             <h3 class="popup-colors__swatch-title">Морёный дуб</h3>
-            <p class="popup-colors__swatch-caption">Насыщенная древесная глубина для более статусного и солидного образа</p>
+            <p class="popup-colors__swatch-caption">Глубокая тёмная древесная фактура для более статусного образа</p>
           </article>
           <article class="popup-colors__swatch">
-            <div class="color-swatch-image is-placeholder is-placeholder--7">Изображение покрытия</div>
-            <h3 class="popup-colors__swatch-title">Камень / кирпич</h3>
-            <p class="popup-colors__swatch-caption">Выразительная имитация натуральной кладки с архитектурным акцентом</p>
+            <div class="color-swatch-image">
+              <img src="pics/ecosteel-walnut.webp" alt="Орех">
+            </div>
+            <h3 class="popup-colors__swatch-title">Орех</h3>
+            <p class="popup-colors__swatch-caption">Тёплая насыщенная древесная текстура с дорогим визуальным ощущением</p>
           </article>
           <article class="popup-colors__swatch">
-            <div class="color-swatch-image is-placeholder is-placeholder--8">Изображение покрытия</div>
-            <h3 class="popup-colors__swatch-title">Нестандартный акцент</h3>
-            <p class="popup-colors__swatch-caption">Смелый персональный акцент для проекта с индивидуальным почерком</p>
+            <div class="color-swatch-image">
+              <img src="pics/ecosteel-golden-oak.webp" alt="Золотой дуб">
+            </div>
+            <h3 class="popup-colors__swatch-title">Золотой дуб</h3>
+            <p class="popup-colors__swatch-caption">Самая понятная и продающая древесная фактура — тёплая, уютная, “жилая”</p>
+          </article>
+          <article class="popup-colors__swatch">
+            <div class="color-swatch-image">
+              <img src="pics/ral-8017-chocolate-brown.webp" alt="Шоколадно-коричневый">
+            </div>
+            <h3 class="popup-colors__swatch-title">Шоколадно-коричневый</h3>
+            <p class="popup-colors__swatch-caption">Глубокий тёплый оттенок, который хорошо работает рядом с деревом и тёмными деталями</p>
           </article>
         </div>
       </section>
