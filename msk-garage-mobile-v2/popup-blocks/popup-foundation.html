@@ -43,7 +43,7 @@
     }
 
     .popup-foundation .popup-foundation__section {
-      margin-top: 18px;
+      margin-top: 20px;
     }
 
     .popup-foundation .popup-foundation__section:first-child {
@@ -92,7 +92,7 @@
     }
 
     .popup-foundation .popup-foundation__card {
-      margin-top: 10px;
+      margin-top: 12px;
       padding: 13px;
       border-radius: var(--radius-md);
       border: 1px solid var(--card-border);
@@ -101,6 +101,61 @@
 
     .popup-foundation .popup-foundation__card:first-child {
       margin-top: 0;
+    }
+
+    .popup-foundation .popup-foundation__micro {
+      margin: 0 0 7px;
+      font-size: 12px;
+      line-height: 1.35;
+      color: #dce7ff;
+      letter-spacing: 0.01em;
+      font-weight: 600;
+    }
+
+    .popup-foundation .popup-foundation__hero-card {
+      padding: 13px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+    }
+
+    .popup-foundation .popup-foundation__hero-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+      color: #f1f6ff;
+    }
+
+    .popup-foundation .popup-foundation__hero-subtitle {
+      margin: 8px 0 0;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--text-soft);
+    }
+
+    .popup-foundation .popup-foundation__hero-visual {
+      margin-top: 10px;
+      height: 110px;
+      border-radius: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background:
+        linear-gradient(145deg, rgba(101, 117, 145, 0.26), rgba(44, 54, 77, 0.42)),
+        repeating-linear-gradient(
+          0deg,
+          rgba(232, 241, 255, 0.08),
+          rgba(232, 241, 255, 0.08) 1px,
+          transparent 1px,
+          transparent 15px
+        );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      font-size: 11px;
+      line-height: 1.35;
+      letter-spacing: 0.02em;
+      color: #d8e4fc;
     }
 
     .popup-foundation .popup-foundation__card-title {
@@ -127,6 +182,29 @@
       background: linear-gradient(160deg, var(--warn-bg), rgba(154, 171, 210, 0.06));
     }
 
+    .popup-foundation .popup-foundation__risks {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .popup-foundation .popup-foundation__risks li {
+      margin-top: 6px;
+      font-size: 14px;
+      line-height: 1.4;
+      color: #e8f0ff;
+    }
+
+    .popup-foundation .popup-foundation__risks li:first-child {
+      margin-top: 0;
+    }
+
+    .popup-foundation .popup-foundation__risks li::before {
+      content: "•";
+      color: #c5d8ff;
+      margin-right: 8px;
+    }
+
     .popup-foundation .popup-foundation__grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -134,10 +212,11 @@
     }
 
     .popup-foundation .popup-foundation__factor-title {
-      margin: 0 0 6px;
+      margin: 0 0 8px;
       font-size: 14px;
+      font-weight: 700;
       line-height: 1.35;
-      color: #edf3ff;
+      color: #f3f7ff;
     }
 
     .popup-foundation .popup-foundation__factor-text {
@@ -220,6 +299,14 @@
         <p class="popup-foundation__lead">От основания зависит, насколько ровно встанет гараж, как он переживёт сезонные движения грунта и сколько прослужит без перекосов и лишних доработок.</p>
       </header>
 
+      <section class="popup-foundation__section popup-foundation__hero" aria-label="Ключевая идея основания">
+        <article class="popup-foundation__hero-card">
+          <h2 class="popup-foundation__hero-title">Основание — это то, на чём держится вся геометрия гаража</h2>
+          <p class="popup-foundation__hero-subtitle">От него зависит, будет ли конструкция стоять ровно через годы.</p>
+          <div class="popup-foundation__hero-visual">Схема / разрез основания</div>
+        </article>
+      </section>
+
       <section class="popup-foundation__section" aria-label="Вводный акцент">
         <article class="popup-foundation__card">
           <h2 class="popup-foundation__section-title">Основание — это то, что потом уже не хочется переделывать</h2>
@@ -231,21 +318,25 @@
         <h2 class="popup-foundation__section-title">Какие решения бывают</h2>
         <article class="popup-foundation__card">
           <h3 class="popup-foundation__card-title">Винтовые сваи</h3>
+          <p class="popup-foundation__micro">→ Быстрый старт</p>
           <p class="popup-foundation__text">Быстрый и технологичный вариант для участков, где важно минимально вмешиваться в рельеф и ускорить монтаж.</p>
           <p class="popup-foundation__fit"><strong>Подходит для:</strong> Неровных участков, сложных грунтов, быстрого старта.</p>
         </article>
         <article class="popup-foundation__card">
           <h3 class="popup-foundation__card-title">Бетонная плита</h3>
+          <p class="popup-foundation__micro">→ Максимальная стабильность</p>
           <p class="popup-foundation__text">Самое стабильное и капитальное основание. Даёт жёсткую опору и сразу формирует ровную рабочую поверхность.</p>
           <p class="popup-foundation__fit"><strong>Подходит для:</strong> Капитального гаража, высокой нагрузки, долгого срока службы.</p>
         </article>
         <article class="popup-foundation__card">
           <h3 class="popup-foundation__card-title">Ленточный фундамент</h3>
+          <p class="popup-foundation__micro">→ Баланс решения</p>
           <p class="popup-foundation__text">Классический вариант с хорошим балансом между надёжностью и стоимостью. Часто подходит для типовых сценариев.</p>
           <p class="popup-foundation__fit"><strong>Подходит для:</strong> Стандартных участков и привычных условий строительства.</p>
         </article>
         <article class="popup-foundation__card">
           <h3 class="popup-foundation__card-title">Облегчённое основание</h3>
+          <p class="popup-foundation__micro">→ Компромиссный вариант</p>
           <p class="popup-foundation__text">Подходит как временное или компромиссное решение, когда нет задачи делать максимально капитальную базу.</p>
           <p class="popup-foundation__fit"><strong>Подходит для:</strong> Лёгких сценариев и временных решений.</p>
         </article>
@@ -254,7 +345,13 @@
       <section class="popup-foundation__section" aria-label="Риски">
         <h2 class="popup-foundation__section-title">Что бывает, если выбрать неправильно</h2>
         <article class="popup-foundation__card popup-foundation__risk">
-          <p class="popup-foundation__text">Неподходящее основание может привести к перекосу конструкции, неправильной работе ворот, появлению щелей и постоянным доработкам. Экономия на старте часто оборачивается затратами потом.</p>
+          <ul class="popup-foundation__risks">
+            <li>Перекос ворот</li>
+            <li>Щели и зазоры</li>
+            <li>Проблемы с закрытием</li>
+            <li>Постоянные доработки</li>
+          </ul>
+          <p class="popup-foundation__text">Экономия на старте почти всегда обходится дороже потом.</p>
         </article>
       </section>
 
@@ -284,22 +381,22 @@
         <h2 class="popup-foundation__section-title">Визуально это выглядит так</h2>
         <div class="popup-foundation__grid">
           <article class="popup-foundation__visual-card">
-            <div class="foundation-visual-image is-1">Схема / изображение</div>
+            <div class="foundation-visual-image is-1">Схема основания</div>
             <h3 class="popup-foundation__visual-title">Винтовые сваи</h3>
             <p class="popup-foundation__visual-caption">Опора на сваях под облегчённый и быстрый монтаж.</p>
           </article>
           <article class="popup-foundation__visual-card">
-            <div class="foundation-visual-image is-2">Схема / изображение</div>
+            <div class="foundation-visual-image is-2">Принцип конструкции</div>
             <h3 class="popup-foundation__visual-title">Бетонная плита</h3>
             <p class="popup-foundation__visual-caption">Сплошное жёсткое основание с ровной рабочей поверхностью.</p>
           </article>
           <article class="popup-foundation__visual-card">
-            <div class="foundation-visual-image is-3">Схема / изображение</div>
+            <div class="foundation-visual-image is-3">Схема основания</div>
             <h3 class="popup-foundation__visual-title">Ленточный фундамент</h3>
             <p class="popup-foundation__visual-caption">Классическая схема опоры по периметру конструкции.</p>
           </article>
           <article class="popup-foundation__visual-card">
-            <div class="foundation-visual-image is-4">Схема / изображение</div>
+            <div class="foundation-visual-image is-4">Принцип конструкции</div>
             <h3 class="popup-foundation__visual-title">Ошибка основания / перекос</h3>
             <p class="popup-foundation__visual-caption">Пример последствий неподходящего решения для участка.</p>
           </article>
