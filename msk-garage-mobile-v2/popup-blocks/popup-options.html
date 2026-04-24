@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Как подобрать опции</title>
+  <style>
+    .popup-options {
+      --bg-start: #0f1625;
+      --bg-end: #1c2335;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --text-main: #f3f7ff;
+      --text-soft: #c3ccdf;
+      --text-muted: #98a6c1;
+      --accent: #8faef7;
+      --warn-bg: rgba(154, 171, 210, 0.14);
+      --warn-border: rgba(179, 197, 238, 0.36);
+      --radius-xl: 20px;
+      --radius-md: 14px;
+      --shadow: 0 18px 44px rgba(4, 8, 18, 0.42);
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      background: transparent;
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .popup-options,
+    .popup-options * {
+      box-sizing: border-box;
+    }
+
+    .popup-options .popup-options__shell {
+      position: relative;
+      padding: 18px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(160deg, var(--bg-start), var(--bg-end));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .popup-options .popup-options__section {
+      margin-top: 20px;
+    }
+
+    .popup-options .popup-options__section:first-child {
+      margin-top: 0;
+    }
+
+    .popup-options .popup-options__eyebrow {
+      margin: 0 0 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .popup-options .popup-options__title {
+      margin: 0;
+      font-size: clamp(25px, 7vw, 34px);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-wrap: balance;
+    }
+
+    .popup-options .popup-options__lead {
+      margin: 10px 0 0;
+      max-width: 40ch;
+      font-size: 15px;
+      line-height: 1.58;
+      color: var(--text-soft);
+    }
+
+    .popup-options .popup-options__section-title {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: #f8fbff;
+    }
+
+    .popup-options .popup-options__text {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.58;
+      color: var(--text-soft);
+    }
+
+    .popup-options .popup-options__card {
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+    }
+
+    .popup-options .popup-options__card:first-child {
+      margin-top: 0;
+    }
+
+    .popup-options .popup-options__card-title {
+      margin: 0 0 6px;
+      font-size: 17px;
+      line-height: 1.3;
+      color: #f1f6ff;
+    }
+
+    .popup-options .popup-options__hero-placeholder {
+      margin-top: 10px;
+      width: 100%;
+      border-radius: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(145deg, rgba(101, 117, 145, 0.26), rgba(44, 54, 77, 0.42));
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+      letter-spacing: 0.02em;
+      color: #d8e4fc;
+    }
+
+    .popup-options .popup-options__micro-note {
+      margin: 10px 0 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #e0e9ff;
+      font-weight: 600;
+    }
+
+    .popup-options .popup-options__accent {
+      border: 1px solid var(--warn-border);
+      background: linear-gradient(160deg, var(--warn-bg), rgba(154, 171, 210, 0.06));
+    }
+
+    .popup-options .popup-options__label {
+      margin: 7px 0 2px;
+      font-size: 13px;
+      line-height: 1.4;
+      color: #edf3ff;
+      font-weight: 700;
+    }
+
+    .popup-options .popup-options__risk-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .popup-options .popup-options__risk-list li {
+      margin-top: 6px;
+      font-size: 14px;
+      line-height: 1.4;
+      color: #e8f0ff;
+    }
+
+    .popup-options .popup-options__risk-list li:first-child {
+      margin-top: 0;
+    }
+
+    .popup-options .popup-options__risk-list li::before {
+      content: "•";
+      color: #c5d8ff;
+      margin-right: 8px;
+    }
+
+    .popup-options .popup-options__grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .popup-options .popup-options__factor-title {
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: #f3f7ff;
+    }
+
+    .popup-options .popup-options__factor-text {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text-soft);
+    }
+
+    .popup-options .popup-options__visual-card {
+      padding: 0;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+    }
+
+    .popup-options .options-visual-placeholder {
+      width: 100%;
+      min-height: 108px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      line-height: 1.35;
+      letter-spacing: 0.02em;
+      color: #d8e4fc;
+      background: linear-gradient(145deg, rgba(112, 126, 156, 0.28), rgba(45, 56, 79, 0.42));
+    }
+
+    .popup-options .options-visual-placeholder.is-1 { background: linear-gradient(145deg, rgba(105, 124, 160, 0.32), rgba(41, 54, 82, 0.46)); }
+    .popup-options .options-visual-placeholder.is-2 { background: linear-gradient(145deg, rgba(121, 137, 169, 0.34), rgba(48, 60, 86, 0.48)); }
+    .popup-options .options-visual-placeholder.is-3 { background: linear-gradient(145deg, rgba(94, 114, 146, 0.3), rgba(36, 49, 75, 0.45)); }
+    .popup-options .options-visual-placeholder.is-4 { background: linear-gradient(145deg, rgba(126, 118, 134, 0.28), rgba(62, 58, 80, 0.45)); }
+
+    .popup-options .popup-options__visual-title {
+      margin: 10px 0 4px;
+      padding: 0 10px;
+      font-size: 14px;
+      line-height: 1.35;
+      color: #f0f5ff;
+    }
+
+    .popup-options .popup-options__visual-caption {
+      margin: 0;
+      padding: 0 10px 10px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text-soft);
+    }
+
+    .popup-options .popup-options__footnote {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(143, 174, 247, 0.32);
+      background: linear-gradient(160deg, rgba(143, 174, 247, 0.12), rgba(143, 174, 247, 0.04));
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #edf3ff;
+    }
+
+    .popup-options .popup-options__disclaimer {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <article class="popup-options" aria-label="Как подобрать опции">
+    <div class="popup-options__shell">
+      <header class="popup-options__section">
+        <p class="popup-options__eyebrow">ОПЦИИ</p>
+        <h1 class="popup-options__title">Как подобрать опции без переплаты</h1>
+        <p class="popup-options__lead">Опции — это не просто “добавки”, а то, что делает гараж удобным в реальной жизни. Если не продумать их заранее, потом часто приходится переделывать.</p>
+      </header>
+
+      <section class="popup-options__section" aria-label="Hero блок">
+        <article class="popup-options__card">
+          <h2 class="popup-options__section-title">Гараж должен быть готов к использованию</h2>
+          <p class="popup-options__text">Автоматика, свет, электрика и водостоки заранее превращают гараж из “коробки” в нормальное рабочее пространство для машины, хранения и повседневных задач.</p>
+          <div class="popup-options__hero-placeholder">Готовый гараж с опциями</div>
+        </article>
+      </section>
+
+      <section class="popup-options__section" aria-label="Что выбирают чаще всего">
+        <h2 class="popup-options__section-title">Что выбирают чаще всего</h2>
+        <article class="popup-options__card">
+          <h3 class="popup-options__card-title">Автоматика ворот</h3>
+          <p class="popup-options__text">Открытие с пульта без выхода из машины.</p>
+        </article>
+        <article class="popup-options__card">
+          <h3 class="popup-options__card-title">Электрика</h3>
+          <p class="popup-options__text">Розетки и точки питания без будущего колхоза.</p>
+        </article>
+        <article class="popup-options__card">
+          <h3 class="popup-options__card-title">Освещение</h3>
+          <p class="popup-options__text">Нормальный свет внутри для работы и хранения.</p>
+        </article>
+        <article class="popup-options__card">
+          <h3 class="popup-options__card-title">Водостоки</h3>
+          <p class="popup-options__text">Отвод воды от стен и основания.</p>
+        </article>
+        <p class="popup-options__micro-note">Чаще всего эти опции выбирают сразу.</p>
+      </section>
+
+      <section class="popup-options__section" aria-label="Акцентная карточка">
+        <article class="popup-options__card popup-options__accent">
+          <h2 class="popup-options__section-title">Опции проще предусмотреть сразу</h2>
+          <p class="popup-options__text">Если отложить их “на потом”, часто приходится тянуть провода поверх отделки, переделывать узлы, портить внешний вид и платить дороже за доработки.</p>
+        </article>
+      </section>
+
+      <section class="popup-options__section" aria-label="Разбор по смыслу">
+        <h2 class="popup-options__section-title">Разбор по смыслу</h2>
+        <article class="popup-options__card">
+          <h3 class="popup-options__card-title">Автоматика ворот</h3>
+          <p class="popup-options__label">Проблема:</p>
+          <p class="popup-options__text">каждый раз выходить из машины.</p>
+          <p class="popup-options__label">Решение:</p>
+          <p class="popup-options__text">открытие ворот с пульта.</p>
+          <p class="popup-options__label">Эффект:</p>
+          <p class="popup-options__text">гараж ощущается современно и удобно каждый день.</p>
+        </article>
+        <article class="popup-options__card">
+          <h3 class="popup-options__card-title">Электрика</h3>
+          <p class="popup-options__label">Проблема:</p>
+          <p class="popup-options__text">потом появляются удлинители и временные решения.</p>
+          <p class="popup-options__label">Решение:</p>
+          <p class="popup-options__text">сразу заложить нужные точки питания.</p>
+          <p class="popup-options__label">Эффект:</p>
+          <p class="popup-options__text">всё выглядит аккуратно и работает без лишних переделок.</p>
+        </article>
+        <article class="popup-options__card">
+          <h3 class="popup-options__card-title">Освещение</h3>
+          <p class="popup-options__label">Проблема:</p>
+          <p class="popup-options__text">внутри темно и неудобно пользоваться гаражом вечером.</p>
+          <p class="popup-options__label">Решение:</p>
+          <p class="popup-options__text">продуманный свет внутри.</p>
+          <p class="popup-options__label">Эффект:</p>
+          <p class="popup-options__text">можно спокойно парковаться, хранить вещи и работать.</p>
+        </article>
+        <article class="popup-options__card">
+          <h3 class="popup-options__card-title">Водостоки</h3>
+          <p class="popup-options__label">Проблема:</p>
+          <p class="popup-options__text">вода с крыши попадает к стенам и основанию.</p>
+          <p class="popup-options__label">Решение:</p>
+          <p class="popup-options__text">организованный отвод воды.</p>
+          <p class="popup-options__label">Эффект:</p>
+          <p class="popup-options__text">меньше грязи, влаги и риска для основания.</p>
+        </article>
+      </section>
+
+      <section class="popup-options__section" aria-label="Что будет если не продумать заранее">
+        <h2 class="popup-options__section-title">Что будет, если не продумать заранее</h2>
+        <article class="popup-options__card popup-options__accent">
+          <ul class="popup-options__risk-list">
+            <li>придётся переделывать</li>
+            <li>выйдет дороже</li>
+            <li>ухудшится внешний вид</li>
+            <li>снизится комфорт</li>
+          </ul>
+          <p class="popup-options__text">Экономия на старте часто превращается в дополнительные расходы потом.</p>
+        </article>
+      </section>
+
+      <section class="popup-options__section" aria-label="Как мы подбираем опции">
+        <h2 class="popup-options__section-title">Как мы подбираем опции</h2>
+        <div class="popup-options__grid">
+          <article class="popup-options__card">
+            <h3 class="popup-options__factor-title">Сценарий использования</h3>
+            <p class="popup-options__factor-text">Просто парковка, хранение, мастерская или частый доступ требуют разного набора.</p>
+          </article>
+          <article class="popup-options__card">
+            <h3 class="popup-options__factor-title">Частота использования</h3>
+            <p class="popup-options__factor-text">Чем чаще вы пользуетесь гаражом, тем важнее комфортные решения.</p>
+          </article>
+          <article class="popup-options__card">
+            <h3 class="popup-options__factor-title">Условия участка</h3>
+            <p class="popup-options__factor-text">Вода, уклон, подъезд и расположение влияют на нужные опции.</p>
+          </article>
+          <article class="popup-options__card">
+            <h3 class="popup-options__factor-title">Бюджет</h3>
+            <p class="popup-options__factor-text">Подбираем то, что реально нужно, без лишнего навязывания.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="popup-options__section" aria-label="Визуально это выглядит так">
+        <h2 class="popup-options__section-title">Визуально это выглядит так</h2>
+        <div class="popup-options__grid">
+          <article class="popup-options__visual-card">
+            <div class="options-visual-placeholder is-1">Автоматика ворот</div>
+            <h3 class="popup-options__visual-title">Автоматика ворот</h3>
+            <p class="popup-options__visual-caption">Быстрое открытие и ежедневный комфорт.</p>
+          </article>
+          <article class="popup-options__visual-card">
+            <div class="options-visual-placeholder is-2">Освещение гаража</div>
+            <h3 class="popup-options__visual-title">Освещение внутри</h3>
+            <p class="popup-options__visual-caption">Свет для парковки, хранения и работы.</p>
+          </article>
+          <article class="popup-options__visual-card">
+            <div class="options-visual-placeholder is-3">Электрика и розетки</div>
+            <h3 class="popup-options__visual-title">Электрика</h3>
+            <p class="popup-options__visual-caption">Точки питания без временных решений.</p>
+          </article>
+          <article class="popup-options__visual-card">
+            <div class="options-visual-placeholder is-4">Водосточная система</div>
+            <h3 class="popup-options__visual-title">Водостоки</h3>
+            <p class="popup-options__visual-caption">Организованный отвод воды от основания.</p>
+          </article>
+        </div>
+      </section>
+
+      <footer class="popup-options__section">
+        <p class="popup-options__footnote">Если не хотите разбираться в комплектации самостоятельно, подберём оптимальный набор опций под ваш гараж, участок и сценарий использования.</p>
+      </footer>
+
+      <section class="popup-options__section" aria-label="Ограничение по подбору">
+        <p class="popup-options__disclaimer">Финальный набор опций уточняется после выбора конструкции, размеров и условий участка.</p>
+      </section>
+    </div>
+  </article>
+</body>
+</html>
