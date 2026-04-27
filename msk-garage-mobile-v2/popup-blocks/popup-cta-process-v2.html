@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Как мы делаем гараж: этапы и контроль</title>
+  <style>
+    .popup-cta-process-v2 {
+      --bg-start: #0f1625;
+      --bg-end: #1c2335;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --text-main: #f3f7ff;
+      --text-soft: #c3ccdf;
+      --text-muted: #98a6c1;
+      --accent: #8faef7;
+      --warn-bg: rgba(154, 171, 210, 0.14);
+      --warn-border: rgba(179, 197, 238, 0.36);
+      --radius-xl: 20px;
+      --radius-md: 14px;
+      --shadow: 0 18px 44px rgba(4, 8, 18, 0.42);
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      background: transparent;
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .popup-cta-process-v2,
+    .popup-cta-process-v2 * {
+      box-sizing: border-box;
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__shell {
+      position: relative;
+      padding: 18px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(160deg, var(--bg-start), var(--bg-end));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__section {
+      margin-top: 20px;
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__section:first-child {
+      margin-top: 0;
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__eyebrow {
+      margin: 0 0 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__title {
+      margin: 0;
+      font-size: clamp(25px, 7vw, 34px);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-wrap: balance;
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__lead {
+      margin: 10px 0 0;
+      max-width: 40ch;
+      font-size: 15px;
+      line-height: 1.58;
+      color: var(--text-soft);
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__section-title {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: #f8fbff;
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__text {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.58;
+      color: var(--text-soft);
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__card {
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__card:first-child {
+      margin-top: 0;
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__card-title {
+      margin: 0 0 6px;
+      font-size: 17px;
+      line-height: 1.3;
+      color: #f1f6ff;
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__hero-placeholder {
+      width: 100%;
+      min-height: 150px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(145deg, rgba(101, 117, 145, 0.26), rgba(44, 54, 77, 0.42));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+      letter-spacing: 0.02em;
+      color: #d8e4fc;
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__accent {
+      border: 1px solid var(--warn-border);
+      background: linear-gradient(160deg, var(--warn-bg), rgba(154, 171, 210, 0.06));
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__trust-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.4;
+      color: #f2f7ff;
+    }
+
+    .popup-cta-process-v2 .popup-cta-process-v2__trust-sub {
+      margin: 7px 0 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text-soft);
+    }
+  </style>
+</head>
+<body>
+  <article class="popup-cta-process-v2" aria-label="Как мы делаем гараж: этапы и контроль">
+    <div class="popup-cta-process-v2__shell">
+      <header class="popup-cta-process-v2__section">
+        <p class="popup-cta-process-v2__eyebrow">ПОДХОД</p>
+        <h1 class="popup-cta-process-v2__title">Гараж не должен разваливаться на мелочах</h1>
+        <p class="popup-cta-process-v2__lead">Большинство проблем возникает не в процессе, а из-за решений, принятых “на ходу”. Мы собираем проект так, чтобы всё было продумано заранее.</p>
+      </header>
+
+      <section class="popup-cta-process-v2__section" aria-label="Визуальный блок">
+        <div class="popup-cta-process-v2__hero-placeholder">Проект под контролем</div>
+      </section>
+
+      <section class="popup-cta-process-v2__section" aria-label="Что отличает нормальный результат">
+        <h2 class="popup-cta-process-v2__section-title">Что отличает нормальный результат</h2>
+        <article class="popup-cta-process-v2__card">
+          <h3 class="popup-cta-process-v2__card-title">Решения до начала работ</h3>
+          <p class="popup-cta-process-v2__text">Размеры, основание, ворота и опции фиксируются заранее.</p>
+        </article>
+        <article class="popup-cta-process-v2__card">
+          <h3 class="popup-cta-process-v2__card-title">Один ответственный</h3>
+          <p class="popup-cta-process-v2__text">Проект не распадается на “спросите у другого”.</p>
+        </article>
+        <article class="popup-cta-process-v2__card">
+          <h3 class="popup-cta-process-v2__card-title">Расчёт под нагрузки</h3>
+          <p class="popup-cta-process-v2__text">Конструкция подбирается под реальные условия, а не по шаблону.</p>
+        </article>
+        <article class="popup-cta-process-v2__card">
+          <h3 class="popup-cta-process-v2__card-title">Контроль этапов</h3>
+          <p class="popup-cta-process-v2__text">Каждый этап проверяется до перехода дальше.</p>
+        </article>
+      </section>
+
+      <section class="popup-cta-process-v2__section" aria-label="Акцент">
+        <article class="popup-cta-process-v2__card popup-cta-process-v2__accent">
+          <h2 class="popup-cta-process-v2__section-title">Это не просто “поставили гараж”</h2>
+          <p class="popup-cta-process-v2__text">Итог должен стоять ровно, нормально открываться, не требовать переделок и выглядеть собранно через годы.</p>
+        </article>
+      </section>
+
+      <section class="popup-cta-process-v2__section" aria-label="Финальный блок">
+        <article class="popup-cta-process-v2__card">
+          <p class="popup-cta-process-v2__text">Сначала вы понимаете, как будет устроен ваш гараж. И только потом решаете, двигаться дальше или нет.</p>
+        </article>
+      </section>
+
+      <section class="popup-cta-process-v2__section" aria-label="Линия доверия">
+        <article class="popup-cta-process-v2__card">
+          <p class="popup-cta-process-v2__trust-title">540+ реализованных проектов в Москве и области</p>
+          <p class="popup-cta-process-v2__trust-sub">Работаем с реальными участками, где важны не только цена, но и результат.</p>
+        </article>
+      </section>
+    </div>
+  </article>
+</body>
+</html>
