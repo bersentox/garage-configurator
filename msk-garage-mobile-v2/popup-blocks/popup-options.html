@@ -111,21 +111,18 @@
     }
 
     .popup-options .popup-options__hero-placeholder {
-      margin-top: 10px;
+      margin-top: 12px;
+      margin-left: -13px;
+      margin-right: -13px;
       width: 100%;
-      border-radius: 11px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: linear-gradient(145deg, rgba(101, 117, 145, 0.26), rgba(44, 54, 77, 0.42));
-      min-height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 10px;
-      font-size: 12px;
-      line-height: 1.4;
-      letter-spacing: 0.02em;
-      color: #d8e4fc;
+      overflow: hidden;
+      border-radius: 0 0 12px 12px;
+    }
+
+    .popup-options .popup-options__hero-placeholder img {
+      width: 100%;
+      display: block;
+      height: auto;
     }
 
     .popup-options .popup-options__micro-note {
@@ -195,17 +192,13 @@
 
     .popup-options .options-visual-placeholder {
       width: 100%;
-      min-height: 108px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 10px;
-      font-size: 12px;
-      line-height: 1.35;
-      letter-spacing: 0.02em;
-      color: #d8e4fc;
-      background: linear-gradient(145deg, rgba(112, 126, 156, 0.28), rgba(45, 56, 79, 0.42));
+      overflow: hidden;
+    }
+
+    .popup-options .options-visual-placeholder img {
+      width: 100%;
+      display: block;
+      height: auto;
     }
 
     .popup-options .options-visual-placeholder.is-1 { background: linear-gradient(145deg, rgba(105, 124, 160, 0.32), rgba(41, 54, 82, 0.46)); }
@@ -261,7 +254,9 @@
         <article class="popup-options__card">
           <h2 class="popup-options__section-title">Гараж должен быть готов к использованию</h2>
           <p class="popup-options__text">Автоматика, свет, электрика и водостоки заранее превращают гараж из “коробки” в нормальное рабочее пространство для машины, хранения и повседневных задач.</p>
-          <div class="popup-options__hero-placeholder">Готовый гараж с опциями</div>
+          <div class="popup-options__hero-placeholder">
+            <img src="https://bersentox.github.io/garage-configurator/msk-garage-mobile-v2/popup-blocks/options-pics/garage-options-hero.webp" alt="Готовый гараж с опциями">
+          </div>
         </article>
       </section>
 
@@ -332,22 +327,30 @@
         <h2 class="popup-options__section-title">Визуально это выглядит так</h2>
         <div class="popup-options__grid">
           <article class="popup-options__visual-card">
-            <div class="options-visual-placeholder is-1">Автоматика ворот</div>
+            <div class="options-visual-placeholder is-1">
+              <img src="https://bersentox.github.io/garage-configurator/msk-garage-mobile-v2/popup-blocks/options-pics/garage-automatic-gate.webp" alt="Автоматика ворот">
+            </div>
             <h3 class="popup-options__visual-title">Автоматика ворот</h3>
             <p class="popup-options__visual-caption">Быстрое открытие и ежедневный комфорт.</p>
           </article>
           <article class="popup-options__visual-card">
-            <div class="options-visual-placeholder is-2">Освещение гаража</div>
+            <div class="options-visual-placeholder is-2">
+              <img src="https://bersentox.github.io/garage-configurator/msk-garage-mobile-v2/popup-blocks/options-pics/garage-lighting-interior.webp" alt="Освещение внутри гаража">
+            </div>
             <h3 class="popup-options__visual-title">Освещение внутри</h3>
             <p class="popup-options__visual-caption">Свет для парковки, хранения и работы.</p>
           </article>
           <article class="popup-options__visual-card">
-            <div class="options-visual-placeholder is-3">Электрика и розетки</div>
+            <div class="options-visual-placeholder is-3">
+              <img src="https://bersentox.github.io/garage-configurator/msk-garage-mobile-v2/popup-blocks/options-pics/garage-electrical-outlets.webp" alt="Электрика и розетки в гараже">
+            </div>
             <h3 class="popup-options__visual-title">Электрика</h3>
             <p class="popup-options__visual-caption">Точки питания без временных решений.</p>
           </article>
           <article class="popup-options__visual-card">
-            <div class="options-visual-placeholder is-4">Водосточная система</div>
+            <div class="options-visual-placeholder is-4">
+              <img src="https://bersentox.github.io/garage-configurator/msk-garage-mobile-v2/popup-blocks/options-pics/garage-drainage-system.webp" alt="Водосточная система гаража">
+            </div>
             <h3 class="popup-options__visual-title">Водостоки</h3>
             <p class="popup-options__visual-caption">Организованный отвод воды от основания.</p>
           </article>
