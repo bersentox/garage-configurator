@@ -98,43 +98,25 @@
 
     .popup-cta-process-v3 .popup-cta-process-v3__visual {
       width: 100%;
-      aspect-ratio: 16 / 9;
       border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.14);
-      background:
-        radial-gradient(circle at 18% 24%, rgba(143, 174, 247, 0.23), transparent 45%),
-        radial-gradient(circle at 82% 70%, rgba(245, 162, 87, 0.16), transparent 45%),
-        linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-      display: flex;
-      align-items: center;
-      justify-content: center;
       position: relative;
       overflow: hidden;
     }
 
-    .popup-cta-process-v3 .popup-cta-process-v3__visual-text {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      color: #eef4ff;
-      text-align: center;
-      z-index: 1;
+    .popup-cta-process-v3 .popup-cta-process-v3__visual img {
+      width: 100%;
+      height: auto;
+      display: block;
     }
 
-    .popup-cta-process-v3 .popup-cta-process-v3__dot {
+    .popup-cta-process-v3 .popup-cta-process-v3__visual::after {
+      content: "";
       position: absolute;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.7);
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10, 16, 28, 0.4) 0%, rgba(10, 16, 28, 0) 55%);
+      pointer-events: none;
     }
-
-    .popup-cta-process-v3 .popup-cta-process-v3__dot.is-1 { top: 16%; left: 18%; }
-    .popup-cta-process-v3 .popup-cta-process-v3__dot.is-2 { top: 26%; right: 19%; }
-    .popup-cta-process-v3 .popup-cta-process-v3__dot.is-3 { bottom: 19%; left: 28%; }
-    .popup-cta-process-v3 .popup-cta-process-v3__dot.is-4 { bottom: 14%; right: 26%; }
 
     .popup-cta-process-v3 .popup-cta-process-v3__card-head {
       display: flex;
@@ -284,11 +266,10 @@
 
       <section class="popup-cta-process-v3__section" aria-label="Главный визуальный блок">
         <div class="popup-cta-process-v3__visual">
-          <span class="popup-cta-process-v3__dot is-1"></span>
-          <span class="popup-cta-process-v3__dot is-2"></span>
-          <span class="popup-cta-process-v3__dot is-3"></span>
-          <span class="popup-cta-process-v3__dot is-4"></span>
-          <p class="popup-cta-process-v3__visual-text">Контроль результата</p>
+          <img
+            src="https://bersentox.github.io/garage-configurator/msk-garage-mobile-v2/popup-blocks/cta-pics/hero-cta-popap.webp"
+            alt="Проектирование и контроль гаража"
+          >
         </div>
       </section>
 
