@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Путь проекта: от участка до сдачи</title>
+  <style>
+    .popup-cta-process-v3 {
+      --bg-start: #0f1625;
+      --bg-end: #1c2335;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --text-main: #f3f7ff;
+      --text-soft: #c3ccdf;
+      --text-muted: #9ba9c4;
+      --accent-blue: #8faef7;
+      --accent-orange: #f5a257;
+      --accent-orange-soft: rgba(245, 162, 87, 0.2);
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-sm: 10px;
+      --shadow: 0 18px 44px rgba(4, 8, 18, 0.42);
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      background: transparent;
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .popup-cta-process-v3,
+    .popup-cta-process-v3 * {
+      box-sizing: border-box;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__shell {
+      position: relative;
+      padding: 18px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(160deg, var(--bg-start), var(--bg-end));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__section {
+      margin-top: 20px;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__section:first-child {
+      margin-top: 0;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__eyebrow {
+      margin: 0 0 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-blue);
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__title {
+      margin: 0;
+      font-size: clamp(27px, 7.5vw, 36px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-wrap: balance;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__lead {
+      margin: 10px 0 0;
+      max-width: 39ch;
+      font-size: 15px;
+      line-height: 1.58;
+      color: var(--text-soft);
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__section-title {
+      margin: 0 0 10px;
+      font-size: 21px;
+      line-height: 1.24;
+      color: #f8fbff;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__card {
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__card:first-child {
+      margin-top: 0;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__visual {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background:
+        radial-gradient(circle at 18% 24%, rgba(143, 174, 247, 0.23), transparent 45%),
+        radial-gradient(circle at 82% 70%, rgba(245, 162, 87, 0.16), transparent 45%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__visual-text {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: #eef4ff;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__dot.is-1 { top: 16%; left: 18%; }
+    .popup-cta-process-v3 .popup-cta-process-v3__dot.is-2 { top: 26%; right: 19%; }
+    .popup-cta-process-v3 .popup-cta-process-v3__dot.is-3 { bottom: 19%; left: 28%; }
+    .popup-cta-process-v3 .popup-cta-process-v3__dot.is-4 { bottom: 14%; right: 26%; }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__card-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__icon {
+      width: 16px;
+      height: 16px;
+      color: var(--accent-blue);
+      flex: 0 0 16px;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__icon--orange {
+      color: var(--accent-orange);
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__card-title {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.3;
+      color: #f1f6ff;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__points {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__points li {
+      margin-top: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 14px;
+      line-height: 1.44;
+      color: var(--text-soft);
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__points li:first-child {
+      margin-top: 0;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__flow {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__chip {
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 34px;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__chip-num {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(143, 174, 247, 0.45);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      line-height: 1;
+      color: #dce8ff;
+      flex: 0 0 18px;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__chip-text {
+      font-size: 13px;
+      color: #eaf1ff;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__chip--final {
+      border-color: rgba(245, 162, 87, 0.5);
+      background: linear-gradient(165deg, var(--accent-orange-soft), rgba(245, 162, 87, 0.08));
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__chip--final .popup-cta-process-v3__chip-num {
+      border-color: rgba(245, 162, 87, 0.65);
+      color: #ffe1c3;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__control-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__control-list li {
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--text-soft);
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__control-list li:first-child { margin-top: 0; }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__accent {
+      padding: 14px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(143, 174, 247, 0.32);
+      background: linear-gradient(165deg, rgba(143, 174, 247, 0.14), rgba(143, 174, 247, 0.06));
+      font-size: 15px;
+      line-height: 1.55;
+      color: #edf4ff;
+      margin: 0;
+    }
+
+    .popup-cta-process-v3 .popup-cta-process-v3__trust {
+      margin: 0;
+      padding: 10px 0 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+  </style>
+</head>
+<body>
+  <article class="popup-cta-process-v3" aria-label="Путь проекта от участка до сдачи">
+    <div class="popup-cta-process-v3__shell">
+      <header class="popup-cta-process-v3__section">
+        <p class="popup-cta-process-v3__eyebrow">ПОДХОД</p>
+        <h1 class="popup-cta-process-v3__title">Вы инвестируете не в гараж, а в результат</h1>
+        <p class="popup-cta-process-v3__lead">Гараж должен быть не просто поставлен, а собран как система: участок, конструкция, основание, монтаж и сдача связаны между собой.</p>
+      </header>
+
+      <section class="popup-cta-process-v3__section" aria-label="Главный визуальный блок">
+        <div class="popup-cta-process-v3__visual">
+          <span class="popup-cta-process-v3__dot is-1"></span>
+          <span class="popup-cta-process-v3__dot is-2"></span>
+          <span class="popup-cta-process-v3__dot is-3"></span>
+          <span class="popup-cta-process-v3__dot is-4"></span>
+          <p class="popup-cta-process-v3__visual-text">Контроль результата</p>
+        </div>
+      </section>
+
+      <section class="popup-cta-process-v3__section" aria-label="Почему результат не разваливается на мелочах">
+        <h2 class="popup-cta-process-v3__section-title">Почему результат не разваливается на мелочах</h2>
+
+        <article class="popup-cta-process-v3__card">
+          <div class="popup-cta-process-v3__card-head">
+            <svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 5h16v2H4V5Zm0 6h10v2H4v-2Zm0 6h8v2H4v-2Zm13.6 1.8-3.8-3.8 1.4-1.4 2.4 2.4 4.2-4.2 1.4 1.4-5.6 5.6Z"/></svg>
+            <h3 class="popup-cta-process-v3__card-title">Реализация</h3>
+          </div>
+          <ul class="popup-cta-process-v3__points">
+            <li>
+              <svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 16.2 4.8 12l1.4-1.4L9 13.4l8.8-8.8 1.4 1.4L9 16.2Z"/></svg>
+              решения фиксируются до начала работ
+            </li>
+            <li>
+              <svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-3.3 0-6 2-6 4.5V20h12v-1.5C18 16 15.3 14 12 14Z"/></svg>
+              один ответственный ведёт проект
+            </li>
+            <li>
+              <svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5l-8-3Zm-1 14-3-3 1.4-1.4 1.6 1.6 3.6-3.6L16 11l-5 5Z"/></svg>
+              каждый этап проверяется перед следующим
+            </li>
+          </ul>
+        </article>
+
+        <article class="popup-cta-process-v3__card">
+          <div class="popup-cta-process-v3__card-head">
+            <svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 17h18v2H3v-2Zm2-4h14v2H5v-2Zm2-4h10v2H7V9Zm2-4h6v2H9V5Z"/></svg>
+            <h3 class="popup-cta-process-v3__card-title">Конструкция</h3>
+          </div>
+          <ul class="popup-cta-process-v3__points">
+            <li>
+              <svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 13h4v8H3v-8Zm7-6h4v14h-4V7Zm7-4h4v18h-4V3Z"/></svg>
+              расчёт под реальные нагрузки
+            </li>
+            <li>
+              <svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 4h7v2H6v5H4V4Zm16 0v7h-2V6h-5V4h7ZM4 20v-7h2v5h5v2H4Zm16 0h-7v-2h5v-5h2v7Z"/></svg>
+              геометрия и узлы продуманы заранее
+            </li>
+            <li>
+              <svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5l-8-3Zm-1 14-3-3 1.4-1.4 1.6 1.6 3.6-3.6L16 11l-5 5Z"/></svg>
+              перед сдачей объект проходит финальную проверку
+            </li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="popup-cta-process-v3__section" aria-label="Путь проекта">
+        <h2 class="popup-cta-process-v3__section-title">Путь проекта</h2>
+        <div class="popup-cta-process-v3__flow">
+          <div class="popup-cta-process-v3__chip"><span class="popup-cta-process-v3__chip-num">1</span><svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 10.5a5 5 0 0 1 10 0c0 3.5-5 8.5-5 8.5s-5-5-5-8.5Zm5 1.5a2 2 0 1 0-2-2 2 2 0 0 0 2 2Z"/></svg><span class="popup-cta-process-v3__chip-text">Контакт</span></div>
+          <div class="popup-cta-process-v3__chip"><span class="popup-cta-process-v3__chip-num">2</span><svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 17h18v2H3v-2Zm1-3 4-9h2l-4 9H4Zm7 0 4-9h2l-4 9h-2Zm7 0 2-5h2l-2 5h-2Z"/></svg><span class="popup-cta-process-v3__chip-text">Замер</span></div>
+          <div class="popup-cta-process-v3__chip"><span class="popup-cta-process-v3__chip-num">3</span><svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 3h9l5 5v13H6V3Zm8 1.5V9h4.5L14 4.5ZM8 12h8v1.5H8V12Zm0 3h8v1.5H8V15Z"/></svg><span class="popup-cta-process-v3__chip-text">КП</span></div>
+          <div class="popup-cta-process-v3__chip"><span class="popup-cta-process-v3__chip-num">4</span><svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 4h16v2H4V4Zm0 6h10v2H4v-2Zm0 6h16v2H4v-2Z"/></svg><span class="popup-cta-process-v3__chip-text">Проект</span></div>
+          <div class="popup-cta-process-v3__chip"><span class="popup-cta-process-v3__chip-num">5</span><svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 2h12v20H6V2Zm2 3v2h8V5H8Zm0 4v2h8V9H8Zm0 4v2h6v-2H8Z"/></svg><span class="popup-cta-process-v3__chip-text">Договор</span></div>
+          <div class="popup-cta-process-v3__chip"><span class="popup-cta-process-v3__chip-num">6</span><svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 17h18v2H3v-2Zm2-4h14v2H5v-2Zm2-4h10v2H7V9Zm2-4h6v2H9V5Z"/></svg><span class="popup-cta-process-v3__chip-text">Монтаж</span></div>
+          <div class="popup-cta-process-v3__chip popup-cta-process-v3__chip--final"><span class="popup-cta-process-v3__chip-num">7</span><svg class="popup-cta-process-v3__icon popup-cta-process-v3__icon--orange" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 16.2 4.8 12l1.4-1.4L9 13.4l8.8-8.8 1.4 1.4L9 16.2Z"/></svg><span class="popup-cta-process-v3__chip-text">Сдача</span></div>
+        </div>
+      </section>
+
+      <section class="popup-cta-process-v3__section" aria-label="Контроль между этапами">
+        <h2 class="popup-cta-process-v3__section-title">Контроль между этапами</h2>
+        <ul class="popup-cta-process-v3__control-list">
+          <li><svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5l-8-3Zm-1 14-3-3 1.4-1.4 1.6 1.6 3.6-3.6L16 11l-5 5Z"/></svg>На каждом переходе есть согласование</li>
+          <li><svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h10v2h3v18H4V4h3V2Zm2 2v2h6V4H9Zm-3 4v12h12V8H6Zm2 2h8v2H8v-2Z"/></svg>Сроки и обязательства фиксируются заранее</li>
+          <li><svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 3 7v6c0 5 3.8 9.7 9 11 5.2-1.3 9-6 9-11V7l-9-5Zm-1 14-4-4 1.4-1.4 2.6 2.6 5.6-5.6L18 9l-7 7Z"/></svg>Финальная сдача закрывает проект, а не оставляет хвосты</li>
+        </ul>
+      </section>
+
+      <section class="popup-cta-process-v3__section" aria-label="Финальный акцент">
+        <p class="popup-cta-process-v3__accent">Смысл не в том, чтобы “просто поставить гараж”. Смысл — довести до результата, который не придётся переделывать.</p>
+      </section>
+
+      <section class="popup-cta-process-v3__section" aria-label="Линия доверия">
+        <p class="popup-cta-process-v3__trust">
+          <svg class="popup-cta-process-v3__icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5l-8-3Zm-1 14-3-3 1.4-1.4 1.6 1.6 3.6-3.6L16 11l-5 5Z"/></svg>
+          540+ реализованных проектов в Москве и области
+        </p>
+      </section>
+    </div>
+  </article>
+</body>
+</html>
