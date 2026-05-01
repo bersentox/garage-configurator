@@ -33,8 +33,8 @@ const PUSH_DELAY_MS = 520;
 const SHOW_CHOICE_DELAY_MS = 2000;
 const CHOICE_DELAY_MS = 4600;
 const RATE_PER_M2 = {
-  6: 54000,
-  8: 57000
+  6: 34000,
+  8: 37000
 };
 const FOUNDATION_RATE_PER_M2 = {
   none: 0,
