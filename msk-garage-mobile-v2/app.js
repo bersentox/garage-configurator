@@ -671,6 +671,20 @@ if (configBarCta && finalCtaScene) {
 
 setupViewportStickyNormalization();
 
+if (configShell && !configShell.hidden) {
+  updateTypeButtonState();
+  updateLengthButtonState();
+  updateColorButtonState();
+  updateFoundationButtonState();
+  updateExtrasButtonState();
+  refreshBottomBar();
+
+  // ВАЖНО: небольшая задержка чтобы DOM успел отрисоваться
+  setTimeout(() => {
+    viewerBridge.loadByState();
+  }, 0);
+}
+
 if (configShellBar && finalCtaScene) {
   const finalSceneObserver = new IntersectionObserver(
     ([entry]) => {
