@@ -357,12 +357,48 @@ function createViewerBridge() {
     resize();
     window.addEventListener('resize', resize);
 
-    const animate = () => {
-      controls.update();
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    };
-    animate();
+   let zoomPhase = 0;
+let isUserInteracting = false;
+
+renderer.domElement.addEventListener('pointerdown', () => {
+  isUserInteracting = true;
+}, { passive: true });
+
+renderer.domElement.addEventListener('pointerup', () => {
+  setTimeout(() => {
+    isUserInteracting = false;
+  }, 1600);
+}, { passive: true });
+
+renderer.domElement.addEventListener('pointercancel', () => {
+  isUserInteracting = false;
+}, { passive: true });
+
+const animate = () => {
+  if (!isUserInteracting) {
+    zoomPhase += 0.006;
+
+    const zoomPulse = 1 + Math.sin(zoomPhase) * 0.018;
+    const direction = camera.position.clone().sub(controls.target).normalize();
+    const currentDistance = camera.position.distanceTo(controls.target);
+    const targetDistance = currentDistance * zoomPulse;
+
+    const clampedDistance = Math.max(
+      controls.minDistance,
+      Math.min(controls.maxDistance, targetDistance)
+    );
+
+    camera.position.copy(
+      controls.target.clone().add(direction.multiplyScalar(clampedDistance))
+    );
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+};
+
+animate();
 
     runtime = { THREE, scene, camera, controls, loader, setStatus, resize };
     return runtime;
