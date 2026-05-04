@@ -366,8 +366,8 @@ renderer.domElement.addEventListener('pointerdown', () => {
 
 renderer.domElement.addEventListener('pointerup', () => {
   setTimeout(() => {
-    isUserInteracting = false;
-  }, 1600);
+  isUserInteracting = false;
+}, 500);
 }, { passive: true });
 
 renderer.domElement.addEventListener('pointercancel', () => {
@@ -376,12 +376,12 @@ renderer.domElement.addEventListener('pointercancel', () => {
 
 const animate = () => {
   if (!isUserInteracting) {
-    zoomPhase += 0.006;
+    
+    zoomPhase += 0.004;
 
-    const zoomPulse = 1 + Math.sin(zoomPhase) * 0.012;
-    const direction = camera.position.clone().sub(controls.target).normalize();
-    const currentDistance = camera.position.distanceTo(controls.target);
-    const targetDistance = currentDistance * zoomPulse;
+const direction = camera.position.clone().sub(controls.target).normalize();
+const currentDistance = camera.position.distanceTo(controls.target);
+const targetDistance = currentDistance * 0.9985;
 
     const clampedDistance = Math.max(
       controls.minDistance,
