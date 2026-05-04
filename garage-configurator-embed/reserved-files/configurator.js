@@ -1,4 +1,4 @@
-import { applyColorPreset, getPresetByWidth } from "./state.js";
+import { applyColorPreset } from "./state.js";
 import { createGarage3DViewer } from "./garage3d.js";
 
 const PRICES = window.CONFIG_PRICES || {};
@@ -57,7 +57,6 @@ export function mountConfigurator({ state, root }) {
   if (!state.foundation) state.foundation = "none";
   const productTitle = root.querySelector("#productTitle");
   const baseInfo = root.querySelector("#baseInfo");
-  const widthCards = [...root.querySelectorAll(".width-card")];
   const lengthCards = [...root.querySelectorAll(".length-card")];
   const lengthInput = root.querySelector("#lengthInput");
   const shelvesToggle = root.querySelector("#shelvesToggle");
@@ -151,9 +150,6 @@ export function mountConfigurator({ state, root }) {
 
     productTitle.textContent = state.type.toUpperCase();
     baseInfo.textContent = `ширина ${state.width} м • ${state.gates} ${state.gates === 1 ? "ворота" : "ворот"}`;
-    widthCards.forEach((card) => {
-      card.classList.toggle("active", Number(card.dataset.width) === state.width);
-    });
     doorsCount.textContent = String(state.doors);
     windowsCount.textContent = String(state.windows);
     lengthInput.value = String(state.length);
@@ -219,14 +215,6 @@ export function mountConfigurator({ state, root }) {
     stickyPrice.textContent = priceText;
     stickyMeta.textContent = `${state.width} × ${state.length} м · ${state.gates} ${state.gates === 1 ? "ворота" : "ворот"}`;
   };
-
-  widthCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      const width = Number(card.dataset.width);
-      Object.assign(state, getPresetByWidth(width));
-      render();
-    });
-  });
 
   lengthCards.forEach((card) => {
     card.addEventListener("click", () => {
