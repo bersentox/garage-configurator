@@ -378,7 +378,7 @@ const animate = () => {
   if (!isUserInteracting) {
     zoomPhase += 0.006;
 
-    const zoomPulse = 1 + Math.sin(zoomPhase) * 0.065;
+    const zoomPulse = 1 + Math.sin(zoomPhase) * 0.025;
     const direction = camera.position.clone().sub(controls.target).normalize();
     const currentDistance = camera.position.distanceTo(controls.target);
     const targetDistance = currentDistance * zoomPulse;
