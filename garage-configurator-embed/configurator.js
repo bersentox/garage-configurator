@@ -74,7 +74,6 @@ export function mountConfigurator({ state, root }) {
   const summaryList = root.querySelector("#summaryList");
   const summaryTime = root.querySelector("#summaryTime");
   const ctaSummary = root.querySelector("#ctaSummary");
-  const ctaPrice = root.querySelector("#ctaPrice");
   const ctaTime = root.querySelector("#ctaTime");
   const stickyBar = root.querySelector("#stickyBar");
   const stickyPrice = root.querySelector("#stickyPrice");
@@ -165,7 +164,6 @@ export function mountConfigurator({ state, root }) {
     lengthCards.forEach((card) => {
       const cardLength = Number(card.dataset.length);
       const area = state.width * cardLength;
-      const previewConfig = { ...state, length: cardLength };
       const areaElement = card.querySelector(".length-area");
       const priceElement = card.querySelector(".length-price");
       const usageElement = card.querySelector(".length-usage");
@@ -173,7 +171,7 @@ export function mountConfigurator({ state, root }) {
 
       card.classList.toggle("active", cardLength === state.length);
       if (areaElement) areaElement.textContent = `${area} м²`;
-      if (priceElement) priceElement.textContent = `от ${formatPrice(calculatePrice(previewConfig))}`;
+      if (priceElement) priceElement.textContent = "Соберите комплектацию";
       if (usageElement && presetUsage) usageElement.textContent = presetUsage;
     });
 
@@ -210,14 +208,15 @@ export function mountConfigurator({ state, root }) {
       <li><span class="summary-label">Опции</span><span class="summary-value">${selectedOptions}</span></li>
     `;
 
-    const priceText = formatPrice(state.price);
+    const optionCount = Object.values(state.options).filter(Boolean).length;
+    const garageTypeLabel = state.gates === 1 ? "1 машина" : "2 машины";
+    const stickySummary = `Гараж собран: ${garageTypeLabel} · ${state.length} м · ${FOUNDATION_LABELS[state.foundation] || FOUNDATION_LABELS.none} · ${optionCount} ${optionCount === 1 ? "опция" : optionCount >= 2 && optionCount <= 4 ? "опции" : "опций"}`;
     const timeText = `Срок строительства: ${state.buildTimeWeeks}–${state.buildTimeWeeks + 1} дней`;
-    summaryTime.textContent = timeText;
-    ctaSummary.textContent = `${state.type.toLowerCase()} · ${state.width} × ${state.length} м · ${LAYOUT_LABELS[state.layout]}`;
-    ctaPrice.textContent = priceText;
+    summaryTime.textContent = "Точная стоимость рассчитывается после заявки.";
+    ctaSummary.textContent = "Оставьте контакт — мы проверим комплектацию, учтём участок и подготовим точную стоимость.";
     ctaTime.textContent = timeText;
-    stickyPrice.textContent = priceText;
-    stickyMeta.textContent = `${state.width} × ${state.length} м · ${state.gates} ${state.gates === 1 ? "ворота" : "ворот"}`;
+    stickyPrice.textContent = stickySummary;
+    stickyMeta.textContent = `${state.type} · ${LAYOUT_LABELS[state.layout]}`;
   };
 
   widthCards.forEach((card) => {
