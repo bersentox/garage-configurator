@@ -1,4 +1,4 @@
-<section id="configuratorStep" class="configurator-page">
+<section id="configuratorStep" class="configurator-page" hidden>
   <div class="container">
     <aside class="scene" aria-label="Превью гаража">
       <div id="scenePreview" class="scene-preview">
@@ -7,20 +7,6 @@
     </aside>
 
     <div class="configurator">
-      <section class="config-width">
-        <h3>ВЫБЕРИТЕ ТИП ГАРАЖА</h3>
-        <div class="width-cards" id="widthCards">
-          <button class="width-card active" type="button" data-width="6">
-            <span>На 1 машину</span>
-            <strong>6 м</strong>
-          </button>
-          <button class="width-card" type="button" data-width="8">
-            <span>На 2 машины</span>
-            <strong>8 м</strong>
-          </button>
-        </div>
-      </section>
-
       <section class="config-base">
         <h2 class="config-title" id="productTitle"></h2>
         <p class="config-meta" id="baseInfo"></p>
@@ -32,17 +18,17 @@
           <button class="length-card" type="button" data-length="6" data-price="1950000">
             <span class="length-value"><strong>6</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">48 м²</span></span>
             <span class="length-usage">только для машин</span>
-            <span class="length-price">Базовый вариант</span>
+            <span class="length-price">от 1 950 000 ₽</span>
           </button>
           <button class="length-card" type="button" data-length="8" data-price="2290000">
             <span class="length-value"><strong>8</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">64 м²</span></span>
             <span class="length-usage">машина + хранение</span>
-            <span class="length-price">Оптимальный выбор</span>
+            <span class="length-price">от 2 290 000 ₽</span>
           </button>
           <button class="length-card" type="button" data-length="10" data-price="2650000">
             <span class="length-value"><strong>10</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">80 м²</span></span>
             <span class="length-usage">машина + хозблок</span>
-            <span class="length-price">Больше места</span>
+            <span class="length-price">от 2 650 000 ₽</span>
           </button>
         </div>
 
@@ -121,10 +107,11 @@
       </section>
 
       <section class="final-cta" id="finalCta">
-        <h3>Ваш гараж собран</h3>
+        <h3>Ориентировочная стоимость проекта</h3>
         <p id="ctaSummary"></p>
+        <p class="summary-price" id="ctaPrice"></p>
         <p class="summary-time" id="ctaTime"></p>
-        <a href="#popup:kalkul" class="primary">Получить точный расчёт</a>
+        <a href="#popup:kalkul" class="primary">Узнать точную цену</a>
         <a href="#popup:kalkul" class="secondary">Бесплатная консультация</a>
       </section>
       <div class="sticky-bar" id="stickyBar">
@@ -132,7 +119,7 @@
           <p class="price" id="stickyPrice"></p>
           <p class="price-meta" id="stickyMeta"></p>
         </div>
-        <a href="#popup:kalkul" class="cta-button">Получить расчёт</a>
+        <a href="#popup:kalkul" class="cta-button">Уточнить цену</a>
       </div>
     </div>
   </div>
