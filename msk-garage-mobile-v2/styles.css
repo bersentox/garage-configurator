@@ -597,3 +597,46 @@
   line-height: 1.35;
   color: rgba(171, 190, 222, 0.45);
 }
+
+/* Price-hidden UI overrides */
+#garage-mobile-v2-root .config-shell-length-btn {
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 6px;
+  text-align: center;
+}
+#garage-mobile-v2-root .config-shell-length-value {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+#garage-mobile-v2-root .config-shell-length-note {
+  font-size: 11px;
+  line-height: 1.2;
+  color: #64748b;
+  font-weight: 500;
+}
+#garage-mobile-v2-root .config-shell-bar-content {
+  min-width: 0;
+  flex: 1;
+}
+#garage-mobile-v2-root .config-shell-bar-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+#garage-mobile-v2-root .config-shell-bar-summary {
+  margin: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#garage-mobile-v2-root .config-shell-final-price,
+#garage-mobile-v2-root .config-shell-bar-price {
+  display: none;
+}
