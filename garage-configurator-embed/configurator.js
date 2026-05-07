@@ -135,6 +135,11 @@ export function mountConfigurator({ state, root }) {
       10: "машина + хозблок"
     }
   };
+  const LENGTH_TAGLINES = {
+    6: "Базовый вариант",
+    8: "Оптимальный выбор",
+    10: "Больше места"
+  };
 
   const syncColorInputs = () => {
     wallColor.value = state.colors.wall;
@@ -171,7 +176,7 @@ export function mountConfigurator({ state, root }) {
 
       card.classList.toggle("active", cardLength === state.length);
       if (areaElement) areaElement.textContent = `${area} м²`;
-      if (priceElement) priceElement.textContent = "Соберите комплектацию";
+      if (priceElement) priceElement.textContent = LENGTH_TAGLINES[cardLength] || "Подберите вариант";
       if (usageElement && presetUsage) usageElement.textContent = presetUsage;
     });
 
