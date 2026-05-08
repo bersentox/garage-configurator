@@ -244,10 +244,10 @@
         <button class="tabbtn" data-tab="commercial_value" role="tab" aria-selected="false">Коммерческая стоимость</button>
         <button class="tabbtn" data-tab="cost_analysis" role="tab" aria-selected="false">Анализ себестоимости</button>
         <button class="tabbtn" data-tab="client_estimate" role="tab" aria-selected="false">Клиентская смета</button>
-        <button class="tabbtn" data-tab="pricing" role="tab" aria-selected="false">Цена / Прибыль</button>
+        <button class="tabbtn" data-tab="pricing" role="tab" aria-selected="false">Старая наценка</button>
         <button class="tabbtn" data-tab="projects" role="tab" aria-selected="false">Проекты</button>
         <button class="tabbtn" data-tab="fact" role="tab" aria-selected="false">План-Факт</button>
-        <button class="tabbtn" data-tab="policy" role="tab" aria-selected="false">Ценовые пороги</button>
+        <button class="tabbtn" data-tab="policy" role="tab" aria-selected="false">Старые пороги</button>
         <button class="tabbtn" data-tab="compare" role="tab" aria-selected="false">Сравнение</button>
         <button class="tabbtn" data-tab="summary" role="tab" aria-selected="false">Общая смета</button>
       </div>
@@ -2813,10 +2813,17 @@
     <section class="card section" id="tab_pricing" aria-label="Цена / Прибыль">
       <div class="wrap">
         <div class="card">
-          <h3>Цена / Прибыль</h3>
-          <div class="small">Управленческий слой поверх полной себестоимости. На материалы и работы не влияет.</div>
+          <h3>Старая наценка / справочный расчёт</h3>
+          <div class="small" style="padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fffbe6">Этот раздел оставлен для обратной совместимости и показывает простую модель наценки. Для принятия решения по сделке используйте вкладку ‘Коммерческая стоимость’, где учитываются коммерческие затраты, рыночная цена и ЧПС.</div>
 
           <div class="grid" style="margin-top:12px">
+            <div>
+              <label>База расчёта</label>
+              <select id="pr_baseMode">
+                <option value="production">Производственная себестоимость</option>
+                <option value="deal">Полная себестоимость сделки</option>
+              </select>
+            </div>
             <div>
               <label>Режим наценки</label>
               <select id="pr_markupMode">
@@ -2844,13 +2851,14 @@
         const el = (id)=> document.getElementById(id);
         const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
 
-        const state = { markupMode: "percent", markupValue: 0 };
+        const state = { baseMode: "production", markupMode: "percent", markupValue: 0 };
 
         function load(){
           try{
             const raw = localStorage.getItem(LS_KEY);
             if(!raw) return;
             const st = JSON.parse(raw)||{};
+            if(st.baseMode === "production" || st.baseMode === "deal") state.baseMode = st.baseMode;
             if(st.markupMode === "percent" || st.markupMode === "fixed") state.markupMode = st.markupMode;
             if(Number.isFinite(Number(st.markupValue))) state.markupValue = Number(st.markupValue);
           }catch(e){}
@@ -2860,22 +2868,24 @@
         }
 
         function compute(){
-          const materialsTotal = window.MegaCalc ? Number(window.MegaCalc.materialsTotal()) : 0;
-          const laborTotal = window.MegaCalc ? Number(window.MegaCalc.state.labor||0) : 0;
-          const fullCost = materialsTotal + laborTotal;
+          const productionCost = window.MegaCalc && window.MegaCalc.productionCost ? Number(window.MegaCalc.productionCost()) : 0;
+          const commercialCost = window.MegaCalc && window.MegaCalc.commercialCost ? Number(window.MegaCalc.commercialCost()) : 0;
+          const dealCost = window.MegaCalc && window.MegaCalc.dealCost ? Number(window.MegaCalc.dealCost()) : (productionCost + commercialCost);
+          const baseCost = state.baseMode === "deal" ? dealCost : productionCost;
 
           const markupValue = Math.max(0, Number(state.markupValue)||0);
           const salePrice = (state.markupMode === "percent")
-            ? (fullCost * (1 + markupValue / 100))
-            : (fullCost + markupValue);
+            ? (baseCost * (1 + markupValue / 100))
+            : (baseCost + markupValue);
 
-          const grossProfit = salePrice - fullCost;
+          const grossProfit = salePrice - baseCost;
           const grossMarginPct = salePrice > 0 ? (grossProfit / salePrice * 100) : 0;
 
-          return { materialsTotal, laborTotal, fullCost, markupMode: state.markupMode, markupValue, salePrice, grossProfit, grossMarginPct };
+          return { productionCost, commercialCost, dealCost, baseCost, baseMode: state.baseMode, markupMode: state.markupMode, markupValue, salePrice, grossProfit, grossMarginPct };
         }
 
         function render(){
+          state.baseMode = el("pr_baseMode").value;
           state.markupMode = el("pr_markupMode").value;
           state.markupValue = Number(el("pr_markupValue").value || 0);
           save();
@@ -2887,24 +2897,28 @@
           window.MegaPricingState = r;
           el("pr_out").innerHTML =
             '<h3>Итоги</h3>' +
-            '<div class="row"><span>Итого материалы</span><b>'+rub(r.materialsTotal)+' ₽</b></div>' +
-            '<div class="row"><span>Итого работы</span><b>'+rub(r.laborTotal)+' ₽</b></div>' +
-            '<div class="row"><span><b>Полная себестоимость</b></span><b>'+rub(r.fullCost)+' ₽</b></div>' +
+            '<div class="row"><span>База расчёта</span><b>'+(r.baseMode==="deal"?"Полная себестоимость сделки":"Производственная себестоимость")+'</b></div>' +
+            '<div class="row"><span>Производственная себестоимость</span><b>'+rub(r.productionCost)+' ₽</b></div>' +
+            '<div class="row"><span>Коммерческие затраты</span><b>'+rub(r.commercialCost)+' ₽</b></div>' +
+            '<div class="row"><span>Полная себестоимость сделки</span><b>'+rub(r.dealCost)+' ₽</b></div>' +
+            '<div class="row"><span><b>Используемая база для наценки</b></span><b>'+rub(r.baseCost)+' ₽</b></div>' +
             '<hr>' +
             '<div class="row"><span>Режим наценки</span><b>'+(r.markupMode==="percent"?"Процент":"Фиксированная сумма")+'</b></div>' +
             '<div class="row"><span>Значение наценки</span><b>'+rub(r.markupValue)+(r.markupMode==="percent"?" %":" ₽")+'</b></div>' +
-            '<div class="row"><span><b>Коммерческая цена</b></span><b>'+rub(r.salePrice)+' ₽</b></div>' +
-            '<div class="row"><span>Валовая прибыль</span><b>'+rub(r.grossProfit)+' ₽</b></div>' +
-            '<div class="row"><span>Маржинальность</span><b>'+rub(r.grossMarginPct)+' %</b></div>';
+            '<div class="row"><span><b>Коммерческая цена по старой модели</b></span><b>'+rub(r.salePrice)+' ₽</b></div>' +
+            '<div class="row"><span>Валовая прибыль по старой модели</span><b>'+rub(r.grossProfit)+' ₽</b></div>' +
+            '<div class="row"><span>Маржинальность по старой модели</span><b>'+rub(r.grossMarginPct)+' %</b></div>';
 
           document.dispatchEvent(new CustomEvent("mega:pricingChange", { detail: r }));
         }
 
         function bind(){
           load();
+          el("pr_baseMode").value = state.baseMode;
           el("pr_markupMode").value = state.markupMode;
           el("pr_markupValue").value = state.markupValue;
 
+          el("pr_baseMode").addEventListener("change", render);
           el("pr_markupMode").addEventListener("change", render);
           el("pr_markupValue").addEventListener("input", render);
           el("pr_markupValue").addEventListener("change", render);
@@ -2929,7 +2943,8 @@
     <section class="card section" id="tab_policy" aria-label="Ценовые пороги">
       <div class="wrap">
         <div class="card">
-          <h3>Цена-решение / Ценовые пороги</h3>
+          <h3>Старые ценовые пороги / справочный расчёт</h3>
+          <div class="small" style="padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fffbe6">Этот раздел оставлен для обратной совместимости. Новая логика минимальной/целевой ЧПС, рыночной цены, целевой себестоимости и статуса сделки находится во вкладке ‘Коммерческая стоимость’.</div>
           <div class="small">Управленческий слой защиты цены: пол, цель, рекомендация и допустимый торг.</div>
 
           <div class="grid" style="margin-top:12px">
