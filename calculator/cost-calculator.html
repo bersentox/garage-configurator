@@ -87,7 +87,7 @@
 
     // Агрегатор итогов
     window.MegaCalc = (function(){
-      const state = { frame:0, panels:0, dobory:0, extras:0, foundation:0, labor:0 };
+      const state = { frame:0, panels:0, dobory:0, extras:0, foundation:0, labor:0, commercial:0 };
       const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
       function set(key, value){
         state[key] = Number(value||0);
@@ -96,12 +96,24 @@
           detail: {
             materials: materialsTotal(),
             labor: state.labor,
+            productionCost: productionCost(),
+            commercialCost: commercialCost(),
+            dealCost: dealCost(),
             fullCost: total()
           }
         }));
       }
       function materialsTotal(){
         return state.frame + state.panels + state.dobory + state.extras + state.foundation;
+      }
+      function productionCost(){
+        return materialsTotal() + state.labor;
+      }
+      function commercialCost(){
+        return state.commercial;
+      }
+      function dealCost(){
+        return productionCost() + commercialCost();
       }
       function total(){
         return materialsTotal() + state.labor;
@@ -120,9 +132,13 @@
           '<div class="row"><span><b>ИТОГО материалы</b></span><b>'+rub(materialsTotal())+' ₽</b></div>' +
           '<div class="row"><span><b>ИТОГО работы</b></span><b>'+rub(state.labor)+' ₽</b></div>' +
           '<div class="row"><span><b>ПОЛНАЯ СЕБЕСТОИМОСТЬ</b></span><b>'+rub(total())+' ₽</b></div>' +
+          '<hr>' +
+          '<div class="row"><span><b>Производственная себестоимость</b></span><b>'+rub(productionCost())+' ₽</b></div>' +
+          '<div class="row"><span><b>Коммерческие затраты</b></span><b>'+rub(commercialCost())+' ₽</b></div>' +
+          '<div class="row"><span><b>Полная себестоимость сделки</b></span><b>'+rub(dealCost())+' ₽</b></div>' +
           '<div class="small">Все суммы обновляются автоматически из вкладок.</div>';
       }
-      return { set, render, state, materialsTotal, total };
+      return { set, render, state, materialsTotal, productionCost, commercialCost, dealCost, total };
     })();
 
     // ===== MegaBill: единый реестр позиций для общей сметы =====
@@ -223,6 +239,7 @@
         <button class="tabbtn" data-tab="extras" role="tab" aria-selected="false">Доп. опции</button>
         <button class="tabbtn" data-tab="foundation" role="tab" aria-selected="false">Фундамент</button>
         <button class="tabbtn" data-tab="labor" role="tab" aria-selected="false">Работы</button>
+        <button class="tabbtn" data-tab="commercial" role="tab" aria-selected="false">Коммерческие затраты</button>
         <button class="tabbtn" data-tab="pricing" role="tab" aria-selected="false">Цена / Прибыль</button>
         <button class="tabbtn" data-tab="projects" role="tab" aria-selected="false">Проекты</button>
         <button class="tabbtn" data-tab="fact" role="tab" aria-selected="false">План-Факт</button>
@@ -1733,6 +1750,150 @@
       </script>
     </section>
 
+    <!-- TAB: Коммерческие затраты -->
+    <section class="card section" id="tab_commercial" aria-label="Коммерческие затраты">
+      <div class="wrap">
+        <div class="card">
+          <h3>Коммерческие затраты</h3>
+          <div class="small">Сопутствующие затраты сделки (не прибыль и не наценка).</div>
+          <table class="tbl" style="margin-top:10px">
+            <thead>
+              <tr>
+                <th style="width:52px">#</th>
+                <th>Наименование</th>
+                <th style="width:100px">Ед.</th>
+                <th style="width:120px">Кол-во</th>
+                <th style="width:160px">Цена</th>
+                <th style="width:180px">Сумма</th>
+              </tr>
+            </thead>
+            <tbody id="cm_rows"></tbody>
+          </table>
+          <div style="margin-top:12px; display:flex; gap:10px; align-items:center;">
+            <button id="cm_reset" type="button">Сбросить (коммерческие затраты)</button>
+            <span class="small">Удаляет сохранённые данные вкладки.</span>
+          </div>
+        </div>
+        <div class="card" id="cm_out"></div>
+      </div>
+
+      <script>
+      (function(){
+        const LS_KEY = "mega_commercial_costs_v1";
+        const ITEMS = [
+          { key:"ads", name:"Реклама / привлечение заказа", unit:"фикс" },
+          { key:"manager", name:"Работа менеджера", unit:"фикс" },
+          { key:"measure", name:"Замер / выезд", unit:"выезд" },
+          { key:"kp", name:"Подготовка КП / пересчёты", unit:"фикс" },
+          { key:"support", name:"Сопровождение проекта", unit:"фикс" },
+          { key:"admin", name:"Административные расходы", unit:"фикс" },
+          { key:"finance", name:"Бухгалтерия / банк / сервисы", unit:"фикс" },
+          { key:"warranty", name:"Гарантийный резерв", unit:"фикс" },
+          { key:"crm", name:"Связь / CRM / софт", unit:"фикс" },
+          { key:"other", name:"Прочие коммерческие затраты", unit:"фикс" }
+        ];
+
+        const el = (id)=> document.getElementById(id);
+        const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+        const num = (v)=> Number(v||0);
+
+        function loadState(){
+          try{
+            const raw = localStorage.getItem(LS_KEY);
+            if(!raw) return {};
+            const parsed = JSON.parse(raw);
+            return parsed && typeof parsed === "object" ? parsed : {};
+          }catch(e){ return {}; }
+        }
+
+        function saveState(st){
+          try{ localStorage.setItem(LS_KEY, JSON.stringify(st)); }catch(e){}
+        }
+
+        function buildTable(){
+          const st = loadState();
+          const tb = el("cm_rows");
+          tb.innerHTML = "";
+          ITEMS.forEach((it, idx)=>{
+            const row = st[it.key] || {};
+            const unit = String(row.unit || it.unit);
+            const qty = num(row.qty || 1);
+            const price = num(row.price);
+            const sum = qty * price;
+            const tr = document.createElement("tr");
+            tr.innerHTML =
+              `<td class="mono">${idx+1}</td>
+               <td>${it.name}</td>
+               <td><input type="text" id="cm_unit_${it.key}" value="${unit}"></td>
+               <td><input type="number" id="cm_qty_${it.key}" value="${qty}" step="0.01" min="0"></td>
+               <td><input type="number" id="cm_price_${it.key}" value="${price}" step="100" min="0"></td>
+               <td class="num mono" id="cm_sum_${it.key}">${rub(sum)} ₽</td>`;
+            tb.appendChild(tr);
+          });
+        }
+
+        function readState(){
+          const st = {};
+          ITEMS.forEach((it)=>{
+            st[it.key] = {
+              unit: String(el("cm_unit_"+it.key).value || it.unit),
+              qty: num(el("cm_qty_"+it.key).value || 0),
+              price: num(el("cm_price_"+it.key).value || 0)
+            };
+          });
+          return st;
+        }
+
+        function recalc(){
+          const st = readState();
+          saveState(st);
+
+          let total = 0;
+          const billItems = [];
+          ITEMS.forEach((it)=>{
+            const row = st[it.key] || {};
+            const qty = num(row.qty);
+            const price = num(row.price);
+            const sum = qty * price;
+            total += sum;
+            const sumEl = el("cm_sum_"+it.key);
+            if(sumEl) sumEl.textContent = `${rub(sum)} ₽`;
+            if(qty > 0 || price > 0){
+              billItems.push({ name: it.name, unit: row.unit || it.unit, qty, price, sum });
+            }
+          });
+
+          el("cm_out").innerHTML =
+            `<h3>Итог по коммерческим затратам</h3>
+             <div class="row"><span><b>ИТОГО коммерческие затраты</b></span><b class="mono">${rub(total)} ₽</b></div>`;
+
+          if(window.MegaCalc) window.MegaCalc.set("commercial", total);
+          if(window.MegaBill){
+            window.MegaBill.setSection("commercial", { title:"Коммерческие затраты", items: billItems });
+          }
+        }
+
+        function bind(){
+          buildTable();
+          document.addEventListener("input", (e)=>{
+            if(!e.target || !e.target.id) return;
+            if(e.target.id.startsWith("cm_")) recalc();
+          });
+
+          el("cm_reset").addEventListener("click", ()=>{
+            localStorage.removeItem(LS_KEY);
+            location.reload();
+          });
+
+          recalc();
+        }
+
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
 
     <!-- TAB: Проекты -->
     <section class="card section" id="tab_projects" aria-label="Проекты">
@@ -1796,6 +1957,7 @@
           extras: "extras_config_v1",
           foundation: "gc_foundation_v3",
           labor: "mega_labor_v1",
+          commercial: "mega_commercial_costs_v1",
           pricing: "mega_pricing_v1",
           fact: "mega_fact_v1",
           pricePolicy: "mega_price_policy_v1"
@@ -1862,6 +2024,7 @@
             extras: readLS(SNAP_KEYS.extras),
             foundation: readLS(SNAP_KEYS.foundation),
             labor: readLS(SNAP_KEYS.labor),
+            commercial: readLS(SNAP_KEYS.commercial),
             pricing: readLS(SNAP_KEYS.pricing),
             pricePolicy: readLS(SNAP_KEYS.pricePolicy)
           };
@@ -1879,6 +2042,7 @@
           writeLS(SNAP_KEYS.extras, snapshot && snapshot.extras);
           writeLS(SNAP_KEYS.foundation, snapshot && snapshot.foundation);
           writeLS(SNAP_KEYS.labor, snapshot && snapshot.labor);
+          writeLS(SNAP_KEYS.commercial, snapshot && snapshot.commercial);
           writeLS(SNAP_KEYS.pricing, snapshot && snapshot.pricing);
           writeLS(SNAP_KEYS.pricePolicy, snapshot && snapshot.pricePolicy);
           writeLS(SNAP_KEYS.fact, null);
