@@ -2171,6 +2171,7 @@
           marketModel: "mega_market_model_v1",
           commercialValue: "mega_commercial_value_v1",
           costAnalysis: "mega_cost_analysis_v1",
+          clientEstimate: "mega_client_estimate_v1",
           pricing: "mega_pricing_v1",
           fact: "mega_fact_v1",
           pricePolicy: "mega_price_policy_v1"
@@ -2241,6 +2242,7 @@
             marketModel: readLS(SNAP_KEYS.marketModel),
             commercialValue: readLS(SNAP_KEYS.commercialValue),
             costAnalysis: readLS(SNAP_KEYS.costAnalysis),
+            clientEstimate: readLS(SNAP_KEYS.clientEstimate),
             pricing: readLS(SNAP_KEYS.pricing),
             pricePolicy: readLS(SNAP_KEYS.pricePolicy)
           };
@@ -2262,6 +2264,7 @@
           writeLS(SNAP_KEYS.marketModel, snapshot && snapshot.marketModel);
           writeLS(SNAP_KEYS.commercialValue, snapshot && snapshot.commercialValue);
           writeLS(SNAP_KEYS.costAnalysis, snapshot && snapshot.costAnalysis);
+          writeLS(SNAP_KEYS.clientEstimate, snapshot && snapshot.clientEstimate);
           writeLS(SNAP_KEYS.pricing, snapshot && snapshot.pricing);
           writeLS(SNAP_KEYS.pricePolicy, snapshot && snapshot.pricePolicy);
           writeLS(SNAP_KEYS.fact, null);
