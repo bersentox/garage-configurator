@@ -243,6 +243,7 @@
         <button class="tabbtn" data-tab="market" role="tab" aria-selected="false">Рыночная модель</button>
         <button class="tabbtn" data-tab="commercial_value" role="tab" aria-selected="false">Коммерческая стоимость</button>
         <button class="tabbtn" data-tab="cost_analysis" role="tab" aria-selected="false">Анализ себестоимости</button>
+        <button class="tabbtn" data-tab="client_estimate" role="tab" aria-selected="false">Клиентская смета</button>
         <button class="tabbtn" data-tab="pricing" role="tab" aria-selected="false">Цена / Прибыль</button>
         <button class="tabbtn" data-tab="projects" role="tab" aria-selected="false">Проекты</button>
         <button class="tabbtn" data-tab="fact" role="tab" aria-selected="false">План-Факт</button>
@@ -2720,6 +2721,89 @@
 
         if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
         else bind();
+      })();
+      </script>
+    </section>
+
+    <!-- TAB: Клиентская смета -->
+    <section class="card section" id="tab_client_estimate" aria-label="Клиентская смета">
+      <div class="wrap">
+        <div class="card">
+          <h3>Клиентская смета</h3>
+          <div class="grid">
+            <div><label>Название предложения</label><input id="ce_title" type="text" value="Коммерческое предложение на строительство гаража"/></div>
+            <div><label>Имя клиента</label><input id="ce_customerName" type="text"/></div>
+          </div>
+          <div class="grid" style="margin-top:12px">
+            <div><label>Номер / объект / адрес</label><input id="ce_projectRef" type="text"/></div>
+            <div><label>Срок выполнения</label><input id="ce_duration" type="text" value="от 7 до 14 дней после готовности основания и согласования комплектации"/></div>
+          </div>
+          <div class="grid" style="margin-top:12px">
+            <div><label>Гарантия</label><input id="ce_warranty" type="text" value="Гарантия на выполненные работы и конструкцию согласно договору"/></div>
+            <div><label>Условия фиксации цены</label><input id="ce_priceLock" type="text" value="Стоимость фиксируется после замера и согласования итоговой комплектации"/></div>
+          </div>
+          <div style="margin-top:12px"><label>Комментарий для клиента</label><input id="ce_clientComment" type="text"/></div>
+          <div class="grid" style="margin-top:12px">
+            <div><label>Источник итоговой цены</label><select id="ce_priceSource"><option value="commercial_value_market_price">Рыночная цена из Коммерческой стоимости</option><option value="manual">Ручная клиентская цена</option></select></div>
+            <div><label>Ручная клиентская цена, ₽</label><input id="ce_manualPrice" type="number" min="0" step="1000" value="0"/></div>
+          </div>
+          <div class="grid" style="margin-top:12px">
+            <div><label>Округление цены</label><select id="ce_roundMode"><option value="none">без округления</option><option value="nearest_1000">до 1 000 ₽</option><option value="nearest_5000">до 5 000 ₽</option><option value="nearest_10000">до 10 000 ₽</option></select></div>
+            <div></div>
+          </div>
+        </div>
+        <div class="card"><h3>В стоимость входит</h3><div id="ce_included"></div></div>
+        <div class="card" id="ce_meta"></div>
+        <div class="card">
+          <div style="display:flex;gap:8px;align-items:center;justify-content:flex-end"><button id="ce_copy_text" type="button">Копировать текст</button><button id="ce_copy_md" type="button">Копировать Markdown</button></div>
+          <div id="ce_preview" style="margin-top:12px"></div>
+          <div class="small" id="ce_status" style="margin-top:8px"></div>
+        </div>
+      </div>
+      <script>
+      (function(){
+        const LS_KEY = "mega_client_estimate_v1";
+        const INCLUDED_DEF = {
+          frame:{enabled:true,text:"Металлокаркас гаража"}, panels:{enabled:true,text:"Стеновые и кровельные сэндвич-панели"}, dobory:{enabled:true,text:"Доборные элементы"},
+          gates:{enabled:true,text:"Ворота"}, gateAuto:{enabled:false,text:"Автоматика ворот"}, door:{enabled:false,text:"Дверь"}, windows:{enabled:false,text:"Окна"},
+          foundation:{enabled:false,text:"Фундамент"}, install:{enabled:true,text:"Монтажные работы"}, delivery:{enabled:true,text:"Доставка"}, warrantySupport:{enabled:true,text:"Гарантийное сопровождение"}
+        };
+        const DEF = { title:"Коммерческое предложение на строительство гаража", customerName:"", projectRef:"", duration:"от 7 до 14 дней после готовности основания и согласования комплектации", warranty:"Гарантия на выполненные работы и конструкцию согласно договору", priceLock:"Стоимость фиксируется после замера и согласования итоговой комплектации", clientComment:"", priceSource:"commercial_value_market_price", manualPrice:0, roundMode:"none", included:INCLUDED_DEF };
+        const el=(id)=>document.getElementById(id), n=(v)=>Number(v||0), rub=(x)=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+        function deepCopy(o){ return JSON.parse(JSON.stringify(o)); }
+        function load(){ try{ const raw=localStorage.getItem(LS_KEY); if(!raw) return deepCopy(DEF); const p=JSON.parse(raw)||{}; const s=deepCopy(DEF); Object.keys(s).forEach((k)=>{ if(k==="included") return; if(p[k]!==undefined) s[k]=p[k]; }); if(p.included&&typeof p.included==="object"){ Object.keys(s.included).forEach((k)=>{ const r=p.included[k]||{}; s.included[k]={enabled:!!r.enabled,text:String(r.text||s.included[k].text)}; }); } return s; }catch(e){ return deepCopy(DEF); } }
+        let state = load();
+        function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+        function roundPrice(v,mode){ if(mode==="nearest_1000") return Math.round(v/1000)*1000; if(mode==="nearest_5000") return Math.round(v/5000)*5000; if(mode==="nearest_10000") return Math.round(v/10000)*10000; return v; }
+        function getState(){ return deepCopy(state); }
+        function compute(){
+          const g = window.MegaGlobal&&window.MegaGlobal.get ? window.MegaGlobal.get() : {preset:"8",L:8};
+          const W = Number(g.preset)||8, L = Number(g.L)||8, area = W*L;
+          let basePrice = 0;
+          if(state.priceSource==="commercial_value_market_price"){ basePrice = window.MegaCommercialValue&&window.MegaCommercialValue.compute ? n((window.MegaCommercialValue.compute()||{}).marketPrice||0) : 0; }
+          else basePrice = n(state.manualPrice);
+          const clientPrice = roundPrice(basePrice, state.roundMode);
+          const pricePerM2 = area>0 ? clientPrice/area : 0;
+          const includedItems = Object.keys(state.included).map((k)=>({key:k,enabled:!!state.included[k].enabled,text:String(state.included[k].text||"")}));
+          return { title:String(state.title||""), customerName:String(state.customerName||""), projectRef:String(state.projectRef||""), preset:String(g.preset), L, W, area, clientPrice, pricePerM2, duration:String(state.duration||""), warranty:String(state.warranty||""), priceLock:String(state.priceLock||""), clientComment:String(state.clientComment||""), includedItems, priceSource:state.priceSource, roundMode:state.roundMode };
+        }
+        function buildText(){ const r=compute(); const includes=r.includedItems.filter(i=>i.enabled&&i.text).map(i=>`— ${i.text}`).join("\n"); return `${r.title}\n\nКлиент: ${r.customerName||"—"}\nОбъект: ${r.projectRef||"—"}\n\nРазмер гаража: ${r.W} × ${r.L} м\nПлощадь: ${rub(r.area)} м²\n\nВ стоимость входит:\n${includes||"—"}\n\nИтоговая стоимость: ${rub(r.clientPrice)} ₽\n\nСрок выполнения: ${r.duration}\nГарантия: ${r.warranty}\nУсловия фиксации цены: ${r.priceLock}${r.clientComment?`\nКомментарий: ${r.clientComment}`:""}`; }
+        function buildMarkdown(){ const r=compute(); const includes=r.includedItems.filter(i=>i.enabled&&i.text).map(i=>`- ${i.text}`).join("\n"); return `# ${r.title}\n\n**Клиент:** ${r.customerName||"—"}  \n**Объект:** ${r.projectRef||"—"}\n\n**Размер гаража:** ${r.W} × ${r.L} м  \n**Площадь:** ${rub(r.area)} м²\n\n## В стоимость входит\n${includes||"- —"}\n\n**Итоговая стоимость:** ${rub(r.clientPrice)} ₽\n\n**Срок выполнения:** ${r.duration}  \n**Гарантия:** ${r.warranty}  \n**Условия фиксации цены:** ${r.priceLock}${r.clientComment?`\n\n**Комментарий:** ${r.clientComment}`:""}`; }
+        function broadcast(){ const result=compute(); document.dispatchEvent(new CustomEvent("mega:clientEstimateChange", { detail: result })); return result; }
+        async function copyText(txt){ try{ await navigator.clipboard.writeText(txt); el("ce_status").textContent="Скопировано."; }catch(e){ el("ce_status").textContent="Не удалось скопировать."; } }
+        function renderIncluded(){ el("ce_included").innerHTML = Object.keys(state.included).map((k)=>`<div class="grid" style="margin-bottom:8px"><div><label><input type="checkbox" id="ce_inc_en_${k}" ${state.included[k].enabled?"checked":""}/> Включить</label></div><div><input type="text" id="ce_inc_txt_${k}" value="${String(state.included[k].text||"").replace(/\"/g,'&quot;')}"/></div></div>`).join(""); }
+        function render(){
+          ["title","customerName","projectRef","duration","warranty","priceLock","clientComment","priceSource","manualPrice","roundMode"].forEach((k)=>{ const id="ce_"+k; if(el(id)) el(id).value = state[k]; });
+          renderIncluded();
+          const r = broadcast();
+          el("ce_meta").innerHTML = `<h3>Параметры предложения</h3><div class="row"><span>Размер гаража</span><b>${r.W} × ${r.L} м</b></div><div class="row"><span>Площадь</span><b>${rub(r.area)} м²</b></div><div class="row"><span>Итоговая цена для клиента</span><b>${rub(r.clientPrice)} ₽</b></div><div class="row"><span>Цена за м²</span><b>${rub(r.pricePerM2)} ₽/м²</b></div><div class="row"><span>Источник цены</span><b>${r.priceSource==="manual"?"Ручная клиентская цена":"Рыночная цена из Коммерческой стоимости"}</b></div><div class="row"><span>Округление</span><b>${r.roundMode}</b></div>`;
+          el("ce_preview").innerHTML = `<h3>${r.title}</h3><div class="row"><span>Клиент</span><b>${r.customerName||"—"}</b></div><div class="row"><span>Объект</span><b>${r.projectRef||"—"}</b></div><div class="row"><span>Размер</span><b>${r.W} × ${r.L} м</b></div><div class="row"><span>Площадь</span><b>${rub(r.area)} м²</b></div><div style="margin-top:10px"><b>В стоимость входит:</b><ul>${r.includedItems.filter(i=>i.enabled&&i.text).map(i=>`<li>${i.text}</li>`).join("")}</ul></div><div class="row"><span><b>Итоговая стоимость</b></span><b>${rub(r.clientPrice)} ₽</b></div><div class="row"><span>Срок</span><b>${r.duration}</b></div><div class="row"><span>Гарантия</span><b>${r.warranty}</b></div><div class="row"><span>Условия фиксации цены</span><b>${r.priceLock}</b></div>${r.clientComment?`<div class="small" style="margin-top:8px">${r.clientComment}</div>`:""}`;
+        }
+        function read(){ ["title","customerName","projectRef","duration","warranty","priceLock","clientComment","priceSource","manualPrice","roundMode"].forEach((k)=>{ const id="ce_"+k; if(el(id)) state[k] = (k==="manualPrice") ? n(el(id).value) : el(id).value; }); Object.keys(state.included).forEach((k)=>{ state.included[k].enabled = !!(el("ce_inc_en_"+k)&&el("ce_inc_en_"+k).checked); state.included[k].text = String((el("ce_inc_txt_"+k)&&el("ce_inc_txt_"+k).value)||state.included[k].text); }); }
+        function onInput(){ read(); save(); render(); }
+        function bind(){ render(); document.addEventListener("input",(e)=>{ if(e.target&&e.target.id&&e.target.id.startsWith("ce_")) onInput(); }); document.addEventListener("change",(e)=>{ if(e.target&&e.target.id&&e.target.id.startsWith("ce_")) onInput(); }); document.addEventListener("mega:globalChange", render); document.addEventListener("mega:commercialValueChange", render); el("ce_copy_text").addEventListener("click",()=>copyText(buildText())); el("ce_copy_md").addEventListener("click",()=>copyText(buildMarkdown())); }
+        window.MegaClientEstimate = { getState, compute, render, buildText, buildMarkdown, broadcast };
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind); else bind();
       })();
       </script>
     </section>
