@@ -3100,6 +3100,8 @@
           <div class="row"><span>Маржинальность</span><b id="sm_margin">0 %</b></div>
           <div class="small" id="sm_status" style="margin-top:8px"></div>
         </div>
+        <div class="card" id="sm_deal_economics"></div>
+        <div class="card" id="sm_cost_reduction"></div>
       </div>
 
       <script>
@@ -3159,6 +3161,25 @@
           }
 
           const fullCost = materialsTotal + laborTotal;
+          const productionCost = window.MegaCalc && window.MegaCalc.productionCost ? Number(window.MegaCalc.productionCost()) : fullCost;
+          const commercialCost = window.MegaCalc && window.MegaCalc.commercialCost ? Number(window.MegaCalc.commercialCost()) : 0;
+          const dealCost = window.MegaCalc && window.MegaCalc.dealCost ? Number(window.MegaCalc.dealCost()) : (productionCost + commercialCost);
+          const cv = window.MegaCommercialValue && window.MegaCommercialValue.compute ? window.MegaCommercialValue.compute() : null;
+          const marketPrice = cv ? Number(cv.marketPrice||0) : 0;
+          const availableOwnerProfit = cv ? Number(cv.availableOwnerProfit||0) : 0;
+          const minOwnerProfit = cv ? Number(cv.minOwnerProfit||0) : 0;
+          const targetOwnerProfit = cv ? Number(cv.targetOwnerProfit||0) : 0;
+          const ownerProfitGap = cv ? Number(cv.ownerProfitGap||0) : 0;
+          const targetDealCost = cv ? Number(cv.targetDealCost||0) : 0;
+          const costOverTarget = cv ? Number(cv.costOverTarget||0) : 0;
+          const ownerProfitMarginPct = cv ? Number(cv.ownerProfitMarginPct||0) : 0;
+          const status = cv ? String(cv.status||"—") : "—";
+
+          const ca = window.MegaCostAnalysis && window.MegaCostAnalysis.compute ? window.MegaCostAnalysis.compute() : null;
+          const totalReductionPotential = ca ? Number(ca.totalReductionPotential||0) : 0;
+          const dealCostAfterReduction = dealCost - totalReductionPotential;
+          const availableOwnerProfitAfterReduction = marketPrice > 0 ? marketPrice - dealCostAfterReduction : null;
+
           if(window.MegaPricingState) state.pricing = window.MegaPricingState;
           el("sm_materials").textContent = money(materialsTotal);
           el("sm_labor").textContent = money(laborTotal);
@@ -3168,6 +3189,27 @@
           el("sm_sale").textContent = money(state.pricing.salePrice);
           el("sm_profit").textContent = money(state.pricing.grossProfit);
           el("sm_margin").textContent = fmt(state.pricing.grossMarginPct) + " %";
+          el("sm_deal_economics").innerHTML =
+            '<h3>Экономика сделки</h3>' +
+            `<div class="row"><span>Производственная себестоимость</span><b>${money(productionCost)}</b></div>` +
+            `<div class="row"><span>Коммерческие затраты</span><b>${money(commercialCost)}</b></div>` +
+            `<div class="row"><span><b>Полная себестоимость сделки</b></span><b>${money(dealCost)}</b></div>` +
+            `<div class="row"><span>Рыночная цена</span><b>${cv ? money(marketPrice) : "—"}</b></div>` +
+            `<div class="row"><span>Доступная ЧПС</span><b>${cv ? money(availableOwnerProfit) : "—"}</b></div>` +
+            `<div class="row"><span>Минимальная ЧПС</span><b>${cv ? money(minOwnerProfit) : "—"}</b></div>` +
+            `<div class="row"><span>Целевая ЧПС</span><b>${cv ? money(targetOwnerProfit) : "—"}</b></div>` +
+            `<div class="row"><span>Дефицит/запас до целевой ЧПС</span><b>${cv ? money(ownerProfitGap) : "—"}</b></div>` +
+            `<div class="row"><span>Целевая полная себестоимость</span><b>${cv ? money(targetDealCost) : "—"}</b></div>` +
+            `<div class="row"><span>Перерасход относительно целевой себестоимости</span><b>${cv ? money(costOverTarget) : "—"}</b></div>` +
+            `<div class="row"><span>Маржинальность ЧПС</span><b>${cv ? (fmt(ownerProfitMarginPct) + " %") : "—"}</b></div>` +
+            `<div class="row"><span><b>Статус сделки</b></span><b>${status}</b></div>`;
+
+          el("sm_cost_reduction").innerHTML = ca
+            ? ('<h3>Анализ снижения себестоимости</h3>' +
+               `<div class="row"><span>Суммарный потенциал снижения</span><b>${money(totalReductionPotential)}</b></div>` +
+               `<div class="row"><span>Себестоимость после потенциального снижения</span><b>${money(dealCostAfterReduction)}</b></div>` +
+               `<div class="row"><span>Доступная ЧПС после потенциального снижения</span><b>${marketPrice>0?money(availableOwnerProfitAfterReduction):"нет рыночной цены"}</b></div>`)
+            : '<h3>Анализ снижения себестоимости</h3><div class="small">нет данных анализа</div>';
           el("sm_status").textContent = rows
             ? ("Строк в смете: " + rows)
             : "Пока нет позиций. Открой вкладки и внеси цены/параметры — смета заполнится автоматически.";
@@ -3186,6 +3228,10 @@
             render();
           });
           document.addEventListener("mega:billChange", render);
+          document.addEventListener("mega:totalsChange", render);
+          document.addEventListener("mega:marketChange", render);
+          document.addEventListener("mega:commercialValueChange", render);
+          document.addEventListener("mega:costAnalysisChange", render);
           render();
         }
 
