@@ -2493,6 +2493,23 @@
               <input id="fa_actualSalePrice" type="number" min="0" step="100" value="0"/>
             </div>
           </div>
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Факт коммерческие затраты (₽)</label>
+              <input id="fa_actualCommercialCosts" type="number" min="0" step="100" value="0"/>
+            </div>
+            <div>
+              <label>Факт гарантийные / сервисные расходы (₽)</label>
+              <input id="fa_actualWarrantyCosts" type="number" min="0" step="100" value="0"/>
+            </div>
+          </div>
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label>Факт дополнительные управленческие расходы (₽)</label>
+              <input id="fa_actualManagementCosts" type="number" min="0" step="100" value="0"/>
+            </div>
+            <div></div>
+          </div>
 
           <div class="grid" style="margin-top:12px">
             <div>
@@ -2526,7 +2543,8 @@
 
         const keys = [
           "fa_actualMaterials","fa_actualLabor","fa_actualOtherCosts","fa_actualSalePrice",
-          "fa_actualCrewCount","fa_actualDays","fa_actualComment"
+          "fa_actualCrewCount","fa_actualDays","fa_actualComment",
+          "fa_actualCommercialCosts","fa_actualWarrantyCosts","fa_actualManagementCosts"
         ];
 
         function loadState(){
@@ -2580,11 +2598,26 @@
           saveState(st);
           window.MegaFactState = st;
 
-          const actualFullCost = Number(st.fa_actualMaterials||0) + Number(st.fa_actualLabor||0) + Number(st.fa_actualOtherCosts||0);
-          const actualGrossProfit = Number(st.fa_actualSalePrice||0) - actualFullCost;
-          const actualGrossMarginPct = Number(st.fa_actualSalePrice||0) > 0 ? (actualGrossProfit / Number(st.fa_actualSalePrice||0) * 100) : 0;
+          const actualProductionCost = Number(st.fa_actualMaterials||0) + Number(st.fa_actualLabor||0);
+          const actualCommercialCost = Number(st.fa_actualCommercialCosts||0) + Number(st.fa_actualWarrantyCosts||0) + Number(st.fa_actualManagementCosts||0) + Number(st.fa_actualOtherCosts||0);
+          const actualDealCost = actualProductionCost + actualCommercialCost;
+          const actualOwnerProfit = Number(st.fa_actualSalePrice||0) - actualDealCost;
+          const actualOwnerProfitMarginPct = Number(st.fa_actualSalePrice||0) > 0 ? (actualOwnerProfit / Number(st.fa_actualSalePrice||0) * 100) : 0;
+          const actualFullCost = actualDealCost;
+          const actualGrossProfit = actualOwnerProfit;
+          const actualGrossMarginPct = actualOwnerProfitMarginPct;
 
           const plan = pullPlan();
+          const planProductionCost = window.MegaCalc && window.MegaCalc.productionCost ? Number(window.MegaCalc.productionCost()) : (plan.materials + plan.labor);
+          const planCommercialCost = window.MegaCalc && window.MegaCalc.commercialCost ? Number(window.MegaCalc.commercialCost()) : 0;
+          const planDealCost = window.MegaCalc && window.MegaCalc.dealCost ? Number(window.MegaCalc.dealCost()) : (planProductionCost + planCommercialCost);
+          const cv = window.MegaCommercialValue && window.MegaCommercialValue.compute ? window.MegaCommercialValue.compute() : null;
+          const planMarketPrice = cv ? Number(cv.marketPrice||0) : 0;
+          const planAvailableOwnerProfit = cv ? Number(cv.availableOwnerProfit||0) : 0;
+          const planTargetOwnerProfit = cv ? Number(cv.targetOwnerProfit||0) : 0;
+          const planOwnerProfitMarginPct = cv ? Number(cv.ownerProfitMarginPct||0) : 0;
+          const planStatus = cv ? String(cv.status||"—") : "—";
+
           const cmp = [
             {name:"Материалы", plan:plan.materials, fact:Number(st.fa_actualMaterials||0)},
             {name:"Работы", plan:plan.labor, fact:Number(st.fa_actualLabor||0)},
@@ -2592,10 +2625,38 @@
             {name:"Цена продажи", plan:plan.salePrice, fact:Number(st.fa_actualSalePrice||0)},
             {name:"Валовая прибыль", plan:plan.grossProfit, fact:actualGrossProfit}
           ];
+          const econRows = [
+            {name:"Производственная себестоимость", plan:planProductionCost, fact:actualProductionCost, type:"money"},
+            {name:"Коммерческие затраты", plan:planCommercialCost, fact:actualCommercialCost, type:"money"},
+            {name:"Полная себестоимость сделки", plan:planDealCost, fact:actualDealCost, type:"money"},
+            {name:"Цена продажи / рыночная цена", plan:planMarketPrice, fact:Number(st.fa_actualSalePrice||0), type:"money"},
+            {name:"ЧПС", plan:planAvailableOwnerProfit, fact:actualOwnerProfit, type:"money"},
+            {name:"Маржинальность ЧПС, %", plan:planOwnerProfitMarginPct, fact:actualOwnerProfitMarginPct, type:"pct"}
+          ];
 
           const rows = cmp.map(r=>{
             const d = r.fact - r.plan;
             const p = deltaPct(r.plan, d);
+            return `<tr>
+              <td>${r.name}</td>
+              <td class="num mono">${rub(r.plan)} ₽</td>
+              <td class="num mono">${rub(r.fact)} ₽</td>
+              <td class="num mono">${rub(d)} ₽</td>
+              <td class="num mono">${rub(p)} %</td>
+            </tr>`;
+          }).join("");
+          const econRowsHtml = econRows.map(r=>{
+            const d = r.fact - r.plan;
+            const p = deltaPct(r.plan, d);
+            if(r.type === "pct"){
+              return `<tr>
+                <td>${r.name}</td>
+                <td class="num mono">${rub(r.plan)} %</td>
+                <td class="num mono">${rub(r.fact)} %</td>
+                <td class="num mono">—</td>
+                <td class="num mono">${rub(d)} п.п.</td>
+              </tr>`;
+            }
             return `<tr>
               <td>${r.name}</td>
               <td class="num mono">${rub(r.plan)} ₽</td>
@@ -2612,6 +2673,20 @@
             '<div class="row"><span>Фактическая маржинальность</span><b>'+rub(actualGrossMarginPct)+' %</b></div>' +
             '<div class="row"><span>Бригада (факт)</span><b>'+rub(st.fa_actualCrewCount||0)+' чел</b></div>' +
             '<div class="row"><span>Срок (факт)</span><b>'+rub(st.fa_actualDays||0)+' дн</b></div>' +
+            '<hr>' +
+            '<h3>План-Факт экономики сделки</h3>' +
+            '<div class="row"><span>Плановая полная себестоимость сделки</span><b>'+rub(planDealCost)+' ₽</b></div>' +
+            '<div class="row"><span>Фактическая полная себестоимость сделки</span><b>'+rub(actualDealCost)+' ₽</b></div>' +
+            '<div class="row"><span>Отклонение полной себестоимости сделки</span><b>'+rub(actualDealCost - planDealCost)+' ₽</b></div>' +
+            '<div class="row"><span>Плановая ЧПС</span><b>'+(cv ? (rub(planAvailableOwnerProfit)+' ₽') : '—')+'</b></div>' +
+            '<div class="row"><span>Фактическая ЧПС</span><b>'+rub(actualOwnerProfit)+' ₽</b></div>' +
+            '<div class="row"><span>Отклонение ЧПС</span><b>'+(cv ? (rub(actualOwnerProfit - planAvailableOwnerProfit)+' ₽') : '—')+'</b></div>' +
+            '<div class="row"><span>Плановый статус сделки</span><b>'+planStatus+'</b></div>' +
+            '<div class="row"><span>Фактическая маржинальность ЧПС</span><b>'+rub(actualOwnerProfitMarginPct)+' %</b></div>' +
+            '<div class="row"><span>Плановая целевая ЧПС</span><b>'+(cv ? (rub(planTargetOwnerProfit)+' ₽') : '—')+'</b></div>' +
+            '<table class="tbl"><thead><tr><th>Показатель</th><th class="num">План</th><th class="num">Факт</th><th class="num">Отклонение ₽</th><th class="num">Отклонение %</th></tr></thead><tbody>' +
+            econRowsHtml +
+            '</tbody></table>' +
             '<hr>' +
             '<h3>План vs Факт</h3>' +
             '<table class="tbl"><thead><tr><th>Показатель</th><th class="num">План</th><th class="num">Факт</th><th class="num">Отклонение ₽</th><th class="num">Отклонение %</th></tr></thead><tbody>' +
@@ -2632,6 +2707,8 @@
 
           document.addEventListener("mega:totalsChange", recalc);
           document.addEventListener("mega:pricingChange", recalc);
+          document.addEventListener("mega:marketChange", recalc);
+          document.addEventListener("mega:commercialValueChange", recalc);
 
           el("fa_reset").addEventListener("click", ()=>{
             localStorage.removeItem(LS_KEY);
