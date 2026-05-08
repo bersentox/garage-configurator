@@ -2166,7 +2166,10 @@
           extras: "extras_config_v1",
           foundation: "gc_foundation_v3",
           labor: "mega_labor_v1",
-          commercial: "mega_commercial_costs_v1",
+          commercialCosts: "mega_commercial_costs_v1",
+          marketModel: "mega_market_model_v1",
+          commercialValue: "mega_commercial_value_v1",
+          costAnalysis: "mega_cost_analysis_v1",
           pricing: "mega_pricing_v1",
           fact: "mega_fact_v1",
           pricePolicy: "mega_price_policy_v1"
@@ -2233,7 +2236,10 @@
             extras: readLS(SNAP_KEYS.extras),
             foundation: readLS(SNAP_KEYS.foundation),
             labor: readLS(SNAP_KEYS.labor),
-            commercial: readLS(SNAP_KEYS.commercial),
+            commercialCosts: readLS(SNAP_KEYS.commercialCosts),
+            marketModel: readLS(SNAP_KEYS.marketModel),
+            commercialValue: readLS(SNAP_KEYS.commercialValue),
+            costAnalysis: readLS(SNAP_KEYS.costAnalysis),
             pricing: readLS(SNAP_KEYS.pricing),
             pricePolicy: readLS(SNAP_KEYS.pricePolicy)
           };
@@ -2251,7 +2257,10 @@
           writeLS(SNAP_KEYS.extras, snapshot && snapshot.extras);
           writeLS(SNAP_KEYS.foundation, snapshot && snapshot.foundation);
           writeLS(SNAP_KEYS.labor, snapshot && snapshot.labor);
-          writeLS(SNAP_KEYS.commercial, snapshot && snapshot.commercial);
+          writeLS(SNAP_KEYS.commercialCosts, snapshot && (snapshot.commercialCosts !== undefined ? snapshot.commercialCosts : snapshot.commercial));
+          writeLS(SNAP_KEYS.marketModel, snapshot && snapshot.marketModel);
+          writeLS(SNAP_KEYS.commercialValue, snapshot && snapshot.commercialValue);
+          writeLS(SNAP_KEYS.costAnalysis, snapshot && snapshot.costAnalysis);
           writeLS(SNAP_KEYS.pricing, snapshot && snapshot.pricing);
           writeLS(SNAP_KEYS.pricePolicy, snapshot && snapshot.pricePolicy);
           writeLS(SNAP_KEYS.fact, null);
