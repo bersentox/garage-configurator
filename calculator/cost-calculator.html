@@ -3034,6 +3034,7 @@
         </div>
 
         <div class="card" id="cp_metrics"></div>
+        <div class="card" id="cp_economics"></div>
         <div class="card" id="cp_sections"></div>
         <div class="card" id="cp_diff"></div>
       </div>
@@ -3071,6 +3072,51 @@
         function loadProjects(){ try{ const arr = JSON.parse(localStorage.getItem(LS_PROJECTS)||"[]"); return Array.isArray(arr)?arr:[]; }catch(e){ return []; } }
         function familyRoot(p){ return p && p.parentProjectId ? p.parentProjectId : (p && p.id); }
         function deltaPct(base, d){ return num(base)!==0 ? (d/num(base)*100) : 0; }
+        function normSizeKey(preset,L){ const w = String(preset)==="6" ? 6 : 8; const l = Number(L); const ln = Number.isInteger(l) ? String(l) : String(Number(l.toFixed(2))).replace(/\.?0+$/,''); return `${w}x${ln}`; }
+        function sumCommercialCostsFromSnapshot(snapshot){
+          try{
+            const src = snapshot && snapshot.commercialCosts;
+            if(!src || typeof src !== "object") return 0;
+            let total = 0;
+            Object.keys(src).forEach((k)=>{
+              const row = src[k] || {};
+              const qty = num(row.qty), price = num(row.price);
+              total += qty * price;
+            });
+            return total;
+          }catch(e){ return 0; }
+        }
+        function buildMarketFromSnapshot(snapshot){
+          const model = (snapshot && snapshot.marketModel) || {};
+          const rows = (model && model.rows && typeof model.rows === "object") ? model.rows : {};
+          const source = (model && model.source) || "manual";
+          const manualPrice = num(model && model.manualPrice);
+          const g = (snapshot && snapshot.global) || { preset:"8", L:8 };
+          const sizeKey = normSizeKey(g.preset, g.L);
+          const row = rows[sizeKey] || null;
+          const minPrice = num(row && row.minPrice), avgPrice = num(row && row.avgPrice), maxPrice = num(row && row.maxPrice);
+          let marketPrice = manualPrice;
+          if(source==="auto_min" && minPrice>0) marketPrice = minPrice;
+          else if(source==="auto_average" && avgPrice>0) marketPrice = avgPrice;
+          else if(source==="auto_max" && maxPrice>0) marketPrice = maxPrice;
+          return { source, sizeKey, manualPrice, marketPrice, foundExactSize: !!row };
+        }
+        function buildCommercialValueFromSnapshot(snapshot, dealCost, marketPrice){
+          const cv = (snapshot && snapshot.commercialValue) || {};
+          const minOwnerProfit = num(cv.minOwnerProfit), targetOwnerProfit = num(cv.targetOwnerProfit), strongOwnerProfit = num(cv.strongOwnerProfit), marketAdjustment = num(cv.marketAdjustment);
+          const marketPriceForCalc = marketPrice + marketAdjustment;
+          const availableOwnerProfit = marketPriceForCalc - dealCost;
+          const ownerProfitGap = availableOwnerProfit - targetOwnerProfit;
+          const targetDealCost = marketPriceForCalc - targetOwnerProfit;
+          const costOverTarget = dealCost - targetDealCost;
+          const ownerProfitMarginPct = marketPriceForCalc > 0 ? (availableOwnerProfit / marketPriceForCalc * 100) : 0;
+          let status = "нет рыночной цены";
+          if(marketPriceForCalc > 0 && availableOwnerProfit < minOwnerProfit) status = "не брать / экономика не сходится";
+          else if(availableOwnerProfit >= minOwnerProfit && availableOwnerProfit < targetOwnerProfit) status = "слабая сделка";
+          else if(availableOwnerProfit >= targetOwnerProfit && availableOwnerProfit < strongOwnerProfit) status = "нормальная сделка";
+          else if(availableOwnerProfit >= strongOwnerProfit) status = "сильная сделка";
+          return { minOwnerProfit, targetOwnerProfit, strongOwnerProfit, marketAdjustment, marketPriceForCalc, availableOwnerProfit, ownerProfitGap, targetDealCost, costOverTarget, ownerProfitMarginPct, status };
+        }
 
         function buildPlanFromSnapshot(snapshot){
           const globals = window.EstimateEngine.computeGlobals((snapshot && snapshot.global) || {preset:"8", L:8});
@@ -3087,8 +3133,10 @@
           const laborTotal = Object.keys(laborState).reduce((a,k)=>a+num(laborState[k]),0);
           const sectionTotals = {frame:num(frameRes.total),panels:num(panelsRes.total),dobory:num(doboryRes.total),extras:num(extrasRes.total),foundation:num(foundationRes.total),labor:laborTotal};
           const materialsTotal = sectionTotals.frame+sectionTotals.panels+sectionTotals.dobory+sectionTotals.extras+sectionTotals.foundation;
-          const fullCost = materialsTotal + laborTotal;
-          return {sectionTotals,materialsTotal,laborTotal,fullCost};
+          const productionCost = materialsTotal + laborTotal;
+          const commercialCost = sumCommercialCostsFromSnapshot(snapshot);
+          const dealCost = productionCost + commercialCost;
+          return {sectionTotals,materialsTotal,laborTotal,fullCost:productionCost,productionCost,commercialCost,dealCost};
         }
         function buildPricingFromSnapshot(fullCost,snapshot){
           const st = (snapshot&&snapshot.pricing)||{}; const mode = st.markupMode==="fixed"?"fixed":"percent"; const v=Math.max(0,num(st.markupValue));
@@ -3116,17 +3164,39 @@
           const projects = loadProjects();
           const A = projects.find(p=>p.id===el("cp_base").value);
           const B = projects.find(p=>p.id===el("cp_compare").value);
-          if(!A||!B){ el("cp_metrics").innerHTML='<div class="small">Выбери две версии.</div>'; el("cp_sections").innerHTML=''; el("cp_diff").innerHTML=''; return; }
+          if(!A||!B){ el("cp_metrics").innerHTML='<div class="small">Выбери две версии.</div>'; el("cp_economics").innerHTML=''; el("cp_sections").innerHTML=''; el("cp_diff").innerHTML=''; return; }
 
-          const planA=buildPlanFromSnapshot(A.snapshot||{}), planB=buildPlanFromSnapshot(B.snapshot||{});
+          const snapA = A.snapshot||{}, snapB = B.snapshot||{};
+          const planA=buildPlanFromSnapshot(snapA), planB=buildPlanFromSnapshot(snapB);
+          const mkA=buildMarketFromSnapshot(snapA), mkB=buildMarketFromSnapshot(snapB);
+          const cvA=buildCommercialValueFromSnapshot(snapA, planA.dealCost, mkA.marketPrice);
+          const cvB=buildCommercialValueFromSnapshot(snapB, planB.dealCost, mkB.marketPrice);
           const prA=buildPricingFromSnapshot(planA.fullCost,A.snapshot||{}), prB=buildPricingFromSnapshot(planB.fullCost,B.snapshot||{});
           const polA=buildPolicyFromSnapshot(planA.fullCost,A.snapshot||{}), polB=buildPolicyFromSnapshot(planB.fullCost,B.snapshot||{});
           const metrics=[["Материалы",planA.materialsTotal,planB.materialsTotal],["Работы",planA.laborTotal,planB.laborTotal],["Полная себестоимость",planA.fullCost,planB.fullCost],["Цена продажи",prA.salePrice,prB.salePrice],["Валовая прибыль",prA.grossProfit,prB.grossProfit],["Маржинальность, %",prA.grossMarginPct,prB.grossMarginPct],["Минимальная цена",polA.floorPrice,polB.floorPrice],["Целевая цена",polA.targetPrice,polB.targetPrice],["Рекомендуемая цена",polA.recommendedPrice,polB.recommendedPrice]];
           el("cp_metrics").innerHTML='<h3>Ключевые метрики</h3><table class="tbl"><thead><tr><th>Показатель</th><th class="num">A</th><th class="num">B</th><th class="num">Δ ₽</th><th class="num">Δ %</th></tr></thead><tbody>' + metrics.map(m=>{const d=num(m[2])-num(m[1]); return `<tr><td>${m[0]}</td><td class="num mono">${rub(m[1])}</td><td class="num mono">${rub(m[2])}</td><td class="num mono">${rub(d)}</td><td class="num mono">${rub(deltaPct(m[1],d))} %</td></tr>`;}).join('') + '</tbody></table>';
+          const econRows = [
+            ["Производственная себестоимость", planA.productionCost, planB.productionCost, "money"],
+            ["Коммерческие затраты", planA.commercialCost, planB.commercialCost, "money"],
+            ["Полная себестоимость сделки", planA.dealCost, planB.dealCost, "money"],
+            ["Рыночная цена", cvA.marketPriceForCalc, cvB.marketPriceForCalc, "money"],
+            ["Доступная ЧПС", cvA.availableOwnerProfit, cvB.availableOwnerProfit, "money"],
+            ["Минимальная ЧПС", cvA.minOwnerProfit, cvB.minOwnerProfit, "money"],
+            ["Целевая ЧПС", cvA.targetOwnerProfit, cvB.targetOwnerProfit, "money"],
+            ["Дефицит/запас ЧПС", cvA.ownerProfitGap, cvB.ownerProfitGap, "money"],
+            ["Целевая полная себестоимость", cvA.targetDealCost, cvB.targetDealCost, "money"],
+            ["Перерасход относительно целевой себестоимости", cvA.costOverTarget, cvB.costOverTarget, "money"],
+            ["Маржинальность ЧПС, %", cvA.ownerProfitMarginPct, cvB.ownerProfitMarginPct, "pct"]
+          ];
+          const recommendation = cvB.availableOwnerProfit > cvA.availableOwnerProfit ? "Версия B даёт больше ЧПС" : (cvB.availableOwnerProfit < cvA.availableOwnerProfit ? "Версия A даёт больше ЧПС" : "ЧПС одинаковая");
+          el("cp_economics").innerHTML = '<h3>Сравнение экономики сделки</h3><table class="tbl"><thead><tr><th>Показатель</th><th class="num">A</th><th class="num">B</th><th class="num">Δ</th><th class="num">Δ %</th></tr></thead><tbody>' +
+            econRows.map((r)=>{ const d=num(r[2])-num(r[1]); if(r[3]==="pct"){ return `<tr><td>${r[0]}</td><td class="num mono">${rub(r[1])} %</td><td class="num mono">${rub(r[2])} %</td><td class="num mono">${rub(d)} п.п.</td><td class="num mono">—</td></tr>`; } return `<tr><td>${r[0]}</td><td class="num mono">${rub(r[1])} ₽</td><td class="num mono">${rub(r[2])} ₽</td><td class="num mono">${rub(d)} ₽</td><td class="num mono">${rub(deltaPct(r[1],d))} %</td></tr>`; }).join('') +
+            '</tbody></table>' +
+            `<div class="row"><span>Статус A</span><b>${cvA.status}</b></div><div class="row"><span>Статус B</span><b>${cvB.status}</b></div><div class="row"><span>Рекомендация</span><b>${recommendation}</b></div>`;
           const sNames={frame:"Каркас",panels:"Панели",dobory:"Доборы",extras:"Допы",foundation:"Фундамент",labor:"Работы"};
           el("cp_sections").innerHTML='<h3>Секции сметы</h3><table class="tbl"><thead><tr><th>Раздел</th><th class="num">A</th><th class="num">B</th><th class="num">Δ ₽</th><th class="num">Δ %</th></tr></thead><tbody>' + Object.keys(sNames).map(k=>{const av=num(planA.sectionTotals[k]), bv=num(planB.sectionTotals[k]), d=bv-av; return `<tr><td>${sNames[k]}</td><td class="num mono">${rub(av)}</td><td class="num mono">${rub(bv)}</td><td class="num mono">${rub(d)}</td><td class="num mono">${rub(deltaPct(av,d))} %</td></tr>`;}).join('') + '</tbody></table>';
-          const aSnap={global:A.snapshot&&A.snapshot.global,frame:A.snapshot&&A.snapshot.frame,panels:A.snapshot&&A.snapshot.panels,dobory:A.snapshot&&A.snapshot.dobory,extras:A.snapshot&&A.snapshot.extras,foundation:A.snapshot&&A.snapshot.foundation,labor:A.snapshot&&A.snapshot.labor,pricing:A.snapshot&&A.snapshot.pricing,pricePolicy:A.snapshot&&A.snapshot.pricePolicy};
-          const bSnap={global:B.snapshot&&B.snapshot.global,frame:B.snapshot&&B.snapshot.frame,panels:B.snapshot&&B.snapshot.panels,dobory:B.snapshot&&B.snapshot.dobory,extras:B.snapshot&&B.snapshot.extras,foundation:B.snapshot&&B.snapshot.foundation,labor:B.snapshot&&B.snapshot.labor,pricing:B.snapshot&&B.snapshot.pricing,pricePolicy:B.snapshot&&B.snapshot.pricePolicy};
+          const aSnap={global:A.snapshot&&A.snapshot.global,frame:A.snapshot&&A.snapshot.frame,panels:A.snapshot&&A.snapshot.panels,dobory:A.snapshot&&A.snapshot.dobory,extras:A.snapshot&&A.snapshot.extras,foundation:A.snapshot&&A.snapshot.foundation,labor:A.snapshot&&A.snapshot.labor,commercialCosts:A.snapshot&&A.snapshot.commercialCosts,marketModel:A.snapshot&&A.snapshot.marketModel,commercialValue:A.snapshot&&A.snapshot.commercialValue,costAnalysis:A.snapshot&&A.snapshot.costAnalysis,pricing:A.snapshot&&A.snapshot.pricing,pricePolicy:A.snapshot&&A.snapshot.pricePolicy};
+          const bSnap={global:B.snapshot&&B.snapshot.global,frame:B.snapshot&&B.snapshot.frame,panels:B.snapshot&&B.snapshot.panels,dobory:B.snapshot&&B.snapshot.dobory,extras:B.snapshot&&B.snapshot.extras,foundation:B.snapshot&&B.snapshot.foundation,labor:B.snapshot&&B.snapshot.labor,commercialCosts:B.snapshot&&B.snapshot.commercialCosts,marketModel:B.snapshot&&B.snapshot.marketModel,commercialValue:B.snapshot&&B.snapshot.commercialValue,costAnalysis:B.snapshot&&B.snapshot.costAnalysis,pricing:B.snapshot&&B.snapshot.pricing,pricePolicy:B.snapshot&&B.snapshot.pricePolicy};
           const diffRows = diffSnapshots(aSnap,bSnap).map(r=>`<tr><td>${r.path}</td><td class="mono">${String(r.a)}</td><td class="mono">${String(r.b)}</td></tr>`).join('');
           el("cp_diff").innerHTML='<h3>Что изменилось во входных данных</h3><table class="tbl"><thead><tr><th>Path</th><th>A</th><th>B</th></tr></thead><tbody>'+(diffRows||'<tr><td colspan="3" class="small">Различий нет.</td></tr>')+'</tbody></table>';
         }
