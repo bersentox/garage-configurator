@@ -2088,18 +2088,51 @@
           return { dealCost, totalReductionPotential, sections };
         }
         function broadcast(){ const result=compute(); document.dispatchEvent(new CustomEvent("mega:costAnalysisChange", { detail: result })); return result; }
-        function render(){
-          const result = broadcast();
+        function renderSummary(result){
           const marketPrice = window.MegaCommercialValue && window.MegaCommercialValue.compute ? n((window.MegaCommercialValue.compute()||{}).marketPrice||0) : 0;
           const dealCostAfter = result.dealCost - result.totalReductionPotential;
           const nowProfit = marketPrice > 0 ? marketPrice - result.dealCost : null;
           const afterProfit = marketPrice > 0 ? marketPrice - dealCostAfter : null;
           el("ca_summary").innerHTML = `<h3>Итоги анализа</h3><div class="row"><span>Полная себестоимость сделки</span><b>${rub(result.dealCost)} ₽</b></div><div class="row"><span>Суммарный потенциал снижения</span><b>${rub(result.totalReductionPotential)} ₽</b></div><div class="row"><span>Себестоимость после потенциального снижения</span><b>${rub(dealCostAfter)} ₽</b></div><div class="row"><span>Доступная ЧПС сейчас</span><b>${marketPrice>0?rub(nowProfit)+" ₽":"нет рыночной цены"}</b></div><div class="row"><span>Доступная ЧПС после потенциального снижения</span><b>${marketPrice>0?rub(afterProfit)+" ₽":"нет рыночной цены"}</b></div>`;
-          el("ca_rows").innerHTML = result.sections.map((s)=>`<tr><td>${s.title}</td><td class="num mono">${rub(s.sum)}</td><td class="num mono">${fmt(s.sharePct)}</td><td><select id="ca_status_${s.key}">${STATUS_OPTS.map((opt)=>`<option value="${opt}" ${opt===s.status?"selected":""}>${opt}</option>`).join("")}</select></td><td><input type="number" id="ca_reduction_pct_${s.key}" min="0" max="100" step="0.1" value="${n(s.reductionPotentialPct)}"></td><td class="num mono">${rub(s.reductionPotentialRub)}</td><td><input type="text" id="ca_comment_${s.key}" value="${String(s.comment||"").replace(/\"/g,'&quot;')}"></td></tr>`).join("");
         }
-        function readInputs(){ SECTIONS.forEach((row)=>{ state[row.key]={ status: (el("ca_status_"+row.key)?el("ca_status_"+row.key).value:"норма"), reductionPotentialPct: n(el("ca_reduction_pct_"+row.key)?el("ca_reduction_pct_"+row.key).value:0), comment: String(el("ca_comment_"+row.key)?el("ca_comment_"+row.key).value:"") }; }); }
-        function onInput(){ readInputs(); save(); render(); }
-        function bind(){ render(); document.addEventListener("input",(e)=>{ if(e.target&&e.target.id&&e.target.id.startsWith("ca_")) onInput(); }); document.addEventListener("change",(e)=>{ if(e.target&&e.target.id&&e.target.id.startsWith("ca_")) onInput(); }); document.addEventListener("mega:totalsChange", render); document.addEventListener("mega:commercialValueChange", render); }
+        function renderRows(result){
+          el("ca_rows").innerHTML = result.sections.map((s)=>`<tr><td>${s.title}</td><td class="num mono">${rub(s.sum)}</td><td class="num mono">${fmt(s.sharePct)}</td><td><select id="ca_status_${s.key}" data-key="${s.key}" data-field="status">${STATUS_OPTS.map((opt)=>`<option value="${opt}" ${opt===s.status?"selected":""}>${opt}</option>`).join("")}</select></td><td><input type="number" id="ca_reduction_pct_${s.key}" data-key="${s.key}" data-field="reductionPotentialPct" min="0" max="100" step="0.1" value="${n(s.reductionPotentialPct)}"></td><td class="num mono" id="ca_reduction_rub_${s.key}">${rub(s.reductionPotentialRub)}</td><td><input type="text" id="ca_comment_${s.key}" data-key="${s.key}" data-field="comment" value="${String(s.comment||"").replace(/\"/g,'&quot;')}"></td></tr>`).join("");
+        }
+        function render(){
+          const result = broadcast();
+          renderSummary(result);
+          renderRows(result);
+        }
+        function updateFromTarget(target){
+          if(!target || !target.dataset || !target.dataset.key) return false;
+          const key = target.dataset.key;
+          const field = target.dataset.field;
+          if(!state[key]) return false;
+          if(field==="reductionPotentialPct") state[key].reductionPotentialPct = n(target.value);
+          else if(field==="status") state[key].status = target.value;
+          else if(field==="comment") state[key].comment = String(target.value||"");
+          else return false;
+          return true;
+        }
+        function onInput(e){
+          const target = e && e.target ? e.target : null;
+          if(!target || !updateFromTarget(target)) return;
+          save();
+          const result = broadcast();
+          renderSummary(result);
+          if(target.dataset.field==="reductionPotentialPct"){
+            const row = result.sections.find((s)=>s.key===target.dataset.key);
+            const rubEl = el("ca_reduction_rub_"+target.dataset.key);
+            if(row && rubEl) rubEl.textContent = rub(row.reductionPotentialRub);
+          }
+        }
+        function onChange(e){
+          const target = e && e.target ? e.target : null;
+          if(!target || !updateFromTarget(target)) return;
+          save();
+          render();
+        }
+        function bind(){ render(); document.addEventListener("input",(e)=>{ if(e.target&&e.target.id&&e.target.id.startsWith("ca_")) onInput(e); }); document.addEventListener("change",(e)=>{ if(e.target&&e.target.id&&e.target.id.startsWith("ca_")) onChange(e); }); document.addEventListener("mega:totalsChange", render); document.addEventListener("mega:commercialValueChange", render); }
         window.MegaCostAnalysis = { getState, compute, render, broadcast };
         if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind); else bind();
       })();
