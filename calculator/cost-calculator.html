@@ -242,6 +242,7 @@
         <button class="tabbtn" data-tab="commercial" role="tab" aria-selected="false">Коммерческие затраты</button>
         <button class="tabbtn" data-tab="market" role="tab" aria-selected="false">Рыночная модель</button>
         <button class="tabbtn" data-tab="commercial_value" role="tab" aria-selected="false">Коммерческая стоимость</button>
+        <button class="tabbtn" data-tab="cost_analysis" role="tab" aria-selected="false">Анализ себестоимости</button>
         <button class="tabbtn" data-tab="pricing" role="tab" aria-selected="false">Цена / Прибыль</button>
         <button class="tabbtn" data-tab="projects" role="tab" aria-selected="false">Проекты</button>
         <button class="tabbtn" data-tab="fact" role="tab" aria-selected="false">План-Факт</button>
@@ -2030,6 +2031,74 @@
         function onInput(){ readInputs(); save(); render(); }
         function bind(){ render(); document.addEventListener("input",(e)=>{ if(e.target && e.target.id && e.target.id.startsWith("cv_")) onInput(); }); document.addEventListener("change",(e)=>{ if(e.target && e.target.id && e.target.id.startsWith("cv_")) onInput(); }); document.addEventListener("mega:totalsChange", render); document.addEventListener("mega:marketChange", render); document.addEventListener("mega:globalChange", render); }
         window.MegaCommercialValue = { getState, compute, render, broadcast };
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind); else bind();
+      })();
+      </script>
+    </section>
+
+    <!-- TAB: Анализ себестоимости -->
+    <section class="card section" id="tab_cost_analysis" aria-label="Анализ себестоимости">
+      <div class="wrap">
+        <div class="card" id="ca_summary"></div>
+        <div class="card">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Раздел</th>
+                <th class="num">Сумма, ₽</th>
+                <th class="num">Доля в полной себестоимости сделки, %</th>
+                <th>Статус</th>
+                <th class="num">Потенциал снижения, ₽</th>
+                <th>Комментарий</th>
+              </tr>
+            </thead>
+            <tbody id="ca_rows"></tbody>
+          </table>
+        </div>
+        <div class="small">Эта вкладка не меняет себестоимость автоматически. Она показывает, где есть управленческий резерв снижения.</div>
+      </div>
+      <script>
+      (function(){
+        const LS_KEY = "mega_cost_analysis_v1";
+        const STATUS_OPTS = ["норма","дорого","пиздец","резерв снижения","предел","не трогать"];
+        const SECTIONS = [
+          { key:"frame", title:"Металлокаркас" },
+          { key:"panels", title:"Сэндвич-панели" },
+          { key:"dobory", title:"Доборы" },
+          { key:"extras", title:"Доп. опции" },
+          { key:"foundation", title:"Фундамент" },
+          { key:"labor", title:"Работы" },
+          { key:"commercial", title:"Коммерческие затраты" }
+        ];
+        const el=(id)=>document.getElementById(id), n=(v)=>Number(v||0);
+        const rub=(x)=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+        const fmt=(x)=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+        function defaultState(){ const s={}; SECTIONS.forEach((row)=>{ s[row.key]={status:"норма", reductionPotential:0, comment:""}; }); return s; }
+        function load(){ try{ const raw=localStorage.getItem(LS_KEY); if(!raw) return defaultState(); const p=JSON.parse(raw)||{}; const s=defaultState(); SECTIONS.forEach((row)=>{ const r=p[row.key]||{}; s[row.key]={ status: STATUS_OPTS.includes(r.status)?r.status:"норма", reductionPotential:n(r.reductionPotential||0), comment:String(r.comment||"") }; }); return s; }catch(e){ return defaultState(); } }
+        let state=load();
+        function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+        function getState(){ return JSON.parse(JSON.stringify(state)); }
+        function sectionSum(key){ const st=window.MegaCalc&&window.MegaCalc.state?window.MegaCalc.state:{}; return n(st[key]||0); }
+        function compute(){
+          const dealCost = window.MegaCalc && window.MegaCalc.dealCost ? n(window.MegaCalc.dealCost()) : 0;
+          const sections = SECTIONS.map((row)=>{ const sum=sectionSum(row.key); const sharePct = dealCost > 0 ? (sum / dealCost) * 100 : 0; const cfg = state[row.key] || {status:"норма", reductionPotential:0, comment:""}; return { key:row.key, title:row.title, sum, sharePct, status:cfg.status, reductionPotential:n(cfg.reductionPotential||0), comment:String(cfg.comment||"") }; });
+          const totalReductionPotential = sections.reduce((acc,s)=>acc+n(s.reductionPotential||0),0);
+          return { dealCost, totalReductionPotential, sections };
+        }
+        function broadcast(){ const result=compute(); document.dispatchEvent(new CustomEvent("mega:costAnalysisChange", { detail: result })); return result; }
+        function render(){
+          const result = broadcast();
+          const marketPrice = window.MegaCommercialValue && window.MegaCommercialValue.compute ? n((window.MegaCommercialValue.compute()||{}).marketPrice||0) : 0;
+          const dealCostAfter = result.dealCost - result.totalReductionPotential;
+          const nowProfit = marketPrice > 0 ? marketPrice - result.dealCost : null;
+          const afterProfit = marketPrice > 0 ? marketPrice - dealCostAfter : null;
+          el("ca_summary").innerHTML = `<h3>Итоги анализа</h3><div class="row"><span>Полная себестоимость сделки</span><b>${rub(result.dealCost)} ₽</b></div><div class="row"><span>Суммарный потенциал снижения</span><b>${rub(result.totalReductionPotential)} ₽</b></div><div class="row"><span>Себестоимость после потенциального снижения</span><b>${rub(dealCostAfter)} ₽</b></div><div class="row"><span>Доступная ЧПС сейчас</span><b>${marketPrice>0?rub(nowProfit)+" ₽":"нет рыночной цены"}</b></div><div class="row"><span>Доступная ЧПС после потенциального снижения</span><b>${marketPrice>0?rub(afterProfit)+" ₽":"нет рыночной цены"}</b></div>`;
+          el("ca_rows").innerHTML = result.sections.map((s)=>`<tr><td>${s.title}</td><td class="num mono">${rub(s.sum)}</td><td class="num mono">${fmt(s.sharePct)}</td><td><select id="ca_status_${s.key}">${STATUS_OPTS.map((opt)=>`<option value="${opt}" ${opt===s.status?"selected":""}>${opt}</option>`).join("")}</select></td><td><input type="number" id="ca_reduction_${s.key}" min="0" step="1000" value="${n(s.reductionPotential)}"></td><td><input type="text" id="ca_comment_${s.key}" value="${String(s.comment||"").replace(/\"/g,'&quot;')}"></td></tr>`).join("");
+        }
+        function readInputs(){ SECTIONS.forEach((row)=>{ state[row.key]={ status: (el("ca_status_"+row.key)?el("ca_status_"+row.key).value:"норма"), reductionPotential: n(el("ca_reduction_"+row.key)?el("ca_reduction_"+row.key).value:0), comment: String(el("ca_comment_"+row.key)?el("ca_comment_"+row.key).value:"") }; }); }
+        function onInput(){ readInputs(); save(); render(); }
+        function bind(){ render(); document.addEventListener("input",(e)=>{ if(e.target&&e.target.id&&e.target.id.startsWith("ca_")) onInput(); }); document.addEventListener("change",(e)=>{ if(e.target&&e.target.id&&e.target.id.startsWith("ca_")) onInput(); }); document.addEventListener("mega:totalsChange", render); document.addEventListener("mega:commercialValueChange", render); }
+        window.MegaCostAnalysis = { getState, compute, render, broadcast };
         if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind); else bind();
       })();
       </script>
