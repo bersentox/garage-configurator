@@ -87,7 +87,7 @@
 
     // Агрегатор итогов
     window.MegaCalc = (function(){
-      const state = { frame:0, panels:0, dobory:0, extras:0, foundation:0, labor:0 };
+      const state = { frame:0, panels:0, dobory:0, extras:0, foundation:0, labor:0, commercial:0 };
       const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
       function set(key, value){
         state[key] = Number(value||0);
@@ -96,12 +96,24 @@
           detail: {
             materials: materialsTotal(),
             labor: state.labor,
+            productionCost: productionCost(),
+            commercialCost: commercialCost(),
+            dealCost: dealCost(),
             fullCost: total()
           }
         }));
       }
       function materialsTotal(){
         return state.frame + state.panels + state.dobory + state.extras + state.foundation;
+      }
+      function productionCost(){
+        return materialsTotal() + state.labor;
+      }
+      function commercialCost(){
+        return state.commercial;
+      }
+      function dealCost(){
+        return productionCost() + commercialCost();
       }
       function total(){
         return materialsTotal() + state.labor;
@@ -120,9 +132,13 @@
           '<div class="row"><span><b>ИТОГО материалы</b></span><b>'+rub(materialsTotal())+' ₽</b></div>' +
           '<div class="row"><span><b>ИТОГО работы</b></span><b>'+rub(state.labor)+' ₽</b></div>' +
           '<div class="row"><span><b>ПОЛНАЯ СЕБЕСТОИМОСТЬ</b></span><b>'+rub(total())+' ₽</b></div>' +
+          '<hr>' +
+          '<div class="row"><span><b>Производственная себестоимость</b></span><b>'+rub(productionCost())+' ₽</b></div>' +
+          '<div class="row"><span><b>Коммерческие затраты</b></span><b>'+rub(commercialCost())+' ₽</b></div>' +
+          '<div class="row"><span><b>Полная себестоимость сделки</b></span><b>'+rub(dealCost())+' ₽</b></div>' +
           '<div class="small">Все суммы обновляются автоматически из вкладок.</div>';
       }
-      return { set, render, state, materialsTotal, total };
+      return { set, render, state, materialsTotal, productionCost, commercialCost, dealCost, total };
     })();
 
     // ===== MegaBill: единый реестр позиций для общей сметы =====
