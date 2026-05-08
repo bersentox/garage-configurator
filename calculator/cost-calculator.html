@@ -87,7 +87,7 @@
 
     // Агрегатор итогов
     window.MegaCalc = (function(){
-      const state = { frame:0, panels:0, dobory:0, extras:0, foundation:0, labor:0 };
+      const state = { frame:0, panels:0, dobory:0, extras:0, foundation:0, labor:0, commercial:0 };
       const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
       function set(key, value){
         state[key] = Number(value||0);
@@ -96,12 +96,24 @@
           detail: {
             materials: materialsTotal(),
             labor: state.labor,
+            productionCost: productionCost(),
+            commercialCost: commercialCost(),
+            dealCost: dealCost(),
             fullCost: total()
           }
         }));
       }
       function materialsTotal(){
         return state.frame + state.panels + state.dobory + state.extras + state.foundation;
+      }
+      function productionCost(){
+        return materialsTotal() + state.labor;
+      }
+      function commercialCost(){
+        return state.commercial;
+      }
+      function dealCost(){
+        return productionCost() + commercialCost();
       }
       function total(){
         return materialsTotal() + state.labor;
@@ -120,9 +132,13 @@
           '<div class="row"><span><b>ИТОГО материалы</b></span><b>'+rub(materialsTotal())+' ₽</b></div>' +
           '<div class="row"><span><b>ИТОГО работы</b></span><b>'+rub(state.labor)+' ₽</b></div>' +
           '<div class="row"><span><b>ПОЛНАЯ СЕБЕСТОИМОСТЬ</b></span><b>'+rub(total())+' ₽</b></div>' +
+          '<hr>' +
+          '<div class="row"><span><b>Производственная себестоимость</b></span><b>'+rub(productionCost())+' ₽</b></div>' +
+          '<div class="row"><span><b>Коммерческие затраты</b></span><b>'+rub(commercialCost())+' ₽</b></div>' +
+          '<div class="row"><span><b>Полная себестоимость сделки</b></span><b>'+rub(dealCost())+' ₽</b></div>' +
           '<div class="small">Все суммы обновляются автоматически из вкладок.</div>';
       }
-      return { set, render, state, materialsTotal, total };
+      return { set, render, state, materialsTotal, productionCost, commercialCost, dealCost, total };
     })();
 
     // ===== MegaBill: единый реестр позиций для общей сметы =====
@@ -223,6 +239,8 @@
         <button class="tabbtn" data-tab="extras" role="tab" aria-selected="false">Доп. опции</button>
         <button class="tabbtn" data-tab="foundation" role="tab" aria-selected="false">Фундамент</button>
         <button class="tabbtn" data-tab="labor" role="tab" aria-selected="false">Работы</button>
+        <button class="tabbtn" data-tab="commercial" role="tab" aria-selected="false">Коммерческие затраты</button>
+        <button class="tabbtn" data-tab="market" role="tab" aria-selected="false">Рыночная модель</button>
         <button class="tabbtn" data-tab="pricing" role="tab" aria-selected="false">Цена / Прибыль</button>
         <button class="tabbtn" data-tab="projects" role="tab" aria-selected="false">Проекты</button>
         <button class="tabbtn" data-tab="fact" role="tab" aria-selected="false">План-Факт</button>
@@ -1733,6 +1751,212 @@
       </script>
     </section>
 
+    <!-- TAB: Коммерческие затраты -->
+    <section class="card section" id="tab_commercial" aria-label="Коммерческие затраты">
+      <div class="wrap">
+        <div class="card">
+          <h3>Коммерческие затраты</h3>
+          <div class="small">Сопутствующие затраты сделки (не прибыль и не наценка).</div>
+          <table class="tbl" style="margin-top:10px">
+            <thead>
+              <tr>
+                <th style="width:52px">#</th>
+                <th>Наименование</th>
+                <th style="width:100px">Ед.</th>
+                <th style="width:120px">Кол-во</th>
+                <th style="width:160px">Цена</th>
+                <th style="width:180px">Сумма</th>
+              </tr>
+            </thead>
+            <tbody id="cm_rows"></tbody>
+          </table>
+          <div style="margin-top:12px; display:flex; gap:10px; align-items:center;">
+            <button id="cm_reset" type="button">Сбросить (коммерческие затраты)</button>
+            <span class="small">Удаляет сохранённые данные вкладки.</span>
+          </div>
+        </div>
+        <div class="card" id="cm_out"></div>
+      </div>
+
+      <script>
+      (function(){
+        const LS_KEY = "mega_commercial_costs_v1";
+        const ITEMS = [
+          { key:"ads", name:"Реклама / привлечение заказа", unit:"фикс" },
+          { key:"manager", name:"Работа менеджера", unit:"фикс" },
+          { key:"measure", name:"Замер / выезд", unit:"выезд" },
+          { key:"kp", name:"Подготовка КП / пересчёты", unit:"фикс" },
+          { key:"support", name:"Сопровождение проекта", unit:"фикс" },
+          { key:"admin", name:"Административные расходы", unit:"фикс" },
+          { key:"finance", name:"Бухгалтерия / банк / сервисы", unit:"фикс" },
+          { key:"warranty", name:"Гарантийный резерв", unit:"фикс" },
+          { key:"crm", name:"Связь / CRM / софт", unit:"фикс" },
+          { key:"other", name:"Прочие коммерческие затраты", unit:"фикс" }
+        ];
+
+        const el = (id)=> document.getElementById(id);
+        const rub = (x)=> new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+        const num = (v)=> Number(v||0);
+
+        function loadState(){
+          try{
+            const raw = localStorage.getItem(LS_KEY);
+            if(!raw) return {};
+            const parsed = JSON.parse(raw);
+            return parsed && typeof parsed === "object" ? parsed : {};
+          }catch(e){ return {}; }
+        }
+
+        function saveState(st){
+          try{ localStorage.setItem(LS_KEY, JSON.stringify(st)); }catch(e){}
+        }
+
+        function buildTable(){
+          const st = loadState();
+          const tb = el("cm_rows");
+          tb.innerHTML = "";
+          ITEMS.forEach((it, idx)=>{
+            const row = st[it.key] || {};
+            const unit = String(row.unit || it.unit);
+            const qty = num(row.qty || 1);
+            const price = num(row.price);
+            const sum = qty * price;
+            const tr = document.createElement("tr");
+            tr.innerHTML =
+              `<td class="mono">${idx+1}</td>
+               <td>${it.name}</td>
+               <td><input type="text" id="cm_unit_${it.key}" value="${unit}"></td>
+               <td><input type="number" id="cm_qty_${it.key}" value="${qty}" step="0.01" min="0"></td>
+               <td><input type="number" id="cm_price_${it.key}" value="${price}" step="100" min="0"></td>
+               <td class="num mono" id="cm_sum_${it.key}">${rub(sum)} ₽</td>`;
+            tb.appendChild(tr);
+          });
+        }
+
+        function readState(){
+          const st = {};
+          ITEMS.forEach((it)=>{
+            st[it.key] = {
+              unit: String(el("cm_unit_"+it.key).value || it.unit),
+              qty: num(el("cm_qty_"+it.key).value || 0),
+              price: num(el("cm_price_"+it.key).value || 0)
+            };
+          });
+          return st;
+        }
+
+        function recalc(){
+          const st = readState();
+          saveState(st);
+
+          let total = 0;
+          const billItems = [];
+          ITEMS.forEach((it)=>{
+            const row = st[it.key] || {};
+            const qty = num(row.qty);
+            const price = num(row.price);
+            const sum = qty * price;
+            total += sum;
+            const sumEl = el("cm_sum_"+it.key);
+            if(sumEl) sumEl.textContent = `${rub(sum)} ₽`;
+            if(qty > 0 || price > 0){
+              billItems.push({ name: it.name, unit: row.unit || it.unit, qty, price, sum });
+            }
+          });
+
+          el("cm_out").innerHTML =
+            `<h3>Итог по коммерческим затратам</h3>
+             <div class="row"><span><b>ИТОГО коммерческие затраты</b></span><b class="mono">${rub(total)} ₽</b></div>`;
+
+          if(window.MegaCalc) window.MegaCalc.set("commercial", total);
+          if(window.MegaBill){
+            window.MegaBill.setSection("commercial", { title:"Коммерческие затраты", items: billItems });
+          }
+        }
+
+        function bind(){
+          buildTable();
+          document.addEventListener("input", (e)=>{
+            if(!e.target || !e.target.id) return;
+            if(e.target.id.startsWith("cm_")) recalc();
+          });
+
+          el("cm_reset").addEventListener("click", ()=>{
+            localStorage.removeItem(LS_KEY);
+            location.reload();
+          });
+
+          recalc();
+        }
+
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+        else bind();
+      })();
+      </script>
+    </section>
+
+
+    <!-- TAB: Рыночная модель -->
+    <section class="card section" id="tab_market" aria-label="Рыночная модель">
+      <div class="wrap">
+        <div class="card">
+          <h3>Рыночная модель</h3>
+          <div class="small">Аналитика рыночных цен по типовым размерам. Не является расчётом прибыли/ЧПС.</div>
+          <div class="grid" style="margin-top:12px">
+            <div>
+              <label for="mk_priceSource">Источник рыночной цены для текущего расчёта</label>
+              <select id="mk_priceSource">
+                <option value="auto_min">auto_min — брать рыночный минимум</option>
+                <option value="auto_average">auto_average — брать среднюю рыночную цену</option>
+                <option value="auto_max">auto_max — брать верх рынка</option>
+                <option value="manual">manual — брать ручную цену</option>
+              </select>
+            </div>
+            <div>
+              <label for="mk_manualPrice">Ручная рыночная цена, ₽</label>
+              <input id="mk_manualPrice" type="number" min="0" step="1000" value="0"/>
+            </div>
+          </div>
+        </div>
+        <div class="card"><h3>Текущий размер</h3><div id="mk_current"></div></div>
+        <div class="card">
+          <table class="tbl"><thead><tr>
+            <th>Размер</th><th class="num">Площадь, м²</th><th class="num">Рыночный минимум, ₽</th><th class="num">Средняя рыночная цена, ₽</th><th class="num">Верх рынка, ₽</th>
+            <th class="num">₽/м² минимум</th><th class="num">₽/м² средний</th><th class="num">₽/м² верх</th><th class="num">Прирост площади, м²</th><th class="num">Прирост цены, ₽</th>
+            <th class="num">Предельный ₽/м²</th><th class="num">Снижение ₽/м²</th><th class="num">Снижение %</th><th>Комментарий</th>
+          </tr></thead><tbody id="mk_rows"></tbody></table>
+        </div>
+      </div>
+      <script>
+      (function(){
+        const LS_KEY = "mega_market_model_v1";
+        const SIZES = ["6x6","6x8","6x10","6x12","8x8","8x10","8x12","8x16"];
+        const DEFAULT_STATE = { source:"auto_average", manualPrice:0, rows:SIZES.reduce((a,k)=>{a[k]={minPrice:0,avgPrice:0,maxPrice:0,comment:""};return a;},{}) };
+        const el=(id)=>document.getElementById(id), num=(v)=>Number(v||0);
+        const rub=(x)=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+        const fmt=(x)=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(x||0));
+        const parseSize=(k)=>{const m=/^(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)$/.exec(String(k||"")); if(!m) return {area:0}; const w=num(m[1]),l=num(m[2]); return {w,l,area:w*l};};
+        const normN=(v)=>{const n=num(v); return Number.isFinite(n)?n:0;};
+        const normSizeKey=(preset,L)=>`${String(preset)==="6"?6:8}x${(Number.isInteger(Number(L))?String(Number(L)):String(Number(Number(L).toFixed(2))).replace(/\.?0+$/,''))}`;
+        function load(){ try{ const raw=localStorage.getItem(LS_KEY); if(!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE)); const p=JSON.parse(raw); const s=JSON.parse(JSON.stringify(DEFAULT_STATE)); if(["auto_min","auto_average","auto_max","manual"].includes(p&&p.source)) s.source=p.source; s.manualPrice=normN(p&&p.manualPrice); if(p&&p.rows&&typeof p.rows==="object"){ SIZES.forEach((k)=>{const r=p.rows[k]||{}; s.rows[k]={minPrice:normN(r.minPrice),avgPrice:normN(r.avgPrice),maxPrice:normN(r.maxPrice),comment:String(r.comment||"")};}); } return s; }catch(e){ return JSON.parse(JSON.stringify(DEFAULT_STATE)); } }
+        let state=load(); const save=()=>{try{localStorage.setItem(LS_KEY, JSON.stringify(state));}catch(e){}};
+        const getState=()=>JSON.parse(JSON.stringify(state));
+        function getComputedRows(){ let prev=null; return SIZES.map((sizeKey)=>{ const d=parseSize(sizeKey), row=state.rows[sizeKey]||{}; const minPrice=normN(row.minPrice), avgPrice=normN(row.avgPrice), maxPrice=normN(row.maxPrice), area=d.area; const pricePerM2Min=area>0?minPrice/area:0, pricePerM2Avg=area>0?avgPrice/area:0, pricePerM2Max=area>0?maxPrice/area:0; let areaDelta=null, priceDelta=null, marginalPricePerM2=null, perM2Drop=null, perM2DropPct=null; if(prev){ areaDelta=area-prev.area; priceDelta=avgPrice-prev.avgPrice; marginalPricePerM2=areaDelta!==0?priceDelta/areaDelta:0; perM2Drop=prev.pricePerM2Avg-pricePerM2Avg; perM2DropPct=prev.pricePerM2Avg>0?((prev.pricePerM2Avg-pricePerM2Avg)/prev.pricePerM2Avg)*100:0; } const out={sizeKey,area,minPrice,avgPrice,maxPrice,pricePerM2Min,pricePerM2Avg,pricePerM2Max,areaDelta,priceDelta,marginalPricePerM2,perM2Drop,perM2DropPct,comment:row.comment||""}; prev=out; return out; }); }
+        function getCurrentMarketInfo(){ const g=(window.MegaGlobal&&window.MegaGlobal.get)?window.MegaGlobal.get():{preset:"8",L:8}; const sizeKey=normSizeKey(g.preset,g.L), source=state.source, manualPrice=normN(state.manualPrice); const map={}; getComputedRows().forEach((r)=>map[r.sizeKey]=r); const row=map[sizeKey], foundExactSize=!!row, area=row?row.area:((String(g.preset)==="6"?6:8)*normN(g.L)); const minPrice=row?row.minPrice:0, avgPrice=row?row.avgPrice:0, maxPrice=row?row.maxPrice:0; let marketPrice=manualPrice; if(source==="auto_min"&&foundExactSize&&minPrice>0) marketPrice=minPrice; else if(source==="auto_average"&&foundExactSize&&avgPrice>0) marketPrice=avgPrice; else if(source==="auto_max"&&foundExactSize&&maxPrice>0) marketPrice=maxPrice; else if(source==="manual") marketPrice=manualPrice; const pricePerM2=area>0?marketPrice/area:0; return {source,sizeKey,area,marketPrice,minPrice,avgPrice,maxPrice,manualPrice,pricePerM2,foundExactSize}; }
+        const getCurrentMarketPrice=()=>normN(getCurrentMarketInfo().marketPrice);
+        const sourceLabel=(s)=>s==="auto_min"?"Рыночный минимум":s==="auto_average"?"Средняя рыночная цена":s==="auto_max"?"Верх рынка":"Ручная цена";
+        function broadcast(){ document.dispatchEvent(new CustomEvent("mega:marketChange", { detail:getCurrentMarketInfo() })); }
+        function renderRows(){ const tbody=el("mk_rows"); if(!tbody) return; tbody.innerHTML=getComputedRows().map((r)=>`<tr><td>${r.sizeKey.replace("x","×")}</td><td class="num mono">${fmt(r.area)}</td><td><input type="number" min="0" step="1000" id="mk_min_${r.sizeKey}" value="${r.minPrice}"></td><td><input type="number" min="0" step="1000" id="mk_avg_${r.sizeKey}" value="${r.avgPrice}"></td><td><input type="number" min="0" step="1000" id="mk_max_${r.sizeKey}" value="${r.maxPrice}"></td><td class="num mono">${fmt(r.pricePerM2Min)}</td><td class="num mono">${fmt(r.pricePerM2Avg)}</td><td class="num mono">${fmt(r.pricePerM2Max)}</td><td class="num mono">${r.areaDelta===null?"—":fmt(r.areaDelta)}</td><td class="num mono">${r.priceDelta===null?"—":rub(r.priceDelta)}</td><td class="num mono">${r.marginalPricePerM2===null?"—":fmt(r.marginalPricePerM2)}</td><td class="num mono">${r.perM2Drop===null?"—":fmt(r.perM2Drop)}</td><td class="num mono">${r.perM2DropPct===null?"—":fmt(r.perM2DropPct)+" %"}</td><td><input type="text" id="mk_comment_${r.sizeKey}" value="${String(r.comment||"").replace(/\"/g,'&quot;')}"></td></tr>`).join(""); }
+        function renderCurrent(){ const i=getCurrentMarketInfo(); el("mk_current").innerHTML=`<div class="row"><span>Текущий размер</span><b>${i.sizeKey.replace("x","×")}</b></div><div class="row"><span>Площадь</span><b>${fmt(i.area)} м²</b></div><div class="row"><span>Источник цены</span><b>${sourceLabel(i.source)}</b></div><div class="row"><span>Рыночная цена для расчёта</span><b>${rub(i.marketPrice)} ₽</b></div><div class="row"><span>Цена за м² для расчёта</span><b>${fmt(i.pricePerM2)} ₽/м²</b></div><div class="row"><span>Найден точный размер</span><b>${i.foundExactSize?"да":"нет"}</b></div>`; }
+        function render(){ const s=el("mk_priceSource"), m=el("mk_manualPrice"); if(s) s.value=state.source; if(m) m.value=normN(state.manualPrice); renderRows(); renderCurrent(); broadcast(); }
+        function readFromInputs(){ const s=el("mk_priceSource"), m=el("mk_manualPrice"); state.source=s?s.value:"auto_average"; state.manualPrice=normN(m?m.value:0); SIZES.forEach((k)=>{state.rows[k]={minPrice:normN(el("mk_min_"+k)?el("mk_min_"+k).value:0),avgPrice:normN(el("mk_avg_"+k)?el("mk_avg_"+k).value:0),maxPrice:normN(el("mk_max_"+k)?el("mk_max_"+k).value:0),comment:String(el("mk_comment_"+k)?el("mk_comment_"+k).value:"")};}); }
+        function onInput(){ readFromInputs(); save(); render(); }
+        function bind(){ render(); document.addEventListener("input",(e)=>{if(e.target&&e.target.id&&e.target.id.startsWith("mk_")) onInput();}); document.addEventListener("change",(e)=>{if(e.target&&e.target.id&&e.target.id.startsWith("mk_")) onInput();}); document.addEventListener("mega:globalChange",()=>{ renderCurrent(); broadcast(); }); }
+        window.MegaMarket = { getState, getCurrentMarketPrice, getCurrentMarketInfo, render, broadcast };
+        if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind); else bind();
+      })();
+      </script>
+    </section>
 
     <!-- TAB: Проекты -->
     <section class="card section" id="tab_projects" aria-label="Проекты">
@@ -1796,6 +2020,7 @@
           extras: "extras_config_v1",
           foundation: "gc_foundation_v3",
           labor: "mega_labor_v1",
+          commercial: "mega_commercial_costs_v1",
           pricing: "mega_pricing_v1",
           fact: "mega_fact_v1",
           pricePolicy: "mega_price_policy_v1"
@@ -1862,6 +2087,7 @@
             extras: readLS(SNAP_KEYS.extras),
             foundation: readLS(SNAP_KEYS.foundation),
             labor: readLS(SNAP_KEYS.labor),
+            commercial: readLS(SNAP_KEYS.commercial),
             pricing: readLS(SNAP_KEYS.pricing),
             pricePolicy: readLS(SNAP_KEYS.pricePolicy)
           };
@@ -1879,6 +2105,7 @@
           writeLS(SNAP_KEYS.extras, snapshot && snapshot.extras);
           writeLS(SNAP_KEYS.foundation, snapshot && snapshot.foundation);
           writeLS(SNAP_KEYS.labor, snapshot && snapshot.labor);
+          writeLS(SNAP_KEYS.commercial, snapshot && snapshot.commercial);
           writeLS(SNAP_KEYS.pricing, snapshot && snapshot.pricing);
           writeLS(SNAP_KEYS.pricePolicy, snapshot && snapshot.pricePolicy);
           writeLS(SNAP_KEYS.fact, null);
