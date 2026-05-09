@@ -1945,12 +1945,60 @@
         let state=load(); const save=()=>{try{localStorage.setItem(LS_KEY, JSON.stringify(state));}catch(e){}};
         const getState=()=>JSON.parse(JSON.stringify(state));
         function getComputedRows(){ let prev=null; return SIZES.map((sizeKey)=>{ const d=parseSize(sizeKey), row=state.rows[sizeKey]||{}; const minPrice=normN(row.minPrice), avgPrice=normN(row.avgPrice), maxPrice=normN(row.maxPrice), area=d.area; const pricePerM2Min=area>0?minPrice/area:0, pricePerM2Avg=area>0?avgPrice/area:0, pricePerM2Max=area>0?maxPrice/area:0; let areaDelta=null, priceDelta=null, marginalPricePerM2=null, perM2Drop=null, perM2DropPct=null; if(prev){ areaDelta=area-prev.area; priceDelta=avgPrice-prev.avgPrice; marginalPricePerM2=areaDelta!==0?priceDelta/areaDelta:0; perM2Drop=prev.pricePerM2Avg-pricePerM2Avg; perM2DropPct=prev.pricePerM2Avg>0?((prev.pricePerM2Avg-pricePerM2Avg)/prev.pricePerM2Avg)*100:0; } const out={sizeKey,area,minPrice,avgPrice,maxPrice,pricePerM2Min,pricePerM2Avg,pricePerM2Max,areaDelta,priceDelta,marginalPricePerM2,perM2Drop,perM2DropPct,comment:row.comment||""}; prev=out; return out; }); }
-        function getCurrentMarketInfo(){ const g=(window.MegaGlobal&&window.MegaGlobal.get)?window.MegaGlobal.get():{preset:"8",L:8}; const sizeKey=normSizeKey(g.preset,g.L), source=state.source, manualPrice=normN(state.manualPrice); const map={}; getComputedRows().forEach((r)=>map[r.sizeKey]=r); const row=map[sizeKey], foundExactSize=!!row, area=row?row.area:((String(g.preset)==="6"?6:8)*normN(g.L)); const minPrice=row?row.minPrice:0, avgPrice=row?row.avgPrice:0, maxPrice=row?row.maxPrice:0; let marketPrice=manualPrice; if(source==="auto_min"&&foundExactSize&&minPrice>0) marketPrice=minPrice; else if(source==="auto_average"&&foundExactSize&&avgPrice>0) marketPrice=avgPrice; else if(source==="auto_max"&&foundExactSize&&maxPrice>0) marketPrice=maxPrice; else if(source==="manual") marketPrice=manualPrice; const pricePerM2=area>0?marketPrice/area:0; return {source,sizeKey,area,marketPrice,minPrice,avgPrice,maxPrice,manualPrice,pricePerM2,foundExactSize}; }
+        function getCurrentMarketInfo(){
+          const g=(window.MegaGlobal&&window.MegaGlobal.get)?window.MegaGlobal.get():{preset:"8",L:8};
+          const W = String(g.preset)==="6" ? 6 : 8;
+          const L = normN(g.L);
+          const area = W * L;
+          const sizeKey=normSizeKey(g.preset,g.L), source=state.source, manualPrice=normN(state.manualPrice);
+          const rows = getComputedRows();
+          const map={}; rows.forEach((r)=>map[r.sizeKey]=r);
+          const row=map[sizeKey], foundExactSize=!!row;
+          const minPrice=row?row.minPrice:0, avgPrice=row?row.avgPrice:0, maxPrice=row?row.maxPrice:0;
+
+          const fieldBySource = source==="auto_min" ? "minPrice" : source==="auto_max" ? "maxPrice" : "avgPrice";
+          let marketPrice = source==="manual" ? manualPrice : 0;
+          let usedInterpolation = false;
+          let lowerSizeKey = null, upperSizeKey = null, interpolationRatio = null;
+
+          if(source!=="manual"){
+            const exactPrice = row ? normN(row[fieldBySource]) : 0;
+            if(foundExactSize && exactPrice > 0){
+              marketPrice = exactPrice;
+            }else{
+              const sameWidth = rows.filter((r)=>parseSize(r.sizeKey).w===W).sort((a,b)=>parseSize(a.sizeKey).l-parseSize(b.sizeKey).l);
+              const lower = sameWidth.filter((r)=>parseSize(r.sizeKey).l < L).slice(-1)[0] || null;
+              const upper = sameWidth.find((r)=>parseSize(r.sizeKey).l > L) || null;
+              const priceFrom = (r)=>r ? normN(r[fieldBySource]) : 0;
+              if(lower && upper && priceFrom(lower) > 0 && priceFrom(upper) > 0){
+                const lowerArea = lower.area, upperArea = upper.area;
+                const ratio = upperArea!==lowerArea ? (area - lowerArea) / (upperArea - lowerArea) : 0;
+                marketPrice = priceFrom(lower) + ratio * (priceFrom(upper) - priceFrom(lower));
+                usedInterpolation = true;
+                lowerSizeKey = lower.sizeKey;
+                upperSizeKey = upper.sizeKey;
+                interpolationRatio = ratio;
+              }else{
+                const nearest = sameWidth.reduce((best,cur)=>{
+                  if(!best) return cur;
+                  const dCur = Math.abs(parseSize(cur.sizeKey).l - L);
+                  const dBest = Math.abs(parseSize(best.sizeKey).l - L);
+                  return dCur < dBest ? cur : best;
+                }, null);
+                const nearestPrice = priceFrom(nearest);
+                marketPrice = manualPrice > 0 ? manualPrice : nearestPrice;
+              }
+            }
+          }
+
+          const pricePerM2=area>0?marketPrice/area:0;
+          return {source,sizeKey,area,marketPrice,minPrice,avgPrice,maxPrice,manualPrice,pricePerM2,foundExactSize,usedInterpolation,lowerSizeKey,upperSizeKey,interpolationRatio};
+        }
         const getCurrentMarketPrice=()=>normN(getCurrentMarketInfo().marketPrice);
         const sourceLabel=(s)=>s==="auto_min"?"Рыночный минимум":s==="auto_average"?"Средняя рыночная цена":s==="auto_max"?"Верх рынка":"Ручная цена";
         function broadcast(){ document.dispatchEvent(new CustomEvent("mega:marketChange", { detail:getCurrentMarketInfo() })); }
         function renderRows(){ const tbody=el("mk_rows"); if(!tbody) return; tbody.innerHTML=getComputedRows().map((r)=>`<tr><td>${r.sizeKey.replace("x","×")}</td><td class="num mono">${fmt(r.area)}</td><td><input type="number" min="0" step="1000" id="mk_min_${r.sizeKey}" value="${r.minPrice}"></td><td><input type="number" min="0" step="1000" id="mk_avg_${r.sizeKey}" value="${r.avgPrice}"></td><td><input type="number" min="0" step="1000" id="mk_max_${r.sizeKey}" value="${r.maxPrice}"></td><td class="num mono">${fmt(r.pricePerM2Min)}</td><td class="num mono">${fmt(r.pricePerM2Avg)}</td><td class="num mono">${fmt(r.pricePerM2Max)}</td><td class="num mono">${r.areaDelta===null?"—":fmt(r.areaDelta)}</td><td class="num mono">${r.priceDelta===null?"—":rub(r.priceDelta)}</td><td class="num mono">${r.marginalPricePerM2===null?"—":fmt(r.marginalPricePerM2)}</td><td class="num mono">${r.perM2Drop===null?"—":fmt(r.perM2Drop)}</td><td class="num mono">${r.perM2DropPct===null?"—":fmt(r.perM2DropPct)+" %"}</td><td><input type="text" id="mk_comment_${r.sizeKey}" value="${String(r.comment||"").replace(/\"/g,'&quot;')}"></td></tr>`).join(""); }
-        function renderCurrent(){ const i=getCurrentMarketInfo(); el("mk_current").innerHTML=`<div class="row"><span>Текущий размер</span><b>${i.sizeKey.replace("x","×")}</b></div><div class="row"><span>Площадь</span><b>${fmt(i.area)} м²</b></div><div class="row"><span>Источник цены</span><b>${sourceLabel(i.source)}</b></div><div class="row"><span>Рыночная цена для расчёта</span><b>${rub(i.marketPrice)} ₽</b></div><div class="row"><span>Цена за м² для расчёта</span><b>${fmt(i.pricePerM2)} ₽/м²</b></div><div class="row"><span>Найден точный размер</span><b>${i.foundExactSize?"да":"нет"}</b></div>`; }
+        function renderCurrent(){ const i=getCurrentMarketInfo(); el("mk_current").innerHTML=`<div class="row"><span>Текущий размер</span><b>${i.sizeKey.replace("x","×")}</b></div><div class="row"><span>Площадь</span><b>${fmt(i.area)} м²</b></div><div class="row"><span>Источник цены</span><b>${sourceLabel(i.source)}</b></div><div class="row"><span>Рыночная цена для расчёта</span><b>${rub(i.marketPrice)} ₽</b></div><div class="row"><span>Цена за м² для расчёта</span><b>${fmt(i.pricePerM2)} ₽/м²</b></div><div class="row"><span>Найден точный размер</span><b>${i.foundExactSize?"да":"нет"}</b></div><div class="row"><span>Использована интерполяция</span><b>${i.usedInterpolation?"да":"нет"}</b></div>${i.usedInterpolation?`<div class="row"><span>Нижняя точка</span><b>${String(i.lowerSizeKey||"—").replace("x","×")}</b></div><div class="row"><span>Верхняя точка</span><b>${String(i.upperSizeKey||"—").replace("x","×")}</b></div>`:""}`; }
         function render(){ const s=el("mk_priceSource"), m=el("mk_manualPrice"); if(s) s.value=state.source; if(m) m.value=normN(state.manualPrice); renderRows(); renderCurrent(); broadcast(); }
         function readFromInputs(){ const s=el("mk_priceSource"), m=el("mk_manualPrice"); state.source=s?s.value:"auto_average"; state.manualPrice=normN(m?m.value:0); SIZES.forEach((k)=>{state.rows[k]={minPrice:normN(el("mk_min_"+k)?el("mk_min_"+k).value:0),avgPrice:normN(el("mk_avg_"+k)?el("mk_avg_"+k).value:0),maxPrice:normN(el("mk_max_"+k)?el("mk_max_"+k).value:0),comment:String(el("mk_comment_"+k)?el("mk_comment_"+k).value:"")};}); }
         function onInput(){ readFromInputs(); save(); render(); }
