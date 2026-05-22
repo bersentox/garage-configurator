@@ -10,8 +10,6 @@ const configShell = getById('configShell');
 const configShellViewport = getById('configShellViewport');
 const configShellBar = getById('configShellBar');
 const configShellSummary = getById('configShellSummary');
-const configShellPrice = getById('configShellPrice');
-const finalCtaPrice = getById('finalCtaPrice');
 const finalCtaSummary = getById('finalCtaSummary');
 const finalCtaTimeline = getById('finalCtaTimeline');
 const configBarCta = getById('configBarCta');
@@ -33,8 +31,8 @@ const PUSH_DELAY_MS = 520;
 const SHOW_CHOICE_DELAY_MS = 2000;
 const CHOICE_DELAY_MS = 4600;
 const RATE_PER_M2 = {
-  6: 54000,
-  8: 57000
+  6: 34000,
+  8: 37000
 };
 const FOUNDATION_RATE_PER_M2 = {
   none: 0,
@@ -125,9 +123,12 @@ function getConstructionTimelineLabel(state) {
 
 function updateSummaryLabel() {
   const compactTypeLabel = configuratorState.type === 'double' ? '2 машины' : '1 машина';
+  const foundationLabelMap = { none: 'без фундамента', pile: 'свайный', strip: 'ленточный', slab: 'плита' };
+  const foundationLabel = foundationLabelMap[configuratorState.foundation] || 'без фундамента';
+  const extrasCount = Object.values(configuratorState.extras).filter(Boolean).length;
+  const compactSummaryText = `${compactTypeLabel} · ${configuratorState.length} м · ${foundationLabel} · ${extrasCount} опций`;
   const wallLabel = WALL_COLOR_PRESETS[configuratorState.wallColorPreset]?.label || '—';
   const roofTrimLabel = ROOF_DETAIL_PRESETS[configuratorState.roofTrimColorPreset]?.label || '—';
-  const compactSummaryText = `${compactTypeLabel} · ${configuratorState.width}×${configuratorState.length} · ${wallLabel} / ${roofTrimLabel}`;
   const finalSummaryText = `${compactTypeLabel} · ${configuratorState.width}×${configuratorState.length} · ${wallLabel} / ${roofTrimLabel}`;
 
   if (configShellSummary) {
@@ -153,18 +154,8 @@ function calculateEstimatedPrice() {
   return basePrice + foundationPrice + extrasPrice;
 }
 
-function formatPrice(value) {
-  return `от ${new Intl.NumberFormat('ru-RU').format(Math.round(value))} ₽`;
-}
-
 function updatePriceLabel() {
-  const priceText = formatPrice(calculateEstimatedPrice());
-  if (configShellPrice) {
-    configShellPrice.textContent = priceText;
-  }
-  if (finalCtaPrice) {
-    finalCtaPrice.textContent = priceText;
-  }
+  calculateEstimatedPrice();
 }
 
 function refreshBottomBar() {
@@ -670,6 +661,20 @@ if (configBarCta && finalCtaScene) {
 }
 
 setupViewportStickyNormalization();
+
+if (configShell && !configShell.hidden) {
+  updateTypeButtonState();
+  updateLengthButtonState();
+  updateColorButtonState();
+  updateFoundationButtonState();
+  updateExtrasButtonState();
+  refreshBottomBar();
+
+  // ВАЖНО: небольшая задержка чтобы DOM успел отрисоваться
+  setTimeout(() => {
+    viewerBridge.loadByState();
+  }, 0);
+}
 
 if (configShellBar && finalCtaScene) {
   const finalSceneObserver = new IntersectionObserver(
