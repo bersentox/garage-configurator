@@ -348,48 +348,12 @@ function createViewerBridge() {
     resize();
     window.addEventListener('resize', resize);
 
-   let zoomPhase = 0;
-let isUserInteracting = false;
-
-renderer.domElement.addEventListener('pointerdown', () => {
-  isUserInteracting = true;
-}, { passive: true });
-
-renderer.domElement.addEventListener('pointerup', () => {
-  setTimeout(() => {
-  isUserInteracting = false;
-}, 500);
-}, { passive: true });
-
-renderer.domElement.addEventListener('pointercancel', () => {
-  isUserInteracting = false;
-}, { passive: true });
-
-const animate = () => {
-  if (!isUserInteracting) {
-    
-    zoomPhase += 0.004;
-
-const direction = camera.position.clone().sub(controls.target).normalize();
-const currentDistance = camera.position.distanceTo(controls.target);
-const targetDistance = currentDistance * 0.9985;
-
-    const clampedDistance = Math.max(
-      controls.minDistance,
-      Math.min(controls.maxDistance, targetDistance)
-    );
-
-    camera.position.copy(
-      controls.target.clone().add(direction.multiplyScalar(clampedDistance))
-    );
-  }
-
-  controls.update();
-  renderer.render(scene, camera);
-  requestAnimationFrame(animate);
-};
-
-animate();
+    const animate = () => {
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    };
+    animate();
 
     runtime = { THREE, scene, camera, controls, loader, setStatus, resize };
     return runtime;
@@ -400,7 +364,7 @@ animate();
     const size = bounds.getSize(new viewer.THREE.Vector3());
     const maxHorizontal = Math.max(size.x, size.z);
     const vertical = Math.max(size.y, 1);
-    const distance = Math.max(maxHorizontal * 1.3, vertical * 1.9, 7.4);
+    const distance = Math.max(maxHorizontal * 1.05, vertical * 1.6, 5.6);
     const eyeY = vertical * 0.5 + distance * 0.2;
     const eyeX = distance * 0.82;
     const eyeZ = distance * 1.03;
@@ -411,8 +375,8 @@ animate();
     viewer.camera.updateProjectionMatrix();
 
     viewer.controls.target.set(0, vertical * 0.35, 0);
-    viewer.controls.minDistance = distance * 0.72;
-    viewer.controls.maxDistance = distance * 1.34;
+    viewer.controls.minDistance = distance * 0.75;
+    viewer.controls.maxDistance = distance * 1.25;
     viewer.controls.update();
   }
 
