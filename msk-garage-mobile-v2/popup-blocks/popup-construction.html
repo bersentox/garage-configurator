@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Подробнее о конструкции</title>
+  <style>
+    .popup-construction {
+      --bg-start: #0f1625;
+      --bg-end: #1c2234;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-main: #f4f7ff;
+      --text-soft: #c1cadc;
+      --accent: #7fa5ff;
+      --eyebrow: #9db8ff;
+      --radius-xl: 20px;
+      --radius-md: 14px;
+      --shadow: 0 18px 45px rgba(5, 8, 16, 0.45);
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+      color: var(--text-main);
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      background: transparent;
+    }
+
+    .popup-construction,
+    .popup-construction * {
+      box-sizing: border-box;
+    }
+
+    .popup-construction .popup-shell {
+      position: relative;
+      padding: 18px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(160deg, var(--bg-start), var(--bg-end));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .popup-construction .section {
+      margin-top: 18px;
+    }
+
+    .popup-construction .section:first-child {
+      margin-top: 0;
+    }
+
+    .popup-construction .eyebrow {
+      margin: 0 0 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--eyebrow);
+    }
+
+    .popup-construction h1 {
+      margin: 0;
+      font-size: clamp(25px, 7vw, 34px);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-wrap: balance;
+    }
+
+    .popup-construction h2 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: #f8faff;
+    }
+
+    .popup-construction h3 {
+      margin: 0 0 6px;
+      font-size: 17px;
+      line-height: 1.3;
+      color: #f2f6ff;
+    }
+
+    .popup-construction p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.58;
+      color: var(--text-soft);
+    }
+
+    .popup-construction .lead {
+      margin-top: 10px;
+      max-width: 36ch;
+    }
+
+    .popup-construction .popup-visual {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 10px;
+      background: radial-gradient(
+        circle at center,
+        rgba(40, 60, 90, 0.4),
+        rgba(10, 15, 25, 0.9)
+      );
+    }
+
+    .popup-construction .popup-visual img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      opacity: 0.95;
+    }
+
+    .popup-construction .cards {
+      display: block;
+    }
+
+    .popup-construction .card {
+      padding: 13px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      margin-top: 10px;
+    }
+
+    .popup-construction .card:first-child {
+      margin-top: 0;
+    }
+
+    .popup-construction .benefits {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .popup-construction .benefits li {
+      margin-top: 9px;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.045);
+      color: #e8eefc;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .popup-construction .benefits li:first-child {
+      margin-top: 0;
+    }
+
+    .popup-construction .benefits li::before {
+      content: "•";
+      color: var(--accent);
+      margin-right: 8px;
+    }
+
+    .popup-construction .footer-note {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(127, 165, 255, 0.28);
+      background: linear-gradient(160deg, rgba(127, 165, 255, 0.12), rgba(127, 165, 255, 0.04));
+      color: #edf3ff;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <article class="popup-construction" aria-label="Подробнее о конструкции">
+    <div class="popup-shell">
+      <header class="section">
+        <p class="eyebrow">КОНСТРУКЦИЯ ГАРАЖА</p>
+        <h1>Почему конструкция важнее, чем просто размер</h1>
+        <p class="lead">Даже при одинаковой площади гаражи могут отличаться по ресурсу, удобству и стабильности.
+          Важно сразу выбрать надёжную базу под ваш реальный сценарий.</p>
+      </header>
+
+      <section class="section" aria-hidden="true">
+        <div class="popup-visual">
+          <img src="https://bersentox.github.io/garage-configurator/msk-garage-mobile-v2/images/garage-rend.webp" alt="Конструкция гаража">
+        </div>
+      </section>
+
+      <section class="section" aria-label="Принципы">
+        <h2>Ключевые принципы</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Жёсткость конструкции</h3>
+            <p>Каркас должен уверенно держать геометрию при ветровых и снеговых нагрузках, без деформаций и перекосов.</p>
+          </article>
+          <article class="card">
+            <h3>Сэндвич-панели</h3>
+            <p>Панели дают теплоизоляцию, аккуратный внешний вид и стабильный микроклимат для техники и хранения.</p>
+          </article>
+          <article class="card">
+            <h3>Сценарий использования</h3>
+            <p>Конструкция подбирается под задачи: только парковка, мастерская или хранение с постоянным доступом.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Выбор длины">
+        <h2>Как выбрать длину</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>6 м</h3>
+            <p>Компактный формат для базового использования и одного автомобиля без лишнего объёма.</p>
+          </article>
+          <article class="card">
+            <h3>8 м</h3>
+            <p>Универсальный вариант: больше свободы для хранения, обслуживания и ежедневного комфорта.</p>
+          </article>
+          <article class="card">
+            <h3>10 м</h3>
+            <p>Максимум функциональности: рабочая зона, крупное хранение и запас места под будущие задачи.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Преимущества">
+        <h2>Преимущества</h2>
+        <ul class="benefits">
+          <li>точная геометрия</li>
+          <li>аккуратная сборка</li>
+          <li>стабильность конструкции</li>
+          <li>удобство эксплуатации</li>
+          <li>долговечность</li>
+        </ul>
+      </section>
+
+      <footer class="section">
+        <p class="footer-note">Грамотно выбранная конструкция экономит бюджет на дистанции и делает гараж действительно удобным в ежедневном использовании.</p>
+      </footer>
+    </div>
+  </article>
+</body>
+</html>

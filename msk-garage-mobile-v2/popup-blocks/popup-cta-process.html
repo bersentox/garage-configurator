@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Что будет после заявки</title>
+  <style>
+    .popup-cta-process {
+      --bg-start: #0f1625;
+      --bg-end: #1c2335;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --text-main: #f3f7ff;
+      --text-soft: #c3ccdf;
+      --text-muted: #98a6c1;
+      --accent: #8faef7;
+      --accent-strong: #6e97f1;
+      --warn-bg: rgba(154, 171, 210, 0.14);
+      --warn-border: rgba(179, 197, 238, 0.36);
+      --radius-xl: 20px;
+      --radius-md: 14px;
+      --shadow: 0 18px 44px rgba(4, 8, 18, 0.42);
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      background: transparent;
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .popup-cta-process,
+    .popup-cta-process * {
+      box-sizing: border-box;
+    }
+
+    .popup-cta-process .popup-cta-process__shell {
+      position: relative;
+      padding: 18px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(160deg, var(--bg-start), var(--bg-end));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .popup-cta-process .popup-cta-process__section {
+      margin-top: 20px;
+    }
+
+    .popup-cta-process .popup-cta-process__section:first-child {
+      margin-top: 0;
+    }
+
+    .popup-cta-process .popup-cta-process__eyebrow {
+      margin: 0 0 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .popup-cta-process .popup-cta-process__title {
+      margin: 0;
+      font-size: clamp(25px, 7vw, 34px);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-wrap: balance;
+    }
+
+    .popup-cta-process .popup-cta-process__lead {
+      margin: 10px 0 0;
+      max-width: 40ch;
+      font-size: 15px;
+      line-height: 1.58;
+      color: var(--text-soft);
+    }
+
+    .popup-cta-process .popup-cta-process__section-title {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: #f8fbff;
+    }
+
+    .popup-cta-process .popup-cta-process__text {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.58;
+      color: var(--text-soft);
+    }
+
+    .popup-cta-process .popup-cta-process__card {
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+    }
+
+    .popup-cta-process .popup-cta-process__card:first-child {
+      margin-top: 0;
+    }
+
+    .popup-cta-process .popup-cta-process__card-title {
+      margin: 0 0 6px;
+      font-size: 17px;
+      line-height: 1.3;
+      color: #f1f6ff;
+    }
+
+    .popup-cta-process .popup-cta-process__accent {
+      border: 1px solid var(--warn-border);
+      background: linear-gradient(160deg, var(--warn-bg), rgba(154, 171, 210, 0.06));
+    }
+
+    .popup-cta-process .popup-cta-process__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .popup-cta-process .popup-cta-process__list li {
+      margin-top: 6px;
+      font-size: 14px;
+      line-height: 1.4;
+      color: #e8f0ff;
+    }
+
+    .popup-cta-process .popup-cta-process__list li:first-child {
+      margin-top: 0;
+    }
+
+    .popup-cta-process .popup-cta-process__list li::before {
+      content: "•";
+      color: #c5d8ff;
+      margin-right: 8px;
+    }
+
+    .popup-cta-process .popup-cta-process__trust-title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.4;
+      color: #f2f7ff;
+    }
+
+    .popup-cta-process .popup-cta-process__trust-sub {
+      margin: 7px 0 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text-soft);
+    }
+
+    .popup-cta-process .popup-cta-process__button {
+      margin-top: 12px;
+      display: block;
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 11px;
+      background: linear-gradient(160deg, var(--accent), var(--accent-strong));
+      color: #ffffff;
+      text-decoration: none;
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .popup-cta-process .popup-cta-process__secondary {
+      margin-top: 10px;
+      display: inline-block;
+      color: #d8e4ff;
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 1.4;
+      border-bottom: 1px solid rgba(216, 228, 255, 0.45);
+      padding-bottom: 2px;
+    }
+
+    .popup-cta-process .popup-cta-process__disclaimer {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <article class="popup-cta-process" aria-label="Что будет после заявки">
+    <div class="popup-cta-process__shell">
+      <header class="popup-cta-process__section">
+        <p class="popup-cta-process__eyebrow">ПОСЛЕ ЗАЯВКИ</p>
+        <h1 class="popup-cta-process__title">Что будет после заявки</h1>
+        <p class="popup-cta-process__lead">Объясняем, что происходит после клика на расчёт — без давления, лишних звонков и навязывания.</p>
+      </header>
+
+      <section class="popup-cta-process__section" aria-label="Главный акцент">
+        <article class="popup-cta-process__card popup-cta-process__accent">
+          <h2 class="popup-cta-process__section-title">Это не заявка на покупку</h2>
+          <p class="popup-cta-process__text">Сначала мы уточняем участок, задачу и комплектацию, чтобы подготовить расчёт под ваш реальный сценарий.</p>
+        </article>
+      </section>
+
+      <section class="popup-cta-process__section" aria-label="Что мы уточним">
+        <h2 class="popup-cta-process__section-title">Что мы уточним</h2>
+        <article class="popup-cta-process__card">
+          <h3 class="popup-cta-process__card-title">Участок</h3>
+          <p class="popup-cta-process__text">Рельеф, подъезд, основание и условия установки.</p>
+        </article>
+        <article class="popup-cta-process__card">
+          <h3 class="popup-cta-process__card-title">Размер и сценарий</h3>
+          <p class="popup-cta-process__text">На одну или две машины, хранение, мастерская или частое использование.</p>
+        </article>
+        <article class="popup-cta-process__card">
+          <h3 class="popup-cta-process__card-title">Комплектация</h3>
+          <p class="popup-cta-process__text">Ворота, цвета, фундамент и нужные опции.</p>
+        </article>
+        <article class="popup-cta-process__card">
+          <h3 class="popup-cta-process__card-title">Сроки и бюджет</h3>
+          <p class="popup-cta-process__text">Подберём решение без лишнего навязывания.</p>
+        </article>
+      </section>
+
+      <section class="popup-cta-process__section" aria-label="Что вы получите">
+        <h2 class="popup-cta-process__section-title">Что вы получите</h2>
+        <article class="popup-cta-process__card popup-cta-process__accent">
+          <ul class="popup-cta-process__list">
+            <li>понятную стоимость</li>
+            <li>ориентир по срокам</li>
+            <li>подходящее решение под участок</li>
+            <li>понимание, за что вы платите</li>
+          </ul>
+          <p class="popup-cta-process__text">Вы сразу понимаете, во что вкладываетесь и какой будет результат.</p>
+        </article>
+      </section>
+
+      <section class="popup-cta-process__section" aria-label="Блок доверия">
+        <article class="popup-cta-process__card">
+          <p class="popup-cta-process__trust-title">540+ реализованных проектов в Москве и области</p>
+          <p class="popup-cta-process__trust-sub">Работаем с частными участками и подбираем решение под реальные условия, а не “как у всех”.</p>
+        </article>
+      </section>
+
+      <section class="popup-cta-process__section" aria-label="CTA">
+        <article class="popup-cta-process__card">
+          <h2 class="popup-cta-process__section-title">Можно начать с расчёта</h2>
+          <p class="popup-cta-process__text">Оставьте заявку — уточним вводные и предложим оптимальный вариант под ваш гараж.</p>
+          <a href="#form" class="popup-cta-process__button">Получить расчёт под мой участок</a>
+          <a href="tel:+79619640377" class="popup-cta-process__secondary">Позвонить сейчас</a>
+        </article>
+      </section>
+
+      <section class="popup-cta-process__section" aria-label="Дисклеймер">
+        <p class="popup-cta-process__disclaimer">Расчёт не обязывает к покупке. Детали уточняются после обсуждения участка, размеров и комплектации.</p>
+      </section>
+    </div>
+  </article>
+</body>
+</html>
