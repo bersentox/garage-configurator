@@ -1,6 +1,6 @@
 const root = document.getElementById('garage-mobile-v2-root');
 const getById = (id) => (root ? root.querySelector(`#${id}`) : document.getElementById(id));
-const queryAll = (selector) => (root ? root.querySelectorAll(selector) : document.querySelectorAll(selector));
+const queryAll = (selector) => (root ? [...root.querySelectorAll(selector)] : [...document.querySelectorAll(selector)]);
 
 const hero = getById('hero');
 const openBtn = getById('openBtn');
@@ -8,7 +8,6 @@ const garageGateSound = getById('garageGateSound');
 const sceneChoice = getById('sceneChoice');
 const configShell = getById('configShell');
 const configShellViewport = getById('configShellViewport');
-const configShellBar = getById('configShellBar');
 const configShellSummary = getById('configShellSummary');
 const finalCtaSummary = getById('finalCtaSummary');
 const finalCtaTimeline = getById('finalCtaTimeline');
@@ -16,30 +15,33 @@ const configBarCta = getById('configBarCta');
 const finalCtaScene = getById('finalCtaScene');
 const configShellViewerStatus = getById('configShellViewerStatus');
 const garage3dViewer = getById('garage3dViewer');
+
 const typeButtonsRoot = getById('configTypeButtons');
 const typeButtons = typeButtonsRoot ? [...typeButtonsRoot.querySelectorAll('[data-type]')] : [];
 const lengthButtonsRoot = getById('configLengthButtons');
 const lengthButtons = lengthButtonsRoot ? [...lengthButtonsRoot.querySelectorAll('[data-length]')] : [];
-const colorButtons = [...queryAll('.config-shell-color-btn')];
+const colorButtons = queryAll('.config-shell-color-btn');
 const foundationButtonsRoot = getById('foundationButtons');
 const foundationButtons = foundationButtonsRoot ? [...foundationButtonsRoot.querySelectorAll('[data-foundation]')] : [];
 const extrasButtonsRoot = getById('extrasButtons');
 const extrasButtons = extrasButtonsRoot ? [...extrasButtonsRoot.querySelectorAll('[data-extra]')] : [];
 const choiceButtons = sceneChoice ? [...sceneChoice.querySelectorAll('[data-garage-option]')] : [];
 
-const PUSH_DELAY_MS = 520;
 const SHOW_CHOICE_DELAY_MS = 2000;
-const CHOICE_DELAY_MS = 4600;
+const HIDE_OPEN_BUTTON_DELAY_MS = 4600;
+
 const RATE_PER_M2 = {
   6: 34000,
   8: 37000
 };
+
 const FOUNDATION_RATE_PER_M2 = {
   none: 0,
   pile: 6500,
   strip: 5500,
   slab: 4500
 };
+
 const EXTRA_PRICE = {
   automation: 25000,
   electrics: 60000,
@@ -47,6 +49,7 @@ const EXTRA_PRICE = {
   ventilation: 6000,
   drainage: 25000
 };
+
 const MODEL_BY_SIZE = {
   '6x6': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_6x6.glb',
   '6x8': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_6x8.glb',
@@ -55,6 +58,7 @@ const MODEL_BY_SIZE = {
   '8x8': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_8x8.glb',
   '8x10': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_8x10.glb'
 };
+
 const BUILD_TIMELINE_BY_SIZE = {
   '6x6': '7–10 дней',
   '6x8': '8–12 дней',
@@ -63,37 +67,19 @@ const BUILD_TIMELINE_BY_SIZE = {
   '8x8': '10–14 дней',
   '8x10': '12–16 дней'
 };
+
 const WALL_COLOR_PRESETS = {
-  sand: {
-    label: 'песочный',
-    wall: '#d1bc97'
-  },
-  graphite: {
-    label: 'графит',
-    wall: '#6a7280'
-  },
-  grey: {
-    label: 'серый',
-    wall: '#8a919c'
-  }
+  sand: { label: 'песочный', wall: '#d1bc97' },
+  graphite: { label: 'графит', wall: '#6a7280' },
+  grey: { label: 'серый', wall: '#8a919c' }
 };
+
 const ROOF_DETAIL_PRESETS = {
-  graphite: {
-    label: 'графит',
-    roofTrim: '#2d3540',
-    gate: '#2d3540'
-  },
-  chocolate: {
-    label: 'шоколадный',
-    roofTrim: '#4a3428',
-    gate: '#4a3428'
-  },
-  black: {
-    label: 'чёрный',
-    roofTrim: '#1a1a1a',
-    gate: '#1a1a1a'
-  }
+  graphite: { label: 'графит', roofTrim: '#2d3540', gate: '#2d3540' },
+  chocolate: { label: 'шоколадный', roofTrim: '#4a3428', gate: '#4a3428' },
+  black: { label: 'чёрный', roofTrim: '#1a1a1a', gate: '#1a1a1a' }
 };
+
 const configuratorState = {
   type: 'single',
   width: 6,
@@ -110,6 +96,7 @@ const configuratorState = {
     drainage: false
   }
 };
+
 function resolveModelKey(width, length) {
   const sizeKey = `${width}x${length}`;
   return MODEL_BY_SIZE[sizeKey] ? sizeKey : null;
@@ -119,6 +106,17 @@ function getConstructionTimelineLabel(state) {
   const sizeKey = `${state.width}x${state.length}`;
   const timeline = BUILD_TIMELINE_BY_SIZE[sizeKey] || BUILD_TIMELINE_BY_SIZE['6x6'];
   return `Средний срок строительства — ${timeline}`;
+}
+
+function calculateEstimatedPrice() {
+  const ratePerM2 = RATE_PER_M2[configuratorState.width] || RATE_PER_M2[6];
+  const basePrice = configuratorState.width * configuratorState.length * ratePerM2;
+  const foundationRatePerM2 = FOUNDATION_RATE_PER_M2[configuratorState.foundation] ?? 0;
+  const foundationPrice = configuratorState.width * configuratorState.length * foundationRatePerM2;
+  const extrasPrice = Object.entries(configuratorState.extras).reduce((sum, [key, enabled]) => {
+    return sum + (enabled ? (EXTRA_PRICE[key] || 0) : 0);
+  }, 0);
+  return basePrice + foundationPrice + extrasPrice;
 }
 
 function updateSummaryLabel() {
@@ -131,36 +129,72 @@ function updateSummaryLabel() {
   const roofTrimLabel = ROOF_DETAIL_PRESETS[configuratorState.roofTrimColorPreset]?.label || '—';
   const finalSummaryText = `${compactTypeLabel} · ${configuratorState.width}×${configuratorState.length} · ${wallLabel} / ${roofTrimLabel}`;
 
-  if (configShellSummary) {
-    configShellSummary.textContent = compactSummaryText;
-  }
+  if (configShellSummary) configShellSummary.textContent = compactSummaryText;
+  if (finalCtaSummary) finalCtaSummary.textContent = finalSummaryText;
+  if (finalCtaTimeline) finalCtaTimeline.textContent = getConstructionTimelineLabel(configuratorState);
 
-  if (finalCtaSummary) {
-    finalCtaSummary.textContent = finalSummaryText;
-  }
-
-  if (finalCtaTimeline) {
-    finalCtaTimeline.textContent = getConstructionTimelineLabel(configuratorState);
-  }
-}
-
-function calculateEstimatedPrice() {
-  const ratePerM2 = RATE_PER_M2[configuratorState.width] || RATE_PER_M2[6];
-  const basePrice = configuratorState.width * configuratorState.length * ratePerM2;
-  const foundationRatePerM2 = FOUNDATION_RATE_PER_M2[configuratorState.foundation] ?? 0;
-  const foundationPrice = configuratorState.width * configuratorState.length * foundationRatePerM2;
-  const extrasPrice = Object.entries(configuratorState.extras)
-    .reduce((sum, [key, enabled]) => sum + (enabled ? (EXTRA_PRICE[key] || 0) : 0), 0);
-  return basePrice + foundationPrice + extrasPrice;
-}
-
-function updatePriceLabel() {
   calculateEstimatedPrice();
 }
 
-function refreshBottomBar() {
+function updateLengthButtonState() {
+  lengthButtons.forEach((button) => {
+    const isActive = Number(button.dataset.length) === configuratorState.length;
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function updateTypeButtonState() {
+  typeButtons.forEach((button) => {
+    const isActive = button.dataset.type === configuratorState.type;
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function updateColorButtonState() {
+  colorButtons.forEach((button) => {
+    const group = button.dataset.colorGroup;
+    const preset = button.dataset.colorPreset;
+    const isActive = (
+      (group === 'wall' && preset === configuratorState.wallColorPreset) ||
+      (group === 'roofTrim' && preset === configuratorState.roofTrimColorPreset)
+    );
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function updateFoundationButtonState() {
+  foundationButtons.forEach((button) => {
+    const isActive = button.dataset.foundation === configuratorState.foundation;
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function updateExtrasButtonState() {
+  extrasButtons.forEach((button) => {
+    const key = button.dataset.extra;
+    const isActive = Boolean(key && configuratorState.extras[key]);
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function refreshControls() {
+  updateTypeButtonState();
+  updateLengthButtonState();
+  updateColorButtonState();
+  updateFoundationButtonState();
+  updateExtrasButtonState();
   updateSummaryLabel();
-  updatePriceLabel();
+}
+
+function getActiveColorSet() {
+  const wallPreset = WALL_COLOR_PRESETS[configuratorState.wallColorPreset] || WALL_COLOR_PRESETS.sand;
+  const roofTrimPreset = ROOF_DETAIL_PRESETS[configuratorState.roofTrimColorPreset] || ROOF_DETAIL_PRESETS.graphite;
+  const gatePreset = ROOF_DETAIL_PRESETS[configuratorState.gateColorPreset] || roofTrimPreset;
+  return {
+    wall: wallPreset.wall,
+    roofTrim: roofTrimPreset.roofTrim,
+    gate: gatePreset.gate
+  };
 }
 
 function setupViewportStickyNormalization() {
@@ -207,58 +241,6 @@ function setupViewportStickyNormalization() {
   }
 }
 
-function updateLengthButtonState() {
-  lengthButtons.forEach((button) => {
-    const isActive = Number(button.dataset.length) === configuratorState.length;
-    button.setAttribute('aria-pressed', String(isActive));
-  });
-}
-
-function updateTypeButtonState() {
-  typeButtons.forEach((button) => {
-    const isActive = button.dataset.type === configuratorState.type;
-    button.setAttribute('aria-pressed', String(isActive));
-  });
-}
-
-function updateColorButtonState() {
-  colorButtons.forEach((button) => {
-    const group = button.dataset.colorGroup;
-    const preset = button.dataset.colorPreset;
-    const isActive = (
-      (group === 'wall' && preset === configuratorState.wallColorPreset) ||
-      (group === 'roofTrim' && preset === configuratorState.roofTrimColorPreset)
-    );
-    button.setAttribute('aria-pressed', String(isActive));
-  });
-}
-
-function getActiveColorSet() {
-  const wallPreset = WALL_COLOR_PRESETS[configuratorState.wallColorPreset] || WALL_COLOR_PRESETS.sand;
-  const roofTrimPreset = ROOF_DETAIL_PRESETS[configuratorState.roofTrimColorPreset] || ROOF_DETAIL_PRESETS.graphite;
-  const gatePreset = ROOF_DETAIL_PRESETS[configuratorState.gateColorPreset] || roofTrimPreset;
-  return {
-    wall: wallPreset.wall,
-    roofTrim: roofTrimPreset.roofTrim,
-    gate: gatePreset.gate
-  };
-}
-
-function updateFoundationButtonState() {
-  foundationButtons.forEach((button) => {
-    const isActive = button.dataset.foundation === configuratorState.foundation;
-    button.setAttribute('aria-pressed', String(isActive));
-  });
-}
-
-function updateExtrasButtonState() {
-  extrasButtons.forEach((button) => {
-    const key = button.dataset.extra;
-    const isActive = Boolean(key && configuratorState.extras[key]);
-    button.setAttribute('aria-pressed', String(isActive));
-  });
-}
-
 function createViewerBridge() {
   let runtime = null;
   let activeModel = null;
@@ -267,9 +249,7 @@ function createViewerBridge() {
   let latestLoadToken = 0;
 
   const setStatus = (message) => {
-    if (configShellViewerStatus) {
-      configShellViewerStatus.textContent = message;
-    }
+    if (configShellViewerStatus) configShellViewerStatus.textContent = message;
   };
 
   async function ensureRuntime() {
@@ -314,9 +294,7 @@ function createViewerBridge() {
     };
 
     const resumeAutoRotateWithDelay = () => {
-      if (autoRotateResumeTimer !== null) {
-        window.clearTimeout(autoRotateResumeTimer);
-      }
+      if (autoRotateResumeTimer !== null) window.clearTimeout(autoRotateResumeTimer);
       autoRotateResumeTimer = window.setTimeout(() => {
         controls.autoRotate = true;
         autoRotateResumeTimer = null;
@@ -338,13 +316,15 @@ function createViewerBridge() {
     scene.add(hemiLight, keyLight, fillLight);
 
     const loader = new GLTFLoader();
+
     const resize = () => {
-      const width = garage3dViewer.clientWidth;
-      const height = garage3dViewer.clientHeight;
-      camera.aspect = width / Math.max(height, 1);
+      const width = Math.max(garage3dViewer.clientWidth, 1);
+      const height = Math.max(garage3dViewer.clientHeight, 1);
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);
     };
+
     resize();
     window.addEventListener('resize', resize);
 
@@ -353,10 +333,9 @@ function createViewerBridge() {
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
     };
-
     animate();
 
-    runtime = { THREE, scene, camera, controls, loader, setStatus, resize };
+    runtime = { THREE, scene, camera, controls, loader, resize };
     return runtime;
   }
 
@@ -365,27 +344,17 @@ function createViewerBridge() {
     const size = bounds.getSize(new viewer.THREE.Vector3());
     const maxHorizontal = Math.max(size.x, size.z);
     const vertical = Math.max(size.y, 1);
-    const distance = Math.max(maxHorizontal * 1.3, vertical * 1.9, 7.4);
-    const eyeY = vertical * 0.5 + distance * 0.2;
-    const eyeX = distance * 0.82;
-    const eyeZ = distance * 1.03;
+    const distance = Math.max(maxHorizontal * 1.3, vertical * 1.9, 7);
 
+    viewer.controls.target.set(0, vertical * 0.5, 0);
+    viewer.camera.position.set(distance * 0.78, distance * 0.54, distance * 0.92);
     viewer.camera.near = 0.1;
-    viewer.camera.far = Math.max(120, distance * 18);
+    viewer.camera.far = distance * 5;
     viewer.camera.updateProjectionMatrix();
-
-    viewer.controls.target.set(0, vertical * 0.35, 0);
-    viewer.controls.minDistance = distance * 0.72;
-    viewer.controls.maxDistance = distance * 1.34;
-
-    const closeViewDirection = new viewer.THREE.Vector3(eyeX, eyeY, eyeZ)
-      .sub(viewer.controls.target)
-      .normalize();
-
-    viewer.camera.position.copy(
-      viewer.controls.target.clone().add(closeViewDirection.multiplyScalar(viewer.controls.minDistance))
-    );
+    viewer.controls.minDistance = Math.max(distance * 0.45, 4.5);
+    viewer.controls.maxDistance = distance * 2.4;
     viewer.controls.update();
+    viewer.resize();
   }
 
   function collectModelParts(viewer, model) {
@@ -393,7 +362,6 @@ function createViewerBridge() {
 
     model.traverse((node) => {
       if (!node.isMesh) return;
-
       const sourceName = `${node.name || ''} ${node.material?.name || ''}`.toLowerCase();
 
       if (/gate|door|ворот/.test(sourceName)) {
@@ -422,30 +390,25 @@ function createViewerBridge() {
     return partMap;
   }
 
-  function tintMesh(viewer, mesh, color) {
+  function tintMesh(mesh, color) {
     if (!mesh?.material || !color) return;
 
-    if (Array.isArray(mesh.material)) {
-      mesh.material = mesh.material.map((material) => {
-        const cloned = material.clone();
-        if (cloned.color) cloned.color.set(color);
-        return cloned;
-      });
-      return;
-    }
+    const tintMaterial = (material) => {
+      const cloned = material.clone();
+      if (cloned.color) cloned.color.set(color);
+      return cloned;
+    };
 
-    mesh.material = mesh.material.clone();
-    if (mesh.material.color) {
-      mesh.material.color.set(color);
-    }
+    mesh.material = Array.isArray(mesh.material)
+      ? mesh.material.map(tintMaterial)
+      : tintMaterial(mesh.material);
   }
 
-  function applyColors(viewer, colorSet = activeColorSet) {
+  function applyColors(colorSet = activeColorSet) {
     activeColorSet = colorSet;
-
-    activeParts.wall.forEach((mesh) => tintMesh(viewer, mesh, colorSet.wall));
-    activeParts.roofTrim.forEach((mesh) => tintMesh(viewer, mesh, colorSet.roofTrim));
-    activeParts.gate.forEach((mesh) => tintMesh(viewer, mesh, colorSet.gate));
+    activeParts.wall.forEach((mesh) => tintMesh(mesh, colorSet.wall));
+    activeParts.roofTrim.forEach((mesh) => tintMesh(mesh, colorSet.roofTrim));
+    activeParts.gate.forEach((mesh) => tintMesh(mesh, colorSet.gate));
   }
 
   async function loadByState() {
@@ -467,9 +430,7 @@ function createViewerBridge() {
       (gltf) => {
         if (currentToken !== latestLoadToken) return;
 
-        if (activeModel) {
-          viewer.scene.remove(activeModel);
-        }
+        if (activeModel) viewer.scene.remove(activeModel);
 
         const model = gltf.scene;
         const box = new viewer.THREE.Box3().setFromObject(model);
@@ -481,7 +442,7 @@ function createViewerBridge() {
         activeModel = model;
         viewer.scene.add(model);
         activeParts = collectModelParts(viewer, model);
-        applyColors(viewer, activeColorSet);
+        applyColors(getActiveColorSet());
         frameModelForMobile(viewer, model);
         setStatus(`Модель ${modelKey} загружена`);
       },
@@ -497,7 +458,7 @@ function createViewerBridge() {
     activeColorSet = getActiveColorSet();
     const viewer = await ensureRuntime();
     if (!viewer || !activeModel) return;
-    applyColors(viewer, activeColorSet);
+    applyColors(activeColorSet);
   }
 
   return { loadByState, applyColorsByState };
@@ -509,9 +470,7 @@ if (hero && openBtn) {
   let timers = [];
 
   openBtn.addEventListener('click', () => {
-    if (hero.classList.contains('opening') || hero.classList.contains('pushing') || hero.classList.contains('choice')) {
-      return;
-    }
+    if (hero.classList.contains('opening') || hero.classList.contains('show-choice')) return;
 
     if (garageGateSound) {
       garageGateSound.currentTime = 0;
@@ -522,32 +481,23 @@ if (hero && openBtn) {
     timers.forEach((timerId) => clearTimeout(timerId));
     timers = [];
 
-    hero.classList.remove('idle');
+    hero.classList.remove('idle', 'pushing', 'choice');
     hero.classList.add('open', 'opening');
     openBtn.setAttribute('aria-pressed', 'true');
 
-    if (sceneChoice) {
-      sceneChoice.setAttribute('aria-hidden', 'true');
-    }
+    if (sceneChoice) sceneChoice.setAttribute('aria-hidden', 'true');
 
     timers.push(setTimeout(() => {
-      hero.classList.add('pushing');
-    }, PUSH_DELAY_MS));
-
-    timers.push(setTimeout(() => {
+      hero.classList.remove('pushing', 'choice');
       hero.classList.add('show-choice');
-
-      if (sceneChoice) {
-        sceneChoice.setAttribute('aria-hidden', 'false');
-      }
+      if (sceneChoice) sceneChoice.setAttribute('aria-hidden', 'false');
     }, SHOW_CHOICE_DELAY_MS));
 
     timers.push(setTimeout(() => {
-      hero.classList.remove('opening', 'pushing');
-      hero.classList.add('choice');
+      hero.classList.remove('opening', 'pushing', 'choice');
       openBtn.setAttribute('aria-hidden', 'true');
       openBtn.setAttribute('tabindex', '-1');
-    }, CHOICE_DELAY_MS));
+    }, HIDE_OPEN_BUTTON_DELAY_MS));
   });
 }
 
@@ -568,132 +518,85 @@ if (configShell && choiceButtons.length) {
         choiceButton.setAttribute('aria-pressed', String(choiceButton === button));
       });
 
-      updateTypeButtonState();
-      updateLengthButtonState();
-      updateColorButtonState();
-      updateFoundationButtonState();
-      updateExtrasButtonState();
-      refreshBottomBar();
-
+      refreshControls();
       await viewerBridge.loadByState();
       configShell.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 }
 
-if (typeButtons.length) {
-  typeButtons.forEach((button) => {
-    button.addEventListener('click', async () => {
-      const nextType = button.dataset.type;
-      if (!nextType || nextType === configuratorState.type) return;
+typeButtons.forEach((button) => {
+  button.addEventListener('click', async () => {
+    const nextType = button.dataset.type;
+    if (!nextType || nextType === configuratorState.type) return;
 
-      const isDouble = nextType === 'double';
-      configuratorState.type = isDouble ? 'double' : 'single';
-      configuratorState.width = isDouble ? 8 : 6;
+    const isDouble = nextType === 'double';
+    configuratorState.type = nextType;
+    configuratorState.width = isDouble ? 8 : 6;
 
-      updateTypeButtonState();
-      refreshBottomBar();
-
-      await viewerBridge.loadByState();
-    });
+    refreshControls();
+    await viewerBridge.loadByState();
   });
-}
+});
 
-if (lengthButtons.length) {
-  lengthButtons.forEach((button) => {
-    button.addEventListener('click', async () => {
-      const nextLength = Number(button.dataset.length);
-      if (!nextLength || nextLength === configuratorState.length) return;
+lengthButtons.forEach((button) => {
+  button.addEventListener('click', async () => {
+    const nextLength = Number(button.dataset.length);
+    if (!nextLength || nextLength === configuratorState.length) return;
 
-      configuratorState.length = nextLength;
-      updateLengthButtonState();
-      refreshBottomBar();
-      await viewerBridge.loadByState();
-    });
+    configuratorState.length = nextLength;
+
+    refreshControls();
+    await viewerBridge.loadByState();
   });
-}
+});
 
-if (colorButtons.length) {
-  colorButtons.forEach((button) => {
-    button.addEventListener('click', async () => {
-      const colorGroup = button.dataset.colorGroup;
-      const colorPreset = button.dataset.colorPreset;
-      if (!colorGroup || !colorPreset) return;
+colorButtons.forEach((button) => {
+  button.addEventListener('click', async () => {
+    const group = button.dataset.colorGroup;
+    const preset = button.dataset.colorPreset;
+    if (!group || !preset) return;
 
-      if (colorGroup === 'wall' && WALL_COLOR_PRESETS[colorPreset]) {
-        configuratorState.wallColorPreset = colorPreset;
-      } else if (colorGroup === 'roofTrim' && ROOF_DETAIL_PRESETS[colorPreset]) {
-        configuratorState.roofTrimColorPreset = colorPreset;
-        configuratorState.gateColorPreset = colorPreset;
-      } else {
-        return;
-      }
+    if (group === 'wall') {
+      configuratorState.wallColorPreset = preset;
+    }
 
-      updateColorButtonState();
-      refreshBottomBar();
-      await viewerBridge.applyColorsByState();
-    });
+    if (group === 'roofTrim') {
+      configuratorState.roofTrimColorPreset = preset;
+      configuratorState.gateColorPreset = preset;
+    }
+
+    refreshControls();
+    await viewerBridge.applyColorsByState();
   });
-}
+});
 
-if (foundationButtons.length) {
-  foundationButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      const nextFoundation = button.dataset.foundation;
-      if (!nextFoundation || nextFoundation === configuratorState.foundation) return;
+foundationButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const nextFoundation = button.dataset.foundation;
+    if (!nextFoundation || nextFoundation === configuratorState.foundation) return;
 
-      configuratorState.foundation = nextFoundation;
-      updateFoundationButtonState();
-      refreshBottomBar();
-    });
+    configuratorState.foundation = nextFoundation;
+    refreshControls();
   });
-}
+});
 
-if (extrasButtons.length) {
-  extrasButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      const extraKey = button.dataset.extra;
-      if (!extraKey || !(extraKey in configuratorState.extras)) return;
+extrasButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const extraKey = button.dataset.extra;
+    if (!extraKey || !(extraKey in configuratorState.extras)) return;
 
-      configuratorState.extras[extraKey] = !configuratorState.extras[extraKey];
-      updateExtrasButtonState();
-      refreshBottomBar();
-    });
+    configuratorState.extras[extraKey] = !configuratorState.extras[extraKey];
+    refreshControls();
   });
-}
+});
 
 if (configBarCta && finalCtaScene) {
   configBarCta.addEventListener('click', () => {
-    finalCtaScene.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    finalCtaScene.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 }
 
+refreshControls();
 setupViewportStickyNormalization();
-
-if (configShell && !configShell.hidden) {
-  updateTypeButtonState();
-  updateLengthButtonState();
-  updateColorButtonState();
-  updateFoundationButtonState();
-  updateExtrasButtonState();
-  refreshBottomBar();
-
-  // ВАЖНО: небольшая задержка чтобы DOM успел отрисоваться
-  setTimeout(() => {
-    viewerBridge.loadByState();
-  }, 0);
-}
-
-if (configShellBar && finalCtaScene) {
-  const finalSceneObserver = new IntersectionObserver(
-    ([entry]) => {
-      configShellBar.classList.toggle('is-hidden', entry.isIntersecting);
-    },
-    {
-      root: null,
-      threshold: 0.35
-    }
-  );
-
-  finalSceneObserver.observe(finalCtaScene);
-}
+viewerBridge.loadByState();
