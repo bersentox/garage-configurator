@@ -1,0 +1,180 @@
+/* Desktop hero remote CTA experiment: keep remote shape, make it larger, brighter and animated. */
+
+.garage-remote {
+  width: clamp(104px, 7.2vw, 124px);
+  min-height: clamp(156px, 10.6vw, 186px);
+  bottom: 30.5%;
+  padding: clamp(10px, 0.8vw, 14px) clamp(10px, 0.8vw, 14px);
+  border-radius: clamp(24px, 1.8vw, 32px);
+  border: 1px solid rgba(255, 228, 150, 0.72);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0) 28%),
+    linear-gradient(180deg, #ffbf4f 0%, #e97814 48%, #681b0a 100%);
+  color: #fff7df;
+  gap: clamp(12px, 0.9vw, 16px);
+  overflow: visible;
+  box-shadow:
+    0 10px 0 rgba(91, 35, 0, 0.92),
+    0 26px 46px rgba(0, 0, 0, 0.56),
+    0 0 34px rgba(255, 128, 24, 0.48),
+    0 0 78px rgba(255, 83, 34, 0.24),
+    inset 0 2px 0 rgba(255, 255, 255, 0.68),
+    inset 0 -4px 0 rgba(53, 13, 0, 0.34);
+  animation: remoteHeartbeat 1.85s ease-in-out infinite;
+  transition: filter 0.16s ease, box-shadow 0.16s ease;
+}
+
+.garage-remote::before {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at center, rgba(255, 145, 35, 0.45) 0%, rgba(255, 99, 28, 0.22) 45%, rgba(255, 99, 28, 0) 72%);
+  opacity: 0;
+  filter: blur(8px);
+  z-index: -1;
+  pointer-events: none;
+  animation: remoteHaloHeartbeat 1.85s ease-in-out infinite;
+}
+
+.garage-remote:hover {
+  filter: brightness(1.08) saturate(1.08);
+  box-shadow:
+    0 10px 0 rgba(91, 35, 0, 0.92),
+    0 30px 54px rgba(0, 0, 0, 0.6),
+    0 0 44px rgba(255, 146, 35, 0.58),
+    0 0 92px rgba(255, 84, 34, 0.32),
+    inset 0 2px 0 rgba(255, 255, 255, 0.72),
+    inset 0 -4px 0 rgba(53, 13, 0, 0.34);
+}
+
+.garage-remote:active {
+  animation: none;
+  transform: translateX(-50%) translateY(7px) scale(1.04);
+  filter: brightness(0.98);
+  box-shadow:
+    0 3px 0 rgba(91, 35, 0, 0.9),
+    0 16px 30px rgba(0, 0, 0, 0.46),
+    0 0 30px rgba(255, 128, 24, 0.42),
+    inset 0 2px 0 rgba(255, 255, 255, 0.58),
+    inset 0 -2px 0 rgba(53, 13, 0, 0.26);
+}
+
+.garage-scene.open .garage-remote {
+  animation: none;
+  transform: translateX(-50%) scale(1.02);
+}
+
+.garage-scene.open .garage-remote::before {
+  animation: none;
+  opacity: 0.22;
+}
+
+.garage-remote-dot {
+  width: clamp(34px, 2.3vw, 42px);
+  height: clamp(34px, 2.3vw, 42px);
+  border: 2px solid rgba(226, 255, 235, 0.86);
+  background: radial-gradient(circle at 35% 30%, #f4fff6 0%, #8fffad 35%, #20dd6a 68%, #068035 100%);
+  box-shadow:
+    0 0 12px rgba(120, 255, 165, 0.86),
+    0 0 32px rgba(41, 230, 105, 0.62),
+    0 0 62px rgba(41, 230, 105, 0.34);
+  animation: remoteLedAlarm 0.95s ease-in-out infinite;
+}
+
+.garage-remote-line {
+  width: clamp(30px, 2vw, 38px);
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 242, 205, 0.82);
+  box-shadow: 0 0 10px rgba(255, 230, 160, 0.34);
+}
+
+.garage-remote-label {
+  font-size: clamp(18px, 1.3vw, 23px);
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+@keyframes remoteHeartbeat {
+  0%, 34%, 100% {
+    transform: translateX(-50%) scale(1);
+  }
+  8% {
+    transform: translateX(-50%) scale(1.13);
+  }
+  16% {
+    transform: translateX(-50%) scale(1);
+  }
+  24% {
+    transform: translateX(-50%) scale(1.09);
+  }
+}
+
+@keyframes remoteHaloHeartbeat {
+  0%, 34%, 100% {
+    opacity: 0.16;
+    transform: scale(0.96);
+  }
+  8% {
+    opacity: 0.62;
+    transform: scale(1.1);
+  }
+  16% {
+    opacity: 0.22;
+    transform: scale(1);
+  }
+  24% {
+    opacity: 0.48;
+    transform: scale(1.07);
+  }
+}
+
+@keyframes remoteLedAlarm {
+  0%, 100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+  50% {
+    filter: brightness(1.35);
+    transform: scale(1.12);
+  }
+}
+
+@media (max-width: 1100px) {
+  .garage-remote {
+    width: 96px;
+    min-height: 146px;
+    bottom: 27.5%;
+  }
+}
+
+@media (max-width: 700px) {
+  .garage-remote {
+    width: 70px;
+    min-height: 108px;
+    bottom: 20%;
+    border-radius: 20px;
+  }
+
+  .garage-remote-dot {
+    width: 26px;
+    height: 26px;
+  }
+
+  .garage-remote-line {
+    width: 24px;
+  }
+
+  .garage-remote-label {
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .garage-remote,
+  .garage-remote::before,
+  .garage-remote-dot {
+    animation: none;
+  }
+}
