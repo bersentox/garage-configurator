@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MSK Garage Mobile V2</title>
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./hero-gate-cta.css" />
 </head>
 <body>
   <div id="garage-mobile-v2-root">
@@ -30,19 +31,15 @@
     </audio>
 
     <div class="scene-instruction" id="sceneInstruction">
-      Чтобы собрать свой гараж —<br>нажмите на пульт
+      Нажмите кнопку —<br>ворота откроются
     </div>
 
     <button class="scene-remote" id="openBtn" type="button" aria-pressed="false">
-      <span class="scene-remote-body">
-        <span class="scene-remote-light"></span>
-        <span class="scene-remote-mark"></span>
-      </span>
+      Открыть гараж
     </button>
 
     <div class="scene-choice" id="sceneChoice" aria-hidden="true">
-      <button class="scene-choice-btn" type="button" data-garage-option="one" data-width-option="1">На 1 машину</button>
-      <button class="scene-choice-btn" type="button" data-garage-option="two" data-width-option="2">На 2 машины</button>
+      <button class="scene-choice-btn" type="button" data-garage-option="one" data-width-option="1">Подобрать свой гараж</button>
     </div>
   </main>
 
