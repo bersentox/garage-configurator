@@ -348,48 +348,13 @@ function createViewerBridge() {
     resize();
     window.addEventListener('resize', resize);
 
-   let zoomPhase = 0;
-let isUserInteracting = false;
+    const animate = () => {
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    };
 
-renderer.domElement.addEventListener('pointerdown', () => {
-  isUserInteracting = true;
-}, { passive: true });
-
-renderer.domElement.addEventListener('pointerup', () => {
-  setTimeout(() => {
-  isUserInteracting = false;
-}, 500);
-}, { passive: true });
-
-renderer.domElement.addEventListener('pointercancel', () => {
-  isUserInteracting = false;
-}, { passive: true });
-
-const animate = () => {
-  if (!isUserInteracting) {
-    
-    zoomPhase += 0.004;
-
-const direction = camera.position.clone().sub(controls.target).normalize();
-const currentDistance = camera.position.distanceTo(controls.target);
-const targetDistance = currentDistance * 0.9985;
-
-    const clampedDistance = Math.max(
-      controls.minDistance,
-      Math.min(controls.maxDistance, targetDistance)
-    );
-
-    camera.position.copy(
-      controls.target.clone().add(direction.multiplyScalar(clampedDistance))
-    );
-  }
-
-  controls.update();
-  renderer.render(scene, camera);
-  requestAnimationFrame(animate);
-};
-
-animate();
+    animate();
 
     runtime = { THREE, scene, camera, controls, loader, setStatus, resize };
     return runtime;
@@ -405,7 +370,6 @@ animate();
     const eyeX = distance * 0.82;
     const eyeZ = distance * 1.03;
 
-    viewer.camera.position.set(eyeX, eyeY, eyeZ);
     viewer.camera.near = 0.1;
     viewer.camera.far = Math.max(120, distance * 18);
     viewer.camera.updateProjectionMatrix();
@@ -413,6 +377,14 @@ animate();
     viewer.controls.target.set(0, vertical * 0.35, 0);
     viewer.controls.minDistance = distance * 0.72;
     viewer.controls.maxDistance = distance * 1.34;
+
+    const closeViewDirection = new viewer.THREE.Vector3(eyeX, eyeY, eyeZ)
+      .sub(viewer.controls.target)
+      .normalize();
+
+    viewer.camera.position.copy(
+      viewer.controls.target.clone().add(closeViewDirection.multiplyScalar(viewer.controls.minDistance))
+    );
     viewer.controls.update();
   }
 
