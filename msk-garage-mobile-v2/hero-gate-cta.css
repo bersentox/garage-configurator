@@ -1,11 +1,18 @@
 #garage-mobile-v2-root .scene-instruction {
-  bottom: 212px;
-  width: min(84%, 320px);
-  color: rgba(255, 255, 255, 0.84);
+  bottom: 232px;
+  z-index: 6;
+  width: min(86%, 340px);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(5, 8, 14, 0.22);
+  color: rgba(255, 255, 255, 0.9);
   font-size: clamp(12px, 3.15vw, 15px);
   font-weight: 650;
   line-height: 1.25;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.58);
+  white-space: nowrap;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 #garage-mobile-v2-root .scene-remote {
