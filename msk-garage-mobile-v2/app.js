@@ -340,22 +340,25 @@ function createViewerBridge() {
   }
 
   function frameModelForMobile(viewer, model) {
-    const bounds = new viewer.THREE.Box3().setFromObject(model);
-    const size = bounds.getSize(new viewer.THREE.Vector3());
-    const maxHorizontal = Math.max(size.x, size.z);
-    const vertical = Math.max(size.y, 1);
-    const distance = Math.max(maxHorizontal * 1.3, vertical * 1.9, 7);
+  const bounds = new viewer.THREE.Box3().setFromObject(model);
+  const size = bounds.getSize(new viewer.THREE.Vector3());
+  const maxHorizontal = Math.max(size.x, size.z);
+  const vertical = Math.max(size.y, 1);
 
-    viewer.controls.target.set(0, vertical * 0.5, 0);
-    viewer.camera.position.set(distance * 0.78, distance * 0.54, distance * 0.92);
-    viewer.camera.near = 0.1;
-    viewer.camera.far = distance * 5;
-    viewer.camera.updateProjectionMatrix();
-    viewer.controls.minDistance = Math.max(distance * 0.45, 4.5);
-    viewer.controls.maxDistance = distance * 2.4;
-    viewer.controls.update();
-    viewer.resize();
-  }
+  const distance = Math.max(maxHorizontal * 1.02, vertical * 1.45, 5.8);
+
+  viewer.controls.target.set(0, vertical * 0.42, 0);
+  viewer.camera.position.set(distance * 0.62, distance * 0.42, distance * 0.74);
+
+  viewer.camera.near = 0.1;
+  viewer.camera.far = distance * 5;
+  viewer.camera.updateProjectionMatrix();
+
+  viewer.controls.minDistance = Math.max(distance * 0.38, 3.8);
+  viewer.controls.maxDistance = distance * 2.1;
+  viewer.controls.update();
+  viewer.resize();
+}
 
   function collectModelParts(viewer, model) {
     const partMap = { wall: [], roofTrim: [], gate: [] };
