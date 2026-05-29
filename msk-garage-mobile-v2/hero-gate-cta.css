@@ -117,3 +117,8 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.62),
     inset 0 -1px 0 rgba(91, 52, 0, 0.18);
 }
+
+#garage-mobile-v2-root .hero.pushing .scene-visual,
+#garage-mobile-v2-root .hero.choice .scene-visual {
+  transform: translateZ(0) scale(1) !important;
+}
