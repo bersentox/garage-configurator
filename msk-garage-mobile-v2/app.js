@@ -241,6 +241,39 @@ function setupViewportStickyNormalization() {
   }
 }
 
+function setupConfigBarVisibility() {
+  if (!configShell || !configShellBar) return;
+
+  let rafId = null;
+
+  const updateVisibility = () => {
+    rafId = null;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    const shellRect = configShell.getBoundingClientRect();
+    const finalRect = finalCtaScene ? finalCtaScene.getBoundingClientRect() : null;
+    const configStarted = shellRect.top < viewportHeight * 0.72;
+    const configNotEnded = shellRect.bottom > viewportHeight * 0.35;
+    const finalCtaReached = finalRect ? finalRect.top < viewportHeight * 0.78 : false;
+    const shouldShow = configStarted && configNotEnded && !finalCtaReached;
+
+    configShellBar.classList.toggle('is-visible', shouldShow);
+  };
+
+  const scheduleUpdate = () => {
+    if (rafId !== null) return;
+    rafId = window.requestAnimationFrame(updateVisibility);
+  };
+
+  updateVisibility();
+  window.addEventListener('scroll', scheduleUpdate, { passive: true });
+  window.addEventListener('resize', scheduleUpdate);
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.visualViewport.addEventListener('resize', scheduleUpdate);
+  }
+}
+
 function createViewerBridge() {
   let runtime = null;
   let activeModel = null;
@@ -340,25 +373,22 @@ function createViewerBridge() {
   }
 
   function frameModelForMobile(viewer, model) {
-  const bounds = new viewer.THREE.Box3().setFromObject(model);
-  const size = bounds.getSize(new viewer.THREE.Vector3());
-  const maxHorizontal = Math.max(size.x, size.z);
-  const vertical = Math.max(size.y, 1);
+    const bounds = new viewer.THREE.Box3().setFromObject(model);
+    const size = bounds.getSize(new viewer.THREE.Vector3());
+    const maxHorizontal = Math.max(size.x, size.z);
+    const vertical = Math.max(size.y, 1);
+    const distance = Math.max(maxHorizontal * 1.02, vertical * 1.45, 5.8);
 
-  const distance = Math.max(maxHorizontal * 1.02, vertical * 1.45, 5.8);
-
-  viewer.controls.target.set(0, vertical * 0.42, 0);
-  viewer.camera.position.set(distance * 0.62, distance * 0.42, distance * 0.74);
-
-  viewer.camera.near = 0.1;
-  viewer.camera.far = distance * 5;
-  viewer.camera.updateProjectionMatrix();
-
-  viewer.controls.minDistance = Math.max(distance * 0.38, 3.8);
-  viewer.controls.maxDistance = distance * 2.1;
-  viewer.controls.update();
-  viewer.resize();
-}
+    viewer.controls.target.set(0, vertical * 0.42, 0);
+    viewer.camera.position.set(distance * 0.62, distance * 0.42, distance * 0.74);
+    viewer.camera.near = 0.1;
+    viewer.camera.far = distance * 5;
+    viewer.camera.updateProjectionMatrix();
+    viewer.controls.minDistance = Math.max(distance * 0.38, 3.8);
+    viewer.controls.maxDistance = distance * 2.1;
+    viewer.controls.update();
+    viewer.resize();
+  }
 
   function collectModelParts(viewer, model) {
     const partMap = { wall: [], roofTrim: [], gate: [] };
@@ -602,4 +632,5 @@ if (configBarCta && finalCtaScene) {
 
 refreshControls();
 setupViewportStickyNormalization();
+setupConfigBarVisibility();
 viewerBridge.loadByState();
