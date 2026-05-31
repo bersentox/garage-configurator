@@ -571,3 +571,22 @@
 #garage-mobile-v2-root .config-shell-bar-price {
   display: none;
 }
+
+#garage-mobile-v2-root a.config-shell-final-btn.config-shell-final-btn-secondary,
+#garage-mobile-v2-root a.config-shell-final-btn.config-shell-final-btn-secondary:link,
+#garage-mobile-v2-root a.config-shell-final-btn.config-shell-final-btn-secondary:visited,
+#garage-mobile-v2-root a.config-shell-final-btn.config-shell-final-btn-secondary:hover,
+#garage-mobile-v2-root a.config-shell-final-btn.config-shell-final-btn-secondary:active,
+#garage-mobile-v2-root .config-shell-final-actions a.config-shell-final-btn-secondary[href^="tel"] {
+  color: #f4f8ff !important;
+  -webkit-text-fill-color: #f4f8ff !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+}
+
+#garage-mobile-v2-root a.config-shell-final-btn.config-shell-final-btn-secondary *,
+#garage-mobile-v2-root .config-shell-final-actions a.config-shell-final-btn-secondary[href^="tel"] * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  opacity: 1 !important;
+}
