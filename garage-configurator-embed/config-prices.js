@@ -1,8 +1,16 @@
 window.CONFIG_PRICES = {
-  // Цена за квадратный метр по ширине гаража
-  RATE_PER_M2: {
-    6: 34000,
-    8: 37000
+  // Базовая цена гаража и доплата за каждый метр длины после базовой
+  GARAGE: {
+    single: {
+      baseLength: 6,
+      basePrice: 1200000,
+      extraMeterPrice: 100000
+    },
+    double: {
+      baseLength: 6,
+      basePrice: 1700000,
+      extraMeterPrice: 100000
+    }
   },
 
   // Доплаты за планировку
