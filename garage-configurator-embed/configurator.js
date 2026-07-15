@@ -3,7 +3,7 @@ import { createGarage3DViewer } from "./garage3d.js";
 
 const PRICES = window.CONFIG_PRICES || {};
 
-const RATE_PER_M2 = PRICES.RATE_PER_M2 || {};
+const GARAGE = PRICES.GARAGE || {};
 const OPTIONS_PRICE = PRICES.OPTIONS_PRICE || {};
 const LAYOUT_SURCHARGE = PRICES.LAYOUT_SURCHARGE || {};
 const ROOF_SURCHARGE = PRICES.ROOF_SURCHARGE || {};
@@ -29,22 +29,29 @@ function getBuildTimeDays(config) {
 }
 
 function calculatePrice(config) {
-  const ratePerM2 = RATE_PER_M2[config.width] || RATE_PER_M2[6] || 0;
-  const basePrice = config.width * config.length * ratePerM2;
+  const garageType = Number(config.width) === 8 ? "double" : "single";
+  const garagePricing = GARAGE[garageType] || {};
+  const baseLength = Number(garagePricing.baseLength) || 6;
+  const selectedLength = Math.max(baseLength, Number(config.length) || baseLength);
+  const extraLength = selectedLength - baseLength;
+  const basePrice =
+    (Number(garagePricing.basePrice) || 0) +
+    extraLength * (Number(garagePricing.extraMeterPrice) || 0);
+
   const layoutSurcharge = LAYOUT_SURCHARGE[config.layout] || 0;
   const roofKey = config.roofType || config.roof;
   const roofSurcharge = ROOF_SURCHARGE[roofKey] || 0;
   const foundationKey = FOUNDATION_RATE_PER_M2[config.foundation] != null ? config.foundation : "none";
   const foundationRatePerM2 = FOUNDATION_RATE_PER_M2[foundationKey] || 0;
-  const foundationPrice = config.width * config.length * foundationRatePerM2;
+  const foundationPrice = Number(config.width) * selectedLength * foundationRatePerM2;
   let price = basePrice + layoutSurcharge + roofSurcharge + foundationPrice;
 
   if (config.shelves) price += ELEMENT_PRICE.shelves || 0;
   if (config.partition) price += ELEMENT_PRICE.partition || 0;
-  price += config.doors * (ELEMENT_PRICE.door || 0);
-  price += config.windows * (ELEMENT_PRICE.window || 0);
+  price += Number(config.doors || 0) * (ELEMENT_PRICE.door || 0);
+  price += Number(config.windows || 0) * (ELEMENT_PRICE.window || 0);
 
-  Object.entries(config.options).forEach(([key, enabled]) => {
+  Object.entries(config.options || {}).forEach(([key, enabled]) => {
     if (enabled) {
       price += OPTIONS_PRICE[key] || 0;
     }
