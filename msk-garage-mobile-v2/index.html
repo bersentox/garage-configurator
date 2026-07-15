@@ -5,6 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MSK Garage Mobile V2</title>
   <link rel="stylesheet" href="./styles.css" />
+  <style>
+    #garage-mobile-v2-root .config-shell-final-price {
+      display: block;
+      margin: 10px 0 8px;
+      font-size: 26px;
+      line-height: 1.1;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    #garage-mobile-v2-root .config-shell-bar-meta {
+      display: block;
+      min-width: 0;
+    }
+
+    #garage-mobile-v2-root .config-shell-bar-price {
+      display: block;
+      margin: 2px 0 0;
+      font-size: 16px;
+      line-height: 1.15;
+      font-weight: 800;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+
+    #garage-mobile-v2-root .config-shell-bar-summary {
+      margin-top: 3px;
+      font-size: 10px;
+    }
+
+    @media (max-width: 360px) {
+      #garage-mobile-v2-root .config-shell-bar-price {
+        font-size: 14px;
+      }
+
+      #garage-mobile-v2-root .config-shell-bar-cta {
+        min-width: 120px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="garage-mobile-v2-root">
@@ -27,9 +67,9 @@
         <section class="config-shell-group" data-config-group="colors"><h2>Подберите цвета</h2><div class="config-shell-color-subgroup"><h3 class="config-shell-subtitle">Цвет стен</h3><div class="config-shell-color-buttons" id="wallColorButtons"><button type="button" class="config-shell-color-btn" data-color-group="wall" data-color-preset="sand" aria-pressed="true">Песочный</button><button type="button" class="config-shell-color-btn" data-color-group="wall" data-color-preset="graphite" aria-pressed="false">Графит</button><button type="button" class="config-shell-color-btn" data-color-group="wall" data-color-preset="grey" aria-pressed="false">Серый</button></div></div><div class="config-shell-color-subgroup"><h3 class="config-shell-subtitle">Цвет крыши и деталей</h3><div class="config-shell-color-buttons" id="roofTrimColorButtons"><button type="button" class="config-shell-color-btn" data-color-group="roofTrim" data-color-preset="graphite" aria-pressed="true">Графит</button><button type="button" class="config-shell-color-btn" data-color-group="roofTrim" data-color-preset="chocolate" aria-pressed="false">Шоколадный</button><button type="button" class="config-shell-color-btn" data-color-group="roofTrim" data-color-preset="black" aria-pressed="false">Чёрный</button></div></div><div class="config-shell-info config-shell-info-inline"><p class="config-shell-info-text">Доступны не только базовые цвета, но и палитры производителей</p><a class="config-shell-info-link" href="#popup:colors">Подробнее о цветах</a></div></section>
         <section class="config-shell-group" data-config-group="foundation"><h2>Подберите фундамент</h2><div class="config-shell-foundation-buttons" id="foundationButtons"><button type="button" class="config-shell-foundation-btn" data-foundation="none" aria-pressed="true">Без фундамента</button><button type="button" class="config-shell-foundation-btn" data-foundation="pile" aria-pressed="false">Свайный</button><button type="button" class="config-shell-foundation-btn" data-foundation="strip" aria-pressed="false">Ленточный</button><button type="button" class="config-shell-foundation-btn" data-foundation="slab" aria-pressed="false">Плита</button></div><div class="config-shell-info config-shell-info-inline"><p class="config-shell-info-text">Выбор основания зависит от участка и сценария использования</p><a class="config-shell-info-link" href="#popup:foundation">Как выбрать фундамент</a></div></section>
         <section class="config-shell-group" data-config-group="extra"><h2>Подберите опции</h2><div class="config-shell-extras-buttons" id="extrasButtons"><button type="button" class="config-shell-extra-btn" data-extra="automation" aria-pressed="false">Автоматика ворот</button><button type="button" class="config-shell-extra-btn" data-extra="electrics" aria-pressed="false">Электрика</button><button type="button" class="config-shell-extra-btn" data-extra="lighting" aria-pressed="false">Освещение</button><button type="button" class="config-shell-extra-btn" data-extra="ventilation" aria-pressed="false">Вентиляция</button><button type="button" class="config-shell-extra-btn" data-extra="drainage" aria-pressed="false">Водостоки</button></div><div class="config-shell-info config-shell-info-inline"><p class="config-shell-info-text">Оснащение подбирается под задачи, бюджет и сценарий использования</p><a class="config-shell-info-link" href="#popup:quality">Как подобрать опции</a></div></section>
-        <section class="config-shell-final" id="finalCtaScene" aria-label="Финальный расчёт"><div class="config-shell-final-card"><p class="config-shell-final-eyebrow">Ваша конфигурация</p><h2 class="config-shell-final-title">Ваш гараж собран</h2><p class="config-shell-final-text">Оставьте контакт — мы проверим комплектацию и подготовим точный расчёт.</p><p class="config-shell-final-summary" id="finalCtaSummary">1 машина · 6×6 · песочный / графит</p><p class="config-shell-final-timeline" id="finalCtaTimeline">Средний срок строительства — 7–10 дней</p><div class="config-shell-final-actions"><a class="config-shell-final-btn config-shell-final-btn-primary" href="#popup:kalkul">Получить точный расчёт</a><a class="config-shell-info-link config-shell-final-link" href="#popup:process">Как мы делаем гараж: этапы и контроль →</a><a class="config-shell-final-btn config-shell-final-btn-secondary" href="tel:+79969500777">Позвонить сейчас</a></div><p class="config-shell-final-note" aria-hidden="true">Детали уточним в расчёте</p></div></section>
+        <section class="config-shell-final" id="finalCtaScene" aria-label="Финальный расчёт"><div class="config-shell-final-card"><p class="config-shell-final-eyebrow">Ваша конфигурация</p><h2 class="config-shell-final-title">Ваш гараж собран</h2><p class="config-shell-final-text">Предварительный расчёт по выбранной комплектации. Точную стоимость уточним с учётом участка и доставки.</p><p class="config-shell-final-summary" id="finalCtaSummary">1 машина · 6×6 · песочный / графит</p><p class="config-shell-final-timeline" id="finalCtaTimeline">Средний срок строительства — 7–10 дней</p><p class="config-shell-final-price" id="finalCtaPrice">от 1 224 000 ₽</p><div class="config-shell-final-actions"><a class="config-shell-final-btn config-shell-final-btn-primary" href="#popup:kalkul">Получить точный расчёт</a><a class="config-shell-info-link config-shell-final-link" href="#popup:process">Как мы делаем гараж: этапы и контроль →</a><a class="config-shell-final-btn config-shell-final-btn-secondary" href="tel:+79969500777">Позвонить сейчас</a></div><p class="config-shell-final-note" aria-hidden="true">Детали уточним в расчёте</p></div></section>
       </div>
-      <div class="config-shell-bar" id="configShellBar" aria-live="polite"><div class="config-shell-bar-main"><div class="config-shell-bar-content"><div class="config-shell-bar-meta"><p class="config-shell-bar-label">Гараж собран:</p><p class="config-shell-bar-summary" id="configShellSummary">1 машина · 6 м · без фундамента · 0 опций</p></div></div><button class="config-shell-bar-cta" id="configBarCta" type="button">Получить расчёт</button></div></div>
+      <div class="config-shell-bar" id="configShellBar" aria-live="polite"><div class="config-shell-bar-main"><div class="config-shell-bar-content"><div class="config-shell-bar-meta"><p class="config-shell-bar-label">Ориентировочная стоимость</p><p class="config-shell-bar-price" id="configShellPrice">от 1 224 000 ₽</p></div><p class="config-shell-bar-summary" id="configShellSummary">1 машина · 6 м · без фундамента · 0 опций</p></div><button class="config-shell-bar-cta" id="configBarCta" type="button">Получить расчёт</button></div></div>
     </section>
   </div>
   <script type="module" src="./app.js"></script>

@@ -9,8 +9,10 @@ const sceneChoice = getById('sceneChoice');
 const configShell = getById('configShell');
 const configShellViewport = getById('configShellViewport');
 const configShellSummary = getById('configShellSummary');
+const configShellPrice = getById('configShellPrice');
 const finalCtaSummary = getById('finalCtaSummary');
 const finalCtaTimeline = getById('finalCtaTimeline');
+const finalCtaPrice = getById('finalCtaPrice');
 const configBarCta = getById('configBarCta');
 const finalCtaScene = getById('finalCtaScene');
 const configShellViewerStatus = getById('configShellViewerStatus');
@@ -119,6 +121,10 @@ function calculateEstimatedPrice() {
   return basePrice + foundationPrice + extrasPrice;
 }
 
+function formatPrice(value) {
+  return `от ${new Intl.NumberFormat('ru-RU').format(Math.round(value))} ₽`;
+}
+
 function updateSummaryLabel() {
   const compactTypeLabel = configuratorState.type === 'double' ? '2 машины' : '1 машина';
   const foundationLabelMap = { none: 'без фундамента', pile: 'свайный', strip: 'ленточный', slab: 'плита' };
@@ -128,12 +134,13 @@ function updateSummaryLabel() {
   const wallLabel = WALL_COLOR_PRESETS[configuratorState.wallColorPreset]?.label || '—';
   const roofTrimLabel = ROOF_DETAIL_PRESETS[configuratorState.roofTrimColorPreset]?.label || '—';
   const finalSummaryText = `${compactTypeLabel} · ${configuratorState.width}×${configuratorState.length} · ${wallLabel} / ${roofTrimLabel}`;
+  const priceText = formatPrice(calculateEstimatedPrice());
 
   if (configShellSummary) configShellSummary.textContent = compactSummaryText;
+  if (configShellPrice) configShellPrice.textContent = priceText;
   if (finalCtaSummary) finalCtaSummary.textContent = finalSummaryText;
   if (finalCtaTimeline) finalCtaTimeline.textContent = getConstructionTimelineLabel(configuratorState);
-
-  calculateEstimatedPrice();
+  if (finalCtaPrice) finalCtaPrice.textContent = priceText;
 }
 
 function updateLengthButtonState() {

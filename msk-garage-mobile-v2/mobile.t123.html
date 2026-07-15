@@ -1,5 +1,46 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/msk-garage-mobile-v2/styles.css" />
 
+<style>
+  #garage-mobile-v2-root .config-shell-final-price {
+    display: block;
+    margin: 10px 0 8px;
+    font-size: 26px;
+    line-height: 1.1;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  #garage-mobile-v2-root .config-shell-bar-meta {
+    display: block;
+    min-width: 0;
+  }
+
+  #garage-mobile-v2-root .config-shell-bar-price {
+    display: block;
+    margin: 2px 0 0;
+    font-size: 16px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: #0f172a;
+    white-space: nowrap;
+  }
+
+  #garage-mobile-v2-root .config-shell-bar-summary {
+    margin-top: 3px;
+    font-size: 10px;
+  }
+
+  @media (max-width: 360px) {
+    #garage-mobile-v2-root .config-shell-bar-price {
+      font-size: 14px;
+    }
+
+    #garage-mobile-v2-root .config-shell-bar-cta {
+      min-width: 120px;
+    }
+  }
+</style>
+
 <div id="garage-mobile-v2-root">
 <main class="hero idle" id="hero">
   <div class="scene-visual">
@@ -120,12 +161,12 @@
       <div class="config-shell-final-card">
         <p class="config-shell-final-eyebrow">Ваша конфигурация</p>
         <h2 class="config-shell-final-title">Ваш гараж готов</h2>
-        <p class="config-shell-final-text">Подготовим точный расчёт под ваш участок и задачи</p>
+        <p class="config-shell-final-text">Предварительный расчёт по выбранной комплектации. Точную стоимость уточним с учётом участка и доставки.</p>
         <p class="config-shell-final-summary" id="finalCtaSummary">1 машина · 6×6 · песочный / графит</p>
         <p class="config-shell-final-timeline" id="finalCtaTimeline">Средний срок строительства — 7–10 дней</p>
-        <p class="config-shell-final-price" id="finalCtaPrice">от 1 950 000 ₽</p>
+        <p class="config-shell-final-price" id="finalCtaPrice">от 1 224 000 ₽</p>
         <div class="config-shell-final-actions">
-          <a class="config-shell-final-btn config-shell-final-btn-primary" href="#popup:kalkul">Оставить заявку. Проект + смета</a>
+          <a class="config-shell-final-btn config-shell-final-btn-primary" href="#popup:kalkul">Получить точный расчёт</a>
           <a class="config-shell-info-link config-shell-final-link" href="#popup:process">Как мы делаем гараж: этапы и контроль →</a>
           <a class="config-shell-final-btn config-shell-final-btn-secondary" href="tel:+79969500777">Позвонить по номеру: +7 (996) 950...</a>
         </div>
@@ -138,12 +179,12 @@
     <div class="config-shell-bar-main">
       <div class="config-shell-bar-content">
         <div class="config-shell-bar-meta">
-          <p class="config-shell-bar-label">Примерная стоимость</p>
-          <p class="config-shell-bar-price" id="configShellPrice">от 1 950 000 ₽</p>
+          <p class="config-shell-bar-label">Ориентировочная стоимость</p>
+          <p class="config-shell-bar-price" id="configShellPrice">от 1 224 000 ₽</p>
         </div>
-        <p class="config-shell-bar-summary" id="configShellSummary">Гараж на 1 машину · 6 × 6 м</p>
+        <p class="config-shell-bar-summary" id="configShellSummary">1 машина · 6 м · без фундамента · 0 опций</p>
       </div>
-      <button class="config-shell-bar-cta" id="configBarCta" type="button">Уточнить цену</button>
+      <button class="config-shell-bar-cta" id="configBarCta" type="button">Получить расчёт</button>
     </div>
   </div>
 </section>
