@@ -1,9 +1,6 @@
 (function () {
   const ROOT_ID = "garage-mobile-v2-root";
-  const PRICES = window.CONFIG_PRICES || {};
-  const GARAGE = PRICES.GARAGE || {};
-  const FOUNDATION_RATE_PER_M2 = PRICES.FOUNDATION_RATE_PER_M2 || {};
-  const OPTIONS_PRICE = PRICES.OPTIONS_PRICE || {};
+  const PRICING_SCRIPT_PATH = "/msk-garage-mobile-v2/pricing.js";
 
   const EXTRA_KEY_MAP = {
     automation: "gateAutomation",
@@ -21,8 +18,75 @@
     return root ? root.querySelector(selector + '[aria-pressed="true"]') : null;
   }
 
+  function findPricingScript() {
+    if (document.currentScript && document.currentScript.src) {
+      return document.currentScript;
+    }
+
+    return [...document.scripts]
+      .reverse()
+      .find(function (script) {
+        return script.src && script.src.includes(PRICING_SCRIPT_PATH);
+      });
+  }
+
+  function getSharedPricesUrl() {
+    const pricingScript = findPricingScript();
+
+    if (!pricingScript || !pricingScript.src) {
+      return "";
+    }
+
+    return pricingScript.src.replace(
+      PRICING_SCRIPT_PATH,
+      "/garage-configurator-embed/config-prices.js"
+    );
+  }
+
+  function loadSharedPrices() {
+    if (window.CONFIG_PRICES && window.CONFIG_PRICES.GARAGE) {
+      return Promise.resolve();
+    }
+
+    const pricesUrl = getSharedPricesUrl();
+
+    if (!pricesUrl) {
+      return Promise.reject(new Error("Не удалось определить адрес config-prices.js"));
+    }
+
+    const existingScript = [...document.scripts].find(function (script) {
+      return script.src === pricesUrl;
+    });
+
+    if (existingScript) {
+      return new Promise(function (resolve, reject) {
+        if (window.CONFIG_PRICES && window.CONFIG_PRICES.GARAGE) {
+          resolve();
+          return;
+        }
+
+        existingScript.addEventListener("load", resolve, { once: true });
+        existingScript.addEventListener("error", reject, { once: true });
+      });
+    }
+
+    return new Promise(function (resolve, reject) {
+      const script = document.createElement("script");
+      script.src = pricesUrl;
+      script.async = true;
+      script.dataset.mobileSharedPrices = "true";
+      script.addEventListener("load", resolve, { once: true });
+      script.addEventListener("error", reject, { once: true });
+      document.head.appendChild(script);
+    });
+  }
+
   function calculateMobilePrice() {
     const root = getRoot();
+    const prices = window.CONFIG_PRICES || {};
+    const garagePrices = prices.GARAGE || {};
+    const foundationRates = prices.FOUNDATION_RATE_PER_M2 || {};
+    const optionPrices = prices.OPTIONS_PRICE || {};
 
     if (!root) {
       return null;
@@ -35,7 +99,7 @@
     const width = typeButton?.dataset.type === "double" ? 8 : 6;
     const length = Math.max(6, Number(lengthButton?.dataset.length) || 6);
     const garageType = width === 8 ? "double" : "single";
-    const garagePricing = GARAGE[garageType];
+    const garagePricing = garagePrices[garageType];
 
     if (!garagePricing) {
       return null;
@@ -47,16 +111,22 @@
     const extraLength = Math.max(0, length - baseLength);
 
     const foundationKey = foundationButton?.dataset.foundation || "none";
-    const foundationRatePerM2 = Number(FOUNDATION_RATE_PER_M2[foundationKey]) || 0;
-    const foundationPrice = width * length * foundationRatePerM2;
+    const foundationRate = Number(foundationRates[foundationKey]) || 0;
+    const foundationPrice = width * length * foundationRate;
 
-    const extrasPrice = [...root.querySelectorAll('.config-shell-extra-btn[aria-pressed="true"]')]
-      .reduce(function (sum, button) {
-        const sharedKey = EXTRA_KEY_MAP[button.dataset.extra];
-        return sum + (sharedKey ? Number(OPTIONS_PRICE[sharedKey]) || 0 : 0);
-      }, 0);
+    const extrasPrice = [
+      ...root.querySelectorAll('.config-shell-extra-btn[aria-pressed="true"]')
+    ].reduce(function (sum, button) {
+      const sharedKey = EXTRA_KEY_MAP[button.dataset.extra];
+      return sum + (sharedKey ? Number(optionPrices[sharedKey]) || 0 : 0);
+    }, 0);
 
-    return basePrice + extraLength * extraMeterPrice + foundationPrice + extrasPrice;
+    return (
+      basePrice +
+      extraLength * extraMeterPrice +
+      foundationPrice +
+      extrasPrice
+    );
   }
 
   function formatPrice(value) {
@@ -130,11 +200,26 @@
     updateDisplayedPrice();
     window.setTimeout(updateDisplayedPrice, 300);
     window.setTimeout(updateDisplayedPrice, 1000);
+
+    window.MSK_GARAGE_MOBILE_PRICING = {
+      calculate: calculateMobilePrice,
+      refresh: updateDisplayedPrice
+    };
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setup, { once: true });
-  } else {
-    setup();
+  function start() {
+    loadSharedPrices()
+      .then(function () {
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", setup, { once: true });
+        } else {
+          setup();
+        }
+      })
+      .catch(function (error) {
+        console.error("[Mobile pricing] Не удалось загрузить общие цены", error);
+      });
   }
+
+  start();
 })();
