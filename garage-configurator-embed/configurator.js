@@ -165,7 +165,9 @@ export function mountConfigurator({ state, root }) {
 
     doorsCount.textContent = String(state.doors);
     windowsCount.textContent = String(state.windows);
-    lengthInput.value = String(state.length);
+    if (document.activeElement !== lengthInput) {
+      lengthInput.value = String(state.length);
+    }
     shelvesToggle.checked = state.shelves;
     partitionToggle.checked = state.partition;
 
@@ -248,7 +250,22 @@ export function mountConfigurator({ state, root }) {
   });
 
   lengthInput.addEventListener("input", () => {
-    state.length = Math.max(6, Number(lengthInput.value) || 6);
+    const parsedLength = Number(lengthInput.value);
+
+    if (!Number.isFinite(parsedLength) || parsedLength < 6) {
+      return;
+    }
+
+    state.length = Math.round(parsedLength);
+    render();
+  });
+
+  lengthInput.addEventListener("change", () => {
+    const parsedLength = Number(lengthInput.value);
+    state.length = Number.isFinite(parsedLength)
+      ? Math.max(6, Math.round(parsedLength))
+      : 6;
+    lengthInput.value = String(state.length);
     render();
   });
 
