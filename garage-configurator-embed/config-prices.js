@@ -3,12 +3,12 @@ window.CONFIG_PRICES = {
   GARAGE: {
     single: {
       baseLength: 6,
-      basePrice: 1200000,
+      basePrice: 1100000,
       extraMeterPrice: 100000
     },
     double: {
       baseLength: 6,
-      basePrice: 1700000,
+      basePrice: 1600000,
       extraMeterPrice: 100000
     }
   },
@@ -31,8 +31,8 @@ window.CONFIG_PRICES = {
   ELEMENT_PRICE: {
     shelves: 100000,
     partition: 100000,
-    door: 35000,
-    window: 15000
+    door: 15000,
+    window: 10000
   },
 
   // Ставка за квадратный метр по фундаменту
@@ -49,6 +49,6 @@ window.CONFIG_PRICES = {
     interiorElectricity: 50000,
     exteriorLighting: 15000,
     ventilation: 6000,
-    gutters: 25000
+    gutters: 20000
   }
 };
