@@ -2,7 +2,7 @@
   <div class="hero-inner">
     <div class="hero-scene">
       <div id="garageScene" class="garage-scene" aria-live="polite">
-                <img class="garage-layer garage-interior" data-embed-asset="images/garages/scene/interior.webp" alt="Интерьер гаража" />
+        <img class="garage-layer garage-interior" data-embed-asset="images/garages/scene/interior.webp" alt="Интерьер гаража" />
 
         <div class="garage-gate-mask" aria-hidden="true">
           <div class="garage-gate-content">
@@ -16,7 +16,7 @@
         <div class="garage-brand" aria-hidden="true">
           <img class="garage-brand-logo" data-embed-asset="images/garages/scene/logo11.webp" alt="Логотип MSK-GARAGE" />
           <span class="garage-brand-title">MSK-GARAGE</span>
-          <span class="garage-brand-subtitle">гаражи из сэндвич-панелей</span>
+          <span class="garage-brand-subtitle">строим гаражи из сэндвич-панелей — <span style="text-transform: none; white-space: nowrap;">от&nbsp;1&nbsp;млн&nbsp;руб.</span></span>
         </div>
 
         <button id="garageRemoteButton" class="garage-remote" type="button" aria-label="Открыть ворота" aria-pressed="false">
@@ -27,14 +27,12 @@
 
         <div class="garage-interior-ui" aria-hidden="true">
           <div class="garage-interior-buttons">
-            <button class="garage-choice" type="button" data-width="6">
-              <span class="garage-choice-main">1 МАШИНА</span>
-              <span class="garage-choice-sub">/ 6 м</span>
+            <button id="garageConfiguratorButton" class="garage-choice" type="button">
+              <span class="garage-choice-main">КОНФИГУРАТОР</span>
             </button>
 
-            <button class="garage-choice" type="button" data-width="8">
-              <span class="garage-choice-main">2 МАШИНЫ</span>
-              <span class="garage-choice-sub">/ 8 м</span>
+            <button id="garageCatalogButton" class="garage-choice" type="button" data-target="#catalog">
+              <span class="garage-choice-main">КАТАЛОГ</span>
             </button>
           </div>
         </div>

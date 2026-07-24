@@ -1,4 +1,4 @@
-import { createGarageState, getPresetByWidth } from "./state.js";
+import { createGarageState } from "./state.js";
 import { mountHeroScene } from "./hero-scene.js";
 import { mountConfigurator } from "./configurator.js";
 import { resolveEmbedAsset } from "./asset-paths.js";
@@ -44,15 +44,10 @@ async function bootstrap() {
 
   const state = createGarageState();
   const configuratorStep = document.getElementById("configuratorStep");
-  const configuratorApi = mountConfigurator({ state, root: configuratorStep });
+  mountConfigurator({ state, root: configuratorStep });
 
   mountHeroScene({
-    state,
-    onSelectWidth: (width) => {
-      const preset = getPresetByWidth(width);
-      Object.assign(state, preset);
-      configuratorApi.render();
-      configuratorStep.hidden = false;
+    onOpenConfigurator: () => {
       configuratorStep.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   });
