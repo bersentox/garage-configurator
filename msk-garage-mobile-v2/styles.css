@@ -82,6 +82,58 @@
   pointer-events: none;
 }
 
+#garage-mobile-v2-root .scene-offer {
+  position: absolute;
+  left: 22.4%;
+  right: 22.4%;
+  top: 39.1%;
+  z-index: 3;
+  overflow: visible;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  text-align: left;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.98), 0 0 9px rgba(0, 0, 0, 0.72);
+}
+
+#garage-mobile-v2-root .scene-offer-title {
+  margin: 0;
+  padding: 0 0 clamp(4px, 1vw, 6px);
+  color: #f0c46f;
+  font-size: clamp(10px, 2.8vw, 14px);
+  font-weight: 850;
+  line-height: 1.12;
+  text-align: center;
+}
+
+#garage-mobile-v2-root .scene-offer-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(4px, 1.2vw, 8px);
+  padding-inline: clamp(5px, 1.6vw, 9px);
+  min-height: clamp(25px, 7vw, 35px);
+  border-top: 0;
+  font-size: clamp(8.5px, 2.2vw, 11.5px);
+  font-weight: 650;
+  line-height: 1.08;
+}
+
+#garage-mobile-v2-root .scene-offer-line span {
+  min-width: 0;
+}
+
+#garage-mobile-v2-root .scene-offer-line strong {
+  color: #ffd170;
+  font-size: clamp(9px, 2.35vw, 12.5px);
+  font-weight: 900;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
 #garage-mobile-v2-root .scene-brand {
   position: absolute;
   left: 50%;
@@ -216,7 +268,7 @@
   width: min(84%, 380px);
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 10px;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.45s ease, transform 0.45s ease;
@@ -229,24 +281,58 @@
 }
 
 #garage-mobile-v2-root .scene-choice-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   min-height: 64px;
   padding: 0 20px;
   border: 0;
   border-radius: 16px;
+  cursor: pointer;
   color: #171008;
   font-size: clamp(17px, 4.6vw, 23px);
   font-weight: 850;
+  line-height: 1.08;
   letter-spacing: 0.01em;
+  text-align: center;
+  text-decoration: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
   background: linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 28%), linear-gradient(180deg, #ffd84d 0%, #f3ad10 72%, #d88900 100%);
   box-shadow: 0 5px 0 #9b5c00, 0 12px 18px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.38), inset 0 -2px 0 rgba(91,52,0,0.18);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
 
+#garage-mobile-v2-root .scene-choice-btn span {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.72em;
+  font-weight: 750;
+}
+
+#garage-mobile-v2-root .scene-choice-btn-secondary,
+#garage-mobile-v2-root .scene-choice-btn-secondary:link,
+#garage-mobile-v2-root .scene-choice-btn-secondary:visited {
+  min-height: 54px;
+  border: 1px solid rgba(255, 210, 125, 0.64);
+  background: linear-gradient(180deg, rgba(27, 33, 43, 0.94), rgba(8, 12, 19, 0.94));
+  color: #fff;
+  font-size: clamp(15px, 4vw, 20px);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.7), 0 12px 18px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
 #garage-mobile-v2-root .scene-choice-btn:active {
   transform: translateY(3px);
   filter: brightness(0.98);
   box-shadow: 0 2px 0 #9b5c00, 0 7px 12px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.34), inset 0 -1px 0 rgba(91,52,0,0.16);
+}
+
+#garage-mobile-v2-root .scene-choice-btn-secondary:active {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.74), 0 7px 12px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 #garage-mobile-v2-root .config-shell {

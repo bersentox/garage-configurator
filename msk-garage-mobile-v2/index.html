@@ -51,13 +51,34 @@
     <main class="hero idle" id="hero">
       <div class="scene-visual">
         <img class="scene" src="./images/scene/front.webp" alt="" />
-        <div class="gate-mask"><div class="gate-content"><img class="gate-overlay" src="./images/scene/gate.webp" alt="" /></div></div>
+        <div class="gate-mask">
+          <div class="gate-content">
+            <img class="gate-overlay" src="./images/scene/gate.webp" alt="" />
+            <div class="scene-offer">
+              <p class="scene-offer-title">Строим гаражи в Москве и МО</p>
+              <div class="scene-offer-line">
+                <span>Гараж 6×6 на 1 машину</span>
+                <strong>от 1 млн ₽</strong>
+              </div>
+              <div class="scene-offer-line">
+                <span>Гараж 8×8 на 2 машины</span>
+                <strong>от 1,5 млн ₽</strong>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="scene-brand"><img class="scene-logo" src="../images/garages/scene/logo11.webp" alt="MSK Garage" /><div class="scene-brand-title">MSK-GARAGE</div><div class="scene-brand-subtitle">ГАРАЖИ ИЗ СЭНДВИЧ-ПАНЕЛЕЙ</div></div>
       </div>
       <audio id="garageGateSound" preload="auto"><source src="./audio/gate-opening.mp3" type="audio/mpeg" /></audio>
       <div class="scene-instruction" id="sceneInstruction">Нажмите — ворота откроются</div>
       <button class="scene-remote" id="openBtn" type="button" aria-pressed="false">Открыть гараж</button>
-      <div class="scene-choice" id="sceneChoice" aria-hidden="true"><button class="scene-choice-btn" type="button" data-garage-option="one" data-width-option="1">Подобрать свой гараж</button></div>
+      <div class="scene-choice" id="sceneChoice" aria-hidden="true">
+        <button class="scene-choice-btn scene-choice-btn-primary" type="button" data-garage-option="one">
+          Собрать свой гараж
+          <span>в конфигураторе</span>
+        </button>
+        <a class="scene-choice-btn scene-choice-btn-secondary" href="#catalog">Подобрать в каталоге</a>
+      </div>
     </main>
     <section class="config-shell" id="configShell" aria-hidden="false">
       <div class="config-shell-viewport" id="configShellViewport"><div class="config-shell-viewer" id="garage3dViewer" aria-label="3D превью гаража"></div><p class="config-shell-viewport-subtitle" id="configShellViewerStatus">Загрузка 3D-сцены…</p></div>

@@ -49,6 +49,17 @@
     <div class="gate-mask">
       <div class="gate-content">
         <img class="gate-overlay" src="https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/msk-garage-mobile-v2/images/scene/gate.webp" alt="" />
+        <div class="scene-offer">
+          <p class="scene-offer-title">Строим гаражи в Москве и МО</p>
+          <div class="scene-offer-line">
+            <span>Гараж 6×6 на 1 машину</span>
+            <strong>от 1 млн ₽</strong>
+          </div>
+          <div class="scene-offer-line">
+            <span>Гараж 8×8 на 2 машины</span>
+            <strong>от 1,5 млн ₽</strong>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -63,20 +74,16 @@
     <source src="https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/msk-garage-mobile-v2/audio/gate-opening.mp3" type="audio/mpeg" />
   </audio>
 
-  <div class="scene-instruction" id="sceneInstruction">
-    Чтобы собрать свой гараж — нажмите на пульт
-  </div>
+  <div class="scene-instruction" id="sceneInstruction">Нажмите — ворота откроются</div>
 
-  <button class="scene-remote" id="openBtn" type="button" aria-pressed="false">
-    <span class="scene-remote-body">
-      <span class="scene-remote-light"></span>
-      <span class="scene-remote-mark"></span>
-    </span>
-  </button>
+  <button class="scene-remote" id="openBtn" type="button" aria-pressed="false">Открыть гараж</button>
 
   <div class="scene-choice" id="sceneChoice" aria-hidden="true">
-    <button class="scene-choice-btn" type="button" data-garage-option="one" data-width-option="1">На 1 машину</button>
-    <button class="scene-choice-btn" type="button" data-garage-option="two" data-width-option="2">На 2 машины</button>
+    <button class="scene-choice-btn scene-choice-btn-primary" type="button" data-garage-option="one">
+      Собрать свой гараж
+      <span>в конфигураторе</span>
+    </button>
+    <a class="scene-choice-btn scene-choice-btn-secondary" href="#catalog">Подобрать в каталоге</a>
   </div>
 </main>
 
