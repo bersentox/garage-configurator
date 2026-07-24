@@ -1,8 +1,9 @@
-export function mountHeroScene({ state, onSelectWidth }) {
+export function mountHeroScene({ onOpenConfigurator }) {
   const garageScene = document.getElementById("garageScene");
   const garageRemoteButton = document.getElementById("garageRemoteButton");
   const garageGateSound = document.getElementById("garageGateSound");
-  const widthButtons = document.querySelectorAll(".garage-choice[data-width]");
+  const configuratorButton = document.getElementById("garageConfiguratorButton");
+  const catalogButton = document.getElementById("garageCatalogButton");
   let revealTimerId = null;
 
   if (!garageScene || !garageRemoteButton) {
@@ -35,12 +36,15 @@ export function mountHeroScene({ state, onSelectWidth }) {
     }
   });
 
-  widthButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const width = Number(button.dataset.width);
-      state.width = width;
-      widthButtons.forEach((node) => node.classList.toggle("selected", node === button));
-      onSelectWidth(width);
-    });
+  configuratorButton?.addEventListener("click", () => {
+    onOpenConfigurator?.();
+  });
+
+  catalogButton?.addEventListener("click", () => {
+    const target = catalogButton.dataset.target;
+
+    if (target) {
+      window.location.hash = target;
+    }
   });
 }
