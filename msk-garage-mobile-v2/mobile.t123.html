@@ -197,3 +197,305 @@
 
 <script src="https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/garage-configurator-embed/config-prices.js"></script>
 <script type="module" src="https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/msk-garage-mobile-v2/app.js"></script>
+
+<script>
+(function () {
+  const FIELD_NAME = "garage_configuration";
+  const ROOT_ID = "garage-mobile-v2-root";
+  const POPUP_LINK = "#popup:kalkul";
+
+  let latestConfiguration = "";
+
+  function getMobileRoot() {
+    return document.getElementById(ROOT_ID);
+  }
+
+  function getActiveButton(root, selector) {
+    if (!root) return null;
+
+    return root.querySelector(
+      selector + '[aria-pressed="true"]'
+    );
+  }
+
+  function getButtonText(button) {
+    return button
+      ? button.textContent.replace(/\s+/g, " ").trim()
+      : "";
+  }
+
+  function collectMobileConfiguration() {
+    const root = getMobileRoot();
+
+    if (!root) {
+      return "";
+    }
+
+    const typeButton = getActiveButton(
+      root,
+      ".config-shell-type-btn"
+    );
+
+    const lengthButton = getActiveButton(
+      root,
+      ".config-shell-length-btn"
+    );
+
+    const wallColorButton = getActiveButton(
+      root,
+      '.config-shell-color-btn[data-color-group="wall"]'
+    );
+
+    const roofColorButton = getActiveButton(
+      root,
+      '.config-shell-color-btn[data-color-group="roofTrim"]'
+    );
+
+    const foundationButton = getActiveButton(
+      root,
+      ".config-shell-foundation-btn"
+    );
+
+    const selectedExtras = [
+      ...root.querySelectorAll(
+        '.config-shell-extra-btn[aria-pressed="true"]'
+      )
+    ]
+      .map(getButtonText)
+      .filter(Boolean);
+
+    const type = getButtonText(typeButton);
+
+    const length = lengthButton
+      ? lengthButton.dataset.length
+      : "";
+
+    const width =
+      typeButton?.dataset.type === "double"
+        ? "8"
+        : "6";
+
+    const wallColor = getButtonText(
+      wallColorButton
+    );
+
+    const roofColor = getButtonText(
+      roofColorButton
+    );
+
+    const foundation = getButtonText(
+      foundationButton
+    );
+
+    const timeline = root
+      .querySelector("#finalCtaTimeline")
+      ?.textContent
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const configuration = [
+      "Источник: мобильный конфигуратор",
+      type ? "Тип: " + type : "",
+      width && length
+        ? "Размер: " +
+          width +
+          " × " +
+          length +
+          " м"
+        : "",
+      wallColor
+        ? "Цвет стен: " + wallColor
+        : "",
+      roofColor
+        ? "Цвет крыши и деталей: " +
+          roofColor
+        : "",
+      foundation
+        ? "Фундамент: " + foundation
+        : "",
+      "Опции: " + (
+        selectedExtras.length
+          ? selectedExtras.join(", ")
+          : "без дополнительных опций"
+      ),
+      timeline || ""
+    ].filter(Boolean);
+
+    return configuration.join("; ");
+  }
+
+  function writeValueToField(field, value) {
+    if (!field || !value) {
+      return;
+    }
+
+    field.value = value;
+
+    field.dispatchEvent(
+      new Event("input", {
+        bubbles: true
+      })
+    );
+
+    field.dispatchEvent(
+      new Event("change", {
+        bubbles: true
+      })
+    );
+  }
+
+  function fillTildaFields(searchRoot) {
+    const currentConfiguration =
+      collectMobileConfiguration();
+
+    if (currentConfiguration) {
+      latestConfiguration =
+        currentConfiguration;
+    }
+
+    if (!latestConfiguration) {
+      return;
+    }
+
+    const root = searchRoot || document;
+
+    root
+      .querySelectorAll(
+        '[name="' + FIELD_NAME + '"]'
+      )
+      .forEach(function (field) {
+        writeValueToField(
+          field,
+          latestConfiguration
+        );
+      });
+  }
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      const configurationButton =
+        event.target.closest(
+          [
+            "#" +
+              ROOT_ID +
+              " .config-shell-type-btn",
+            "#" +
+              ROOT_ID +
+              " .config-shell-length-btn",
+            "#" +
+              ROOT_ID +
+              " .config-shell-color-btn",
+            "#" +
+              ROOT_ID +
+              " .config-shell-foundation-btn",
+            "#" +
+              ROOT_ID +
+              " .config-shell-extra-btn"
+          ].join(",")
+        );
+
+      if (!configurationButton) {
+        return;
+      }
+
+      setTimeout(function () {
+        latestConfiguration =
+          collectMobileConfiguration();
+
+        fillTildaFields();
+      }, 0);
+    },
+    false
+  );
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      const popupButton =
+        event.target.closest(
+          'a[href="' + POPUP_LINK + '"]'
+        );
+
+      if (!popupButton) {
+        return;
+      }
+
+      latestConfiguration =
+        collectMobileConfiguration();
+
+      fillTildaFields();
+
+      setTimeout(fillTildaFields, 100);
+      setTimeout(fillTildaFields, 400);
+      setTimeout(fillTildaFields, 1000);
+    },
+    true
+  );
+
+  document.addEventListener(
+    "submit",
+    function (event) {
+      const form = event.target;
+
+      if (!(form instanceof HTMLFormElement)) {
+        return;
+      }
+
+      const field = form.querySelector(
+        '[name="' + FIELD_NAME + '"]'
+      );
+
+      if (!field) {
+        return;
+      }
+
+      latestConfiguration =
+        collectMobileConfiguration() ||
+        latestConfiguration;
+
+      writeValueToField(
+        field,
+        latestConfiguration
+      );
+    },
+    true
+  );
+
+  const observer = new MutationObserver(
+    function (mutations) {
+      const hasAddedNodes = mutations.some(
+        function (mutation) {
+          return mutation.addedNodes.length > 0;
+        }
+      );
+
+      if (!hasAddedNodes) {
+        return;
+      }
+
+      const fields = document.querySelectorAll(
+        '[name="' + FIELD_NAME + '"]'
+      );
+
+      if (fields.length) {
+        fillTildaFields();
+      }
+    }
+  );
+
+  if (document.body) {
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  setTimeout(function () {
+    latestConfiguration =
+      collectMobileConfiguration();
+
+    fillTildaFields();
+  }, 1000);
+})();
+</script>
