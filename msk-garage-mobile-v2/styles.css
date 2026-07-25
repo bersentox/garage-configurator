@@ -575,7 +575,7 @@
 
 #garage-mobile-v2-root .config-shell-final-actions {
   display: grid;
-  gap: 8px;
+  gap: 14px;
   margin-top: 12px;
 }
 
@@ -637,9 +637,27 @@
 }
 
 #garage-mobile-v2-root .config-shell-final-btn-secondary {
-  border: 1px solid #cbd5e1;
-  background: #e2e8f0;
+  border: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.68) 0%, rgba(255,255,255,0) 28%),
+    linear-gradient(180deg, #f8fafc 0%, #e2e8f0 72%, #cbd5e1 100%);
   color: #0f172a;
+  box-shadow:
+    0 4px 0 #94a3b8,
+    0 8px 18px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 -2px 0 rgba(71,85,105,0.12);
+  transition: transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease;
+}
+
+#garage-mobile-v2-root .config-shell-final-btn-secondary:active {
+  transform: translateY(3px);
+  filter: brightness(0.99);
+  box-shadow:
+    0 1px 0 #94a3b8,
+    0 5px 12px rgba(0,0,0,0.16),
+    inset 0 1px 0 rgba(255,255,255,0.82),
+    inset 0 -1px 0 rgba(71,85,105,0.1);
 }
 
 #garage-mobile-v2-root .config-shell-bar {
