@@ -87,7 +87,7 @@
   </div>
 </main>
 
-<section class="config-shell" id="configShell" hidden aria-hidden="true">
+<section class="config-shell" id="configShell" aria-hidden="false">
   <div class="config-shell-viewport" id="configShellViewport">
     <div class="config-shell-viewer" id="garage3dViewer" aria-label="3D превью гаража"></div>
     <p class="config-shell-viewport-subtitle" id="configShellViewerStatus">Загрузка 3D-сцены…</p>
@@ -105,8 +105,11 @@
       <h2>Выберите длину</h2>
       <div class="config-shell-length-buttons" id="configLengthButtons">
         <button type="button" class="config-shell-length-btn" data-length="6" aria-pressed="true">6 м</button>
+        <button type="button" class="config-shell-length-btn" data-length="7" aria-pressed="false">7 м</button>
         <button type="button" class="config-shell-length-btn" data-length="8" aria-pressed="false">8 м</button>
+        <button type="button" class="config-shell-length-btn" data-length="9" aria-pressed="false">9 м</button>
         <button type="button" class="config-shell-length-btn" data-length="10" aria-pressed="false">10 м</button>
+        <button type="button" class="config-shell-length-btn" data-length="11" aria-pressed="false">11 м</button>
       </div>
       <div class="config-shell-info config-shell-info-inline">
         <p class="config-shell-info-text">Конструкция влияет на срок службы и надёжность гаража</p>
@@ -171,7 +174,7 @@
         <p class="config-shell-final-text">Предварительный расчёт по выбранной комплектации. Точную стоимость уточним с учётом участка и доставки.</p>
         <p class="config-shell-final-summary" id="finalCtaSummary">1 машина · 6×6 · песочный / графит</p>
         <p class="config-shell-final-timeline" id="finalCtaTimeline">Средний срок строительства — 7–10 дней</p>
-        <p class="config-shell-final-price" id="finalCtaPrice">от 1 224 000 ₽</p>
+        <p class="config-shell-final-price" id="finalCtaPrice">от 1 100 000 ₽</p>
         <a class="config-shell-final-link" href="#popup:process">
           <span class="config-shell-final-link-icon" aria-hidden="true">i</span>
           <span>Как мы строим: этапы и контроль →</span>
@@ -192,4 +195,5 @@
 </section>
 </div>
 
+<script src="https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/garage-configurator-embed/config-prices.js"></script>
 <script type="module" src="https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/msk-garage-mobile-v2/app.js"></script>
