@@ -605,9 +605,9 @@
 }
 
 #garage-mobile-v2-root .config-shell-final-btn-secondary {
-  border: 1px solid rgba(159, 185, 226, 0.24);
-  background: rgba(255,255,255,0.04);
-  color: #f4f8ff;
+  border: 1px solid #cbd5e1;
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
 #garage-mobile-v2-root .config-shell-bar {
@@ -664,8 +664,8 @@
 #garage-mobile-v2-root a.config-shell-final-btn.config-shell-final-btn-secondary:hover,
 #garage-mobile-v2-root a.config-shell-final-btn.config-shell-final-btn-secondary:active,
 #garage-mobile-v2-root .config-shell-final-actions a.config-shell-final-btn-secondary[href^="tel"] {
-  color: #f4f8ff !important;
-  -webkit-text-fill-color: #f4f8ff !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
   opacity: 1 !important;
   text-decoration: none !important;
 }
