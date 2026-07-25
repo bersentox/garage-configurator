@@ -52,6 +52,15 @@ const EXTRA_PRICE = {
   drainage: 25000
 };
 
+const MODEL_LENGTH_BY_SELECTED_LENGTH = {
+  6: 6,
+  7: 6,
+  8: 8,
+  9: 8,
+  10: 10,
+  11: 10
+};
+
 const MODEL_BY_SIZE = {
   '6x6': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_6x6.glb',
   '6x8': 'https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/models/garage_6x8.glb',
@@ -63,11 +72,17 @@ const MODEL_BY_SIZE = {
 
 const BUILD_TIMELINE_BY_SIZE = {
   '6x6': '7–10 дней',
+  '6x7': '8–11 дней',
   '6x8': '8–12 дней',
+  '6x9': '9–13 дней',
   '6x10': '10–14 дней',
+  '6x11': '11–15 дней',
   '8x6': '8–12 дней',
+  '8x7': '9–13 дней',
   '8x8': '10–14 дней',
-  '8x10': '12–16 дней'
+  '8x9': '11–15 дней',
+  '8x10': '12–16 дней',
+  '8x11': '13–17 дней'
 };
 
 const WALL_COLOR_PRESETS = {
@@ -99,9 +114,10 @@ const configuratorState = {
   }
 };
 
-function resolveModelKey(width, length) {
-  const sizeKey = `${width}x${length}`;
-  return MODEL_BY_SIZE[sizeKey] ? sizeKey : null;
+function resolveModelKey(width, selectedLength) {
+  const modelLength = MODEL_LENGTH_BY_SELECTED_LENGTH[selectedLength];
+  const modelKey = `${width}x${modelLength}`;
+  return MODEL_BY_SIZE[modelKey] ? modelKey : null;
 }
 
 function getConstructionTimelineLabel(state) {
@@ -452,6 +468,7 @@ function createViewerBridge() {
   }
 
   async function loadByState() {
+    const selectedSizeKey = `${configuratorState.width}x${configuratorState.length}`;
     const modelKey = resolveModelKey(configuratorState.width, configuratorState.length);
     if (!modelKey) {
       setStatus('Модель не найдена для выбранного размера');
@@ -463,7 +480,7 @@ function createViewerBridge() {
     const viewer = await ensureRuntime();
     if (!viewer) return;
 
-    setStatus(`Загрузка модели ${modelKey}…`);
+    setStatus(`Загрузка модели ${selectedSizeKey}…`);
 
     viewer.loader.load(
       modelPath,
@@ -484,12 +501,12 @@ function createViewerBridge() {
         activeParts = collectModelParts(viewer, model);
         applyColors(getActiveColorSet());
         frameModelForMobile(viewer, model);
-        setStatus(`Модель ${modelKey} загружена`);
+        setStatus(`Модель ${selectedSizeKey} загружена`);
       },
       undefined,
       () => {
         if (currentToken !== latestLoadToken) return;
-        setStatus(`Ошибка загрузки модели ${modelKey}`);
+        setStatus(`Ошибка загрузки модели ${selectedSizeKey}`);
       }
     );
   }
