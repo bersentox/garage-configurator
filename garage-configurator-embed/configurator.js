@@ -84,8 +84,7 @@ export function mountConfigurator({ state, root }) {
   const ctaPrice = root.querySelector("#ctaPrice");
   const ctaTime = root.querySelector("#ctaTime");
   const stickyBar = root.querySelector("#stickyBar");
-  const stickyPrice = root.querySelector("#stickyPrice");
-  const stickyMeta = root.querySelector("#stickyMeta");
+  const stickyCta = root.querySelector("#stickyCta");
   const finalCta = root.querySelector("#finalCta");
 
   let garageViewer = {
@@ -211,8 +210,6 @@ export function mountConfigurator({ state, root }) {
     ctaSummary.textContent = `${state.type.toLowerCase()} · ${state.width} × ${state.length} м · ${LAYOUT_LABELS[state.layout]}`;
     ctaPrice.textContent = priceText;
     ctaTime.textContent = timeText;
-    stickyPrice.textContent = priceText;
-    stickyMeta.textContent = `${state.width} × ${state.length} м · ${state.gates} ${state.gates === 1 ? "ворота" : "ворот"}`;
   };
 
   widthCards.forEach((card) => {
@@ -302,6 +299,13 @@ export function mountConfigurator({ state, root }) {
     checkbox.addEventListener("change", () => {
       state.options[checkbox.dataset.option] = checkbox.checked;
       render();
+    });
+  });
+
+  stickyCta.addEventListener("click", () => {
+    finalCta.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
     });
   });
 
