@@ -600,8 +600,40 @@
 }
 
 #garage-mobile-v2-root .config-shell-final-link {
-  color: rgba(137, 184, 255, 0.92);
-  border-bottom-color: rgba(137, 184, 255, 0.38);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 40px;
+  margin: 2px 0 10px;
+  padding: 6px 0;
+  border: 0;
+  color: #7dd3fc;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+#garage-mobile-v2-root .config-shell-final-link-icon {
+  display: inline-flex;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(125, 211, 252, 0.7);
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+#garage-mobile-v2-root .config-shell-final-link:hover span:last-child,
+#garage-mobile-v2-root .config-shell-final-link:active span:last-child {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 #garage-mobile-v2-root .config-shell-final-btn-secondary {
