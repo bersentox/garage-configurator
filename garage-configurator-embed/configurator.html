@@ -28,22 +28,48 @@
 
       <section class="config-length">
         <h3>ВЫБЕРИТЕ ДЛИНУ ГАРАЖА</h3>
-        <div class="length-cards" id="lengthCards">
-          <button class="length-card" type="button" data-length="6" data-price="1950000">
-            <span class="length-value"><strong>6</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">48 м²</span></span>
-            <span class="length-usage">только для машин</span>
-            <span class="length-price">Базовый вариант</span>
-          </button>
-          <button class="length-card" type="button" data-length="8" data-price="2290000">
-            <span class="length-value"><strong>8</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">64 м²</span></span>
-            <span class="length-usage">машина + хранение</span>
-            <span class="length-price">Оптимальный выбор</span>
-          </button>
-          <button class="length-card" type="button" data-length="10" data-price="2650000">
-            <span class="length-value"><strong>10</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">80 м²</span></span>
-            <span class="length-usage">машина + хозблок</span>
-            <span class="length-price">Больше места</span>
-          </button>
+        <div class="length-scenarios" id="lengthCards">
+          <div class="length-scenario">
+            <p class="length-scenario-title">ТОЛЬКО МАШИНА</p>
+            <div class="length-card-pair">
+              <button class="length-card active" type="button" data-length="6">
+                <span class="length-value"><strong>6</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">36 м²</span></span>
+                <span class="length-note">Компактный вариант</span>
+              </button>
+              <button class="length-card" type="button" data-length="7">
+                <span class="length-value"><strong>7</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">42 м²</span></span>
+                <span class="length-note">Больше пространства</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="length-scenario">
+            <p class="length-scenario-title">МАШИНА + ХРАНЕНИЕ</p>
+            <div class="length-card-pair">
+              <button class="length-card" type="button" data-length="8">
+                <span class="length-value"><strong>8</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">48 м²</span></span>
+                <span class="length-note">Базовый вариант</span>
+              </button>
+              <button class="length-card" type="button" data-length="9">
+                <span class="length-value"><strong>9</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">54 м²</span></span>
+                <span class="length-note">Больше места</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="length-scenario">
+            <p class="length-scenario-title">МАШИНА + ХОЗБЛОК</p>
+            <div class="length-card-pair">
+              <button class="length-card" type="button" data-length="10">
+                <span class="length-value"><strong>10</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">60 м²</span></span>
+                <span class="length-note">Базовый вариант</span>
+              </button>
+              <button class="length-card" type="button" data-length="11">
+                <span class="length-value"><strong>11</strong><span>м</span><span class="length-separator" aria-hidden="true">·</span><span class="length-area">66 м²</span></span>
+                <span class="length-note">Увеличенный вариант</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="length-custom">

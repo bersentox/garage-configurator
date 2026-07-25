@@ -13,9 +13,21 @@ const GARAGE_MODEL_PATHS = {
   "8x10": "models/garage_8x10.glb"
 };
 
+const VISUAL_MODEL_LENGTH = {
+  7: 6,
+  9: 8,
+  11: 10
+};
+
 function getGarageModelPath(width, length) {
-  const modelPath = GARAGE_MODEL_PATHS[`${width}x${length}`];
+  const modelLength = VISUAL_MODEL_LENGTH[length] || length;
+  const modelPath = GARAGE_MODEL_PATHS[`${width}x${modelLength}`];
   return modelPath ? resolveEmbedAsset(modelPath) : null;
+}
+
+function getGarageModelKey(width, length) {
+  const modelLength = VISUAL_MODEL_LENGTH[length] || length;
+  return `${width}x${modelLength}`;
 }
 
 function buildMeshIndex(root) {
@@ -233,7 +245,7 @@ controls.maxPolarAngle = 1.42;
 
   function loadModelBySize(width, length) {
     const nextModelPath = getGarageModelPath(width, length);
-    const nextModelKey = `${width}x${length}`;
+    const nextModelKey = getGarageModelKey(width, length);
 
     if (!nextModelPath) {
       console.error("[Garage3D] Unsupported model size", { width, length });
