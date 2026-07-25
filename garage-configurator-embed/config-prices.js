@@ -39,8 +39,8 @@ window.CONFIG_PRICES = {
   FOUNDATION_RATE_PER_M2: {
     none: 0,
     pile: 1500,
-    strip: 2500,
-    slab: 3500
+    strip: 2000,
+    slab: 6000
   },
 
   // Цены дополнительных опций
