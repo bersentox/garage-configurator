@@ -32,24 +32,28 @@ const choiceButtons = sceneChoice ? [...sceneChoice.querySelectorAll('[data-gara
 const SHOW_CHOICE_DELAY_MS = 2000;
 const HIDE_OPEN_BUTTON_DELAY_MS = 4600;
 
-const RATE_PER_M2 = {
-  6: 34000,
-  8: 37000
+const PRICE_CONFIG = window.CONFIG_PRICES || {};
+
+const GARAGE_PRICE = PRICE_CONFIG.GARAGE || {
+  single: { baseLength: 6, basePrice: 1100000, extraMeterPrice: 100000 },
+  double: { baseLength: 6, basePrice: 1600000, extraMeterPrice: 100000 }
 };
 
-const FOUNDATION_RATE_PER_M2 = {
+const FOUNDATION_RATE_PER_M2 = PRICE_CONFIG.FOUNDATION_RATE_PER_M2 || {
   none: 0,
-  pile: 6500,
-  strip: 5500,
-  slab: 4500
+  pile: 1500,
+  strip: 2500,
+  slab: 3500
 };
+
+const OPTIONS_PRICE = PRICE_CONFIG.OPTIONS_PRICE || {};
 
 const EXTRA_PRICE = {
-  automation: 25000,
-  electrics: 60000,
-  lighting: 15000,
-  ventilation: 6000,
-  drainage: 25000
+  automation: OPTIONS_PRICE.gateAutomation ?? 25000,
+  electrics: OPTIONS_PRICE.interiorElectricity ?? 50000,
+  lighting: OPTIONS_PRICE.exteriorLighting ?? 15000,
+  ventilation: OPTIONS_PRICE.ventilation ?? 6000,
+  drainage: OPTIONS_PRICE.gutters ?? 20000
 };
 
 const MODEL_LENGTH_BY_SELECTED_LENGTH = {
@@ -127,14 +131,18 @@ function getConstructionTimelineLabel(state) {
 }
 
 function calculateEstimatedPrice() {
-  const ratePerM2 = RATE_PER_M2[configuratorState.width] || RATE_PER_M2[6];
-  const basePrice = configuratorState.width * configuratorState.length * ratePerM2;
+  const garageType = configuratorState.type === 'double' ? 'double' : 'single';
+  const garagePricing = GARAGE_PRICE[garageType] || GARAGE_PRICE.single || {};
+  const baseLength = Number(garagePricing.baseLength) || 6;
+  const basePrice = Number(garagePricing.basePrice) || 0;
+  const extraMeterPrice = Number(garagePricing.extraMeterPrice) || 0;
+  const lengthSurcharge = Math.max(0, configuratorState.length - baseLength) * extraMeterPrice;
   const foundationRatePerM2 = FOUNDATION_RATE_PER_M2[configuratorState.foundation] ?? 0;
   const foundationPrice = configuratorState.width * configuratorState.length * foundationRatePerM2;
   const extrasPrice = Object.entries(configuratorState.extras).reduce((sum, [key, enabled]) => {
     return sum + (enabled ? (EXTRA_PRICE[key] || 0) : 0);
   }, 0);
-  return basePrice + foundationPrice + extrasPrice;
+  return basePrice + lengthSurcharge + foundationPrice + extrasPrice;
 }
 
 function formatPrice(value) {
