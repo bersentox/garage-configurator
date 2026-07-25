@@ -617,8 +617,9 @@
   bottom: 0;
   z-index: 20;
   padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-  background: rgba(246,249,253,0.92);
-  border-top: 1px solid rgba(203,213,225,0.9);
+  background: radial-gradient(circle at 18% 12%, rgba(64, 104, 168, 0.32), transparent 34%), linear-gradient(145deg, #14223a 0%, #070d19 100%);
+  border-top: 1px solid rgba(159, 185, 226, 0.22);
+  box-shadow: 0 -10px 28px rgba(3, 10, 22, 0.28);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   opacity: 0;
@@ -634,9 +635,7 @@
 }
 
 #garage-mobile-v2-root .config-shell-bar-main {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  display: block;
   max-width: 540px;
   margin: 0 auto;
 }
@@ -646,10 +645,11 @@
 #garage-mobile-v2-root .config-shell-bar-summary { margin: 2px 0 0; font-size: 12px; line-height: 1.25; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 #garage-mobile-v2-root .config-shell-bar-cta {
-  min-width: 132px;
-  min-height: 44px;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
   border-radius: 12px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 800;
 }
 
