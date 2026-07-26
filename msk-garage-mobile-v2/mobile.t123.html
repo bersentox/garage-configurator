@@ -1,12 +1,28 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/msk-garage-mobile-v2/styles.css" />
 
 <style>
+  #garage-mobile-v2-root .config-shell-final-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 12px 0 8px;
+    white-space: nowrap;
+  }
+
+  #garage-mobile-v2-root .config-shell-final-price-label {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.1;
+    font-weight: 750;
+    color: #fff;
+  }
+
   #garage-mobile-v2-root .config-shell-final-price {
     display: block;
-    margin: 10px 0 8px;
-    font-size: 26px;
+    margin: 0;
+    font-size: 21px;
     line-height: 1.1;
-    font-weight: 800;
+    font-weight: 750;
     color: #fff;
   }
 
@@ -174,7 +190,7 @@
         <p class="config-shell-final-text">Предварительный расчёт по выбранной комплектации. Точную стоимость уточним с учётом участка и доставки.</p>
         <p class="config-shell-final-summary" id="finalCtaSummary">1 машина · 6×6 · песочный / графит</p>
         <p class="config-shell-final-timeline" id="finalCtaTimeline">Средний срок строительства — 7–10 дней</p>
-        <p class="config-shell-final-price" id="finalCtaPrice">от 1 100 000 ₽</p>
+        <div class="config-shell-final-price-row"><p class="config-shell-final-price-label">Расчётная стоимость</p><p class="config-shell-final-price" id="finalCtaPrice">1 100 000 ₽</p></div>
         <a class="config-shell-final-link" href="#popup:process">
           <span class="config-shell-final-link-icon" aria-hidden="true">i</span>
           <span>Как мы строим: этапы и контроль →</span>

@@ -146,7 +146,7 @@ function calculateEstimatedPrice() {
 }
 
 function formatPrice(value) {
-  return `от ${new Intl.NumberFormat('ru-RU').format(Math.round(value))} ₽`;
+  return `${new Intl.NumberFormat('ru-RU').format(Math.round(value))} ₽`;
 }
 
 function updateSummaryLabel() {
