@@ -97,6 +97,12 @@
   color: #fff;
   text-align: left;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.98), 0 0 9px rgba(0, 0, 0, 0.72);
+  opacity: 1;
+  transition: opacity 0.25s ease 4.55s;
+}
+
+#garage-mobile-v2-root .hero.open .scene-offer {
+  opacity: 0;
 }
 
 #garage-mobile-v2-root .scene-offer-title {
@@ -107,6 +113,36 @@
   font-weight: 850;
   line-height: 1.12;
   text-align: center;
+}
+
+#garage-mobile-v2-root .scene-offer-benefits {
+  display: grid;
+  gap: clamp(1px, 0.45vw, 2.5px);
+  margin: 0;
+  padding: 0 clamp(5px, 1.6vw, 9px);
+  list-style: none;
+  transform: translateX(calc(clamp(6px, 1.6vw, 9px) + 12px));
+}
+
+#garage-mobile-v2-root .scene-offer-benefits li {
+  display: flex;
+  align-items: center;
+  min-height: clamp(19px, 5vw, 25px);
+  gap: clamp(4px, 1.2vw, 7px);
+  color: #fff;
+  font-size: clamp(9.5px, 2.45vw, 12.5px);
+  font-weight: 750;
+  line-height: 1.08;
+  white-space: nowrap;
+}
+
+#garage-mobile-v2-root .scene-offer-benefits li::before {
+  content: "✓";
+  flex: 0 0 auto;
+  color: #ffd170;
+  font-size: 1.05em;
+  font-weight: 900;
+  line-height: 1;
 }
 
 #garage-mobile-v2-root .scene-offer-line {

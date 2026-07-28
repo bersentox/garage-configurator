@@ -1,6 +1,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/msk-garage-mobile-v2/styles.css" />
 
 <style>
+  #garage-mobile-v2-root .price-output-hidden {
+    display: none !important;
+  }
+
   #garage-mobile-v2-root .config-shell-final-price-row {
     display: flex;
     align-items: baseline;
@@ -67,11 +71,17 @@
         <img class="gate-overlay" src="https://cdn.jsdelivr.net/gh/bersentox/garage-configurator@main/msk-garage-mobile-v2/images/scene/gate.webp" alt="" />
         <div class="scene-offer">
           <p class="scene-offer-title">Строим гаражи в Москве и МО</p>
-          <div class="scene-offer-line">
+          <ul class="scene-offer-benefits" aria-label="Преимущества">
+            <li>Фиксированная цена</li>
+            <li>Проект и смета бесплатно</li>
+            <li>Монтаж 5–7 дней</li>
+            <li>Гарантия по договору</li>
+          </ul>
+          <div class="scene-offer-line price-output-hidden" hidden>
             <span>Гараж 6×6 на 1 машину</span>
             <strong>от 1 млн ₽</strong>
           </div>
-          <div class="scene-offer-line">
+          <div class="scene-offer-line price-output-hidden" hidden>
             <span>Гараж 8×8 на 2 машины</span>
             <strong>от 1,5 млн ₽</strong>
           </div>
@@ -190,7 +200,7 @@
         <p class="config-shell-final-text">Предварительный расчёт по выбранной комплектации. Точную стоимость уточним с учётом участка и доставки.</p>
         <p class="config-shell-final-summary" id="finalCtaSummary">1 машина · 6×6 · песочный / графит</p>
         <p class="config-shell-final-timeline" id="finalCtaTimeline">Средний срок строительства — 7–10 дней</p>
-        <div class="config-shell-final-price-row"><p class="config-shell-final-price-label">Расчётная стоимость</p><p class="config-shell-final-price" id="finalCtaPrice">1 100 000 ₽</p></div>
+        <div class="config-shell-final-price-row price-output-hidden" hidden><p class="config-shell-final-price-label">Расчётная стоимость</p><p class="config-shell-final-price" id="finalCtaPrice">1 100 000 ₽</p></div>
         <a class="config-shell-final-link" href="#popup:process">
           <span class="config-shell-final-link-icon" aria-hidden="true">i</span>
           <span>Как мы строим: этапы и контроль →</span>
@@ -205,7 +215,7 @@
 
   <div class="config-shell-bar" id="configShellBar" aria-live="polite">
     <div class="config-shell-bar-main">
-      <button class="config-shell-bar-cta" id="configBarCta" type="button">Узнать стоимость сейчас</button>
+      <button class="config-shell-bar-cta" id="configBarCta" type="button">Рассчитать стоимость</button>
     </div>
   </div>
 </section>
