@@ -121,6 +121,7 @@
   margin: 0;
   padding: 0 clamp(5px, 1.6vw, 9px);
   list-style: none;
+  transform: translateX(clamp(6px, 1.6vw, 9px));
 }
 
 #garage-mobile-v2-root .scene-offer-benefits li {
