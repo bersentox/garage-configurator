@@ -117,11 +117,11 @@
 
 #garage-mobile-v2-root .scene-offer-benefits {
   display: grid;
-  gap: clamp(2px, 0.7vw, 4px);
+  gap: clamp(1px, 0.45vw, 2.5px);
   margin: 0;
   padding: 0 clamp(5px, 1.6vw, 9px);
   list-style: none;
-  transform: translateX(clamp(6px, 1.6vw, 9px));
+  transform: translateX(calc(clamp(6px, 1.6vw, 9px) + 12px));
 }
 
 #garage-mobile-v2-root .scene-offer-benefits li {
